@@ -23,6 +23,9 @@ import numpy as np
 
 from spmkit.core.models import SPMChannel
 
+#: Constante de Boltzmann (J/K).
+_BOLTZMANN = 1.380649e-23
+
 #: Modelos de contacto soportados y su exponente de indentación.
 _MODELS = {
     "sphere": 1.5,  # Hertz esférico / paraboloide (R = radio de punta)
@@ -270,3 +273,38 @@ def _e_star_from_stiffness(
         return stiffness / ((4.0 / 3.0) * np.sqrt(tip_radius))
     # cone (Sneddon)
     return stiffness * np.pi / (2.0 * np.tan(half_angle))
+
+
+def thermal_spring_constant(deflection_variance: float, temperature: float = 293.15) -> float:
+    """Estima la constante de resorte del cantiléver por el método de equipartición.
+
+    Aplica el **teorema de equipartición de la energía**: en equilibrio térmico,
+    cada grado de libertad cuadrático almacena una energía promedio de ½·k_B·T.
+    Para un cantiléver de constante k::
+
+        ½·k·⟨x²⟩ = ½·k_B·T  →  k = k_B·T / ⟨x²⟩
+
+    Args:
+        deflection_variance: Varianza de la deflexión térmica del cantiléver
+            ⟨x²⟩ en m². Debe obtenerse del espectro de densidad de potencia
+            (área bajo el pico de resonancia) en una zona libre de la muestra.
+            Debe ser estrictamente positivo.
+        temperature: Temperatura de la muestra en Kelvin (por defecto 293.15 K
+            ≈ 20 °C).
+
+    Returns:
+        Constante de resorte k en N/m.
+
+    Raises:
+        ValueError: Si ``deflection_variance`` no es estrictamente positivo.
+
+    Example::
+
+        >>> thermal_spring_constant(1e-20)
+        40.50...
+    """
+    if deflection_variance <= 0:
+        raise ValueError(
+            f"deflection_variance debe ser estrictamente positivo, se recibió {deflection_variance}"
+        )
+    return _BOLTZMANN * temperature / deflection_variance

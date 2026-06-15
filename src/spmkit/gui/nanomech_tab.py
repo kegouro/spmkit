@@ -48,6 +48,13 @@ class NanomechTab(QtWidgets.QWidget):
         self.radius_spin.setSuffix(" nm")
         form.addRow("Radio punta:", self.radius_spin)
 
+        self.spring_spin = QtWidgets.QDoubleSpinBox()
+        self.spring_spin.setDecimals(3)
+        self.spring_spin.setRange(0.0, 1000.0)
+        self.spring_spin.setValue(0.0)
+        self.spring_spin.setSuffix(" N/m")
+        form.addRow("k cantiléver:", self.spring_spin)
+
         fit_btn = QtWidgets.QPushButton("Ajustar Hertz")
         fit_btn.setProperty("primary", True)
         fit_btn.clicked.connect(self._fit)
@@ -105,11 +112,14 @@ class NanomechTab(QtWidgets.QWidget):
         if not self._curves:
             return
         i = min(self.curve_slider.value(), len(self._curves) - 1)
+        k_val = self.spring_spin.value()
+        spring_constant = k_val if k_val > 0 else None
         try:
             r = mechanics.fit_hertz(
                 self._curves[i],
                 tip_radius=self.radius_spin.value() * 1e-9,
                 model=self.model_combo.currentText(),
+                spring_constant=spring_constant,
             )
         except Exception as exc:  # noqa: BLE001 - mostrar al usuario
             self.result_text.setHtml(f"<span style='color:#ff6b6b'>Error: {exc}</span>")
@@ -131,8 +141,13 @@ class NanomechTab(QtWidgets.QWidget):
         from spmkit.core.viz import colormaps
 
         ch = self._data[self.channel_combo.currentText()]
+        k_val = self.spring_spin.value()
+        spring_constant = k_val if k_val > 0 else None
         m = mechanics.fit_all(
-            ch, tip_radius=self.radius_spin.value() * 1e-9, model=self.model_combo.currentText()
+            ch,
+            tip_radius=self.radius_spin.value() * 1e-9,
+            model=self.model_combo.currentText(),
+            spring_constant=spring_constant,
         )
         cmap = colormaps.get_cmap("batlow")
         fig = Figure(figsize=(8, 3.6))

@@ -126,6 +126,11 @@ def nanomech(
     curve: int = typer.Option(-1, "--curve", help="Índice de curva (-1 = la del medio)"),
     tip_radius: float = typer.Option(10e-9, "--tip-radius", help="Radio de punta (m)"),
     model: str = typer.Option("sphere", "--model", help="sphere|paraboloid|cone"),
+    spring_constant: float | None = typer.Option(
+        None,
+        "--spring-constant",
+        help="Constante de resorte del cantiléver (N/m) para corregir la indentación",
+    ),
 ) -> None:
     """Ajusta una curva fuerza-distancia (Hertz) y estima el módulo de Young."""
     from spmkit.core.analysis import mechanics
@@ -137,7 +142,9 @@ def nanomech(
         console.print("[red]No se encontraron curvas en el canal.[/]")
         raise typer.Exit(1)
     idx = len(curves) // 2 if curve < 0 else curve
-    result = mechanics.fit_hertz(curves[idx], tip_radius=tip_radius, model=model)
+    result = mechanics.fit_hertz(
+        curves[idx], tip_radius=tip_radius, model=model, spring_constant=spring_constant
+    )
     table = Table(title=f"Nanomecánica · curva {idx}/{len(curves)} · {model}")
     table.add_column("Parámetro", style="cyan")
     table.add_column("Valor", justify="right")

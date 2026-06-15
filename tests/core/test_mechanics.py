@@ -67,3 +67,38 @@ def test_invalid_model() -> None:
     curve = _hertz_curve(1e6, 10e-9, 3e-7)
     with pytest.raises(ValueError, match="model debe ser"):
         mechanics.fit_hertz(curve, tip_radius=10e-9, model="banana")
+
+
+def test_thermal_spring_constant() -> None:
+    """Verifica el cálculo de k por equipartición para valores conocidos."""
+    variance = 1e-20  # m²
+    temperature = 293.15  # K
+    expected = 1.380649e-23 * 293.15 / 1e-20
+    from spmkit.core.analysis.mechanics import thermal_spring_constant
+
+    result = thermal_spring_constant(variance, temperature)
+    assert result == pytest.approx(expected, rel=1e-9)
+
+
+def test_thermal_spring_constant_invalid() -> None:
+    """Varianza <= 0 debe lanzar ValueError."""
+    from spmkit.core.analysis.mechanics import thermal_spring_constant
+
+    with pytest.raises(ValueError):
+        thermal_spring_constant(0.0)
+    with pytest.raises(ValueError):
+        thermal_spring_constant(-1e-20)
+
+
+def test_spring_constant_changes_fit() -> None:
+    """La corrección por cantiléver flexible produce un módulo distinto (mayor) que sin ella."""
+    young_true = 1.0e6  # 1 MPa
+    radius = 10e-9
+    curve = _hertz_curve(young_true, radius, z0=3e-7)
+
+    result_no_k = mechanics.fit_hertz(curve, tip_radius=radius, spring_constant=None)
+    result_with_k = mechanics.fit_hertz(curve, tip_radius=radius, spring_constant=1.0)
+
+    # Con spring_constant finito la indentación corregida es menor → E estimado mayor
+    assert result_with_k.young_modulus != pytest.approx(result_no_k.young_modulus, rel=1e-3)
+    assert result_with_k.young_modulus > result_no_k.young_modulus
