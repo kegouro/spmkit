@@ -191,6 +191,77 @@ def adhesion(curve: ForceCurve) -> float:
     return -fmin if fmin < 0 else 0.0
 
 
+@dataclass(frozen=True)
+class MechanicalMap:
+    """Mapas de propiedades mecánicas a partir de un conjunto de curvas.
+
+    Cada arreglo tiene la forma de la grilla espacial (``rows × cols``); los
+    ajustes fallidos quedan como ``NaN``.
+    """
+
+    young_modulus: np.ndarray
+    adhesion: np.ndarray
+    contact_point: np.ndarray
+    grid_shape: tuple[int, int]
+    n_curves: int
+    n_failed: int
+    unit_modulus: str = "Pa"
+
+
+def _grid_shape(n: int, grid: tuple[int, int] | None) -> tuple[int, int]:
+    if grid is not None:
+        if grid[0] * grid[1] != n:
+            raise ValueError(f"grid {grid} no coincide con {n} curvas")
+        return grid
+    root = int(round(n**0.5))
+    if root * root == n:
+        return (root, root)
+    return (1, n)  # sin grilla cuadrada: tira 1×N
+
+
+def fit_all(
+    channel: SPMChannel,
+    tip_radius: float,
+    poisson: float = 0.3,
+    model: str = "sphere",
+    spring_constant: float | None = None,
+    grid: tuple[int, int] | None = None,
+) -> MechanicalMap:
+    """Ajusta todas las curvas de un canal y arma mapas de módulo y adhesión.
+
+    Args:
+        grid: Forma ``(rows, cols)`` de la grilla espacial. Si es ``None`` se
+            infiere una grilla cuadrada cuando es posible; si no, queda ``1×N``.
+    """
+    curves = extract_curves(channel)
+    n = len(curves)
+    shape = _grid_shape(n, grid)
+    young = np.full(n, np.nan)
+    adh = np.full(n, np.nan)
+    contact = np.full(n, np.nan)
+    n_failed = 0
+    for i, curve in enumerate(curves):
+        try:
+            r = fit_hertz(
+                curve,
+                tip_radius=tip_radius,
+                poisson=poisson,
+                model=model,
+                spring_constant=spring_constant,
+            )
+            young[i], adh[i], contact[i] = r.young_modulus, r.adhesion, r.contact_point
+        except (ValueError, ZeroDivisionError):
+            n_failed += 1
+    return MechanicalMap(
+        young_modulus=young.reshape(shape),
+        adhesion=adh.reshape(shape),
+        contact_point=contact.reshape(shape),
+        grid_shape=shape,
+        n_curves=n,
+        n_failed=n_failed,
+    )
+
+
 def _e_star_from_stiffness(
     stiffness: float, model: str, tip_radius: float, half_angle: float
 ) -> float:

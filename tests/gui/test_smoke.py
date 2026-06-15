@@ -38,7 +38,7 @@ def _data() -> SPMData:
 def test_window_constructs_and_loads(qtbot) -> None:  # type: ignore[no-untyped-def]
     win = MainWindow()
     qtbot.addWidget(win)
-    assert win.tabs.count() == 3
+    assert win.tabs.count() == 4
     for tab in (win.viewer, win.nanomech, win.figure):
         tab.set_data(_data())
     assert win.viewer.channel_list.count() == 1

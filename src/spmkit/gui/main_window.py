@@ -17,6 +17,7 @@ from spmkit import load
 from spmkit.core.io import save_gwy, supported_extensions
 from spmkit.core.models import SPMData
 from spmkit.gui import theme
+from spmkit.gui.compare_tab import CompareTab
 from spmkit.gui.figure_tab import FigureTab
 from spmkit.gui.nanomech_tab import NanomechTab
 from spmkit.gui.viewer_tab import ViewerTab
@@ -40,11 +41,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.viewer = ViewerTab()
         self.nanomech = NanomechTab()
         self.figure = FigureTab()
+        self.compare = CompareTab()
         self.tabs = QtWidgets.QTabWidget()
         self.tabs.setDocumentMode(True)
         self.tabs.addTab(self.viewer, "Visor")
         self.tabs.addTab(self.nanomech, "Nanomecánica")
         self.tabs.addTab(self.figure, "Editor de figuras")
+        self.tabs.addTab(self.compare, "Comparar")
 
         container = QtWidgets.QWidget()
         outer = QtWidgets.QVBoxLayout(container)
@@ -79,6 +82,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._refresh_recent()
 
         tb.addSeparator()
+        tb.addAction("Reporte…", self._make_report)
         tb.addAction("Exportar .gwy", self._export_gwy)
         tb.addAction("Abrir en Gwyddion", self._open_in_gwyddion)
 
@@ -130,6 +134,25 @@ class MainWindow(QtWidgets.QMainWindow):
             self.recent_menu.addAction(Path(path).name, lambda p=path: self._load_path(p))
 
     # -------------------------------------------------------------- gwy
+    def _make_report(self) -> None:
+        if self._data is None:
+            QtWidgets.QMessageBox.information(self, "Reporte", "Abre un archivo primero.")
+            return
+        path, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self, "Guardar reporte", "reporte.html", "HTML (*.html)"
+        )
+        if not path:
+            return
+        try:
+            from spmkit.core.report import full_report
+
+            channel = "Z-Axis" if "Z-Axis" in self._data.names else self._data.names[0]
+            full_report(self._data, path, channel=channel)
+        except Exception as exc:  # noqa: BLE001 - mostrar al usuario
+            QtWidgets.QMessageBox.critical(self, "Error en reporte", str(exc))
+            return
+        self.statusBar().showMessage(f"Reporte guardado: {path}")
+
     def _export_gwy(self) -> None:
         if self._data is None:
             return

@@ -53,6 +53,10 @@ class NanomechTab(QtWidgets.QWidget):
         fit_btn.clicked.connect(self._fit)
         form.addRow(fit_btn)
 
+        map_btn = QtWidgets.QPushButton("Mapa módulo/adhesión")
+        map_btn.clicked.connect(self._show_maps)
+        form.addRow(map_btn)
+
         self.result_text = QtWidgets.QTextEdit()
         self.result_text.setReadOnly(True)
         self.result_text.setProperty("role", "readout")
@@ -116,3 +120,38 @@ class NanomechTab(QtWidgets.QWidget):
             f"Adhesión: {r.adhesion * 1e9:.3g} nN<br>"
             f"RMSE: {r.rmse:.3e}"
         )
+
+    def _show_maps(self) -> None:
+        if self._data is None or not self.channel_combo.currentText():
+            return
+        import numpy as np
+        from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+        from matplotlib.figure import Figure
+
+        from spmkit.core.viz import colormaps
+
+        ch = self._data[self.channel_combo.currentText()]
+        m = mechanics.fit_all(
+            ch, tip_radius=self.radius_spin.value() * 1e-9, model=self.model_combo.currentText()
+        )
+        cmap = colormaps.get_cmap("batlow")
+        fig = Figure(figsize=(8, 3.6))
+        for i, (arr, title, unit) in enumerate(
+            [
+                (m.young_modulus / 1e6, "Módulo de Young", "MPa"),
+                (m.adhesion * 1e9, "Adhesión", "nN"),
+            ]
+        ):
+            ax = fig.add_subplot(1, 2, i + 1)
+            im = ax.imshow(arr, origin="lower", cmap=cmap)
+            ax.set_title(f"{title}\nmedia={np.nanmean(arr):.1f} {unit}")
+            fig.colorbar(im, ax=ax, fraction=0.046, label=unit)
+        fig.suptitle(f"{m.grid_shape[0]}×{m.grid_shape[1]} curvas · {m.n_failed} fallidas")
+        fig.tight_layout()
+
+        dlg = QtWidgets.QDialog(self)
+        dlg.setWindowTitle("Mapas de propiedades mecánicas")
+        dlg.resize(820, 420)
+        lay = QtWidgets.QVBoxLayout(dlg)
+        lay.addWidget(FigureCanvasQTAgg(fig))
+        dlg.exec()

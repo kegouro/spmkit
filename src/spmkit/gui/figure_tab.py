@@ -24,8 +24,9 @@ class FigureTab(QtWidgets.QWidget):
         super().__init__()
         self._data: SPMData | None = None
         self._spec = FigureSpec()
-        self._artists: dict = {}  # text artist -> Annotation
-        self._drag: Annotation | None = None
+        self._artists: dict = {}  # text artist -> Annotation (persisten)
+        self._draggables: list = []  # todos los textos arrastrables
+        self._drag_artist = None  # artista en arrastre
         self._build()
 
     def _build(self) -> None:
@@ -86,6 +87,20 @@ class FigureTab(QtWidgets.QWidget):
         self.colorbar_chk.toggled.connect(self._render)
         form.addRow(self.colorbar_chk)
 
+        self.auto_range_chk = QtWidgets.QCheckBox("Rango de color automático")
+        self.auto_range_chk.setChecked(True)
+        self.auto_range_chk.toggled.connect(self._render)
+        form.addRow(self.auto_range_chk)
+
+        self.vmin_edit = QtWidgets.QLineEdit()
+        self.vmin_edit.setPlaceholderText("auto")
+        self.vmin_edit.editingFinished.connect(self._render)
+        form.addRow("vmin:", self.vmin_edit)
+        self.vmax_edit = QtWidgets.QLineEdit()
+        self.vmax_edit.setPlaceholderText("auto")
+        self.vmax_edit.editingFinished.connect(self._render)
+        form.addRow("vmax:", self.vmax_edit)
+
         add_ann = QtWidgets.QPushButton("Añadir leyenda/texto")
         add_ann.clicked.connect(self._add_annotation)
         form.addRow(add_ann)
@@ -110,6 +125,14 @@ class FigureTab(QtWidgets.QWidget):
         self.channel_combo.addItems(data.names)
 
     # ------------------------------------------------------------ spec
+    def _parse(self, edit: QtWidgets.QLineEdit) -> float | None:
+        if self.auto_range_chk.isChecked():
+            return None
+        try:
+            return float(edit.text())
+        except ValueError:
+            return None
+
     def _current_spec(self) -> FigureSpec:
         return replace(
             self._spec,
@@ -120,6 +143,8 @@ class FigureTab(QtWidgets.QWidget):
             title_fontsize=float(self.title_size.value()),
             show_scalebar=self.scalebar_chk.isChecked(),
             show_colorbar=self.colorbar_chk.isChecked(),
+            vmin=self._parse(self.vmin_edit),
+            vmax=self._parse(self.vmax_edit),
             annotations=[],  # se dibujan aparte para poder arrastrarlas
         )
 
@@ -135,7 +160,8 @@ class FigureTab(QtWidgets.QWidget):
         self.canvas.figure.clear()
         self.canvas.figure = fig
         self.canvas.draw_idle()
-        self._artists = {}
+        self._artists = {}  # artista -> Annotation (persisten en el spec)
+        self._draggables = []  # todos los textos arrastrables
         ax = fig.axes[0]
         for ann in self._spec.annotations:
             artist = ax.text(
@@ -149,6 +175,9 @@ class FigureTab(QtWidgets.QWidget):
                 va="center",
             )
             self._artists[artist] = ann
+            self._draggables.append(artist)
+        # Título y ejes también arrastrables (reposición visual en vivo).
+        self._draggables += [ax.title, ax.xaxis.label, ax.yaxis.label]
         self.canvas.draw_idle()
 
     # ------------------------------------------------------- anotaciones
@@ -159,27 +188,31 @@ class FigureTab(QtWidgets.QWidget):
             self._render()
 
     def _on_press(self, event) -> None:  # type: ignore[no-untyped-def]
-        if event.inaxes is None:
+        if event.canvas is None:
             return
-        for artist, ann in self._artists.items():
-            contains, _ = artist.contains(event)
+        for artist in self._draggables:
+            try:
+                contains, _ = artist.contains(event)
+            except (ValueError, TypeError):
+                continue
             if contains:
-                self._drag = ann
                 self._drag_artist = artist
                 return
 
     def _on_motion(self, event) -> None:  # type: ignore[no-untyped-def]
-        if self._drag is None or event.inaxes is None:
+        if self._drag_artist is None or event.x is None:
             return
-        ax = event.inaxes
-        inv = ax.transAxes.inverted()
-        fx, fy = inv.transform((event.x, event.y))
-        self._drag.x, self._drag.y = float(fx), float(fy)
-        self._drag_artist.set_position((fx, fy))
+        # Convierte píxeles de pantalla al sistema de coordenadas del artista.
+        inv = self._drag_artist.get_transform().inverted()
+        x, y = inv.transform((event.x, event.y))
+        self._drag_artist.set_position((float(x), float(y)))
+        ann = self._artists.get(self._drag_artist)
+        if ann is not None:  # persistir solo las anotaciones
+            ann.x, ann.y = float(x), float(y)
         self.canvas.draw_idle()
 
     def _on_release(self, event) -> None:  # type: ignore[no-untyped-def]
-        self._drag = None
+        self._drag_artist = None
 
     def _export(self) -> None:
         if self._data is None:

@@ -95,3 +95,40 @@ def build_report(
     path = Path(path)
     path.write_text(html, encoding="utf-8")
     return path
+
+
+def full_report(
+    data: SPMData,
+    path: str | Path,
+    channel: str = "Z-Axis",
+    cpd_channel: str = "CPD",
+    level: str = "plane",
+    spec: FigureSpec | None = None,
+) -> Path:
+    """Reporte completo de un archivo: rugosidad (+ KPFM si hay) y metadatos.
+
+    Calcula todas las estadísticas del canal indicado, las nivela según
+    ``level`` y arma un único HTML con figura, tablas y metadatos del barrido.
+    """
+    from spmkit.core.analysis import kpfm, leveling, roughness
+
+    ch = data[channel]
+    if level == "plane":
+        ch = leveling.plane_fit(ch)
+    elif level == "poly":
+        ch = leveling.polynomial(ch, order=2)
+    elif level == "rows":
+        ch = leveling.align_rows(ch)
+
+    results: dict[str, object] = {"Rugosidad (ISO 25178)": roughness.statistics(ch)}
+    if cpd_channel in data.names:
+        results["KPFM (CPD)"] = kpfm.statistics(data[cpd_channel])
+
+    info = data.metadata.get("info", {})
+    if isinstance(info, dict) and info:
+        results["Metadatos del barrido"] = {
+            k: info[k]
+            for k in ("Image size", "Points", "Lines", "Date", "Time", "Scan direction")
+            if k in info
+        }
+    return build_report(data, ch, results, path, spec=spec)
