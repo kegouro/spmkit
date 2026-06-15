@@ -7,8 +7,10 @@
 *Desarrollado en el **SPM Lab** de la Universidad Técnica Federico Santa María (UTFSM)*
 
 [![CI](https://github.com/kegouro/spmkit/actions/workflows/ci.yml/badge.svg)](https://github.com/kegouro/spmkit/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-106%20passing-brightgreen.svg)](https://github.com/kegouro/spmkit/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/badge/coverage-73%25-green.svg)](#-tests-y-calidad)
 [![PyPI](https://img.shields.io/pypi/v/spmkit.svg?color=2dd4bf)](https://pypi.org/project/spmkit/)
-[![Python](https://img.shields.io/pypi/pyversions/spmkit.svg)](https://pypi.org/project/spmkit/)
+[![Python](https://img.shields.io/badge/python-3.11%20|%203.12-blue.svg)](https://pypi.org/project/spmkit/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Checked with mypy](https://img.shields.io/badge/mypy-checked-2a6db2.svg)](https://mypy-lang.org/)
@@ -45,10 +47,23 @@ máquina** contra Gwyddion.
 
 ## 📦 Instalación
 
+Requiere **Python ≥ 3.11**.
+
 ```bash
+# Desde el repositorio (disponible ya):
+pip install "git+https://github.com/kegouro/spmkit#egg=spmkit[gui]"
+
+# Desde PyPI (una vez publicado):
 pip install spmkit              # núcleo + CLI
 pip install "spmkit[gui]"       # + interfaz gráfica
 pip install "spmkit[all]"       # todo (gui, gwy, hdf5, granos, figuras, reportes)
+```
+
+Verifica la instalación:
+
+```bash
+spmkit --version
+spmkit gui          # abre la interfaz gráfica
 ```
 
 <details>
@@ -139,6 +154,21 @@ Más en [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 | NanoSurf HDF5 | `.nhf` | 🧪 Experimental |
 | Gwyddion | `.gwy` | ✅ Lectura y escritura |
 | Exportación | `.csv` `.json` `.h5` `.png` `.svg` `.pdf` | ✅ |
+
+## 🧪 Tests y calidad
+
+- **106 tests** con `pytest` (cobertura ~73%), incluyendo una **suite de
+  validación científica** (`tests/validation/`) que compara la lectura del
+  `.nid` contra exports reales de Gwyddion.
+- Tipado estático con **mypy**, lint con **ruff**, formato con **black**.
+- **CI** en GitHub Actions corre lint + tests en **Python 3.11 y 3.12** en cada push.
+
+```bash
+pytest                    # tests + cobertura
+ruff check src tests      # lint
+black --check src tests   # formato
+mypy src                  # tipos
+```
 
 ## 🤝 Contribuir
 
