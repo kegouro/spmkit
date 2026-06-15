@@ -7,6 +7,14 @@ el versionado es [SemVer](https://semver.org/lang/es/).
 ## [Unreleased]
 
 ### Añadido
+- **Evaporación avanzada**: ajuste SHO/Lorentziano del pico, ley d² (radio de
+  gota, régimen de difusión) y exportación de la evaporación como animación GIF.
+- **Vista 3D** de topografía (superficie con dorado, hillshade, exageración Z).
+- **Análisis espectral**: PSD radial, exponente de Hurst, dimensión fractal y
+  longitud de correlación (`spmkit psd`).
+- **Gemelo digital** del cantiléver (pestaña Simulador): espectro de ruido
+  térmico y corrimiento de resonancia por masa añadida, normalizado por
+  equipartición.
 - **Resonancia y sensado de masa** (`core/analysis/resonance.py`): lee espectros
   de *thermal tuning* de NanoSurf, detecta la resonancia y sigue la masa por
   desplazamiento de frecuencia (`m = k/(2πf)²`, `Δf ∝ Δm`). Pestaña GUI

@@ -39,7 +39,10 @@ máquina** contra Gwyddion.
 | 📈 **Perfiles** | Perfiles de línea interactivos con interpolación bilineal |
 | ⚡ **KPFM** | Potencial de contacto (CPD) y función de trabajo |
 | 🔩 **Nanomecánica** | Hertz/Sneddon → módulo de Young, adhesión, **mapas** de módulo |
-| 〰️ **Resonancia** | Thermal tuning → sensado de masa por Δf: f(t), Δm(t), tasa de evaporación |
+| 〰️ **Resonancia** | Thermal tuning → sensado de masa por Δf: f(t), Δm(t), tasa de evaporación, ley d² |
+| 🧊 **Vista 3D** | Superficie 3D interactiva con dorado e iluminación hillshade |
+| 📐 **Espectral** | PSD radial, exponente de Hurst, dimensión fractal, longitud de correlación |
+| 🧮 **Simulador** | Gemelo digital del cantiléver: ruido térmico y corrimiento por masa |
 | 🧫 **Granos** | Detección de partículas y estadística de tamaños |
 | 🎨 **Figuras** | Editor WYSIWYG, colormaps científicos, barra de escala → PNG/SVG/PDF |
 | 🧩 **Comparar** | Fusiona 2–4 archivos con colorbar y escala compartidas |
