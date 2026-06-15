@@ -21,21 +21,25 @@
 - Reportes HTML autocontenidos (imprimibles a PDF).
 - Figuras de publicación: colormaps científicos (Crameri), barra de escala.
 - Editor de figuras WYSIWYG: edición de título, ejes, colormap, tamaño de
-  título, colorbar/scale bar, y **anotaciones de texto arrastrables**.
-- GUI por pestañas (Visor · Nanomecánica · Editor de figuras).
-- Tema claro/oscuro con toggle, archivos recientes, drag & drop.
+  título, colorbar/scale bar, **rango de color vmin/vmax**, y **arrastre de
+  título, ejes y anotaciones**.
+- **Mapas de módulo/adhesión** a partir de todas las curvas (force-volume).
+- **Comparación multi-archivo** (2–4): panel fusionado con colorbar y escala
+  compartidas (una por panel si los barridos miden distinto).
+- **Reporte HTML completo** con toda la estadística + metadatos.
+- GUI por pestañas (Visor · Nanomecánica · Editor de figuras · Comparar).
+- Estética "panel de instrumento": tema claro/oscuro, monoespaciado tabular.
+- Archivos recientes, drag & drop.
 
 ## 🚧 Próximos pasos (priorizables)
 
-### Editor de figuras (completar WYSIWYG)
-- [ ] Arrastrar/editar título, ejes y colorbar in-situ (hoy: anotaciones).
+### Editor de figuras (pulir WYSIWYG)
+- [ ] Persistir la posición arrastrada de título/ejes en el FigureSpec.
 - [ ] Selector de tipografía y color por elemento (panel de propiedades).
-- [ ] Editar límites de color (vmin/vmax) con histograma interactivo.
+- [ ] Histograma interactivo para fijar vmin/vmax.
 - [ ] Plantillas de estilo guardables (preset de revista/poster).
-- [ ] Leyenda configurable para perfiles y curvas múltiples.
 
 ### Análisis
-- [ ] Mapas de módulo/adhesión a partir de todas las curvas (no solo una).
 - [ ] Corrección por constante de resorte del cantiléver (calibración).
 - [ ] Detección de partículas/granos y estadística de tamaños.
 - [ ] FFT / análisis de PSD de rugosidad.
