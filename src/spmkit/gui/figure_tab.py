@@ -91,6 +91,7 @@ class FigureTab(QtWidgets.QWidget):
         form.addRow(add_ann)
 
         export = QtWidgets.QPushButton("Exportar figura…")
+        export.setProperty("primary", True)
         export.clicked.connect(self._export)
         form.addRow(export)
 

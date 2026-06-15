@@ -88,6 +88,7 @@ class ViewerTab(QtWidgets.QWidget):
         lay.addWidget(lbl)
         self.analysis_text = QtWidgets.QTextEdit()
         self.analysis_text.setReadOnly(True)
+        self.analysis_text.setProperty("role", "readout")
         lay.addWidget(self.analysis_text)
         btn = QtWidgets.QPushButton("Exportar perfil (CSV)")
         btn.clicked.connect(self._export_profile)

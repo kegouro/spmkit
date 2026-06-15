@@ -24,3 +24,6 @@ reference/
 # IDE
 .idea/
 .vscode/
+
+# Capturas de UI (preview local)
+ui_preview/

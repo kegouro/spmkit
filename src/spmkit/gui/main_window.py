@@ -41,10 +41,17 @@ class MainWindow(QtWidgets.QMainWindow):
         self.nanomech = NanomechTab()
         self.figure = FigureTab()
         self.tabs = QtWidgets.QTabWidget()
+        self.tabs.setDocumentMode(True)
         self.tabs.addTab(self.viewer, "Visor")
         self.tabs.addTab(self.nanomech, "Nanomecánica")
         self.tabs.addTab(self.figure, "Editor de figuras")
-        self.setCentralWidget(self.tabs)
+
+        container = QtWidgets.QWidget()
+        outer = QtWidgets.QVBoxLayout(container)
+        outer.setContentsMargins(14, 8, 14, 12)
+        outer.setSpacing(8)
+        outer.addWidget(self.tabs)
+        self.setCentralWidget(container)
 
         self._build_toolbar()
         self.statusBar().showMessage("Abre un archivo .nid / .nhf / .gwy o arrástralo aquí.")
@@ -52,6 +59,15 @@ class MainWindow(QtWidgets.QMainWindow):
     def _build_toolbar(self) -> None:
         tb = self.addToolBar("Principal")
         tb.setMovable(False)
+
+        wordmark = QtWidgets.QLabel("  spmkit")
+        wordmark.setProperty("role", "wordmark")
+        tb.addWidget(wordmark)
+        tag = QtWidgets.QLabel("AFM · KPFM   ")
+        tag.setProperty("role", "muted")
+        tb.addWidget(tag)
+        tb.addSeparator()
+
         tb.addAction("Abrir", self._open_dialog)
 
         self.recent_btn = QtWidgets.QToolButton()

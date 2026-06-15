@@ -49,11 +49,13 @@ class NanomechTab(QtWidgets.QWidget):
         form.addRow("Radio punta:", self.radius_spin)
 
         fit_btn = QtWidgets.QPushButton("Ajustar Hertz")
+        fit_btn.setProperty("primary", True)
         fit_btn.clicked.connect(self._fit)
         form.addRow(fit_btn)
 
         self.result_text = QtWidgets.QTextEdit()
         self.result_text.setReadOnly(True)
+        self.result_text.setProperty("role", "readout")
         self.result_text.setMaximumHeight(160)
         form.addRow(self.result_text)
         root.addWidget(side)
