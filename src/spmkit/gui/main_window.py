@@ -21,6 +21,7 @@ from spmkit.gui.compare_tab import CompareTab
 from spmkit.gui.figure_tab import FigureTab
 from spmkit.gui.nanomech_tab import NanomechTab
 from spmkit.gui.resonance_tab import ResonanceTab
+from spmkit.gui.view3d_tab import View3DTab
 from spmkit.gui.viewer_tab import ViewerTab
 from spmkit.gui.welcome import WelcomeDialog
 
@@ -45,10 +46,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.figure = FigureTab()
         self.compare = CompareTab()
         self.resonance = ResonanceTab()
+        self.view3d = View3DTab()
         self.tabs = QtWidgets.QTabWidget()
         self.tabs.setDocumentMode(True)
         self.tabs.addTab(self.viewer, "Visor")
         self.tabs.addTab(self.nanomech, "Nanomecánica")
+        self.tabs.addTab(self.view3d, "Vista 3D")
         self.tabs.addTab(self.resonance, "Resonancia")
         self.tabs.addTab(self.figure, "Editor de figuras")
         self.tabs.addTab(self.compare, "Comparar")
@@ -126,7 +129,7 @@ class MainWindow(QtWidgets.QMainWindow):
         except Exception as exc:  # noqa: BLE001 - mostrar al usuario
             QtWidgets.QMessageBox.critical(self, "Error al abrir", str(exc))
             return
-        for tab in (self.viewer, self.nanomech, self.figure):
+        for tab in (self.viewer, self.nanomech, self.figure, self.view3d):
             tab.set_data(self._data)
         self.setWindowTitle(f"spmkit · {Path(path).name}")
         self.statusBar().showMessage(f"{Path(path).name} · {len(self._data)} canales")
