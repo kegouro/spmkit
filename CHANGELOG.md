@@ -6,6 +6,8 @@ el versionado es [SemVer](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-06-15
+
 ### Añadido
 - Lectura de NanoSurf `.nid` (validada contra Gwyddion) y `.nhf`; interop
   Gwyddion `.gwy` (lectura/escritura vía `gwyfile`).
@@ -25,4 +27,5 @@ el versionado es [SemVer](https://semver.org/lang/es/).
 - Lectura del `.nid` exacta a precisión de máquina contra el export `.gwy` del
   lab; orientación de imagen consistente con Gwyddion/NanoSurf.
 
-[Unreleased]: https://github.com/kegouro/spmkit
+[Unreleased]: https://github.com/kegouro/spmkit/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/kegouro/spmkit/releases/tag/v0.1.0
