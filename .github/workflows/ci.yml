@@ -37,6 +37,6 @@ jobs:
       - name: Create venv (Python ${{ matrix.python-version }})
         run: uv venv --python ${{ matrix.python-version }}
       - name: Install package + test deps
-        run: uv pip install -e ".[dev,hdf5,gwy,report]"
+        run: uv pip install -e ".[dev,hdf5,gwy,report,grains]"
       - name: Run tests (core + ciencia; los de GUI se omiten sin Qt)
         run: uv run pytest
