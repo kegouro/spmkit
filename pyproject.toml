@@ -53,9 +53,9 @@ dev = [
 all = ["spmkit[hdf5,gwy,nanosurf,viz,report,gui]"]
 
 [project.urls]
-Homepage = "https://github.com/spm-lab-utfsm/spmkit"
-Repository = "https://github.com/spm-lab-utfsm/spmkit"
-Issues = "https://github.com/spm-lab-utfsm/spmkit/issues"
+Homepage = "https://github.com/kegouro/spmkit"
+Repository = "https://github.com/kegouro/spmkit"
+Issues = "https://github.com/kegouro/spmkit/issues"
 
 [project.scripts]
 spmkit = "spmkit.cli.app:app"

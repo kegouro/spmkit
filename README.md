@@ -1,6 +1,6 @@
 # spmkit
 
-[![CI](https://github.com/spm-lab-utfsm/spmkit/actions/workflows/ci.yml/badge.svg)](https://github.com/spm-lab-utfsm/spmkit/actions/workflows/ci.yml)
+[![CI](https://github.com/kegouro/spmkit/actions/workflows/ci.yml/badge.svg)](https://github.com/kegouro/spmkit/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/spmkit.svg)](https://pypi.org/project/spmkit/)
 [![Python](https://img.shields.io/pypi/pyversions/spmkit.svg)](https://pypi.org/project/spmkit/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -9,9 +9,21 @@
 Analizador **open-source** de datos de microscopía de sonda de barrido (SPM),
 con foco en **AFM** y **KPFM**. Desarrollado en el **SPM Lab de la UTFSM**.
 
-Lee formatos NanoSurf (`.nid`, `.nhf`), calcula rugosidad, perfiles de línea y
-estadísticas KPFM (CPD / función de trabajo), y exporta a formatos abiertos
-(CSV, HDF5, JSON). Incluye CLI y una GUI científica (PyQt6 + pyqtgraph).
+Lee formatos NanoSurf (`.nid`, `.nhf`) y Gwyddion (`.gwy`), calcula rugosidad,
+perfiles de línea, KPFM (CPD / función de trabajo) y nanomecánica, y exporta a
+formatos abiertos (CSV, HDF5, JSON, figuras). Incluye CLI y una GUI científica
+(PyQt6 + pyqtgraph).
+
+![spmkit GUI](docs/images/screenshot_viewer.png)
+
+> _Captura con datos sintéticos de ejemplo._
+
+## Tabla de contenidos
+
+- [Capacidades](#capacidades) · [Instalación](#instalación) · [Uso rápido](#uso-rápido)
+- [Formatos](#formatos-soportados) · [Arquitectura](#arquitectura) ·
+  [Validación científica](docs/VALIDATION.md) · [Desarrollo](#desarrollo) ·
+  [Contribuir](CONTRIBUTING.md) · [Citación](#citación)
 
 ## Arquitectura
 
