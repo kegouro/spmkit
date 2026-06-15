@@ -39,12 +39,16 @@ Separación estricta en tres capas. CLI y GUI **solo** usan la API pública del
 ```bash
 # Recomendado: con uv
 uv pip install spmkit            # núcleo + CLI
-uv pip install "spmkit[gui]"     # + interfaz gráfica
+uv pip install "spmkit[gui]"     # + interfaz gráfica (PyQt6, incluye viz)
+uv pip install "spmkit[viz]"     # + figuras de publicación (matplotlib, colormaps, scale bar)
+uv pip install "spmkit[gwy]"     # + interop Gwyddion (.gwy)
 uv pip install "spmkit[hdf5]"    # + lectura/exportación HDF5
+uv pip install "spmkit[report]"  # + reportes HTML/PDF
+uv pip install "spmkit[nanosurf]"# + lector .nhf validado (NSFopen)
 uv pip install "spmkit[all]"     # todo
 
 # Desarrollo (desde el repo)
-uv pip install -e ".[dev,gui,hdf5]"
+uv pip install -e ".[dev,gui,hdf5,gwy,report]"
 pre-commit install
 ```
 
@@ -59,6 +63,10 @@ pre-commit install
 spmkit info scan.nid                          # metadatos y canales
 spmkit roughness scan.nid -c Z-Axis           # rugosidad (ISO 25178)
 spmkit analyze scan.nid -o ./results/         # pipeline completo → CSV+JSON
+spmkit nanomech spec.nid --tip-radius 10e-9   # ajuste Hertz → módulo de Young
+spmkit batch ./carpeta/ -o resumen.csv        # procesa una carpeta completa
+spmkit figure scan.nid -o fig.svg --colormap batlow   # figura de publicación
+spmkit convert scan.nid scan.gwy              # convierte a Gwyddion (.gwy)
 spmkit gui                                     # interfaz gráfica
 ```
 
@@ -80,13 +88,27 @@ line  = profiles.line(flat, (0, 0), (100, 100))   # perfil de línea
 cpd   = kpfm.statistics(data["CPD"], tip_work_function=5.0)
 ```
 
+## Capacidades
+
+- **Lectura**: NanoSurf `.nid` (validado), `.nhf` (HDF5) y Gwyddion `.gwy`.
+- **Análisis**: rugosidad ISO 25178, nivelación, perfiles, KPFM (CPD/función de
+  trabajo) y **nanomecánica** (curvas fuerza-distancia, Hertz/Sneddon → módulo
+  de Young, punto de contacto, adhesión).
+- **Interop Gwyddion**: lee/escribe `.gwy` (pure-Python) y abre el archivo en
+  Gwyddion con un clic.
+- **Figuras de publicación**: editor WYSIWYG (título, ejes, colormaps
+  científicos, barra de escala, anotaciones arrastrables) → PNG/SVG/PDF.
+- **Quality of life**: procesamiento por lotes, reportes HTML/PDF, archivos
+  recientes, drag & drop, tema claro/oscuro.
+
 ## Formatos soportados
 
 | Formato | Extensión | Estado |
 |---------|-----------|--------|
-| NanoSurf clásico | `.nid` | ✅ Lectura completa |
-| NanoSurf HDF5 | `.nhf` | 🧪 Experimental (requiere `[hdf5]`) |
-| Exportación | `.csv`, `.json`, `.h5` | ✅ |
+| NanoSurf clásico | `.nid` | ✅ Lectura completa (validado) |
+| NanoSurf HDF5 | `.nhf` | 🧪 Experimental (`[hdf5]` o `[nanosurf]`) |
+| Gwyddion | `.gwy` | ✅ Lectura y escritura (`[gwy]`) |
+| Exportación | `.csv`, `.json`, `.h5`, `.png/.svg/.pdf` | ✅ |
 
 ## Desarrollo
 

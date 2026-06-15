@@ -8,8 +8,8 @@ Reúne las cuatro sub-capas del núcleo:
 * :mod:`spmkit.core.export` — exportación a formatos abiertos
 """
 
-from spmkit.core import analysis, export, io, models
+from spmkit.core import analysis, batch, export, io, models, viz
 from spmkit.core.io import load
 from spmkit.core.models import SPMChannel, SPMData
 
-__all__ = ["io", "models", "analysis", "export", "load", "SPMData", "SPMChannel"]
+__all__ = ["io", "models", "analysis", "export", "viz", "batch", "load", "SPMData", "SPMChannel"]

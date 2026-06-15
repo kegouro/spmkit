@@ -120,6 +120,94 @@ def analyze(
 
 
 @app.command()
+def nanomech(
+    file: Path = typer.Argument(..., exists=True, help="Archivo .nid con espectroscopía"),
+    channel: str = typer.Option("Deflection", "--channel", "-c", help="Canal de fuerza (N)"),
+    curve: int = typer.Option(-1, "--curve", help="Índice de curva (-1 = la del medio)"),
+    tip_radius: float = typer.Option(10e-9, "--tip-radius", help="Radio de punta (m)"),
+    model: str = typer.Option("sphere", "--model", help="sphere|paraboloid|cone"),
+) -> None:
+    """Ajusta una curva fuerza-distancia (Hertz) y estima el módulo de Young."""
+    from spmkit.core.analysis import mechanics
+
+    data = load(file)
+    ch = data[channel]
+    curves = mechanics.extract_curves(ch)
+    if not curves:
+        console.print("[red]No se encontraron curvas en el canal.[/]")
+        raise typer.Exit(1)
+    idx = len(curves) // 2 if curve < 0 else curve
+    result = mechanics.fit_hertz(curves[idx], tip_radius=tip_radius, model=model)
+    table = Table(title=f"Nanomecánica · curva {idx}/{len(curves)} · {model}")
+    table.add_column("Parámetro", style="cyan")
+    table.add_column("Valor", justify="right")
+    table.add_row("Módulo de Young", f"{result.young_modulus / 1e6:.4g} MPa")
+    table.add_row("Punto de contacto", f"{result.contact_point * 1e9:.2f} nm")
+    table.add_row("Adhesión", f"{result.adhesion * 1e9:.3g} nN")
+    table.add_row("RMSE", f"{result.rmse:.3e}")
+    console.print(table)
+
+
+@app.command()
+def batch(
+    folder: Path = typer.Argument(..., exists=True, file_okay=False, help="Carpeta con archivos"),
+    channel: str = typer.Option("Z-Axis", "--channel", "-c"),
+    output: Path = typer.Option(Path("batch_summary.csv"), "--output", "-o"),
+) -> None:
+    """Procesa todos los archivos SPM de una carpeta → tabla resumen CSV."""
+    from spmkit.core import batch as batch_mod
+
+    files = batch_mod.find_files(folder)
+    if not files:
+        console.print("[yellow]No hay archivos SPM soportados en la carpeta.[/]")
+        raise typer.Exit(1)
+    result = batch_mod.process(files, channel=channel)
+    result.to_csv(output)
+    console.print(f"[green]✓[/] {result.n_ok} ok, {result.n_failed} con error → {output}")
+
+
+@app.command()
+def figure(
+    file: Path = typer.Argument(..., exists=True, help="Archivo .nid/.nhf/.gwy"),
+    channel: str = typer.Option("Z-Axis", "--channel", "-c"),
+    output: Path = typer.Option(Path("figure.png"), "--output", "-o", help="png|svg|pdf"),
+    colormap: str = typer.Option("batlow", "--colormap"),
+    title: str = typer.Option("", "--title"),
+) -> None:
+    """Exporta una figura de publicación (con scale bar y colormap científico)."""
+    from spmkit.core.viz import FigureSpec, save_figure
+
+    data = load(file)
+    ch = data[channel]
+    spec = FigureSpec(
+        title=title or ch.name, colormap=colormap, colorbar_label=f"{ch.name} ({ch.unit})"
+    )
+    save_figure(ch, spec, output)
+    console.print(f"[green]✓[/] Figura → {output}")
+
+
+@app.command()
+def convert(
+    file: Path = typer.Argument(..., exists=True, help="Archivo de entrada"),
+    output: Path = typer.Argument(..., help="Archivo de salida (.gwy o .h5)"),
+) -> None:
+    """Convierte entre formatos (p.ej. .nid → .gwy para abrir en Gwyddion)."""
+    data = load(file)
+    suffix = output.suffix.lower()
+    if suffix == ".gwy":
+        from spmkit.core.io import save_gwy
+
+        save_gwy(data, output)
+    elif suffix in (".h5", ".hdf5"):
+        from spmkit.core.export import to_hdf5
+
+        to_hdf5(data, output)
+    else:
+        raise typer.BadParameter("Formato de salida soportado: .gwy, .h5")
+    console.print(f"[green]✓[/] {file.name} → {output}")
+
+
+@app.command()
 def gui() -> None:
     """Lanza la interfaz gráfica (requiere el extra 'gui')."""
     try:

@@ -1,202 +1,160 @@
-"""Ventana principal de la GUI de spmkit (PyQt6 + pyqtgraph).
+"""Ventana principal: shell por pestañas + tema + interop Gwyddion.
 
-Esta capa SOLO presenta: toda la carga y el análisis pasan por el ``core``.
-Nunca importa parsers ni implementa cálculos.
+La capa GUI solo presenta y orquesta; toda carga/análisis pasa por
+``spmkit.core``.
 """
 
 from __future__ import annotations
 
-import contextlib
+import shutil
+import subprocess
+import sys
 from pathlib import Path
 
-import pyqtgraph as pg
-from PyQt6 import QtWidgets
-from PyQt6.QtCore import Qt
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 from spmkit import load
-from spmkit.core.analysis import kpfm, leveling, profiles, roughness
-from spmkit.core.export import to_csv
-from spmkit.core.io import supported_extensions
-from spmkit.core.models import SPMChannel, SPMData
+from spmkit.core.io import save_gwy, supported_extensions
+from spmkit.core.models import SPMData
+from spmkit.gui import theme
+from spmkit.gui.figure_tab import FigureTab
+from spmkit.gui.nanomech_tab import NanomechTab
+from spmkit.gui.viewer_tab import ViewerTab
+
+_MAX_RECENT = 8
 
 
 class MainWindow(QtWidgets.QMainWindow):
-    """Ventana principal: lista de canales · imagen · perfil · panel de análisis."""
+    """Ventana principal de spmkit."""
 
     def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("spmkit · Analizador AFM/KPFM")
-        self.resize(1200, 760)
+        self.resize(1280, 820)
+        self.setAcceptDrops(True)
 
         self._data: SPMData | None = None
-        self._channel: SPMChannel | None = None
+        self._theme = "dark"
+        self._settings = QtCore.QSettings("SPMLabUTFSM", "spmkit")
 
-        self._build_ui()
+        self.viewer = ViewerTab()
+        self.nanomech = NanomechTab()
+        self.figure = FigureTab()
+        self.tabs = QtWidgets.QTabWidget()
+        self.tabs.addTab(self.viewer, "Visor")
+        self.tabs.addTab(self.nanomech, "Nanomecánica")
+        self.tabs.addTab(self.figure, "Editor de figuras")
+        self.setCentralWidget(self.tabs)
 
-    # ----------------------------------------------------------------- UI
-    def _build_ui(self) -> None:
         self._build_toolbar()
-
-        splitter = QtWidgets.QSplitter(Qt.Orientation.Horizontal)
-        splitter.addWidget(self._build_channel_panel())
-        splitter.addWidget(self._build_center_panel())
-        splitter.addWidget(self._build_analysis_panel())
-        splitter.setStretchFactor(1, 1)
-        self.setCentralWidget(splitter)
-
-        self.statusBar().showMessage("Abre un archivo .nid o .nhf para empezar.")
+        self.statusBar().showMessage("Abre un archivo .nid / .nhf / .gwy o arrástralo aquí.")
 
     def _build_toolbar(self) -> None:
         tb = self.addToolBar("Principal")
-        tb.addAction("Abrir", self._on_open)
+        tb.setMovable(False)
+        tb.addAction("Abrir", self._open_dialog)
+
+        self.recent_btn = QtWidgets.QToolButton()
+        self.recent_btn.setText("Recientes ▾")
+        self.recent_btn.setPopupMode(QtWidgets.QToolButton.ToolButtonPopupMode.InstantPopup)
+        self.recent_menu = QtWidgets.QMenu()
+        self.recent_btn.setMenu(self.recent_menu)
+        tb.addWidget(self.recent_btn)
+        self._refresh_recent()
+
         tb.addSeparator()
-        tb.addWidget(QtWidgets.QLabel(" Colormap: "))
-        self.cmap_combo = QtWidgets.QComboBox()
-        self.cmap_combo.addItems(["viridis", "inferno", "magma", "cividis", "gray"])
-        self.cmap_combo.currentTextChanged.connect(self._refresh_image)
-        tb.addWidget(self.cmap_combo)
-        tb.addSeparator()
-        tb.addWidget(QtWidgets.QLabel(" Nivelar: "))
-        self.level_combo = QtWidgets.QComboBox()
-        self.level_combo.addItems(["none", "plane", "poly", "rows"])
-        self.level_combo.setCurrentText("plane")
-        self.level_combo.currentTextChanged.connect(self._on_channel_changed)
-        tb.addWidget(self.level_combo)
+        tb.addAction("Exportar .gwy", self._export_gwy)
+        tb.addAction("Abrir en Gwyddion", self._open_in_gwyddion)
 
-    def _build_channel_panel(self) -> QtWidgets.QWidget:
-        w = QtWidgets.QWidget()
-        layout = QtWidgets.QVBoxLayout(w)
-        layout.addWidget(QtWidgets.QLabel("<b>Canales</b>"))
-        self.channel_list = QtWidgets.QListWidget()
-        self.channel_list.currentRowChanged.connect(self._on_channel_changed)
-        layout.addWidget(self.channel_list)
-        return w
+        spacer = QtWidgets.QWidget()
+        spacer.setSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred
+        )
+        tb.addWidget(spacer)
+        self.theme_action = tb.addAction("☀ / 🌙", self._toggle_theme)
 
-    def _build_center_panel(self) -> QtWidgets.QWidget:
-        w = QtWidgets.QWidget()
-        layout = QtWidgets.QVBoxLayout(w)
-
-        self.image_view = pg.ImageView()
-        self.image_view.ui.roiBtn.hide()
-        self.image_view.ui.menuBtn.hide()
-        layout.addWidget(self.image_view, stretch=3)
-
-        layout.addWidget(QtWidgets.QLabel("<b>Perfil de línea</b> (arrastra los extremos)"))
-        self.profile_plot = pg.PlotWidget()
-        self.profile_plot.setLabel("bottom", "Distancia", units="m")
-        self.profile_plot.setLabel("left", "Altura")
-        layout.addWidget(self.profile_plot, stretch=1)
-
-        self.line_roi = pg.LineSegmentROI([[10, 10], [100, 100]], pen=pg.mkPen("r", width=2))
-        self.line_roi.sigRegionChanged.connect(self._update_profile)
-        self.image_view.addItem(self.line_roi)
-        return w
-
-    def _build_analysis_panel(self) -> QtWidgets.QWidget:
-        w = QtWidgets.QWidget()
-        w.setMaximumWidth(280)
-        layout = QtWidgets.QVBoxLayout(w)
-        layout.addWidget(QtWidgets.QLabel("<b>Análisis</b>"))
-        self.analysis_text = QtWidgets.QTextEdit()
-        self.analysis_text.setReadOnly(True)
-        layout.addWidget(self.analysis_text)
-        export_btn = QtWidgets.QPushButton("Exportar perfil (CSV)")
-        export_btn.clicked.connect(self._on_export_profile)
-        layout.addWidget(export_btn)
-        return w
-
-    # -------------------------------------------------------------- acciones
-    def _on_open(self) -> None:
+    # ------------------------------------------------------------- carga
+    def _open_dialog(self) -> None:
         exts = " ".join(f"*{e}" for e in supported_extensions())
         path, _ = QtWidgets.QFileDialog.getOpenFileName(
             self, "Abrir archivo SPM", "", f"Archivos SPM ({exts})"
         )
-        if not path:
-            return
+        if path:
+            self._load_path(path)
+
+    def _load_path(self, path: str) -> None:
         try:
             self._data = load(path)
         except Exception as exc:  # noqa: BLE001 - mostrar al usuario
             QtWidgets.QMessageBox.critical(self, "Error al abrir", str(exc))
             return
-        self.channel_list.clear()
-        for ch in self._data.channels:
-            self.channel_list.addItem(f"{ch.name} ({ch.direction})")
+        for tab in (self.viewer, self.nanomech, self.figure):
+            tab.set_data(self._data)
+        self.setWindowTitle(f"spmkit · {Path(path).name}")
         self.statusBar().showMessage(f"{Path(path).name} · {len(self._data)} canales")
-        if self._data.channels:
-            self.channel_list.setCurrentRow(0)
+        self._add_recent(path)
 
-    def _on_channel_changed(self) -> None:
+    # ---------------------------------------------------------- recientes
+    def _recent_list(self) -> list[str]:
+        return list(self._settings.value("recent", [], type=list))
+
+    def _add_recent(self, path: str) -> None:
+        recent = [p for p in self._recent_list() if p != path]
+        recent.insert(0, path)
+        self._settings.setValue("recent", recent[:_MAX_RECENT])
+        self._refresh_recent()
+
+    def _refresh_recent(self) -> None:
+        self.recent_menu.clear()
+        recent = self._recent_list()
+        if not recent:
+            self.recent_menu.addAction("(sin archivos recientes)").setEnabled(False)
+            return
+        for path in recent:
+            self.recent_menu.addAction(Path(path).name, lambda p=path: self._load_path(p))
+
+    # -------------------------------------------------------------- gwy
+    def _export_gwy(self) -> None:
         if self._data is None:
             return
-        row = self.channel_list.currentRow()
-        if row < 0:
-            return
-        ch = self._data.channels[row]
-        self._channel = self._apply_level(ch)
-        self._refresh_image()
-        self._update_profile()
-        self._update_analysis()
-
-    def _apply_level(self, ch: SPMChannel) -> SPMChannel:
-        mode = self.level_combo.currentText()
-        if mode == "plane":
-            return leveling.plane_fit(ch)
-        if mode == "poly":
-            return leveling.polynomial(ch, order=2)
-        if mode == "rows":
-            return leveling.align_rows(ch)
-        return ch
-
-    def _refresh_image(self) -> None:
-        if self._channel is None:
-            return
-        self.image_view.setImage(self._channel.data.T, autoLevels=True)
-        with contextlib.suppress(Exception):  # colormap opcional
-            self.image_view.setColorMap(pg.colormap.get(self.cmap_combo.currentText()))
-
-    def _update_profile(self) -> None:
-        if self._channel is None:
-            return
-        handles = self.line_roi.getSceneHandlePositions()
-        pts = [self.image_view.getImageItem().mapFromScene(h[1]) for h in handles]
-        p0 = (pts[0].x(), pts[0].y())
-        p1 = (pts[1].x(), pts[1].y())
-        try:
-            prof = profiles.line(self._channel, p0, p1)
-        except Exception:  # noqa: BLE001 - fuera de rango durante el arrastre
-            return
-        self.profile_plot.clear()
-        self.profile_plot.plot(prof.distance, prof.height, pen=pg.mkPen("y", width=2))
-        self.profile_plot.setLabel("left", "Altura", units=self._channel.unit)
-        self._last_profile = prof
-
-    def _update_analysis(self) -> None:
-        if self._channel is None:
-            return
-        r = roughness.statistics(self._channel)
-        lines = [
-            f"<b>Rugosidad ({r.unit})</b>",
-            f"Sa = {r.Sa:.4g}",
-            f"Sq = {r.Sq:.4g}",
-            f"Sz = {r.Sz:.4g}",
-            f"Ssk = {r.Ssk:.3g}",
-            f"Sku = {r.Sku:.3g}",
-        ]
-        if self._channel.unit.upper() == "V":
-            c = kpfm.statistics(self._channel)
-            lines += [
-                "<br><b>KPFM (CPD)</b>",
-                f"media = {c.mean:.4g} V",
-                f"contraste = {c.contrast:.4g} V",
-            ]
-        self.analysis_text.setHtml("<br>".join(lines))
-
-    def _on_export_profile(self) -> None:
-        prof = getattr(self, "_last_profile", None)
-        if prof is None:
-            QtWidgets.QMessageBox.information(self, "Sin perfil", "Traza un perfil primero.")
-            return
-        path, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Guardar perfil", "perfil.csv")
+        path, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Exportar a Gwyddion", "datos.gwy")
         if path:
-            to_csv(prof, path)
-            self.statusBar().showMessage(f"Perfil exportado: {path}")
+            save_gwy(self._data, path)
+            self.statusBar().showMessage(f"Exportado a {path}")
+
+    def _open_in_gwyddion(self) -> None:
+        if self._data is None or not self._data.source_path:
+            QtWidgets.QMessageBox.information(self, "Gwyddion", "Abre un archivo primero.")
+            return
+        src = self._data.source_path
+        gwy = shutil.which("gwyddion")
+        try:
+            if gwy:
+                subprocess.Popen([gwy, src])
+            elif sys.platform == "darwin":
+                subprocess.Popen(["open", "-a", "Gwyddion", src])
+            else:
+                raise FileNotFoundError
+        except (FileNotFoundError, OSError):
+            QtWidgets.QMessageBox.warning(
+                self,
+                "Gwyddion no encontrado",
+                "No se encontró Gwyddion. Instálalo o usa 'Exportar .gwy'.",
+            )
+
+    # ------------------------------------------------------------ tema
+    def _toggle_theme(self) -> None:
+        self._theme = "light" if self._theme == "dark" else "dark"
+        app = QtWidgets.QApplication.instance()
+        if app is not None:
+            theme.apply_theme(app, self._theme)
+
+    # --------------------------------------------------------- drag&drop
+    def dragEnterEvent(self, event: QtGui.QDragEnterEvent) -> None:  # noqa: N802
+        if event.mimeData().hasUrls():
+            event.acceptProposedAction()
+
+    def dropEvent(self, event: QtGui.QDropEvent) -> None:  # noqa: N802
+        urls = event.mimeData().urls()
+        if urls:
+            self._load_path(urls[0].toLocalFile())
