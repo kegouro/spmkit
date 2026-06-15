@@ -36,7 +36,7 @@ class FigureSpec:
     title: str = ""
     xlabel: str = "x (µm)"
     ylabel: str = "y (µm)"
-    colormap: str = "batlow"
+    colormap: str = "gold"
     vmin: float | None = None
     vmax: float | None = None
     show_colorbar: bool = True
@@ -51,8 +51,12 @@ class FigureSpec:
     annotations: list[Annotation] = field(default_factory=list)
 
 
-def render_channel(channel: SPMChannel, spec: FigureSpec | None = None) -> Any:
-    """Construye (sin guardar) una figura matplotlib del canal según ``spec``."""
+def render_channel(channel: SPMChannel, spec: FigureSpec | None = None, fig: Any = None) -> Any:
+    """Construye una figura matplotlib del canal según ``spec``.
+
+    Si se pasa ``fig`` (p.ej. la figura de un lienzo embebido) se dibuja sobre
+    ella, manteniendo el vínculo figura↔lienzo (necesario para interacción).
+    """
     spec = spec or FigureSpec(title=channel.name, colorbar_label=f"{channel.name} ({channel.unit})")
     import matplotlib
 
@@ -60,12 +64,16 @@ def render_channel(channel: SPMChannel, spec: FigureSpec | None = None) -> Any:
     import matplotlib.pyplot as plt
 
     with plt.rc_context({"font.family": spec.font_family, "font.size": spec.tick_fontsize}):
-        fig, ax = plt.subplots(figsize=(5, 4), dpi=spec.dpi)
+        if fig is None:
+            fig, ax = plt.subplots(figsize=(5, 4), dpi=spec.dpi)
+        else:
+            fig.clear()
+            ax = fig.add_subplot(111)
         extent = (0.0, channel.x_range * 1e6, 0.0, channel.y_range * 1e6)  # µm
         im = ax.imshow(
             channel.data,
             cmap=colormaps.get_cmap(spec.colormap),
-            origin="lower",
+            origin="upper",
             extent=extent,
             vmin=spec.vmin,
             vmax=spec.vmax,
@@ -114,6 +122,7 @@ def render_grid(
     labels: list[str] | None = None,
     ncols: int | None = None,
     shared_scale: bool = True,
+    fig: Any = None,
 ) -> Any:
     """Compone varias imágenes en un panel con **colorbar y escala compartidas**.
 
@@ -150,7 +159,12 @@ def render_grid(
 
     cmap = colormaps.get_cmap(spec.colormap)
     with plt.rc_context({"font.family": spec.font_family, "font.size": spec.tick_fontsize}):
-        fig, axes = plt.subplots(nrows, ncols, figsize=(4 * ncols, 3.6 * nrows), dpi=spec.dpi)
+        if fig is None:
+            fig, axes = plt.subplots(nrows, ncols, figsize=(4 * ncols, 3.6 * nrows), dpi=spec.dpi)
+        else:
+            fig.clear()
+            fig.set_size_inches(4 * ncols, 3.6 * nrows)
+            axes = fig.subplots(nrows, ncols)
         axes = np.atleast_1d(axes).ravel()
         im = None
         for ax, ch, label in zip(axes, channels, labels, strict=False):
@@ -158,7 +172,7 @@ def render_grid(
             im = ax.imshow(
                 ch.data,
                 cmap=cmap,
-                origin="lower",
+                origin="upper",
                 extent=extent,
                 vmin=vmin,
                 vmax=vmax,

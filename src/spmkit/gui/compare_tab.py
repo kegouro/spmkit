@@ -152,9 +152,7 @@ class CompareTab(QtWidgets.QWidget):
             QtWidgets.QMessageBox.information(self, "Comparar", "Agrega al menos 2 archivos.")
             return
         chans, labels, spec = self._channels()
-        fig = render_grid(chans, spec, labels=labels)
-        self.canvas.figure.clear()
-        self.canvas.figure = fig
+        render_grid(chans, spec, labels=labels, fig=self.canvas.figure)
         self.canvas.draw_idle()
 
     def _export(self) -> None:

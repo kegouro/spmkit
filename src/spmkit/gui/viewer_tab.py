@@ -14,6 +14,10 @@ from spmkit.core.analysis import kpfm, leveling, profiles, roughness
 from spmkit.core.analysis.profiles import Profile
 from spmkit.core.export import to_csv
 from spmkit.core.models import SPMChannel, SPMData
+from spmkit.core.viz import colormaps
+
+# Interpreta los arreglos como [fila, columna] = [y, x], igual que numpy/matplotlib.
+pg.setConfigOption("imageAxisOrder", "row-major")
 
 
 class ViewerTab(QtWidgets.QWidget):
@@ -32,7 +36,7 @@ class ViewerTab(QtWidgets.QWidget):
         controls = QtWidgets.QHBoxLayout()
         controls.addWidget(QtWidgets.QLabel("Colormap:"))
         self.cmap_combo = QtWidgets.QComboBox()
-        self.cmap_combo.addItems(["viridis", "inferno", "magma", "cividis", "gray", "plasma"])
+        self.cmap_combo.addItems(["gold", "batlow", "viridis", "inferno", "afmhot", "gray"])
         self.cmap_combo.currentTextChanged.connect(self._refresh_image)
         controls.addWidget(self.cmap_combo)
         controls.addWidget(QtWidgets.QLabel("Nivelar:"))
@@ -131,9 +135,12 @@ class ViewerTab(QtWidgets.QWidget):
     def _refresh_image(self) -> None:
         if self._channel is None:
             return
-        self.image_view.setImage(self._channel.data.T, autoLevels=True)
+        # row-major + sin transponer + eje Y invertido => misma orientación que
+        # matplotlib origin="upper" y que las imágenes exportadas por el lab.
+        self.image_view.setImage(self._channel.data, autoLevels=True)
+        self.image_view.getView().invertY(True)
         with contextlib.suppress(Exception):
-            self.image_view.setColorMap(pg.colormap.get(self.cmap_combo.currentText()))
+            self.image_view.setColorMap(colormaps.pyqtgraph_cmap(self.cmap_combo.currentText()))
 
     def _update_profile(self) -> None:
         if self._channel is None:

@@ -110,7 +110,9 @@ class FigureTab(QtWidgets.QWidget):
         export.clicked.connect(self._export)
         form.addRow(export)
 
-        hint = QtWidgets.QLabel("Arrastra los textos sobre la figura para colocarlos.")
+        hint = QtWidgets.QLabel(
+            "Arrastra título, ejes y textos para colocarlos. Doble-clic en un texto para editarlo."
+        )
         hint.setProperty("role", "muted")
         hint.setWordWrap(True)
         form.addRow(hint)
@@ -154,15 +156,12 @@ class FigureTab(QtWidgets.QWidget):
         ch = self._data[self.channel_combo.currentText()]
         spec = self._current_spec()
         spec.colorbar_label = f"{ch.name} ({ch.unit})"
-        fig = render_channel(ch, spec)
+        # Dibuja DENTRO de la figura del lienzo (mantiene el vínculo para arrastrar).
+        render_channel(ch, spec, fig=self.canvas.figure)
 
-        # Trasplanta la figura renderizada al lienzo embebido.
-        self.canvas.figure.clear()
-        self.canvas.figure = fig
-        self.canvas.draw_idle()
         self._artists = {}  # artista -> Annotation (persisten en el spec)
         self._draggables = []  # todos los textos arrastrables
-        ax = fig.axes[0]
+        ax = self.canvas.figure.axes[0]
         for ann in self._spec.annotations:
             artist = ax.text(
                 ann.x,
@@ -196,8 +195,24 @@ class FigureTab(QtWidgets.QWidget):
             except (ValueError, TypeError):
                 continue
             if contains:
+                if event.dblclick and artist in self._artists:
+                    self._edit_annotation(self._artists[artist])
+                    return
                 self._drag_artist = artist
                 return
+
+    def _edit_annotation(self, ann: Annotation) -> None:
+        """Doble-clic sobre una anotación: editar su texto (vacío = borrar)."""
+        text, ok = QtWidgets.QInputDialog.getText(
+            self, "Editar texto", "Contenido (vacío para borrar):", text=ann.text
+        )
+        if not ok:
+            return
+        if text:
+            ann.text = text
+        else:
+            self._spec.annotations.remove(ann)
+        self._render()
 
     def _on_motion(self, event) -> None:  # type: ignore[no-untyped-def]
         if self._drag_artist is None or event.x is None:

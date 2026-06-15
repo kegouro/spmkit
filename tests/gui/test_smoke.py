@@ -55,3 +55,29 @@ def test_theme_toggle(qtbot) -> None:  # type: ignore[no-untyped-def]
 def test_themes_render() -> None:
     assert "QTabWidget" in theme.stylesheet("dark")
     assert "QTabWidget" in theme.stylesheet("light")
+
+
+def test_annotation_is_draggable(qtbot) -> None:  # type: ignore[no-untyped-def]
+    from matplotlib.backend_bases import MouseEvent
+
+    from spmkit.core.viz.figure import Annotation
+
+    win = MainWindow()
+    qtbot.addWidget(win)
+    win.figure.set_data(_data())
+    win.figure.channel_combo.setCurrentText("Z-Axis")
+    win.figure._render()
+    win.figure._spec.annotations.append(Annotation(text="x", x=0.5, y=0.5))
+    win.figure._render()
+    win.figure.canvas.draw()  # necesario para que contains() tenga renderer
+
+    ann = win.figure._spec.annotations[0]
+    ax = win.figure.canvas.figure.axes[0]
+    px, py = ax.transAxes.transform((ann.x, ann.y))
+    win.figure._on_press(MouseEvent("button_press_event", win.figure.canvas, px, py, button=1))
+    assert win.figure._drag_artist is not None  # se pudo agarrar
+    win.figure._on_motion(
+        MouseEvent("motion_notify_event", win.figure.canvas, px + 50, py - 30, button=1)
+    )
+    win.figure._on_release(MouseEvent("button_release_event", win.figure.canvas, px, py, button=1))
+    assert (ann.x, ann.y) != (0.5, 0.5)  # se movió
