@@ -13,7 +13,7 @@ from rich.console import Console
 from rich.table import Table
 
 from spmkit import __version__, load
-from spmkit.core.analysis import kpfm, leveling, roughness
+from spmkit.core.analysis import kpfm, leveling, roughness, spectral
 from spmkit.core.export import to_csv, to_json
 
 app = typer.Typer(
@@ -85,6 +85,28 @@ def roughness_cmd(
             table.add_row(key, f"{value:.4g}")
         else:
             table.add_row(key, str(value))
+    console.print(table)
+
+
+@app.command(name="psd")
+def psd_cmd(
+    file: Path = typer.Argument(..., exists=True, help="Archivo .nid o .nhf"),
+    channel: str = typer.Option("Z-Axis", "--channel", "-c", help="Canal a analizar"),
+) -> None:
+    """Análisis espectral: dimensión fractal, Hurst y longitud de correlación."""
+    data = load(file)
+    ch = data[channel]
+    ch = leveling.plane_fit(ch)
+    frac = spectral.fractal_dimension(ch)
+    corr = spectral.correlation_length(ch)
+    table = Table(title=f"Espectral · {channel} · {file.name}")
+    table.add_column("Parámetro", style="cyan")
+    table.add_column("Valor", justify="right")
+    table.add_row("Dimensión fractal D", f"{frac.fractal_dimension:.4f}")
+    table.add_row("Exponente de Hurst H", f"{frac.hurst:.4f}")
+    table.add_row("Pendiente β (PSD)", f"{frac.psd_slope:.4f}")
+    table.add_row("R² (ajuste log-log)", f"{frac.r_squared:.4f}")
+    table.add_row("Longitud de correlación", f"{corr * 1e9:.2f} nm")
     console.print(table)
 
 

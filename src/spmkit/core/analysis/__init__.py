@@ -8,6 +8,7 @@ from spmkit.core.analysis import (
     profiles,
     resonance,
     roughness,
+    spectral,
 )
 from spmkit.core.analysis.grains import GrainResult
 from spmkit.core.analysis.kpfm import CPDResult
@@ -25,6 +26,7 @@ from spmkit.core.analysis.resonance import (
     ThermalSpectrum,
 )
 from spmkit.core.analysis.roughness import RoughnessResult
+from spmkit.core.analysis.spectral import FractalResult, RadialPSD
 
 __all__ = [
     "leveling",
@@ -34,6 +36,7 @@ __all__ = [
     "mechanics",
     "grains",
     "resonance",
+    "spectral",
     "RoughnessResult",
     "Profile",
     "CPDResult",
@@ -46,4 +49,6 @@ __all__ = [
     "ResonancePeak",
     "EvaporationSeries",
     "D2LawResult",
+    "RadialPSD",
+    "FractalResult",
 ]
