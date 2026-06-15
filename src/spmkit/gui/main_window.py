@@ -21,6 +21,7 @@ from spmkit.gui.compare_tab import CompareTab
 from spmkit.gui.figure_tab import FigureTab
 from spmkit.gui.nanomech_tab import NanomechTab
 from spmkit.gui.resonance_tab import ResonanceTab
+from spmkit.gui.simulator_tab import SimulatorTab
 from spmkit.gui.view3d_tab import View3DTab
 from spmkit.gui.viewer_tab import ViewerTab
 from spmkit.gui.welcome import WelcomeDialog
@@ -46,6 +47,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.figure = FigureTab()
         self.compare = CompareTab()
         self.resonance = ResonanceTab()
+        self.simulator = SimulatorTab()
         self.view3d = View3DTab()
         self.tabs = QtWidgets.QTabWidget()
         self.tabs.setDocumentMode(True)
@@ -53,6 +55,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.tabs.addTab(self.nanomech, "Nanomecánica")
         self.tabs.addTab(self.view3d, "Vista 3D")
         self.tabs.addTab(self.resonance, "Resonancia")
+        self.tabs.addTab(self.simulator, "Simulador")
         self.tabs.addTab(self.figure, "Editor de figuras")
         self.tabs.addTab(self.compare, "Comparar")
 

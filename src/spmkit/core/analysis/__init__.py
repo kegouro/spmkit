@@ -8,6 +8,7 @@ from spmkit.core.analysis import (
     profiles,
     resonance,
     roughness,
+    simulation,
     spectral,
 )
 from spmkit.core.analysis.grains import GrainResult
@@ -26,6 +27,7 @@ from spmkit.core.analysis.resonance import (
     ThermalSpectrum,
 )
 from spmkit.core.analysis.roughness import RoughnessResult
+from spmkit.core.analysis.simulation import SimulatedCantilever
 from spmkit.core.analysis.spectral import FractalResult, RadialPSD
 
 __all__ = [
@@ -36,6 +38,7 @@ __all__ = [
     "mechanics",
     "grains",
     "resonance",
+    "simulation",
     "spectral",
     "RoughnessResult",
     "Profile",
@@ -51,4 +54,5 @@ __all__ = [
     "D2LawResult",
     "RadialPSD",
     "FractalResult",
+    "SimulatedCantilever",
 ]
