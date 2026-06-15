@@ -21,6 +21,7 @@ from spmkit.gui.compare_tab import CompareTab
 from spmkit.gui.figure_tab import FigureTab
 from spmkit.gui.nanomech_tab import NanomechTab
 from spmkit.gui.viewer_tab import ViewerTab
+from spmkit.gui.welcome import WelcomeDialog
 
 _MAX_RECENT = 8
 
@@ -35,8 +36,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setAcceptDrops(True)
 
         self._data: SPMData | None = None
-        self._theme = "dark"
         self._settings = QtCore.QSettings("SPMLabUTFSM", "spmkit")
+        self._theme = self._settings.value("theme", "dark", type=str)
 
         self.viewer = ViewerTab()
         self.nanomech = NanomechTab()
@@ -57,7 +58,21 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setCentralWidget(container)
 
         self._build_toolbar()
+        self._setup_shortcuts()
         self.statusBar().showMessage("Abre un archivo .nid / .nhf / .gwy o arrástralo aquí.")
+
+    def _setup_shortcuts(self) -> None:
+        """Atajos de teclado (quality of life)."""
+        sc = QtGui.QShortcut
+        sc(QtGui.QKeySequence.StandardKey.Open, self, self._open_dialog)
+        sc(QtGui.QKeySequence("Ctrl+R"), self, self._make_report)
+        sc(QtGui.QKeySequence("Ctrl+D"), self, self._toggle_theme)
+        for i in range(4):
+            sc(QtGui.QKeySequence(f"Ctrl+{i + 1}"), self, lambda i=i: self.tabs.setCurrentIndex(i))
+
+    def show_welcome(self) -> None:
+        """Muestra el diálogo de bienvenida (solo en el primer arranque)."""
+        WelcomeDialog.maybe_show(self, self._settings)
 
     def _build_toolbar(self) -> None:
         tb = self.addToolBar("Principal")
@@ -184,6 +199,7 @@ class MainWindow(QtWidgets.QMainWindow):
     # ------------------------------------------------------------ tema
     def _toggle_theme(self) -> None:
         self._theme = "light" if self._theme == "dark" else "dark"
+        self._settings.setValue("theme", self._theme)  # recordar entre sesiones
         app = QtWidgets.QApplication.instance()
         if app is not None:
             theme.apply_theme(app, self._theme)
