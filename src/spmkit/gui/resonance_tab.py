@@ -66,6 +66,9 @@ class ResonanceTab(QtWidgets.QWidget):
         export = QtWidgets.QPushButton("Exportar CSV…")
         export.clicked.connect(self._export)
         lay.addWidget(export)
+        anim_btn = QtWidgets.QPushButton("Exportar animación…")
+        anim_btn.clicked.connect(self._export_animation)
+        lay.addWidget(anim_btn)
         root.addWidget(side)
 
         self.canvas = FigureCanvasQTAgg(Figure(figsize=(8, 6)))
@@ -157,14 +160,45 @@ class ResonanceTab(QtWidgets.QWidget):
         fig.tight_layout()
         self.canvas.draw_idle()
 
+        # Ajuste ley d²
+        radios = resonance.droplet_radius(ev.added_mass)
+        d2 = resonance.fit_d2_law(ev.time, radios)
+        tau_h = d2.tau / 3600.0 if np.isfinite(d2.tau) else float("inf")
+        K_um2_s = d2.rate_constant * 1e12  # m²/s → µm²/s
+        r0_um = d2.r0 * 1e6  # m → µm
+        diff_str = "Sí" if d2.is_diffusion_limited else "No"
+
         self.summary.setHtml(
             f"<b>Resultados</b><br>"
             f"k = {ev.spring_constant:.4g} N/m<br>"
             f"f₀ desnuda = {ev.bare_frequency / 1e3:.2f} kHz<br>"
             f"Δm inicial = {ev.added_mass[0] * 1e12:.3f} ng<br>"
             f"masa evaporada = {(ev.added_mass[0] - ev.added_mass[-1]) * 1e12:.3f} ng<br>"
-            f"puntos = {len(ev.time)}"
+            f"puntos = {len(ev.time)}<br>"
+            f"<br><b>Ley d² (evaporación)</b><br>"
+            f"r₀ = {r0_um:.2f} µm<br>"
+            f"τ = {tau_h:.2f} h<br>"
+            f"K = {K_um2_s:.4g} µm²/s<br>"
+            f"R² = {d2.r_squared:.4f}<br>"
+            f"Difusión limitada: {diff_str}"
         )
+
+    def _export_animation(self) -> None:
+        if len(self._spectra) < 2:
+            QtWidgets.QMessageBox.information(
+                self, "Animación", "Carga primero una serie de espectros."
+            )
+            return
+        path, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self, "Exportar animación GIF", "evaporacion.gif", "GIF (*.gif)"
+        )
+        if not path:
+            return
+        try:
+            out = resonance.animate_evaporation(self._spectra, path)
+            QtWidgets.QMessageBox.information(self, "Animación", f"GIF guardado en:\n{out}")
+        except Exception as exc:  # noqa: BLE001
+            QtWidgets.QMessageBox.critical(self, "Error al animar", str(exc))
 
     def _export(self) -> None:
         ev = self._series()

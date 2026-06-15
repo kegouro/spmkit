@@ -227,6 +227,8 @@ def evaporation(
     if len(files) < 2:
         console.print("[red]Se necesitan al menos 2 espectros de thermal tuning.[/]")
         raise typer.Exit(1)
+    import numpy as _np  # noqa: PLC0415
+
     ev = resonance.load_evaporation_series(files, spring_constant=spring_constant)
 
     table = Table(
@@ -247,6 +249,24 @@ def evaporation(
     console.print(
         f"[cyan]Masa de la liquid marble (Δm inicial):[/] {ev.added_mass[0] * 1e12:.3f} ng"
     )
+
+    # Ajuste ley d² (evaporación limitada por difusión)
+    radios = resonance.droplet_radius(ev.added_mass)
+    d2 = resonance.fit_d2_law(ev.time, radios)
+    tau_h = d2.tau / 3600.0 if _np.isfinite(d2.tau) else float("inf")
+    K_um2_s = d2.rate_constant * 1e12  # m²/s → µm²/s
+    r0_um = d2.r0 * 1e6  # m → µm
+    diff_label = "[green]Sí[/]" if d2.is_diffusion_limited else "[yellow]No[/]"
+
+    d2_table = Table(title="Ley d² (evaporación por difusión)")
+    d2_table.add_column("Parámetro", style="cyan")
+    d2_table.add_column("Valor", justify="right")
+    d2_table.add_row("r₀ (radio inicial)", f"{r0_um:.2f} µm")
+    d2_table.add_row("τ (tiempo total)", f"{tau_h:.2f} h")
+    d2_table.add_row("K (constante)", f"{K_um2_s:.4g} µm²/s")
+    d2_table.add_row("R²", f"{d2.r_squared:.4f}")
+    d2_table.add_row("Difusión limitada", diff_label)
+    console.print(d2_table)
     if output:
         with output.open("w", newline="", encoding="utf-8") as fh:
             w = _csv.writer(fh)

@@ -18,7 +18,12 @@ from spmkit.core.analysis.mechanics import (
     thermal_spring_constant,
 )
 from spmkit.core.analysis.profiles import Profile
-from spmkit.core.analysis.resonance import EvaporationSeries, ResonancePeak, ThermalSpectrum
+from spmkit.core.analysis.resonance import (
+    D2LawResult,
+    EvaporationSeries,
+    ResonancePeak,
+    ThermalSpectrum,
+)
 from spmkit.core.analysis.roughness import RoughnessResult
 
 __all__ = [
@@ -40,4 +45,5 @@ __all__ = [
     "ThermalSpectrum",
     "ResonancePeak",
     "EvaporationSeries",
+    "D2LawResult",
 ]

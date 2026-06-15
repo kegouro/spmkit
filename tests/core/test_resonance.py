@@ -59,3 +59,66 @@ def test_track_evaporation() -> None:
 def test_track_evaporation_mismatch() -> None:
     with pytest.raises(ValueError, match="mismo tamaño"):
         resonance.track_evaporation(np.zeros(3), np.zeros(4), 1.0)
+
+
+# --------------------------------------------------------------------------- nuevos tests
+
+
+def test_droplet_radius() -> None:
+    """Verifica r = (3m/(4πρ))^(1/3) para una masa conocida."""
+    density = 1000.0
+    r_expected = 1e-6  # 1 µm
+    m = density * (4.0 / 3.0) * np.pi * r_expected**3
+    r = resonance.droplet_radius(m, density=density)
+    assert float(r) == pytest.approx(r_expected, rel=1e-9)
+
+
+def test_droplet_radius_array() -> None:
+    """Verifica que funciona con arrays y que masas ≤ 0 dan radio 0."""
+    density = 1000.0
+    r_ref = np.array([1e-6, 2e-6, 3e-6])
+    masses = density * (4.0 / 3.0) * np.pi * r_ref**3
+    masses_with_neg = np.concatenate([[-1.0, 0.0], masses])
+    radios = resonance.droplet_radius(masses_with_neg, density=density)
+    assert radios[0] == pytest.approx(0.0)
+    assert radios[1] == pytest.approx(0.0)
+    assert radios[2:] == pytest.approx(r_ref, rel=1e-9)
+
+
+def test_fit_d2_law_linear() -> None:
+    """Verifica ley d² con datos exactamente lineales: R²≈1, K correcto."""
+    # Parámetros: r0 = 50 µm, τ = 2 h, K = d0²/τ
+    r0 = 50e-6  # m
+    tau = 2.0 * 3600.0  # s
+    d0_sq = (2.0 * r0) ** 2
+    K_true = d0_sq / tau  # m²/s
+
+    t = np.linspace(0, tau * 0.9, 50)
+    d2 = d0_sq - K_true * t
+    r = np.sqrt(np.maximum(d2, 0.0)) / 2.0
+
+    result = resonance.fit_d2_law(t, r)
+    assert result.is_diffusion_limited is True
+    assert result.r_squared == pytest.approx(1.0, abs=1e-10)
+    assert result.rate_constant == pytest.approx(K_true, rel=1e-6)
+    assert result.r0 == pytest.approx(r0, rel=1e-6)
+
+
+def test_fit_sho_recovers_f0() -> None:
+    """fit_sho recupera f0 dentro del 0.5 % en un espectro SHO sintético."""
+    pytest.importorskip("scipy")
+
+    f0_true = 75_000.0  # Hz
+    Q_true = 120.0
+    A_true = 5e-12
+
+    f = np.linspace(60e3, 90e3, 2000)
+    noise_floor = 1e-13
+    denom = (f**2 - f0_true**2) ** 2 + (f0_true * f / Q_true) ** 2
+    psd = np.sqrt(A_true**2 * f0_true**4 / denom) + noise_floor
+
+    rng = np.random.default_rng(42)
+    psd += rng.normal(0, noise_floor * 0.05, psd.size)
+
+    peak = resonance.fit_sho(f, psd)
+    assert peak.f0 == pytest.approx(f0_true, rel=5e-3)  # dentro del 0.5 %

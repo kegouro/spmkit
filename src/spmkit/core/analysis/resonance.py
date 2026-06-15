@@ -258,3 +258,247 @@ def load_evaporation_series(
 
     k = spectra[0].spring_constant if spring_constant is None else spring_constant
     return track_evaporation(times, freqs, k, bare_frequency)
+
+
+# --------------------------------------------------------- análisis avanzado
+
+
+def fit_sho(
+    frequency: np.ndarray,
+    psd: np.ndarray,
+    f_min: float | None = None,
+    f_max: float | None = None,
+) -> ResonancePeak:
+    """Ajusta el modelo SHO/Lorentziano al pico térmico.
+
+    Modelo de densidad espectral de amplitud de un oscilador armónico térmico::
+
+        ASD(f) = sqrt( A² · f0⁴ / ((f² - f0²)² + (f0·f/Q)²) ) + noise_floor
+
+    Usa ``scipy.optimize.curve_fit`` para ajustar los parámetros
+    ``(A, f0, Q, noise_floor)``.  Si scipy no está disponible o el ajuste
+    falla, cae al detector de pico crudo :func:`find_resonance`.
+
+    Args:
+        frequency: Array de frecuencias (Hz).
+        psd: Array de densidad espectral de amplitud (m/√Hz).
+        f_min: Límite inferior del rango de ajuste (Hz).
+        f_max: Límite superior del rango de ajuste (Hz).
+
+    Returns:
+        :class:`ResonancePeak` con f0 más preciso que el pico crudo.
+    """
+    frequency = np.asarray(frequency, dtype=np.float64)
+    psd = np.asarray(psd, dtype=np.float64)
+
+    mask = np.ones(frequency.size, dtype=bool)
+    if f_min is not None:
+        mask &= frequency >= f_min
+    if f_max is not None:
+        mask &= frequency <= f_max
+    fr, pr = frequency[mask], psd[mask]
+    if fr.size < 5:
+        return find_resonance(frequency, psd, f_min, f_max)
+
+    def _model(f: np.ndarray, A: float, f0: float, Q: float, noise: float) -> np.ndarray:
+        denom = (f**2 - f0**2) ** 2 + (f0 * f / Q) ** 2
+        return np.sqrt(np.maximum(A**2 * f0**4 / denom, 0.0)) + noise
+
+    peak_idx = int(np.argmax(pr))
+    f0_guess = float(fr[peak_idx])
+    A_guess = float(pr[peak_idx])
+    noise_guess = float(np.median(pr))
+    p0 = [A_guess, f0_guess, 100.0, noise_guess]
+    lower = [0.0, fr[0], 1.0, 0.0]
+    upper = [A_guess * 100, fr[-1], 10_000.0, A_guess]
+
+    try:
+        from scipy.optimize import curve_fit  # noqa: PLC0415
+    except ImportError as exc:
+        raise ImportError(
+            "scipy es necesario para fit_sho. Instala con: pip install 'spmkit[grains]'"
+        ) from exc
+
+    try:
+        popt, _ = curve_fit(_model, fr, pr, p0=p0, bounds=(lower, upper), maxfev=10_000)
+        A_fit, f0_fit, Q_fit, _ = popt
+        fwhm_fit = f0_fit / Q_fit
+        return ResonancePeak(f0=f0_fit, q_factor=Q_fit, amplitude=A_fit, fwhm=fwhm_fit)
+    except Exception:  # noqa: BLE001
+        return find_resonance(frequency, psd, f_min, f_max)
+
+
+def droplet_radius(added_mass: np.ndarray | float, density: float = 1000.0) -> np.ndarray | float:
+    """Calcula el radio de la gota a partir de la masa añadida.
+
+    Asume gota esférica de densidad ``density`` (kg/m³)::
+
+        m = ρ · (4/3)π r³  →  r = (3m / (4πρ))^(1/3)
+
+    Masas negativas o cero devuelven radio 0 (sin raíz cúbica de negativos).
+
+    Args:
+        added_mass: Masa añadida (kg), escalar o array.
+        density: Densidad del líquido (kg/m³); por defecto agua = 1000.
+
+    Returns:
+        Radio (m), mismo tipo que la entrada.
+    """
+    scalar = np.ndim(added_mass) == 0
+    m = np.atleast_1d(np.asarray(added_mass, dtype=np.float64))
+    m_clip = np.clip(m, 0.0, None)
+    r = np.where(m_clip > 0.0, (3.0 * m_clip / (4.0 * np.pi * density)) ** (1.0 / 3.0), 0.0)
+    return float(r[0]) if scalar else r
+
+
+@dataclass(frozen=True)
+class D2LawResult:
+    """Resultado del ajuste de la ley d² (evaporación limitada por difusión).
+
+    La ley d² establece que el cuadrado del diámetro de una gota esférica
+    decrece linealmente con el tiempo::
+
+        d²(t) = d0² - K·t
+
+    donde ``K = d0²/τ`` es la constante de evaporación (m²/s) y ``τ`` es el
+    tiempo total de evaporación.  El ajuste se hace por regresión lineal de
+    ``(2r)²`` frente a ``t``.
+    """
+
+    r0: float  # radio inicial (m)
+    tau: float  # tiempo total de evaporación (s)
+    rate_constant: float  # K = -d(d²)/dt  (m²/s)
+    r_squared: float  # coeficiente de determinación del ajuste lineal
+    is_diffusion_limited: bool  # True si r_squared > 0.95
+
+    def to_dict(self) -> dict[str, float | bool]:
+        return {
+            "r0_m": self.r0,
+            "tau_s": self.tau,
+            "rate_constant_m2_s": self.rate_constant,
+            "r_squared": self.r_squared,
+            "is_diffusion_limited": self.is_diffusion_limited,
+        }
+
+
+def fit_d2_law(time: np.ndarray, radius: np.ndarray | float) -> D2LawResult:
+    """Ajusta la ley d² a una serie de radios de gota.
+
+    La ley d² dice que el cuadrado del diámetro decrece linealmente::
+
+        d²(t) = d0² - K·t
+
+    equivalente a::
+
+        (2r)²  = d0²  −  K · t
+
+    Ajuste: regresión lineal (``np.polyfit`` grado 1) de ``d² = (2r)²``
+    frente a ``t``, usando solo puntos donde ``radius > 0``.
+
+    De la recta ``d² = b + a·t`` (``a < 0`` esperado)::
+
+        d0² = b  (intercepto)
+        K   = −a  (pendiente negada, m²/s)
+        τ   = d0² / K  si K > 0, si no τ = ∞
+
+    El coeficiente de determinación R² mide la bondad del ajuste lineal.
+    Se considera evaporación limitada por difusión si R² > 0.95.
+
+    Args:
+        time: Tiempos (s).
+        radius: Radio de la gota en cada instante (m).
+
+    Returns:
+        :class:`D2LawResult` con r0, τ, K, R² e indicador de difusión.
+    """
+    time = np.asarray(time, dtype=np.float64)
+    radius = np.asarray(radius, dtype=np.float64)
+
+    mask = radius > 0
+    if mask.sum() < 2:
+        return D2LawResult(
+            r0=0.0, tau=float("inf"), rate_constant=0.0, r_squared=0.0, is_diffusion_limited=False
+        )
+
+    t_fit = time[mask]
+    d2 = (2.0 * radius[mask]) ** 2  # diámetro al cuadrado (m²)
+
+    # Ajuste lineal: d² = b + a·t
+    coeffs = np.polyfit(t_fit, d2, 1)
+    a, b = float(coeffs[0]), float(coeffs[1])
+
+    d2_pred = a * t_fit + b
+    ss_res = float(np.sum((d2 - d2_pred) ** 2))
+    ss_tot = float(np.sum((d2 - np.mean(d2)) ** 2))
+    r2 = 1.0 - ss_res / ss_tot if ss_tot > 0 else 1.0
+
+    d0_sq = b  # intercepto = d² inicial
+    K = -a  # constante de evaporación (m²/s); debería ser > 0
+    tau = d0_sq / K if K > 0 else float("inf")
+    r0 = float(np.sqrt(max(d0_sq, 0.0)) / 2.0)
+
+    return D2LawResult(
+        r0=r0,
+        tau=tau,
+        rate_constant=K,
+        r_squared=r2,
+        is_diffusion_limited=r2 > 0.95,
+    )
+
+
+def animate_evaporation(
+    spectra: list[ThermalSpectrum],
+    path: str | Path,
+    fps: int = 4,
+) -> Path:
+    """Crea un GIF animando los espectros PSD de la serie de evaporación.
+
+    Cada frame muestra el espectro PSD (ASD vs frecuencia) de un instante,
+    con un título que indica el tiempo o el índice.
+
+    Usa ``matplotlib.animation.FuncAnimation`` y guarda con ``writer="pillow"``.
+
+    Args:
+        spectra: Lista de :class:`ThermalSpectrum`, uno por instante.
+        path: Ruta de salida del GIF.
+        fps: Fotogramas por segundo.
+
+    Returns:
+        :class:`pathlib.Path` apuntando al GIF generado.
+    """
+    import matplotlib.pyplot as plt  # noqa: PLC0415
+    from matplotlib.animation import FuncAnimation  # noqa: PLC0415
+
+    out = Path(path)
+    if not spectra:
+        raise ValueError("La lista de espectros está vacía")
+
+    fig, ax = plt.subplots(figsize=(7, 4))
+    t0 = spectra[0].timestamp
+
+    fr0 = spectra[0].frequency
+    pr0 = spectra[0].psd
+    (line,) = ax.plot(fr0 / 1e3, pr0 * 1e12, color="#2dd4bf", lw=1.2)
+    ax.set_xlabel("Frecuencia (kHz)")
+    ax.set_ylabel("ASD (pm/√Hz)")
+    title_obj = ax.set_title("")
+    ax.set_xlim(float(fr0[0]) / 1e3, float(fr0[-1]) / 1e3)
+    all_psd = np.concatenate([s.psd for s in spectra])
+    ax.set_ylim(0, float(np.nanmax(all_psd)) * 1e12 * 1.05)
+    fig.tight_layout()
+
+    def _update(i: int) -> tuple:
+        sp = spectra[i]
+        line.set_data(sp.frequency / 1e3, sp.psd * 1e12)
+        if t0 is not None and sp.timestamp is not None:
+            dt = (sp.timestamp - t0).total_seconds()
+            label = f"t = {dt / 3600:.2f} h  (frame {i + 1}/{len(spectra)})"
+        else:
+            label = f"Frame {i + 1}/{len(spectra)}"
+        title_obj.set_text(label)
+        return line, title_obj
+
+    ani = FuncAnimation(fig, _update, frames=len(spectra), blit=True)
+    ani.save(str(out), writer="pillow", fps=fps)
+    plt.close(fig)
+    return out
