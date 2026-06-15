@@ -6,6 +6,14 @@ el versionado es [SemVer](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+### Añadido
+- **Detección de granos/partículas** (`core/analysis/grains.py`, extra `[grains]`):
+  segmentación con `scipy.ndimage`, estadística de tamaños (diámetro equivalente,
+  cobertura, densidad) y comando `spmkit grains`.
+- **Calibración de constante de resorte** del cantiléver: método de equipartición
+  (`mechanics.thermal_spring_constant`) y `spring_constant` en CLI (`--spring-constant`)
+  y GUI para corregir la indentación en el ajuste mecánico.
+
 ## [0.1.0] - 2026-06-15
 
 ### Añadido
