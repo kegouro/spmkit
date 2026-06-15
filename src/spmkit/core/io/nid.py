@@ -125,10 +125,22 @@ def load_nid(path: str | Path) -> SPMData:
         bits = int(sec.get("SaveBits", "32"))
         signed = sec.get("SaveSign", "Signed").lower() == "signed"
         count = points * lines
+        need = count * dt.itemsize
+        if offset + need > len(blob):
+            raise ValueError(
+                f"Archivo .nid truncado o corrupto: el canal {sec_name!r} necesita "
+                f"{need} bytes pero solo quedan {len(blob) - offset}."
+            )
         raw = np.frombuffer(blob, dtype=dt, count=count, offset=offset).reshape(lines, points)
-        offset += count * dt.itemsize
+        offset += need
 
         phys = _to_physical(raw, sec, bits, signed)
+        # Solo las IMÁGENES se voltean verticalmente para coincidir con Gwyddion/NanoSurf
+        # (validado: corr=1.0 con el .gwy del lab). Los canales de espectroscopía
+        # (Dim1Name=SpecPoint) NO se voltean: sus filas son curvas independientes y
+        # voltearlas reasignaría mal la posición espacial de cada curva.
+        if sec.get("Dim1Name", "").startswith("Y"):
+            phys = np.ascontiguousarray(np.flipud(phys))
         frame = sec.get("Frame", "")
         channels.append(
             SPMChannel(

@@ -29,8 +29,11 @@ def test_nid_physical_mapping(nid_file: Path) -> None:
     ch = load_nid(nid_file)["Z-Axis"]
     # raw=0 -> mitad del rango: dim2_min(-1) + 0.5*range(2) = 0.0
     assert ch.data[1, 1] == pytest.approx(0.0, abs=1e-9)
-    # raw=2**30 -> norm=(2**30+2**31)/2**32=0.75 -> -1 + 0.75*2 = 0.5
-    assert ch.data[0, 0] == pytest.approx(0.5, abs=1e-6)
+    # raw=2**30 en (fila 0, col 0) -> norm=(2**30+2**31)/2**32=0.75 -> -1+0.75*2 = 0.5.
+    # El parser voltea verticalmente (orientación Gwyddion), así que aparece en la
+    # última fila.
+    assert ch.data[-1, 0] == pytest.approx(0.5, abs=1e-6)
+    assert ch.data[0, 0] == pytest.approx(0.0, abs=1e-9)
 
 
 def test_load_dispatch(nid_file: Path) -> None:
