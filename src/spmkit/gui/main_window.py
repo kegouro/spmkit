@@ -20,6 +20,7 @@ from spmkit.gui import theme
 from spmkit.gui.compare_tab import CompareTab
 from spmkit.gui.figure_tab import FigureTab
 from spmkit.gui.nanomech_tab import NanomechTab
+from spmkit.gui.resonance_tab import ResonanceTab
 from spmkit.gui.viewer_tab import ViewerTab
 from spmkit.gui.welcome import WelcomeDialog
 
@@ -43,10 +44,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.nanomech = NanomechTab()
         self.figure = FigureTab()
         self.compare = CompareTab()
+        self.resonance = ResonanceTab()
         self.tabs = QtWidgets.QTabWidget()
         self.tabs.setDocumentMode(True)
         self.tabs.addTab(self.viewer, "Visor")
         self.tabs.addTab(self.nanomech, "Nanomecánica")
+        self.tabs.addTab(self.resonance, "Resonancia")
         self.tabs.addTab(self.figure, "Editor de figuras")
         self.tabs.addTab(self.compare, "Comparar")
 
@@ -67,7 +70,7 @@ class MainWindow(QtWidgets.QMainWindow):
         sc(QtGui.QKeySequence.StandardKey.Open, self, self._open_dialog)
         sc(QtGui.QKeySequence("Ctrl+R"), self, self._make_report)
         sc(QtGui.QKeySequence("Ctrl+D"), self, self._toggle_theme)
-        for i in range(4):
+        for i in range(5):
             sc(QtGui.QKeySequence(f"Ctrl+{i + 1}"), self, lambda i=i: self.tabs.setCurrentIndex(i))
 
     def show_welcome(self) -> None:

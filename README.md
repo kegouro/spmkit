@@ -39,6 +39,7 @@ máquina** contra Gwyddion.
 | 📈 **Perfiles** | Perfiles de línea interactivos con interpolación bilineal |
 | ⚡ **KPFM** | Potencial de contacto (CPD) y función de trabajo |
 | 🔩 **Nanomecánica** | Hertz/Sneddon → módulo de Young, adhesión, **mapas** de módulo |
+| 〰️ **Resonancia** | Thermal tuning → sensado de masa por Δf: f(t), Δm(t), tasa de evaporación |
 | 🧫 **Granos** | Detección de partículas y estadística de tamaños |
 | 🎨 **Figuras** | Editor WYSIWYG, colormaps científicos, barra de escala → PNG/SVG/PDF |
 | 🧩 **Comparar** | Fusiona 2–4 archivos con colorbar y escala compartidas |

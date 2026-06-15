@@ -15,6 +15,8 @@ arrastrándolo a la ventana) y trabaja en las pestañas:</p>
   <li><b>Visor</b> — imagen, perfil de línea interactivo y rugosidad (ISO 25178) / KPFM.</li>
   <li><b>Nanomecánica</b> — curvas fuerza-distancia, ajuste de Hertz y mapas de
       módulo/adhesión.</li>
+  <li><b>Resonancia</b> — sensado de masa por evaporación: f(t), masa y tasa
+      desde espectros de thermal tuning.</li>
   <li><b>Editor de figuras</b> — figuras de publicación con colormaps científicos,
       barra de escala y textos arrastrables (doble-clic para editar).</li>
   <li><b>Comparar</b> — fusiona 2–4 archivos en un panel con escala y color compartidos.</li>

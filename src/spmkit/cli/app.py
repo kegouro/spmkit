@@ -206,6 +206,65 @@ def batch(
 
 
 @app.command()
+def evaporation(
+    folder: Path = typer.Argument(
+        ..., exists=True, file_okay=False, help="Carpeta con espectros de thermal tuning (.nid)"
+    ),
+    spring_constant: float | None = typer.Option(
+        None,
+        "--spring-constant",
+        "-k",
+        help="Constante de resorte (N/m); por defecto, la del archivo",
+    ),
+    output: Path | None = typer.Option(None, "--output", "-o", help="CSV de salida"),
+) -> None:
+    """Sensado de masa por evaporación: sigue f(t) → masa y tasa de evaporación."""
+    import csv as _csv
+
+    from spmkit.core.analysis import resonance
+
+    files = sorted(folder.glob("*.nid"))
+    if len(files) < 2:
+        console.print("[red]Se necesitan al menos 2 espectros de thermal tuning.[/]")
+        raise typer.Exit(1)
+    ev = resonance.load_evaporation_series(files, spring_constant=spring_constant)
+
+    table = Table(
+        title=f"Evaporación · k={ev.spring_constant:.3g} N/m · "
+        f"f₀ desnuda={ev.bare_frequency / 1e3:.1f} kHz"
+    )
+    for col in ("t (h)", "f (kHz)", "m_eff (ng)", "Δm (ng)", "tasa (ng/h)"):
+        table.add_column(col, justify="right")
+    for i in range(len(ev.time)):
+        table.add_row(
+            f"{ev.time[i] / 3600:.2f}",
+            f"{ev.frequency[i] / 1e3:.2f}",
+            f"{ev.mass[i] * 1e12:.3f}",
+            f"{ev.added_mass[i] * 1e12:.3f}",
+            f"{ev.evaporation_rate[i] * 1e12 * 3600:.3f}",
+        )
+    console.print(table)
+    console.print(
+        f"[cyan]Masa de la liquid marble (Δm inicial):[/] {ev.added_mass[0] * 1e12:.3f} ng"
+    )
+    if output:
+        with output.open("w", newline="", encoding="utf-8") as fh:
+            w = _csv.writer(fh)
+            w.writerow(["time_s", "frequency_Hz", "mass_kg", "added_mass_kg", "evap_rate_kg_s"])
+            for i in range(len(ev.time)):
+                w.writerow(
+                    [
+                        ev.time[i],
+                        ev.frequency[i],
+                        ev.mass[i],
+                        ev.added_mass[i],
+                        ev.evaporation_rate[i],
+                    ]
+                )
+        console.print(f"[green]✓[/] CSV → {output}")
+
+
+@app.command()
 def figure(
     file: Path = typer.Argument(..., exists=True, help="Archivo .nid/.nhf/.gwy"),
     channel: str = typer.Option("Z-Axis", "--channel", "-c"),

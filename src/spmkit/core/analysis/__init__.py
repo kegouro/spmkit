@@ -1,6 +1,14 @@
 """Análisis numérico de datos SPM."""
 
-from spmkit.core.analysis import grains, kpfm, leveling, mechanics, profiles, roughness
+from spmkit.core.analysis import (
+    grains,
+    kpfm,
+    leveling,
+    mechanics,
+    profiles,
+    resonance,
+    roughness,
+)
 from spmkit.core.analysis.grains import GrainResult
 from spmkit.core.analysis.kpfm import CPDResult
 from spmkit.core.analysis.mechanics import (
@@ -10,6 +18,7 @@ from spmkit.core.analysis.mechanics import (
     thermal_spring_constant,
 )
 from spmkit.core.analysis.profiles import Profile
+from spmkit.core.analysis.resonance import EvaporationSeries, ResonancePeak, ThermalSpectrum
 from spmkit.core.analysis.roughness import RoughnessResult
 
 __all__ = [
@@ -19,6 +28,7 @@ __all__ = [
     "kpfm",
     "mechanics",
     "grains",
+    "resonance",
     "RoughnessResult",
     "Profile",
     "CPDResult",
@@ -27,4 +37,7 @@ __all__ = [
     "MechanicalMap",
     "GrainResult",
     "thermal_spring_constant",
+    "ThermalSpectrum",
+    "ResonancePeak",
+    "EvaporationSeries",
 ]
