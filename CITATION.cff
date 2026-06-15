@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+title: "spmkit: Analizador open-source de datos AFM/KPFM"
+message: "Si usas este software en tu investigación, por favor cítalo."
+type: software
+authors:
+  - family-names: Labarca
+    given-names: José
+    affiliation: "Universidad Técnica Federico Santa María (UTFSM)"
+  - family-names: Corrales
+    given-names: Tomás
+    affiliation: "Universidad Técnica Federico Santa María (UTFSM)"
+    orcid: ""
+abstract: >-
+  spmkit es una herramienta open-source para el análisis de datos de
+  microscopía de sonda de barrido (SPM), incluyendo AFM y KPFM. Lee
+  formatos NanoSurf (.nid, .nhf), calcula rugosidad, perfiles de línea,
+  estadísticas KPFM (CPD) y exporta a formatos abiertos (CSV, HDF5, JSON).
+keywords:
+  - AFM
+  - KPFM
+  - SPM
+  - NanoSurf
+  - microscopy
+  - roughness
+license: MIT
+version: 0.1.0
+date-released: "2026-06-14"
+repository-code: "https://github.com/spm-lab-utfsm/spmkit"
