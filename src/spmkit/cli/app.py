@@ -148,6 +148,38 @@ def nanomech(
     console.print(table)
 
 
+@app.command(name="grains")
+def grains_cmd(
+    file: Path = typer.Argument(..., exists=True, help="Archivo .nid o .nhf"),
+    channel: str = typer.Option("Z-Axis", "--channel", "-c", help="Canal de topografía"),
+    threshold: float | None = typer.Option(
+        None, "--threshold", "-t", help="Umbral de altura en unidades del canal (None = auto)"
+    ),
+    min_size: int = typer.Option(4, "--min-size", help="Tamaño mínimo de grano en píxeles"),
+    relative_height: float = typer.Option(
+        0.5, "--relative-height", help="Fracción para umbral automático (0..1]"
+    ),
+) -> None:
+    """Detecta granos/partículas y muestra estadísticas de tamaño."""
+    from spmkit.core.analysis import grains
+
+    data = load(file)
+    ch = data[channel]
+    ch = leveling.plane_fit(ch)
+    result = grains.detect(
+        ch, threshold=threshold, min_size=min_size, relative_height=relative_height
+    )
+
+    table = Table(title=f"Granos · {channel} · {file.name}")
+    table.add_column("Parámetro", style="cyan")
+    table.add_column("Valor", justify="right")
+    table.add_row("N.º de granos", str(result.n_grains))
+    table.add_row("Diámetro medio", f"{result.mean_diameter * 1e9:.2f} nm")
+    table.add_row("Densidad", f"{result.density:.4g} granos/µm²")
+    table.add_row("Cobertura", f"{result.coverage * 100:.2f} %")
+    console.print(table)
+
+
 @app.command()
 def batch(
     folder: Path = typer.Argument(..., exists=True, file_okay=False, help="Carpeta con archivos"),

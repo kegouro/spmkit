@@ -34,6 +34,7 @@ dependencies = [
 hdf5 = ["h5py>=3.8"]
 gwy = ["gwyfile>=0.3"]                       # interop con Gwyddion (.gwy)
 nanosurf = ["NSFopen>=2.2"]                  # lector .nhf validado (NanoSurf)
+grains = ["scipy>=1.10"]                     # detección de granos/partículas
 viz = [                                       # figuras de publicación
     "matplotlib>=3.8",
     "cmcrameri>=1.7",
@@ -50,7 +51,7 @@ dev = [
     "pre-commit>=3.7",
 ]
 test-gui = ["pytest-qt>=4.4"]  # tests de GUI (requiere también el extra 'gui')
-all = ["spmkit[hdf5,gwy,nanosurf,viz,report,gui]"]
+all = ["spmkit[hdf5,gwy,nanosurf,grains,viz,report,gui]"]
 
 [project.urls]
 Homepage = "https://github.com/kegouro/spmkit"
