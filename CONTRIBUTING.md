@@ -8,9 +8,12 @@ recibe contribuciones de la comunidad.
 ```bash
 git clone https://github.com/kegouro/spmkit
 cd spmkit
-uv pip install -e ".[dev,gui,hdf5,gwy,report]"   # o pip
+uv pip install -e ".[dev,gui,hdf5,gwy,report,test-gui]"   # o pip
 pre-commit install
 ```
+
+> Los tests de la GUI requieren los extras `gui` + `test-gui` (PyQt6 + pytest-qt)
+> y un entorno con Qt; en CI se omiten automáticamente (la ciencia sí se prueba).
 
 ## Principios de diseño
 
