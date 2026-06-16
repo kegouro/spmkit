@@ -23,6 +23,6 @@ keywords:
   - microscopy
   - roughness
 license: MIT
-version: 0.1.0
-date-released: "2026-06-14"
+version: 0.1.1
+date-released: "2026-06-16"
 repository-code: "https://github.com/kegouro/spmkit"

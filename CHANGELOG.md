@@ -6,6 +6,8 @@ el versionado es [SemVer](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-06-16
+
 ### Añadido
 - **nano-TGA** (sensado de masa por posición): constante de resorte efectiva k(x)=k(L)/(x/L)³ según la posición de carga x/L de la spícula/liquid marble; fórmula Δm = k(x)/(4π²)·(1/f₁²−1/f₀²) del SPM Lab UTFSM, con control de posición en la GUI y opción --position en la CLI.
 - **Evaporación avanzada**: ajuste SHO/Lorentziano del pico, ley d² (radio de
@@ -50,5 +52,6 @@ el versionado es [SemVer](https://semver.org/lang/es/).
 - Lectura del `.nid` exacta a precisión de máquina contra el export `.gwy` del
   lab; orientación de imagen consistente con Gwyddion/NanoSurf.
 
-[Unreleased]: https://github.com/kegouro/spmkit/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/kegouro/spmkit/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/kegouro/spmkit/releases/tag/v0.1.1
 [0.1.0]: https://github.com/kegouro/spmkit/releases/tag/v0.1.0
