@@ -10,7 +10,7 @@ El core está en ``spmkit.core.analysis.simulation``.
 
 from __future__ import annotations
 
-from PyQt6 import QtWidgets
+from PyQt6 import QtGui, QtWidgets
 
 from spmkit.core.analysis import simulation
 
@@ -24,8 +24,15 @@ class SimulatorTab(QtWidgets.QWidget):
 
     def __init__(self) -> None:
         super().__init__()
+        self._rendered = False
         self._build()
-        self._recompute()
+
+    def showEvent(self, event: QtGui.QShowEvent) -> None:  # noqa: N802
+        """Renderiza al hacerse visible por primera vez (lienzo ya con tamaño real)."""
+        super().showEvent(event)
+        if not self._rendered:
+            self._rendered = True
+            self._recompute()
 
     # ---------------------------------------------------------------- build
 
@@ -113,7 +120,9 @@ class SimulatorTab(QtWidgets.QWidget):
         root.addWidget(side)
 
         # ---------- canvas matplotlib ----------
-        self._figure = Figure(figsize=(7, 5))
+        # Fondo blanco explícito: evita que el lienzo se vea negro si el primer
+        # pintado se difiere (bug de macOS Retina con FigureCanvasQTAgg).
+        self._figure = Figure(figsize=(7, 5), facecolor="white")
         self.canvas = FigureCanvasQTAgg(self._figure)
         root.addWidget(self.canvas, stretch=1)
 
@@ -166,7 +175,9 @@ class SimulatorTab(QtWidgets.QWidget):
         asd_loaded_pm = result.asd_loaded * 1e12
 
         self._figure.clear()
+        self._figure.set_facecolor("white")
         ax = self._figure.add_subplot(111)
+        ax.set_facecolor("white")
 
         ax.plot(freq_khz, asd_bare_pm, color="#2dd4bf", lw=1.5, label="Desnudo")
         ax.plot(freq_khz, asd_loaded_pm, color="#ff7043", lw=1.5, ls="--", label="Con masa Δm")
@@ -183,7 +194,7 @@ class SimulatorTab(QtWidgets.QWidget):
         )
         ax.legend(loc="upper right")
         self._figure.tight_layout()
-        self.canvas.draw_idle()
+        self.canvas.draw()  # síncrono: fuerza el pintado inmediato (evita lienzo negro)
 
     # ---------------------------------------------------------------- exportar
 
