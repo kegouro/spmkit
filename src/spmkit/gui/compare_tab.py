@@ -81,6 +81,11 @@ class CompareTab(QtWidgets.QWidget):
         if data is not None and data.source_path:
             self._add_path(data.source_path)
 
+    def refresh(self) -> None:
+        """Re-renderiza al hacerse visible (corrige el lienzo en blanco)."""
+        if len(self._files) >= 2:
+            self._render()
+
     # ------------------------------------------------------------ archivos
     def _add_file(self) -> None:
         paths, _ = QtWidgets.QFileDialog.getOpenFileNames(

@@ -116,6 +116,11 @@ class View3DTab(QtWidgets.QWidget):
         self.channel_combo.blockSignals(False)
         self._render()
 
+    def refresh(self) -> None:
+        """Re-renderiza al hacerse visible (corrige el lienzo en blanco)."""
+        if self._data is not None and self.channel_combo.currentText():
+            self._render()
+
     # ---------------------------------------------------------- internos
 
     def _on_z_changed(self, value: int) -> None:

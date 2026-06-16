@@ -86,6 +86,11 @@ class ResonanceTab(QtWidgets.QWidget):
     def set_data(self, data: SPMData | None) -> None:
         """Gestiona su propia carpeta; ignora el archivo activo del shell."""
 
+    def refresh(self) -> None:
+        """Re-renderiza al hacerse visible (corrige el lienzo en blanco)."""
+        if self._spectra:
+            self._recompute()
+
     # ------------------------------------------------------------ carga
     def _load_folder(self) -> None:
         folder = QtWidgets.QFileDialog.getExistingDirectory(self, "Carpeta de thermal tuning")

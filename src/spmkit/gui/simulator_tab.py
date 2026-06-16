@@ -122,6 +122,10 @@ class SimulatorTab(QtWidgets.QWidget):
     def set_data(self, data: object) -> None:  # noqa: ARG002
         """No-op: el simulador no usa datos de archivo."""
 
+    def refresh(self) -> None:
+        """Re-renderiza al hacerse visible (corrige el lienzo en blanco)."""
+        self._recompute()
+
     # ---------------------------------------------------------------- lógica
 
     def _recompute(self) -> None:

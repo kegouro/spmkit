@@ -15,14 +15,26 @@ arrastrándolo a la ventana) y trabaja en las pestañas:</p>
   <li><b>Visor</b> — imagen, perfil de línea interactivo y rugosidad (ISO 25178) / KPFM.</li>
   <li><b>Nanomecánica</b> — curvas fuerza-distancia, ajuste de Hertz y mapas de
       módulo/adhesión.</li>
-  <li><b>Resonancia</b> — sensado de masa por evaporación: f(t), masa y tasa
-      desde espectros de thermal tuning.</li>
+  <li><b>Resonancia</b> — sensado de masa por evaporación (nano-TGA): f(t), masa
+      y tasa desde espectros de thermal tuning.</li>
   <li><b>Editor de figuras</b> — figuras de publicación con colormaps científicos,
       barra de escala y textos arrastrables (doble-clic para editar).</li>
-  <li><b>Comparar</b> — fusiona 2–4 archivos en un panel con escala y color compartidos.</li>
+  <li><b>Simulador · Vista 3D · Comparar</b> — gemelo digital del cantiléver,
+      superficie 3D y paneles comparativos.</li>
 </ul>
 <p style="color:#8B949E;">Atajos: <b>Ctrl+O</b> abrir · <b>Ctrl+R</b> reporte ·
-<b>Ctrl+1…4</b> pestañas · <b>Ctrl+D</b> tema claro/oscuro.</p>
+<b>Ctrl+1…5</b> pestañas · <b>Ctrl+D</b> tema claro/oscuro.</p>
+
+<hr style="border:none; border-top:1px solid #262D38; margin:14px 0;">
+<p style="color:#c9d1d9;">La ciencia avanza cuando el conocimiento es de todos. El
+<b>software libre y gratuito</b> hace la investigación reproducible, transparente
+y abierta a cualquiera, en cualquier lugar — sin licencias, sin barreras. Ese es
+el camino. spmkit es y será siempre <b>open-source</b>: úsalo, modifícalo,
+compártelo y hazlo crecer. 🔬✨</p>
+<p style="text-align:right; margin-top:10px; color:#8B949E;">
+Con cariño para la comunidad científica,<br>
+<span style="font-style:italic; font-size:15px; color:#2dd4bf;">— José Labarca</span><br>
+<span style="font-size:11px;">SPM Lab · UTFSM</span></p>
 """
 
 

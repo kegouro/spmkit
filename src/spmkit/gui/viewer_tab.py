@@ -110,6 +110,11 @@ class ViewerTab(QtWidgets.QWidget):
         if data.channels:
             self.channel_list.setCurrentRow(0)
 
+    def refresh(self) -> None:
+        """Reajusta la vista al tamaño de la imagen al hacerse visible."""
+        if self._channel is not None:
+            self.image_view.getView().autoRange(padding=0.02)
+
     # ------------------------------------------------------------ internos
     def _on_channel_changed(self) -> None:
         if self._data is None:
@@ -137,8 +142,13 @@ class ViewerTab(QtWidgets.QWidget):
             return
         # row-major + sin transponer + eje Y invertido => misma orientación que
         # matplotlib origin="upper" y que las imágenes exportadas por el lab.
-        self.image_view.setImage(self._channel.data, autoLevels=True)
-        self.image_view.getView().invertY(True)
+        view = self.image_view.getView()
+        view.invertY(True)
+        view.setAspectLocked(True)
+        self.image_view.setImage(self._channel.data, autoLevels=True, autoRange=False)
+        # Ajusta la vista exactamente al tamaño de la imagen (sin tener que
+        # desplazarse por el panel para encontrarla).
+        view.autoRange(padding=0.02)
         with contextlib.suppress(Exception):
             self.image_view.setColorMap(colormaps.pyqtgraph_cmap(self.cmap_combo.currentText()))
 

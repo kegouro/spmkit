@@ -126,6 +126,11 @@ class FigureTab(QtWidgets.QWidget):
             return
         self.channel_combo.addItems(data.names)
 
+    def refresh(self) -> None:
+        """Re-renderiza al hacerse visible (corrige el lienzo en blanco)."""
+        if self._data is not None and self.channel_combo.currentText():
+            self._render()
+
     # ------------------------------------------------------------ spec
     def _parse(self, edit: QtWidgets.QLineEdit) -> float | None:
         if self.auto_range_chk.isChecked():

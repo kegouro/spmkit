@@ -58,6 +58,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.tabs.addTab(self.simulator, "Simulador")
         self.tabs.addTab(self.figure, "Editor de figuras")
         self.tabs.addTab(self.compare, "Comparar")
+        # Las pestañas con lienzo matplotlib se renderizan mientras están ocultas
+        # (al cargar un archivo la pestaña activa es otra), por lo que el lienzo
+        # queda con tamaño incorrecto. Al hacerse visibles, las re-renderizamos.
+        self.tabs.currentChanged.connect(self._on_tab_changed)
 
         container = QtWidgets.QWidget()
         outer = QtWidgets.QVBoxLayout(container)
@@ -82,6 +86,13 @@ class MainWindow(QtWidgets.QMainWindow):
     def show_welcome(self) -> None:
         """Muestra el diálogo de bienvenida (solo en el primer arranque)."""
         WelcomeDialog.maybe_show(self, self._settings)
+
+    def _on_tab_changed(self, index: int) -> None:
+        """Re-renderiza la pestaña recién mostrada (corrige lienzos en blanco)."""
+        widget = self.tabs.widget(index)
+        refresh = getattr(widget, "refresh", None)
+        if callable(refresh):
+            refresh()
 
     def _build_toolbar(self) -> None:
         tb = self.addToolBar("Principal")
