@@ -32,3 +32,6 @@ gui:  ## Lanza la interfaz gráfica
 clean:  ## Limpia cachés y artefactos
 	rm -rf .pytest_cache .mypy_cache .ruff_cache htmlcov .coverage dist build
 	find . -type d -name __pycache__ -exec rm -rf {} +
+
+run:  ## Lanza la app (script ligero)
+	./run.sh
