@@ -57,5 +57,6 @@ nav:
   - Referencia técnica:
       - Arquitectura: ARCHITECTURE.md
       - Validación científica: VALIDATION.md
+      - Trazabilidad del pipeline: TRACEABILITY.md
       - Roadmap: ROADMAP.md
       - Diseño de UI: UI_DESIGN.md

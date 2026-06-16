@@ -15,6 +15,7 @@ from rich.table import Table
 from spmkit import __version__, load
 from spmkit.core.analysis import kpfm, leveling, roughness, spectral
 from spmkit.core.export import to_csv, to_json
+from spmkit.core.verify import trace_nid
 
 app = typer.Typer(
     name="spmkit",
@@ -350,6 +351,61 @@ def convert(
     else:
         raise typer.BadParameter("Formato de salida soportado: .gwy, .h5")
     console.print(f"[green]✓[/] {file.name} → {output}")
+
+
+@app.command()
+def verify(
+    file: Path = typer.Argument(..., exists=True, help="Archivo .nid a verificar"),
+) -> None:
+    """Verifica la integridad y trazabilidad de un archivo .nid."""
+    trace = trace_nid(file)
+
+    # Tabla de canales
+    ch_table = Table(title=f"Canales · {file.name}")
+    ch_table.add_column("Canal", style="cyan")
+    ch_table.add_column("Offset", justify="right")
+    ch_table.add_column("Bytes", justify="right")
+    ch_table.add_column("Forma", justify="right")
+    ch_table.add_column("Unidad")
+    ch_table.add_column("Raw min", justify="right")
+    ch_table.add_column("Raw max", justify="right")
+    ch_table.add_column("Fís min", justify="right")
+    ch_table.add_column("Fís max", justify="right")
+    ch_table.add_column("Volt", justify="center")
+    for ch in trace.channels:
+        ch_table.add_row(
+            ch.name,
+            f"{ch.byte_offset:,}",
+            f"{ch.byte_length:,}",
+            f"{ch.lines}×{ch.points}",
+            ch.dim2_unit,
+            f"{ch.raw_min:.4g}",
+            f"{ch.raw_max:.4g}",
+            f"{ch.phys_min:.4g}",
+            f"{ch.phys_max:.4g}",
+            "Sí" if ch.flipped else "No",
+        )
+    console.print(ch_table)
+
+    # Tabla de verificaciones
+    chk_table = Table(title="Verificaciones de integridad")
+    chk_table.add_column("Estado", justify="center")
+    chk_table.add_column("Nombre")
+    chk_table.add_column("Detalle", style="dim")
+    for chk in trace.checks:
+        mark = "[green]✓[/]" if chk.passed else "[red]✗[/]"
+        chk_table.add_row(mark, chk.name, chk.detail)
+    console.print(chk_table)
+
+    # Resultado global
+    if trace.ok:
+        console.print("\n[bold green]VERIFICACIÓN OK[/bold green]")
+    else:
+        failed = [c.name for c in trace.checks if not c.passed]
+        console.print("\n[bold red]VERIFICACIÓN FALLIDA[/bold red]")
+        for name in failed:
+            console.print(f"  [red]✗[/] {name}")
+        raise typer.Exit(1)
 
 
 @app.command()
