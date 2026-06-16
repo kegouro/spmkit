@@ -6,6 +6,17 @@ el versionado es [SemVer](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-06-16
+
+### Cambiado
+- Documentación y textos de la interfaz generalizados (la teoría se presenta de
+  forma general, sin contexto experimental específico).
+
+### Corregido
+- Simulador (gemelo digital): se corrige el lienzo en negro en pantallas HiDPI
+  (render diferido al mostrarse, dibujo síncrono y fondo blanco explícito).
+- Visor: la imagen se ajusta automáticamente al panel al abrir un archivo.
+
 ## [0.1.1] - 2026-06-16
 
 ### Añadido
@@ -51,6 +62,7 @@ el versionado es [SemVer](https://semver.org/lang/es/).
 - Lectura del `.nid` exacta a precisión de máquina contra el export `.gwy` del
   lab; orientación de imagen consistente con Gwyddion/NanoSurf.
 
-[Unreleased]: https://github.com/kegouro/spmkit/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/kegouro/spmkit/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/kegouro/spmkit/releases/tag/v0.1.2
 [0.1.1]: https://github.com/kegouro/spmkit/releases/tag/v0.1.1
 [0.1.0]: https://github.com/kegouro/spmkit/releases/tag/v0.1.0
