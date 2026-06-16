@@ -1,0 +1,61 @@
+site_name: spmkit
+site_description: Analizador open-source de datos AFM/KPFM para microscopía de sonda de barrido
+site_url: https://kegouro.github.io/spmkit
+repo_url: https://github.com/kegouro/spmkit
+repo_name: kegouro/spmkit
+
+docs_dir: docs
+
+theme:
+  name: material
+  palette:
+    - scheme: slate
+      primary: teal
+      accent: teal
+      toggle:
+        icon: material/brightness-4
+        name: Cambiar a modo claro
+    - scheme: default
+      primary: teal
+      accent: teal
+      toggle:
+        icon: material/brightness-7
+        name: Cambiar a modo oscuro
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - toc.integrate
+    - search.suggest
+    - navigation.top
+    - content.code.copy
+
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+
+nav:
+  - Inicio: index.md
+  - Primeros pasos: getting-started.md
+  - Guía de usuario:
+      - Interfaz gráfica (GUI): user-guide.md
+      - Referencia CLI: cli.md
+  - API Python: api.md
+  - Guía de teoría: theory.md
+  - Referencia técnica:
+      - Arquitectura: ARCHITECTURE.md
+      - Validación científica: VALIDATION.md
+      - Roadmap: ROADMAP.md
+      - Diseño de UI: UI_DESIGN.md
