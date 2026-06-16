@@ -56,7 +56,15 @@ class ResonanceTab(QtWidgets.QWidget):
         self.k_spin.setRange(0.0, 1000.0)
         self.k_spin.setSuffix(" N/m")
         self.k_spin.valueChanged.connect(self._recompute)
-        form.addRow("k cantiléver:", self.k_spin)
+        form.addRow("k(L) extremo:", self.k_spin)
+        self.xl_spin = QtWidgets.QDoubleSpinBox()
+        self.xl_spin.setDecimals(3)
+        self.xl_spin.setRange(0.05, 1.0)
+        self.xl_spin.setSingleStep(0.05)
+        self.xl_spin.setValue(1.0)
+        self.xl_spin.setToolTip("Posición de carga x/L (micrografía). k(x)=k(L)/(x/L)³")
+        self.xl_spin.valueChanged.connect(self._recompute)
+        form.addRow("posición x/L:", self.xl_spin)
         lay.addLayout(form)
 
         self.summary = QtWidgets.QTextEdit()
@@ -111,7 +119,9 @@ class ResonanceTab(QtWidgets.QWidget):
             [((s.timestamp or datetime.min) - t0).total_seconds() for s in self._spectra]
         )
         freqs = np.array([s.f0 for s in self._spectra])
-        return resonance.track_evaporation(times, freqs, self.k_spin.value())
+        return resonance.track_evaporation(
+            times, freqs, self.k_spin.value(), x_over_l=self.xl_spin.value()
+        )
 
     # ------------------------------------------------------------ render
     def _recompute(self) -> None:

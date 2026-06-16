@@ -35,6 +35,23 @@ def test_added_mass_zero_at_bare() -> None:
     assert resonance.added_mass(1.0, 80_000, 80_000) == pytest.approx(0.0, abs=1e-20)
 
 
+def test_effective_spring_constant() -> None:
+    # k(x) = k(L)/(x/L)³ ; en el extremo (x/L=1) es k(L); más cerca de la base, mayor.
+    assert resonance.effective_spring_constant(1.175, 1.0) == pytest.approx(1.175)
+    assert resonance.effective_spring_constant(1.175, 0.5) == pytest.approx(1.175 / 0.125)
+    with pytest.raises(ValueError):
+        resonance.effective_spring_constant(1.0, 1.5)
+
+
+def test_x_over_l_scales_mass() -> None:
+    # Cargar más cerca de la base (x/L<1) → k(x) mayor → masa mayor (fórmula nano-TGA).
+    t = np.array([0.0, 3600.0])
+    f = np.array([72_800.0, 79_000.0])
+    ev_tip = resonance.track_evaporation(t, f, 1.175, x_over_l=1.0)
+    ev_mid = resonance.track_evaporation(t, f, 1.175, x_over_l=0.5)
+    assert ev_mid.added_mass[0] == pytest.approx(ev_tip.added_mass[0] / 0.5**3, rel=1e-9)
+
+
 def test_find_resonance_synthetic() -> None:
     # Lorentziana con pico en 75 kHz
     f = np.linspace(50e3, 100e3, 2000)

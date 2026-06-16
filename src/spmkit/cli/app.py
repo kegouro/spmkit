@@ -238,6 +238,9 @@ def evaporation(
         "-k",
         help="Constante de resorte (N/m); por defecto, la del archivo",
     ),
+    position: float = typer.Option(
+        1.0, "--position", "-x", help="Posición de carga x/L (micrografía); k(x)=k(L)/(x/L)³"
+    ),
     output: Path | None = typer.Option(None, "--output", "-o", help="CSV de salida"),
 ) -> None:
     """Sensado de masa por evaporación: sigue f(t) → masa y tasa de evaporación."""
@@ -251,7 +254,9 @@ def evaporation(
         raise typer.Exit(1)
     import numpy as _np  # noqa: PLC0415
 
-    ev = resonance.load_evaporation_series(files, spring_constant=spring_constant)
+    ev = resonance.load_evaporation_series(
+        files, spring_constant=spring_constant, x_over_l=position
+    )
 
     table = Table(
         title=f"Evaporación · k={ev.spring_constant:.3g} N/m · "

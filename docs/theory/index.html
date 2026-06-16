@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AFM &amp; spmkit — Teoría y práctica</title>
+<style>
+  :root{
+    --bg:#0E1116;
+    --panel:#161B22;
+    --panel2:#1C232D;
+    --elevated:#212A36;
+    --text:#E6EDF3;
+    --muted:#8B949E;
+    --teal:#2dd4bf;
+    --teal-soft:#143b38;
+    --gold:#f0a830;
+    --gold-soft:#3a2c12;
+    --border:#262D38;
+    --danger:#F87171;
+    --mono:"SF Mono","JetBrains Mono","Fira Code",ui-monospace,"Cascadia Code",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1100px 600px at 78% -8%, rgba(45,212,191,.07), transparent 60%),
+      radial-gradient(900px 500px at 8% 4%, rgba(240,168,48,.05), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    font-size:16.5px;
+    line-height:1.72;
+    -webkit-font-smoothing:antialiased;
+  }
+  code,.mono,.eq,.var{font-family:var(--mono);}
+
+  /* ---------- Layout ---------- */
+  .shell{
+    display:grid;
+    grid-template-columns:265px minmax(0,1fr);
+    gap:0;
+    max-width:1320px;
+    margin:0 auto;
+  }
+  nav.toc{
+    position:sticky;
+    top:0;
+    align-self:start;
+    height:100vh;
+    overflow-y:auto;
+    padding:28px 20px 40px 26px;
+    border-right:1px solid var(--border);
+    background:linear-gradient(180deg,rgba(22,27,34,.6),rgba(14,17,22,.2));
+  }
+  nav.toc .brand{
+    font-family:var(--mono);
+    font-size:13px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--teal);
+    margin-bottom:4px;
+  }
+  nav.toc .brand small{color:var(--muted);letter-spacing:.05em;}
+  nav.toc ol{list-style:none;margin:18px 0 0;padding:0;counter-reset:s;}
+  nav.toc li{counter-increment:s;margin:1px 0;}
+  nav.toc a{
+    display:flex;gap:10px;align-items:baseline;
+    color:var(--muted);
+    text-decoration:none;
+    font-size:13.5px;
+    padding:6px 10px;
+    border-radius:7px;
+    border-left:2px solid transparent;
+    transition:all .15s ease;
+  }
+  nav.toc a::before{
+    content:counter(s,decimal-leading-zero);
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--border);
+    min-width:20px;
+  }
+  nav.toc a:hover{color:var(--text);background:var(--panel2);}
+  nav.toc a.active{
+    color:var(--teal);
+    background:var(--teal-soft);
+    border-left:2px solid var(--teal);
+  }
+  nav.toc a.active::before{color:var(--teal);}
+  .toc-foot{margin-top:26px;padding-top:16px;border-top:1px solid var(--border);
+    font-size:11.5px;color:var(--muted);line-height:1.6;}
+
+  main{padding:0 clamp(20px,4vw,64px) 120px;min-width:0;}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding:64px 0 48px;
+    border-bottom:1px solid var(--border);
+    margin-bottom:8px;
+  }
+  .hero .eyebrow{
+    display:inline-flex;align-items:center;gap:9px;
+    font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--gold);
+    border:1px solid var(--gold-soft);background:rgba(240,168,48,.06);
+    padding:5px 13px;border-radius:999px;margin-bottom:24px;
+  }
+  .hero .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold);}
+  .hero h1{
+    font-size:clamp(2.3rem,5vw,3.7rem);
+    line-height:1.04;
+    margin:0 0 16px;
+    letter-spacing:-.02em;
+    font-weight:760;
+  }
+  .hero h1 .amp{color:var(--muted);font-weight:300;}
+  .hero h1 .kit{
+    background:linear-gradient(95deg,var(--teal),#7af0e0);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero .sub{font-size:1.18rem;color:var(--muted);max-width:62ch;margin:0 0 22px;}
+  .hero .hook{
+    font-size:1.02rem;color:var(--text);max-width:64ch;
+    border-left:3px solid var(--teal);padding:4px 0 4px 18px;
+    font-style:italic;
+  }
+  .hero .meta{
+    display:flex;flex-wrap:wrap;gap:10px;margin-top:30px;
+  }
+  .chip{
+    font-family:var(--mono);font-size:12px;color:var(--muted);
+    border:1px solid var(--border);background:var(--panel);
+    padding:5px 12px;border-radius:7px;
+  }
+  .chip b{color:var(--teal);font-weight:600;}
+  .chip.g b{color:var(--gold);}
+
+  /* ---------- Sections ---------- */
+  section{padding:54px 0 18px;border-bottom:1px solid var(--border);scroll-margin-top:24px;}
+  section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px;}
+  .sec-num{
+    font-family:var(--mono);font-size:13px;color:var(--teal);
+    border:1px solid var(--teal-soft);background:var(--teal-soft);
+    padding:2px 9px;border-radius:6px;flex:none;
+  }
+  h2{font-size:1.85rem;letter-spacing:-.015em;margin:0;font-weight:720;line-height:1.18;}
+  h3{font-size:1.22rem;margin:34px 0 8px;color:var(--text);font-weight:660;letter-spacing:-.01em;}
+  h3 .tag{font-family:var(--mono);font-size:.62em;color:var(--gold);vertical-align:middle;margin-left:8px;
+    border:1px solid var(--gold-soft);padding:1px 6px;border-radius:5px;}
+  p{margin:12px 0;}
+  .lede{font-size:1.08rem;color:#c9d4de;}
+  a.inl{color:var(--teal);text-decoration:none;border-bottom:1px dashed var(--teal-soft);}
+  a.inl:hover{border-bottom-style:solid;}
+  .var{color:var(--teal);font-weight:600;}
+  .varg{color:var(--gold);font-weight:600;}
+  strong{color:#fff;font-weight:650;}
+
+  /* ---------- Figure / SVG ---------- */
+  figure{
+    margin:26px 0;
+    background:linear-gradient(180deg,var(--panel),#12161c);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:22px 22px 14px;
+    overflow:hidden;
+  }
+  figure svg{display:block;width:100%;height:auto;}
+  figcaption{
+    margin-top:14px;padding-top:12px;border-top:1px solid var(--border);
+    font-size:13px;color:var(--muted);
+  }
+  figcaption b{color:var(--text);font-weight:600;}
+  .fig-label{
+    font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--teal);margin-bottom:2px;display:block;
+  }
+
+  /* ---------- Equation block ---------- */
+  .eqbox{
+    display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+    background:var(--panel2);border:1px solid var(--border);border-left:3px solid var(--teal);
+    border-radius:10px;padding:16px 20px;margin:20px 0;
+  }
+  .eqbox.gold{border-left-color:var(--gold);}
+  .eqbox .eq{font-size:1.18rem;color:var(--text);white-space:nowrap;}
+  .eqbox .where{font-size:12.5px;color:var(--muted);font-family:var(--sans);}
+  .eqbox .where b{color:var(--teal);font-family:var(--mono);}
+  .eqbox.gold .where b{color:var(--gold);}
+  .eq sub{font-size:.7em;}
+  .eq sup{font-size:.72em;}
+  .frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 .15em;line-height:1.1;}
+  .frac .num{border-bottom:1.5px solid currentColor;padding:0 .3em 1px;}
+  .frac .den{padding:1px .3em 0;}
+
+  /* ---------- Callouts ---------- */
+  .note,.phys{
+    border-radius:11px;padding:16px 18px 16px 20px;margin:22px 0;
+    border:1px solid var(--border);position:relative;
+    font-size:14.5px;
+  }
+  .note{background:rgba(45,212,191,.05);border-left:3px solid var(--teal);}
+  .phys{background:rgba(240,168,48,.055);border-left:3px solid var(--gold);}
+  .note .lbl,.phys .lbl{
+    font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    display:block;margin-bottom:6px;font-weight:700;
+  }
+  .note .lbl{color:var(--teal);}
+  .phys .lbl{color:var(--gold);}
+
+  /* ---------- Tables ---------- */
+  .tbl-wrap{overflow-x:auto;margin:22px 0;border:1px solid var(--border);border-radius:12px;}
+  table{width:100%;border-collapse:collapse;font-size:14px;min-width:480px;}
+  thead th{
+    background:var(--panel2);color:var(--teal);text-align:left;
+    font-family:var(--mono);font-size:12px;letter-spacing:.04em;font-weight:600;
+    padding:11px 14px;border-bottom:1px solid var(--border);
+  }
+  td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:top;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:var(--panel);}
+  td .mono{color:var(--teal);}
+  td.g .mono{color:var(--gold);}
+  caption{caption-side:bottom;color:var(--muted);font-size:12.5px;padding:10px 4px 0;text-align:left;}
+
+  /* ---------- Glossary ---------- */
+  .gloss{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin:22px 0;}
+  .gloss dt{font-family:var(--mono);color:var(--teal);font-size:13.5px;font-weight:600;}
+  .gloss dd{margin:3px 0 0;font-size:13.5px;color:var(--muted);}
+  .gcard{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:13px 15px;}
+
+  .refs{list-style:none;padding:0;margin:18px 0;}
+  .refs li{padding:11px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--muted);}
+  .refs li b{color:var(--text);}
+  .refs li .k{font-family:var(--mono);color:var(--gold);font-size:12px;}
+
+  footer{padding:44px 0 0;color:var(--muted);font-size:13px;}
+  footer .rule{height:1px;background:var(--border);margin-bottom:22px;}
+
+  /* SVG shared text */
+  svg text{font-family:var(--sans);}
+  svg .lab{font-size:12px;fill:var(--text);}
+  svg .lab-m{font-size:11px;fill:var(--muted);}
+  svg .lab-t{font-size:12px;fill:var(--teal);font-family:var(--mono);}
+  svg .lab-g{font-size:12px;fill:var(--gold);font-family:var(--mono);}
+
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    nav.toc{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border);}
+    nav.toc ol{columns:2;}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ================= TOC ================= -->
+  <nav class="toc" aria-label="Índice">
+    <div class="brand">spmkit<br><small>teoría · AFM / KPFM</small></div>
+    <ol>
+      <li><a href="#intro">¿Qué es el AFM?</a></li>
+      <li><a href="#modos">Modos de operación</a></li>
+      <li><a href="#fd">Curva fuerza-distancia</a></li>
+      <li><a href="#nanomec">Nanomecánica</a></li>
+      <li><a href="#kpfm">KPFM</a></li>
+      <li><a href="#rugosidad">Rugosidad y espectro</a></li>
+      <li><a href="#resonancia">Resonancia y sensado de masa</a></li>
+      <li><a href="#app">spmkit — el software</a></li>
+      <li><a href="#glosario">Glosario y referencias</a></li>
+    </ol>
+    <div class="toc-foot">
+      Recurso de estudio · SPM Lab UTFSM<br>
+      Documento autocontenido, sin conexión.
+    </div>
+  </nav>
+
+  <!-- ================= MAIN ================= -->
+  <main>
+
+    <!-- HERO -->
+    <header class="hero" id="top">
+      <span class="eyebrow"><span class="dot"></span>Microscopía de sonda de barrido</span>
+      <h1>AFM <span class="amp">&amp;</span> <span class="kit">spmkit</span><br>Teoría y práctica</h1>
+      <p class="sub">Un recorrido riguroso —pero legible— por la física del microscopio de fuerza
+        atómica, desde la fuerza punta-muestra hasta el sensado de masa con un cantiléver, y cómo
+        cada idea se materializa en el analizador <span class="var">spmkit</span>.</p>
+      <p class="hook">«El cantiléver no “ve” la superficie: la <em>siente</em>. Toda la física del AFM
+        es el arte de traducir una fuerza de piconewtons en una imagen.»</p>
+      <div class="meta">
+        <span class="chip"><b>9</b> secciones</span>
+        <span class="chip g"><b>4</b> diagramas SVG</span>
+        <span class="chip">fuerzas de <b>pN</b> · alturas de <b>nm</b></span>
+        <span class="chip g">caso real: liquid marble <b>Δm ≈ 0.85 ng</b></span>
+      </div>
+    </header>
+
+    <!-- ============ 1. ¿QUÉ ES EL AFM? ============ -->
+    <section id="intro">
+      <div class="sec-head"><span class="sec-num">01</span><h2>¿Qué es el AFM?</h2></div>
+      <p class="lede">El microscopio de fuerza atómica (AFM) es, en esencia, un dedo nanométrico.
+        En lugar de lentes y luz, usa una <strong>punta afilada</strong> —con un radio de apenas
+        unos nanómetros— montada en el extremo de un <strong>cantiléver</strong> flexible que barre
+        la superficie línea por línea.</p>
+
+      <p>Cuando la punta se acerca a la muestra, aparecen <strong>fuerzas punta-muestra</strong>:
+        atracción de van der Waals a distancias medias, repulsión de Pauli al contacto, además de
+        adhesión, capilaridad y fuerzas electrostáticas. Esas fuerzas <em>doblan</em> el cantiléver.
+        El cantiléver se comporta como un resorte de constante <span class="var">k</span> (ley de
+        Hooke, <span class="eq">F = −k·z</span>), de modo que medir su deflexión equivale a medir
+        la fuerza.</p>
+
+      <h3>El truco óptico: la palanca de luz</h3>
+      <p>La deflexión es minúscula (fracciones de nanómetro), así que se amplifica ópticamente: un
+        <span class="varg">láser</span> incide en el dorso del cantiléver y se refleja hacia un
+        <strong>fotodiodo de cuatro cuadrantes</strong>. Un giro diminuto de la palanca desplaza el
+        punto del láser varios milímetros sobre el fotodiodo: ganancia geométrica gratis.</p>
+
+      <p>Un <strong>lazo de realimentación</strong> compara la señal del fotodiodo con un valor de
+        consigna (<em>setpoint</em>) y ordena al <strong>escáner piezoeléctrico</strong> subir o
+        bajar la muestra para mantener constante la interacción. La señal de corrección, punto a
+        punto, <em>es</em> la topografía.</p>
+
+      <figure>
+        <span class="fig-label">Figura 1 · Montaje del AFM</span>
+        <svg viewBox="0 0 760 380" role="img" aria-label="Esquema del montaje AFM">
+          <defs>
+            <linearGradient id="laserG" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#f0a830"/><stop offset="1" stop-color="#ff7b54"/>
+            </linearGradient>
+            <linearGradient id="sampG" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#1C232D"/><stop offset="1" stop-color="#0E1116"/>
+            </linearGradient>
+            <marker id="ah" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L7,3 L0,6 Z" fill="#2dd4bf"/>
+            </marker>
+          </defs>
+
+          <!-- laser source -->
+          <rect x="40" y="60" width="86" height="40" rx="6" fill="#212A36" stroke="#262D38"/>
+          <text class="lab" x="83" y="84" text-anchor="middle">Láser</text>
+          <!-- photodiode -->
+          <rect x="600" y="48" width="60" height="62" rx="6" fill="#212A36" stroke="#262D38"/>
+          <line x1="600" y1="79" x2="660" y2="79" stroke="#262D38"/>
+          <line x1="630" y1="48" x2="630" y2="110" stroke="#262D38"/>
+          <text class="lab-m" x="630" y="132" text-anchor="middle">Fotodiodo</text>
+          <text class="lab-m" x="630" y="147" text-anchor="middle">4 cuadrantes</text>
+
+          <!-- laser beams -->
+          <line x1="126" y1="84" x2="300" y2="150" stroke="url(#laserG)" stroke-width="2.4"/>
+          <line x1="300" y1="150" x2="600" y2="74" stroke="url(#laserG)" stroke-width="2.4"/>
+          <circle cx="300" cy="150" r="3.2" fill="#f0a830"/>
+
+          <!-- cantilever -->
+          <polygon points="200,150 320,150 318,162 200,162" fill="#2dd4bf" opacity="0.9"/>
+          <rect x="170" y="142" width="34" height="28" rx="3" fill="#384654" stroke="#262D38"/>
+          <text class="lab" x="245" y="138" text-anchor="middle">Cantiléver</text>
+          <!-- tip -->
+          <polygon points="318,162 326,162 322,196" fill="#2dd4bf"/>
+          <text class="lab-t" x="360" y="186">punta (R ≈ nm)</text>
+
+          <!-- sample -->
+          <rect x="150" y="262" width="430" height="60" rx="4" fill="url(#sampG)" stroke="#262D38"/>
+          <!-- rough surface -->
+          <path d="M150,262 q20,-14 40,2 q22,16 45,-6 q24,-18 48,4 q22,16 46,-8 q24,-16 47,6 q24,14 47,-4 q22,-12 60,4"
+                fill="none" stroke="#2dd4bf" stroke-width="2" opacity="0.65"/>
+          <text class="lab-m" x="365" y="312" text-anchor="middle">Muestra (superficie nanométrica)</text>
+
+          <!-- piezo scanner -->
+          <rect x="270" y="330" width="190" height="30" rx="4" fill="#212A36" stroke="#f0a830" stroke-dasharray="3 3"/>
+          <text class="lab-g" x="365" y="350" text-anchor="middle">escáner piezo (x,y,z)</text>
+
+          <!-- feedback arrow -->
+          <path d="M630,150 C700,210 700,300 470,340" fill="none" stroke="#2dd4bf"
+                stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+          <text class="lab-t" x="708" y="240" text-anchor="middle" transform="rotate(90 708 240)">lazo de realimentación → setpoint</text>
+
+          <!-- force gap detail -->
+          <line x1="322" y1="200" x2="322" y2="258" stroke="#8B949E" stroke-width="1" stroke-dasharray="2 3"/>
+          <text class="lab-m" x="338" y="232">F punta-muestra</text>
+        </svg>
+        <figcaption><b>Cadena de medición:</b> la fuerza dobla el cantiléver → el láser amplifica
+          ópticamente la deflexión → el fotodiodo la digitaliza → el lazo mueve el piezo para
+          mantener el <em>setpoint</em>. La corrección en z, píxel a píxel, reconstruye la topografía.</figcaption>
+      </figure>
+
+      <div class="phys">
+        <span class="lbl">Física clave</span>
+        El AFM no necesita que la muestra conduzca (a diferencia del STM). Resuelve <strong>alturas
+        sub-nanométricas</strong> y fuerzas de <strong>piconewtons</strong> porque convierte una
+        deflexión mecánica diminuta en una gran señal óptica, y porque un lazo rápido evita que la
+        punta «choque» con la superficie.
+      </div>
+    </section>
+
+    <!-- ============ 2. MODOS ============ -->
+    <section id="modos">
+      <div class="sec-head"><span class="sec-num">02</span><h2>Modos de operación</h2></div>
+      <p class="lede">Según qué cantidad se mantenga constante en el lazo, el AFM opera en distintos
+        regímenes. La elección equilibra <strong>resolución</strong>, <strong>delicadeza</strong>
+        con la muestra y <strong>velocidad</strong>.</p>
+
+      <h3>Contacto</h3>
+      <p>La punta «toca» la muestra y el lazo mantiene constante la <strong>deflexión</strong> (fuerza
+        normal). Es simple y rápido, pero las fuerzas laterales pueden rayar muestras blandas o
+        desgastar la punta.</p>
+
+      <h3>Dinámico / tapping (contacto intermitente)</h3>
+      <p>El cantiléver se excita cerca de su frecuencia de resonancia <span class="var">f₀</span> y
+        oscila; al acercarse a la superficie, la interacción <strong>reduce la amplitud</strong>. El
+        lazo mantiene esa amplitud constante. Como la punta solo «golpea» brevemente, casi elimina
+        las fuerzas laterales: ideal para polímeros, células y muestras frágiles.</p>
+
+      <h3>No-contacto</h3>
+      <p>El cantiléver oscila en el régimen <em>atractivo</em> sin tocar la superficie; se detecta el
+        <strong>corrimiento de frecuencia</strong> debido al gradiente de fuerza. Máxima delicadeza
+        y, en ultra alto vacío, resolución atómica, a costa de sensibilidad ambiental.</p>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th>Modo</th><th>Señal de control</th><th>Régimen de fuerza</th><th>Ventaja</th><th>Riesgo / coste</th>
+          </tr></thead>
+          <tbody>
+            <tr><td><strong>Contacto</strong></td><td><span class="mono">deflexión = cte</span></td>
+              <td>repulsivo</td><td>simple, rápido, alta resolución z</td><td>fuerzas laterales; desgaste</td></tr>
+            <tr><td><strong>Tapping</strong></td><td><span class="mono">amplitud = cte</span></td>
+              <td>atract.↔repuls.</td><td>poco daño; estándar en aire</td><td>más lento; sintonía fina</td></tr>
+            <tr><td><strong>No-contacto</strong></td><td><span class="mono">Δf = cte</span></td>
+              <td>atractivo</td><td>delicadísimo; resolución atómica (UHV)</td><td>sensible al ambiente</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note"><span class="lbl">Nota</span>
+        Tapping y no-contacto comparten la misma raíz física —un cantiléver oscilante— que se
+        formaliza en la <a class="inl" href="#resonancia">sección 7</a>. La diferencia es solo
+        <em>qué observable</em> de la resonancia se realimenta: amplitud o frecuencia.</div>
+    </section>
+
+    <!-- ============ 3. CURVA F-D ============ -->
+    <section id="fd">
+      <div class="sec-head"><span class="sec-num">03</span><h2>Curva fuerza-distancia</h2></div>
+      <p class="lede">Si en lugar de barrer dejamos la punta en un punto y la acercamos y alejamos de
+        la superficie, registramos la <strong>fuerza en función de la separación</strong>. Esta curva
+        F-d (o espectroscopía de fuerza) es la huella mecánica local de la muestra.</p>
+
+      <figure>
+        <span class="fig-label">Figura 2 · Curva fuerza-distancia típica</span>
+        <svg viewBox="0 0 760 380" role="img" aria-label="Curva fuerza-distancia con regiones anotadas">
+          <!-- axes -->
+          <line x1="90" y1="40" x2="90" y2="330" stroke="#8B949E" stroke-width="1.4"/>
+          <line x1="90" y1="200" x2="710" y2="200" stroke="#8B949E" stroke-width="1.4"/>
+          <text class="lab" x="100" y="34">Fuerza F</text>
+          <text class="lab" x="700" y="222" text-anchor="end">distancia punta-muestra →</text>
+          <text class="lab-m" x="80" y="120" text-anchor="end">repulsiva (+)</text>
+          <text class="lab-m" x="80" y="285" text-anchor="end">atractiva (−)</text>
+          <text class="lab-m" x="86" y="345" text-anchor="end">lejos</text>
+          <text class="lab-m" x="690" y="345" text-anchor="middle">cerca / en contacto</text>
+
+          <!-- zero line dashes -->
+          <line x1="90" y1="200" x2="710" y2="200" stroke="#262D38" stroke-dasharray="2 4"/>
+
+          <!-- APPROACH curve (teal): flat -> snap-in -> contact slope -->
+          <path d="M110,200 L300,200 C340,200 350,206 360,224
+                   C366,236 380,252 396,252
+                   L420,252
+                   C470,252 560,120 660,60"
+                fill="none" stroke="#2dd4bf" stroke-width="2.6"/>
+          <!-- RETRACT curve (gold): hysteresis + pull-off -->
+          <path d="M660,60 C560,120 470,252 420,252
+                   L405,252
+                   C392,252 386,292 380,300
+                   C372,312 356,300 348,272
+                   C342,250 320,200 300,200
+                   L110,200"
+                fill="none" stroke="#f0a830" stroke-width="2.2" stroke-dasharray="6 4" opacity="0.92"/>
+
+          <!-- markers -->
+          <!-- snap-in -->
+          <circle cx="360" cy="224" r="4" fill="#2dd4bf"/>
+          <line x1="360" y1="224" x2="300" y2="150" stroke="#2dd4bf" stroke-width=".8"/>
+          <text class="lab-t" x="218" y="146">snap-in (salto al contacto)</text>
+          <!-- adhesion / pull-off (gold minimum on retract) -->
+          <circle cx="380" cy="300" r="4" fill="#f0a830"/>
+          <line x1="380" y1="300" x2="470" y2="330" stroke="#f0a830" stroke-width=".8"/>
+          <text class="lab-g" x="476" y="334">adhesión (pull-off)</text>
+          <!-- contact slope -->
+          <line x1="600" y1="96" x2="560" y2="160" stroke="#2dd4bf" stroke-width=".8"/>
+          <text class="lab-t" x="500" y="92">pendiente de contacto</text>
+          <text class="lab-m" x="500" y="108">(rigidez → módulo)</text>
+
+          <!-- legend -->
+          <line x1="540" y1="300" x2="572" y2="300" stroke="#2dd4bf" stroke-width="2.6"/>
+          <text class="lab" x="578" y="304">approach</text>
+          <line x1="540" y1="320" x2="572" y2="320" stroke="#f0a830" stroke-width="2.2" stroke-dasharray="6 4"/>
+          <text class="lab" x="578" y="324">retract</text>
+        </svg>
+        <figcaption>Al <b>acercarse</b> (approach, teal), la punta primero no siente nada; al entrar
+          el gradiente atractivo, salta al contacto (<b>snap-in</b>) y luego sube por la región
+          repulsiva con una <b>pendiente de contacto</b> que codifica la rigidez. Al <b>alejarse</b>
+          (retract, dorado), la adhesión retiene la punta hasta el <b>pull-off</b>: la profundidad de
+          ese mínimo mide la fuerza de adhesión. El área entre ambas ramas es la histéresis (energía
+          disipada).</figcaption>
+      </figure>
+
+      <p>Las regiones de la curva alimentan dos análisis distintos: la <strong>pendiente de
+        contacto</strong> da el <a class="inl" href="#nanomec">módulo elástico</a>, y la profundidad
+        del <strong>pull-off</strong> da la <strong>adhesión</strong>. spmkit corrige primero la línea
+        base (zona sin contacto) y detecta el punto de contacto antes de ajustar.</p>
+    </section>
+
+    <!-- ============ 4. NANOMECÁNICA ============ -->
+    <section id="nanomec">
+      <div class="sec-head"><span class="sec-num">04</span><h2>Nanomecánica</h2></div>
+      <p class="lede">Una vez en contacto, la curva F-δ (fuerza vs. <em>indentación</em>) se ajusta a
+        un modelo de mecánica de contacto para extraer el <strong>módulo de Young</strong> local. El
+        modelo depende de la geometría de la punta.</p>
+
+      <h3>Contacto de Hertz (punta esférica / paraboloide)</h3>
+      <div class="eqbox">
+        <span class="eq">F = <span class="frac"><span class="num">4</span><span class="den">3</span></span>
+          E<sup>*</sup> √R · δ<sup>3/2</sup></span>
+        <span class="where">con <b>R</b> radio de la punta, <b>δ</b> indentación,
+          <b>E*</b> módulo reducido. Exponente <b>3/2</b> característico de la esfera.</span>
+      </div>
+
+      <h3>Contacto de Sneddon (punta cónica)</h3>
+      <div class="eqbox">
+        <span class="eq">F = <span class="frac"><span class="num">2</span><span class="den">π</span></span>
+          E<sup>*</sup> tan(α) · δ<sup>2</sup></span>
+        <span class="where">con <b>α</b> semiángulo del cono. La huella geométrica cambia el
+          exponente a <b>2</b>.</span>
+      </div>
+
+      <h3>Módulo reducido y módulo de Young</h3>
+      <div class="eqbox gold">
+        <span class="eq">E<sup>*</sup> = <span class="frac"><span class="num">E</span><span class="den">1 − ν²</span></span></span>
+        <span class="where">(punta rígida) · <b>E</b> módulo de Young de la muestra,
+          <b>ν</b> coeficiente de Poisson. En general
+          <span class="eq">1/E* = (1−ν₁²)/E₁ + (1−ν₂²)/E₂</span>.</span>
+      </div>
+
+      <p>El ajuste devuelve <span class="var">E</span> (en Pa), el punto de contacto, la
+        <strong>adhesión</strong> y el error del ajuste (RMSE). Repetir esto en una rejilla de puntos
+        —espectroscopía <strong>force-volume</strong>— produce un <strong>mapa de módulo</strong>:
+        una imagen donde cada píxel es la rigidez local. Así se distinguen, por ejemplo, dominios
+        duros y blandos en un material compuesto, con la misma resolución lateral que la topografía.</p>
+
+      <div class="note"><span class="lbl">En spmkit</span>
+        El módulo de mecánica soporta los modelos <span class="mono">sphere</span>/<span class="mono">paraboloid</span>
+        (exponente 1.5) y <span class="mono">cone</span> (exponente 2.0), corrige la línea base,
+        detecta el contacto y ajusta por mínimos cuadrados. La pestaña <strong>Nanomecánica</strong>
+        muestra el ajuste de Hertz y construye los mapas de módulo.</div>
+    </section>
+
+    <!-- ============ 5. KPFM ============ -->
+    <section id="kpfm">
+      <div class="sec-head"><span class="sec-num">05</span><h2>KPFM — potencial de contacto</h2></div>
+      <p class="lede">La microscopía de sonda Kelvin (KPFM) añade a la topografía un canal eléctrico:
+        mide el <strong>potencial de contacto</strong> entre punta y muestra, que está ligado a sus
+        <strong>funciones de trabajo</strong>.</p>
+
+      <p>Cuando dos materiales con distinta función de trabajo se conectan, sus niveles de Fermi se
+        igualan y aparece una diferencia de potencial de contacto (CPD):</p>
+
+      <div class="eqbox gold">
+        <span class="eq">V<sub>CPD</sub> = <span class="frac"><span class="num">φ<sub>punta</sub> − φ<sub>muestra</sub></span><span class="den">e</span></span></span>
+        <span class="where"><b>φ</b> función de trabajo (energía para arrancar un electrón),
+          <b>e</b> carga elemental. KPFM aplica un voltaje DC que anula la fuerza electrostática y
+          así <em>lee</em> V<sub>CPD</sub> punto a punto.</span>
+      </div>
+
+      <p>Si se conoce la función de trabajo de la punta (calibrada contra un patrón), se despeja la de
+        la muestra: <span class="eq">φ<sub>muestra</sub> = φ<sub>punta</sub> − e·V<sub>CPD</sub></span>.
+        El resultado es un mapa de función de trabajo con contraste químico y de dopaje, complementario
+        a la topografía.</p>
+
+      <div class="note"><span class="lbl">En spmkit</span>
+        El módulo KPFM calcula estadísticas del CPD y, dada la función de trabajo de la punta, la
+        función de trabajo de la muestra. En la GUI esto vive en la pestaña <strong>Visor</strong>,
+        junto a rugosidad y perfiles.</div>
+    </section>
+
+    <!-- ============ 6. RUGOSIDAD ============ -->
+    <section id="rugosidad">
+      <div class="sec-head"><span class="sec-num">06</span><h2>Rugosidad y análisis espectral</h2></div>
+      <p class="lede">Una vez nivelada la imagen, su <strong>textura</strong> se resume con parámetros
+        estadísticos (ISO 25178) y con su <strong>espectro espacial</strong>, que revela cómo se
+        distribuye la rugosidad entre escalas.</p>
+
+      <h3>Parámetros de área (ISO 25178)</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Parámetro</th><th>Definición</th><th>Qué dice</th></tr></thead>
+          <tbody>
+            <tr><td><span class="mono">Sa</span></td><td>media de |altura|</td><td>rugosidad promedio (robusta)</td></tr>
+            <tr><td><span class="mono">Sq</span></td><td>raíz del valor cuadrático medio (RMS)</td><td>rugosidad RMS; pesa más los picos</td></tr>
+            <tr><td><span class="mono">Sz</span></td><td>pico máx. + valle máx.</td><td>amplitud extrema</td></tr>
+            <tr><td><span class="mono">Ssk</span></td><td>asimetría (skewness)</td><td>&gt;0 dominan picos; &lt;0 dominan valles</td></tr>
+            <tr><td><span class="mono">Sku</span></td><td>curtosis (kurtosis)</td><td>&gt;3 distribución «picuda»; &lt;3 achatada</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>PSD radial, Hurst y dimensión fractal</h3>
+      <p>La densidad espectral de potencia (<strong>PSD</strong>) promediada radialmente muestra cómo
+        decae la potencia con la frecuencia espacial <span class="var">q</span>. Muchas superficies son
+        <strong>autoafines</strong>: su PSD sigue una ley de potencias <span class="eq">PSD(q) ∝ q<sup>−β</sup></span>.
+        El exponente <span class="var">β</span> se liga al <strong>exponente de Hurst</strong>
+        <span class="var">H</span> y a la <strong>dimensión fractal</strong> <span class="var">D</span>:</p>
+
+      <div class="eqbox">
+        <span class="eq">β = 2H + 2</span>
+        <span class="where">relación PSD ↔ Hurst (superficie 2D autoafín)</span>
+      </div>
+      <div class="eqbox">
+        <span class="eq">D = 3 − H</span>
+        <span class="where"><b>H→1</b>: superficie suave (D→2) · <b>H→0</b>: muy rugosa (D→3)</span>
+      </div>
+
+      <p>Además, la <strong>longitud de correlación</strong> marca la escala a partir de la cual las
+        alturas dejan de estar correlacionadas: separa el régimen autoafín (escalas cortas) del
+        saturado (escalas largas). Juntos, estos descriptores caracterizan la textura de forma
+        independiente del tamaño de imagen.</p>
+
+      <div class="note"><span class="lbl">En spmkit</span>
+        El módulo de rugosidad calcula Sa/Sq/Sz/Ssk/Sku tras nivelar (plano, polinomio o por filas);
+        el módulo espectral entrega PSD radial, exponente de Hurst, dimensión fractal y longitud de
+        correlación. Todo accesible desde la pestaña <strong>Visor</strong>.</div>
+    </section>
+
+    <!-- ============ 7. RESONANCIA (STAR) ============ -->
+    <section id="resonancia">
+      <div class="sec-head"><span class="sec-num">07</span><h2>Resonancia, thermal tuning y sensado de masa</h2></div>
+      <p class="lede">Aquí el cantiléver deja de ser solo un sensor de topografía y se convierte en una
+        <strong>balanza</strong>. La idea es elegante: si conocemos su rigidez y medimos cómo cambia su
+        frecuencia de resonancia, podemos pesar <strong>nanogramos</strong>.</p>
+
+      <h3>El cantiléver como oscilador armónico</h3>
+      <p>Modelado como masa-resorte, su frecuencia de resonancia es:</p>
+      <div class="eqbox">
+        <span class="eq">f₀ = <span class="frac"><span class="num">1</span><span class="den">2π</span></span>
+          √<span style="border-top:1.4px solid currentColor;padding:0 .25em">k / m<sub>eff</sub></span></span>
+        <span class="where"><b>k</b> constante de resorte (N/m), <b>m<sub>eff</sub></b> masa efectiva
+          del modo. Más masa → menor frecuencia.</span>
+      </div>
+
+      <h3>Factor de calidad Q</h3>
+      <p>El <strong>factor de calidad</strong> <span class="var">Q = f₀ / Δf<sub>FWHM</sub></span> mide
+        cuán «afilado» es el pico de resonancia (qué poco amortiguado está). Un Q alto significa picos
+        estrechos y, por tanto, mejor resolución en frecuencia: la base de la sensibilidad para pesar.</p>
+
+      <h3>Ruido térmico y equipartición → calibrar k</h3>
+      <p>A temperatura <span class="var">T</span>, las colisiones moleculares agitan el cantiléver. Por
+        el <strong>teorema de equipartición</strong>, cada grado de libertad cuadrático lleva
+        <span class="eq">½k<sub>B</sub>T</span> de energía. Para el modo del cantiléver:</p>
+      <div class="eqbox gold">
+        <span class="eq">½ k ⟨x²⟩ = ½ k<sub>B</sub>T &nbsp;⟹&nbsp; ⟨x²⟩ = <span class="frac"><span class="num">k<sub>B</sub>T</span><span class="den">k</span></span></span>
+        <span class="where">Midiendo la varianza del ruido térmico <b>⟨x²⟩</b> se despeja
+          <b>k = k<sub>B</sub>T / ⟨x²⟩</b>. Es el <em>thermal tuning</em>: calibrar el resorte sin
+          tocar la muestra.</span>
+      </div>
+
+      <h3>Sensado de masa por corrimiento de frecuencia <span class="tag">sección estrella</span></h3>
+      <p>Despejando la masa efectiva e invirtiendo la relación de resonancia:</p>
+      <div class="eqbox">
+        <span class="eq">m<sub>eff</sub> = <span class="frac"><span class="num">k</span><span class="den">(2π f)²</span></span></span>
+        <span class="where">la balanza: con k conocido, la frecuencia mide la masa total del modo.</span>
+      </div>
+      <p>La <strong>masa añadida</strong> respecto al cantiléver desnudo (a frecuencia
+        <span class="var">f<sub>desnuda</sub></span>) es:</p>
+      <div class="eqbox gold">
+        <span class="eq">Δm = <span class="frac"><span class="num">k</span><span class="den">4π²</span></span>
+          (<span class="frac"><span class="num">1</span><span class="den">f²</span></span> −
+          <span class="frac"><span class="num">1</span><span class="den">f<sub>desnuda</sub>²</span></span>)</span>
+        <span class="where">y para Δm pequeño, linealiza a
+          <b>Δf / f₀ ≈ −Δm / (2 m<sub>eff</sub>)</b> &nbsp;⟹&nbsp; <b>Δf ∝ Δm</b>.</span>
+      </div>
+
+      <div class="phys"><span class="lbl">La intuición</span>
+        Añadir masa <em>baja</em> la frecuencia (resorte cargado oscila más lento). Si esa masa se
+        evapora, la frecuencia <em>sube</em> de vuelta hasta la del cantiléver desnudo. Siguiendo
+        <span class="var">f(t)</span> en el tiempo, se reconstruye <span class="var">Δm(t)</span>:
+        una <strong>báscula dinámica</strong> en vivo.</div>
+
+      <h3>El experimento: una <em>liquid marble</em> que se evapora</h3>
+      <p>Una <strong>liquid marble</strong> es una gotita de agua recubierta de partículas hidrófobas
+        que la vuelven una «canica» que no se moja. Colocada en la punta del cantiléver, su masa de
+        agua baja la frecuencia de resonancia. A medida que el agua se evapora, la masa disminuye y la
+        frecuencia trepa de vuelta hacia la del cantiléver desnudo.</p>
+
+      <figure>
+        <span class="fig-label">Figura 3 · Liquid marble en la punta del cantiléver</span>
+        <svg viewBox="0 0 760 250" role="img" aria-label="Cantiléver con liquid marble en la punta">
+          <defs>
+            <radialGradient id="marble" cx="38%" cy="32%" r="72%">
+              <stop offset="0" stop-color="#7af0e0"/><stop offset="55%" stop-color="#2dd4bf"/>
+              <stop offset="100%" stop-color="#0d6b60"/>
+            </radialGradient>
+          </defs>
+          <!-- chip base -->
+          <rect x="40" y="70" width="60" height="56" rx="4" fill="#384654" stroke="#262D38"/>
+          <text class="lab-m" x="70" y="146" text-anchor="middle">base</text>
+          <!-- cantilever (slightly bent down by mass) -->
+          <path d="M100,86 L430,86 Q470,90 478,116 L478,128 Q468,102 430,100 L100,100 Z"
+                fill="#2dd4bf" opacity="0.92"/>
+          <text class="lab" x="250" y="74" text-anchor="middle">cantiléver (oscila a f₀)</text>
+          <!-- tip pointing down at end -->
+          <polygon points="470,128 486,128 478,168" fill="#2dd4bf"/>
+          <!-- liquid marble -->
+          <circle cx="478" cy="196" r="34" fill="url(#marble)" stroke="#0d6b60"/>
+          <!-- hydrophobic grains -->
+          <circle cx="456" cy="182" r="3" fill="#0E1116" opacity=".55"/>
+          <circle cx="496" cy="184" r="3" fill="#0E1116" opacity=".55"/>
+          <circle cx="500" cy="206" r="3" fill="#0E1116" opacity=".55"/>
+          <circle cx="460" cy="210" r="3" fill="#0E1116" opacity=".55"/>
+          <circle cx="478" cy="222" r="3" fill="#0E1116" opacity=".55"/>
+          <text class="lab-t" x="540" y="196">liquid marble (agua + granos)</text>
+          <text class="lab-m" x="540" y="212">masa de agua → baja f₀</text>
+          <!-- evaporation arrows -->
+          <path d="M478,160 q-6,-18 -2,-34" fill="none" stroke="#8B949E" stroke-width="1" stroke-dasharray="2 3"/>
+          <path d="M498,162 q8,-16 6,-32" fill="none" stroke="#8B949E" stroke-width="1" stroke-dasharray="2 3"/>
+          <text class="lab-m" x="528" y="120">evaporación ↑</text>
+          <!-- oscillation indicator -->
+          <path d="M150,118 q14,-12 28,0 t28,0 t28,0" fill="none" stroke="#f0a830" stroke-width="1.4" opacity=".8"/>
+        </svg>
+        <figcaption>La gotita recubierta cuelga de la punta; su agua añade masa al modo y reduce
+          <b>f₀</b>. Conforme se evapora (ley d²), la masa cae y <b>f₀</b> regresa a la del cantiléver
+          desnudo. El cantiléver actúa como báscula en tiempo real.</figcaption>
+      </figure>
+
+      <p>El corrimiento se ve directamente en el espectro de resonancia: el pico <strong>cargado</strong>
+        está a menor frecuencia que el pico <strong>desnudo</strong>, separados por
+        <span class="var">Δf</span>.</p>
+
+      <figure>
+        <span class="fig-label">Figura 4 · Picos de resonancia: desnudo vs. cargado</span>
+        <svg viewBox="0 0 760 320" role="img" aria-label="Dos picos de resonancia desplazados por Delta f">
+          <!-- axes -->
+          <line x1="80" y1="40" x2="80" y2="270" stroke="#8B949E" stroke-width="1.4"/>
+          <line x1="80" y1="270" x2="720" y2="270" stroke="#8B949E" stroke-width="1.4"/>
+          <text class="lab" x="92" y="36">amplitud (m/√Hz)</text>
+          <text class="lab" x="715" y="292" text-anchor="end">frecuencia →</text>
+
+          <!-- loaded peak (gold) centered ~ x=330 -->
+          <path d="M120,268 C250,266 300,80 330,80 C360,80 410,266 540,268"
+                fill="none" stroke="#f0a830" stroke-width="2.4"/>
+          <line x1="330" y1="80" x2="330" y2="270" stroke="#f0a830" stroke-width=".8" stroke-dasharray="3 3"/>
+          <text class="lab-g" x="330" y="296" text-anchor="middle">f = 72.8 kHz</text>
+          <text class="lab-g" x="330" y="70" text-anchor="middle">cargado</text>
+
+          <!-- bare peak (teal) centered ~ x=560 -->
+          <path d="M350,268 C480,266 530,58 560,58 C590,58 640,266 700,268"
+                fill="none" stroke="#2dd4bf" stroke-width="2.4"/>
+          <line x1="560" y1="58" x2="560" y2="270" stroke="#2dd4bf" stroke-width=".8" stroke-dasharray="3 3"/>
+          <text class="lab-t" x="560" y="296" text-anchor="middle">f₀ = 79 kHz</text>
+          <text class="lab-t" x="560" y="48" text-anchor="middle">desnudo</text>
+
+          <!-- Delta f bracket -->
+          <line x1="330" y1="160" x2="560" y2="160" stroke="#E6EDF3" stroke-width="1" marker-start="url(#aL)" marker-end="url(#aR)"/>
+          <defs>
+            <marker id="aL" markerWidth="9" markerHeight="9" refX="1" refY="3" orient="auto"><path d="M7,0 L0,3 L7,6 Z" fill="#E6EDF3"/></marker>
+            <marker id="aR" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#E6EDF3"/></marker>
+          </defs>
+          <text class="lab" x="445" y="152" text-anchor="middle">Δf ≈ 6.2 kHz</text>
+          <text class="lab-m" x="445" y="178" text-anchor="middle">Δf ∝ Δm  →  Δm ≈ 0.85 ng</text>
+        </svg>
+        <figcaption>Resultado real medido con <b>spmkit</b>: la liquid marble desplaza la resonancia de
+          <b>79 kHz</b> (desnudo) a <b>72.8 kHz</b> (cargado). De ese corrimiento, con k conocido, se
+          obtiene una masa añadida de agua de <b>Δm ≈ 0.85 ng</b>. Al evaporarse, el pico dorado migra
+          hacia el teal.</figcaption>
+      </figure>
+
+      <div class="phys"><span class="lbl">Ley d² de evaporación</span>
+        Para una gota que se evapora por difusión, el <strong>cuadrado del diámetro</strong> decrece
+        linealmente en el tiempo: <span class="eq">d²(t) = d₀² − K·t</span>. Como la masa va con
+        <span class="eq">d³</span>, esta ley clásica predice cómo debe evolucionar <span class="var">Δm(t)</span>
+        —y por tanto <span class="var">f(t)</span>— durante la evaporación, lo que permite contrastar
+        teoría y medición directamente en spmkit.</div>
+
+      <div class="note"><span class="lbl">En spmkit</span>
+        El módulo de resonancia lee los espectros de <em>thermal tuning</em> de NanoSurf, detecta el
+        pico (f₀, Q, FWHM), y a lo largo de una serie temporal calcula <span class="mono">f(t)</span>,
+        <span class="mono">Δm(t)</span> y la <strong>tasa de evaporación</strong>
+        <span class="mono">dΔm/dt</span>. La pestaña <strong>Resonancia</strong> grafica todo el ciclo.</div>
+    </section>
+
+    <!-- ============ 8. APP ============ -->
+    <section id="app">
+      <div class="sec-head"><span class="sec-num">08</span><h2>spmkit — del concepto al software</h2></div>
+      <p class="lede">Cada idea anterior tiene un lugar concreto en la app. spmkit lee formatos
+        NanoSurf (<span class="mono">.nid</span>, <span class="mono">.nhf</span>) y Gwyddion
+        (<span class="mono">.gwy</span>), y separa estrictamente el <em>core</em> de análisis de la
+        interfaz. La GUI organiza el trabajo en siete pestañas.</p>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Pestaña</th><th>Qué hace</th><th>Teoría que materializa</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Visor</strong></td><td>topografía, nivelado, rugosidad, perfiles de línea, KPFM</td>
+              <td><a class="inl" href="#rugosidad">§6 Rugosidad/espectral</a> · <a class="inl" href="#kpfm">§5 KPFM</a></td></tr>
+            <tr><td><strong>Nanomecánica</strong></td><td>ajuste Hertz/Sneddon, módulo de Young, adhesión, mapas de módulo</td>
+              <td><a class="inl" href="#nanomec">§4 Nanomecánica</a> · <a class="inl" href="#fd">§3 Curva F-d</a></td></tr>
+            <tr><td><strong>Vista 3D</strong></td><td>superficie 3D con iluminación hillshade y dorado NanoSurf</td>
+              <td><a class="inl" href="#intro">§1 Topografía</a></td></tr>
+            <tr><td><strong>Resonancia</strong></td><td>thermal tuning, sensado de masa, evaporación, ley d²</td>
+              <td><a class="inl" href="#resonancia">§7 Resonancia y masa</a></td></tr>
+            <tr><td><strong>Simulador</strong></td><td>gemelo digital del cantiléver: ruido térmico y corrimiento por masa</td>
+              <td><a class="inl" href="#resonancia">§7 Equipartición / m<sub>eff</sub></a></td></tr>
+            <tr><td><strong>Editor de figuras</strong></td><td>figuras de publicación: colormaps, barra de escala, export PNG/SVG/PDF</td>
+              <td>comunicación de resultados</td></tr>
+            <tr><td><strong>Comparar</strong></td><td>fusiona 2–4 archivos con colorbar y escala compartidas</td>
+              <td>análisis comparativo</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note"><span class="lbl">Arquitectura</span>
+        Tres capas: <span class="mono">core/</span> (Python puro: io · analysis · viz),
+        <span class="mono">cli/</span> y <span class="mono">gui/</span>. La presentación solo llama a
+        la API pública del core. La lectura del <span class="mono">.nid</span> está validada a
+        precisión de máquina contra Gwyddion: la teoría se apoya en datos confiables.</div>
+    </section>
+
+    <!-- ============ 9. GLOSARIO ============ -->
+    <section id="glosario">
+      <div class="sec-head"><span class="sec-num">09</span><h2>Glosario y referencias</h2></div>
+
+      <h3>Glosario</h3>
+      <div class="gloss">
+        <div class="gcard"><dt>Cantiléver</dt><dd>Micro-palanca flexible que sostiene la punta; resorte de constante k.</dd></div>
+        <div class="gcard"><dt>Setpoint</dt><dd>Valor de consigna que el lazo de realimentación mantiene constante.</dd></div>
+        <div class="gcard"><dt>Snap-in</dt><dd>Salto súbito al contacto cuando el gradiente atractivo supera la rigidez.</dd></div>
+        <div class="gcard"><dt>Pull-off</dt><dd>Fuerza de adhesión que retiene la punta al retraerse; mínimo de la curva.</dd></div>
+        <div class="gcard"><dt>E* (módulo reducido)</dt><dd>Rigidez efectiva del contacto: E* = E / (1 − ν²) con punta rígida.</dd></div>
+        <div class="gcard"><dt>CPD / V<sub>CPD</sub></dt><dd>Potencial de contacto; diferencia de funciones de trabajo dividida por e.</dd></div>
+        <div class="gcard"><dt>PSD</dt><dd>Densidad espectral de potencia: rugosidad repartida por frecuencia espacial.</dd></div>
+        <div class="gcard"><dt>Hurst (H)</dt><dd>Exponente de autoafinidad; ligado a la dimensión fractal D = 3 − H.</dd></div>
+        <div class="gcard"><dt>Factor de calidad Q</dt><dd>f₀/Δf<sub>FWHM</sub>; cuán afilado y poco amortiguado es el pico.</dd></div>
+        <div class="gcard"><dt>Thermal tuning</dt><dd>Calibrar k a partir del ruido térmico vía equipartición ⟨x²⟩ = k<sub>B</sub>T/k.</dd></div>
+        <div class="gcard"><dt>m<sub>eff</sub></dt><dd>Masa efectiva del modo de vibración: m = k/(2πf)².</dd></div>
+        <div class="gcard"><dt>Liquid marble</dt><dd>Gota de agua recubierta de granos hidrófobos; carga de masa evaporable.</dd></div>
+      </div>
+
+      <h3>Para seguir aprendiendo</h3>
+      <ul class="refs">
+        <li><span class="k">software</span> <b>Gwyddion</b> — estándar libre para análisis de datos SPM; referencia de validación de spmkit.</li>
+        <li><span class="k">software</span> <b>pycroscopy</b> — ecosistema Python para datos de microscopía y espectroscopía.</li>
+        <li><span class="k">libro</span> <b>E. Meyer, H. J. Hug, R. Bennewitz</b> — <i>Scanning Probe Microscopy: The Lab on a Tip</i>.</li>
+        <li><span class="k">libro</span> <b>R. García</b> — <i>Amplitude Modulation Atomic Force Microscopy</i> (modos dinámicos / tapping).</li>
+        <li><span class="k">clásico</span> <b>Binnig, Quate &amp; Gerber (1986)</b> — invención del AFM, <i>Phys. Rev. Lett.</i></li>
+        <li><span class="k">contacto</span> <b>Johnson</b>, <i>Contact Mechanics</i> — Hertz, Sneddon, adhesión (JKR/DMT).</li>
+        <li><span class="k">repo</span> <b>spmkit</b> — código, validación y este documento: SPM Lab UTFSM.</li>
+      </ul>
+
+      <footer>
+        <div class="rule"></div>
+        <p><b style="color:var(--text)">AFM &amp; spmkit · Teoría y práctica</b> — recurso de estudio
+          autocontenido. spmkit es software open-source (MIT) del SPM Lab UTFSM. Diagramas dibujados
+          como SVG inline; sin dependencias externas. <a class="inl" href="#top">↑ volver al inicio</a></p>
+      </footer>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  // Scroll-spy del índice (único JS, inline, opcional)
+  (function(){
+    var links = Array.prototype.slice.call(document.querySelectorAll('nav.toc a'));
+    var map = {};
+    links.forEach(function(a){ var id=a.getAttribute('href').slice(1); map[id]=a; });
+    var secs = links.map(function(a){ return document.getElementById(a.getAttribute('href').slice(1)); }).filter(Boolean);
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          links.forEach(function(l){ l.classList.remove('active'); });
+          if(map[e.target.id]) map[e.target.id].classList.add('active');
+        }
+      });
+    }, {rootMargin:'-30% 0px -60% 0px', threshold:0});
+    secs.forEach(function(s){ obs.observe(s); });
+  })();
+</script>
+</body>
+</html>

@@ -97,6 +97,23 @@ class EvaporationSeries:
 
 
 # --------------------------------------------------------------- física básica
+def effective_spring_constant(k_end: float, x_over_l: float = 1.0) -> float:
+    """Constante de resorte efectiva en la posición de carga (nano-TGA).
+
+    La spícula/liquid marble se carga en una posición ``x`` a lo largo del
+    cantiléver (medida en micrografías ópticas, como fracción ``x/L`` de la
+    longitud). La constante efectiva en esa posición se relaciona con la del
+    extremo ``k(L)`` (medida por el método de ruido térmico) por::
+
+        k(x) = k(L) / (x/L)³
+
+    Cargar más cerca de la base (``x/L`` < 1) endurece el resorte efectivo.
+    """
+    if not 0 < x_over_l <= 1:
+        raise ValueError("x_over_l debe estar en (0, 1]")
+    return k_end / (x_over_l**3)
+
+
 def effective_mass(spring_constant: float, frequency: float) -> float:
     """Masa efectiva del modo: ``m = k / (2π·f)²`` (kg)."""
     if frequency <= 0:
@@ -191,24 +208,33 @@ def track_evaporation(
     frequency: np.ndarray,
     spring_constant: float,
     bare_frequency: float | None = None,
+    x_over_l: float = 1.0,
 ) -> EvaporationSeries:
     """Calcula masa, masa añadida y tasa de evaporación a partir de ``f(t)``.
+
+    Usa la fórmula nano-TGA del SPM Lab UTFSM::
+
+        Δm = k(x)/(4π²) · (1/f² − 1/f_desnuda²),   k(x) = k(L)/(x/L)³
 
     Args:
         time: Tiempos (s), preferiblemente relativos al primer punto.
         frequency: Resonancia en cada instante (Hz).
-        spring_constant: Constante de resorte del cantiléver (N/m).
+        spring_constant: Constante de resorte del **extremo** k(L) (N/m),
+            típicamente medida por el método de ruido térmico.
         bare_frequency: Frecuencia del cantiléver desnudo (Hz). Por defecto, la
             frecuencia máxima de la serie (estado completamente evaporado).
+        x_over_l: Posición relativa de carga ``x/L`` (de micrografías ópticas).
+            ``1.0`` = en el extremo. Se usa para obtener ``k(x) = k(L)/(x/L)³``.
     """
     time = np.asarray(time, dtype=np.float64)
     frequency = np.asarray(frequency, dtype=np.float64)
     if time.size != frequency.size:
         raise ValueError("time y frequency deben tener el mismo tamaño")
     bare = float(np.max(frequency)) if bare_frequency is None else bare_frequency
+    k_x = effective_spring_constant(spring_constant, x_over_l)
 
-    mass = spring_constant / (2.0 * np.pi * frequency) ** 2
-    bare_mass = spring_constant / (2.0 * np.pi * bare) ** 2
+    mass = k_x / (2.0 * np.pi * frequency) ** 2
+    bare_mass = k_x / (2.0 * np.pi * bare) ** 2
     delta = mass - bare_mass
     rate = np.gradient(delta, time) if time.size > 1 else np.zeros_like(delta)
 
@@ -218,7 +244,7 @@ def track_evaporation(
         mass=mass,
         added_mass=delta,
         evaporation_rate=rate,
-        spring_constant=spring_constant,
+        spring_constant=k_x,
         bare_frequency=bare,
     )
 
@@ -228,18 +254,21 @@ def load_evaporation_series(
     spring_constant: float | None = None,
     bare_frequency: float | None = None,
     recompute_peak: bool = False,
+    x_over_l: float = 1.0,
 ) -> EvaporationSeries:
     """Carga una serie de ``.nid`` de thermal tuning y arma la evaporación.
 
     Lee la frecuencia de resonancia y el instante de cada archivo, ordena por
-    tiempo y calcula la masa y la tasa de evaporación.
+    tiempo y calcula la masa y la tasa de evaporación (nano-TGA).
 
     Args:
         files: Archivos ``.nid`` de thermal tuning (uno por instante).
-        spring_constant: N/m. Por defecto, el del primer archivo (metadata).
+        spring_constant: k(L) del extremo (N/m). Por defecto, el del primer
+            archivo (metadata, método de ruido térmico).
         bare_frequency: Hz. Por defecto, la frecuencia máxima de la serie.
         recompute_peak: Si ``True``, recalcula ``f0`` del espectro en vez de
             usar el valor del instrumento.
+        x_over_l: Posición relativa de carga ``x/L`` → ``k(x) = k(L)/(x/L)³``.
     """
     from spmkit.core.io import load
 
@@ -257,7 +286,7 @@ def load_evaporation_series(
         freqs = np.array([s.f0 for s in spectra])
 
     k = spectra[0].spring_constant if spring_constant is None else spring_constant
-    return track_evaporation(times, freqs, k, bare_frequency)
+    return track_evaporation(times, freqs, k, bare_frequency, x_over_l=x_over_l)
 
 
 # --------------------------------------------------------- análisis avanzado
