@@ -20,8 +20,8 @@ el versionado es [SemVer](https://semver.org/lang/es/).
   de *thermal tuning* de NanoSurf, detecta la resonancia y sigue la masa por
   desplazamiento de frecuencia (`m = k/(2πf)²`, `Δf ∝ Δm`). Pestaña GUI
   **Resonancia** y comando `spmkit evaporation` para evaporación de *liquid
-  marbles*: f(t), masa añadida Δm(t) y tasa de evaporación dΔm/dt. Validado con
-  datos reales (Δm ≈ 0.85 ng).
+  marbles*: f(t), masa añadida Δm(t) y tasa de evaporación dΔm/dt. Validado con una serie
+  de evaporación (Δm del orden de ~1 ng).
 - **Detección de granos/partículas** (`core/analysis/grains.py`, extra `[grains]`):
   segmentación con `scipy.ndimage`, estadística de tamaños (diámetro equivalente,
   cobertura, densidad) y comando `spmkit grains`.

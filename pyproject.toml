@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
 authors = [
-    { name = "José Labarca", email = "joselabarcabaeza11@hotmail.com" },
+    { name = "José Labarca", email = "jlabarca@usm.cl" },
     { name = "Tomás Corrales" },
 ]
 maintainers = [{ name = "SPM Lab UTFSM" }]

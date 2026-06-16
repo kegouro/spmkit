@@ -50,7 +50,21 @@ máquina** contra Gwyddion.
 | 🎨 **Figuras** | Editor WYSIWYG, colormaps científicos, barra de escala → PNG/SVG/PDF |
 | 🧩 **Comparar** | Fusiona 2–4 archivos con colorbar y escala compartidas |
 | 📝 **Reportes** | Informe HTML completo (imprimible a PDF) + procesamiento por lotes |
-| 🖥️ **GUI** | 4 pestañas, tema claro/oscuro, atajos de teclado, drag & drop |
+| 🖥️ **GUI** | 7 pestañas, tema claro/oscuro, atajos de teclado, drag & drop |
+
+## 🖼️ La app en acción
+
+Cada sección procesando datos *(ejemplos con datos sintéticos)*:
+
+| Visor — imagen, perfil y rugosidad/KPFM | Nanomecánica — curva F-d y ajuste Hertz |
+|:---:|:---:|
+| <img src="docs/images/sections/01_visor.png" width="400"> | <img src="docs/images/sections/02_nanomecanica.png" width="400"> |
+| **Vista 3D** — superficie con iluminación | **Resonancia** — sensado de masa (nano-TGA) |
+| <img src="docs/images/sections/03_vista3d.png" width="400"> | <img src="docs/images/sections/04_resonancia.png" width="400"> |
+| **Simulador** — gemelo digital del cantiléver | **Editor de figuras** — publicación |
+| <img src="docs/images/sections/05_simulador.png" width="400"> | <img src="docs/images/sections/06_editor.png" width="400"> |
+| **Comparar** — panel con escala/color compartidos | |
+| <img src="docs/images/sections/07_comparar.png" width="400"> | |
 
 ## 📦 Instalación
 
