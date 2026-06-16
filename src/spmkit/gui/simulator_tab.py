@@ -1,8 +1,8 @@
 """Pestaña Simulador: gemelo digital educativo del cantiléver AFM.
 
 Demuestra cómo el espectro de ruido térmico (ASD) y la frecuencia de
-resonancia se desplazan al añadir masa en la punta — conectado con el
-experimento de evaporación de *liquid marbles*.
+resonancia se desplazan al añadir masa en la punta — la base del sensado de
+masa por desplazamiento de frecuencia.
 
 Física: oscilador armónico simple (SHO); normalización por equipartición.
 El core está en ``spmkit.core.analysis.simulation``.

@@ -274,7 +274,7 @@ def evaporation(
         )
     console.print(table)
     console.print(
-        f"[cyan]Masa de la liquid marble (Δm inicial):[/] {ev.added_mass[0] * 1e12:.3f} ng"
+        f"[cyan]Masa de la masa añadida (Δm inicial):[/] {ev.added_mass[0] * 1e12:.3f} ng"
     )
 
     # Ajuste ley d² (evaporación limitada por difusión)

@@ -59,7 +59,7 @@ Cada sección procesando datos *(ejemplos con datos sintéticos)*:
 | Visor — imagen, perfil y rugosidad/KPFM | Nanomecánica — curva F-d y ajuste Hertz |
 |:---:|:---:|
 | <img src="docs/images/sections/01_visor.png" width="400"> | <img src="docs/images/sections/02_nanomecanica.png" width="400"> |
-| **Vista 3D** — superficie con iluminación | **Resonancia** — sensado de masa (nano-TGA) |
+| **Vista 3D** — superficie con iluminación | **Resonancia** — sensado de masa |
 | <img src="docs/images/sections/03_vista3d.png" width="400"> | <img src="docs/images/sections/04_resonancia.png" width="400"> |
 | **Simulador** — gemelo digital del cantiléver | **Editor de figuras** — publicación |
 | <img src="docs/images/sections/05_simulador.png" width="400"> | <img src="docs/images/sections/06_editor.png" width="400"> |

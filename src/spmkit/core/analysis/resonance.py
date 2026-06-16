@@ -1,7 +1,7 @@
 """Resonancia del cantiléver y sensado de masa por desplazamiento de frecuencia.
 
 Un cantiléver es un oscilador armónico: ``f0 = (1/2π)·√(k/m_eff)``. Al añadir
-masa en la punta (p.ej. una *liquid marble*), ``f0`` baja; al evaporarse la
+masa en la punta (p.ej. una masa añadida), ``f0`` baja; al evaporarse la
 masa, ``f0`` vuelve a la del cantiléver desnudo. De ahí:
 
 * Masa efectiva:        ``m_eff = k / (2π·f0)²``
@@ -98,9 +98,9 @@ class EvaporationSeries:
 
 # --------------------------------------------------------------- física básica
 def effective_spring_constant(k_end: float, x_over_l: float = 1.0) -> float:
-    """Constante de resorte efectiva en la posición de carga (nano-TGA).
+    """Constante de resorte efectiva en la posición de carga.
 
-    La spícula/liquid marble se carga en una posición ``x`` a lo largo del
+    La muestra se carga en una posición ``x`` a lo largo del
     cantiléver (medida en micrografías ópticas, como fracción ``x/L`` de la
     longitud). La constante efectiva en esa posición se relaciona con la del
     extremo ``k(L)`` (medida por el método de ruido térmico) por::
@@ -212,7 +212,7 @@ def track_evaporation(
 ) -> EvaporationSeries:
     """Calcula masa, masa añadida y tasa de evaporación a partir de ``f(t)``.
 
-    Usa la fórmula nano-TGA del SPM Lab UTFSM::
+    Usa la fórmula de sensado de masa por desplazamiento de frecuencia::
 
         Δm = k(x)/(4π²) · (1/f² − 1/f_desnuda²),   k(x) = k(L)/(x/L)³
 
@@ -259,7 +259,7 @@ def load_evaporation_series(
     """Carga una serie de ``.nid`` de thermal tuning y arma la evaporación.
 
     Lee la frecuencia de resonancia y el instante de cada archivo, ordena por
-    tiempo y calcula la masa y la tasa de evaporación (nano-TGA).
+    tiempo y calcula la masa y la tasa de evaporación.
 
     Args:
         files: Archivos ``.nid`` de thermal tuning (uno por instante).

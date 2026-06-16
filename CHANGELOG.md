@@ -9,7 +9,7 @@ el versionado es [SemVer](https://semver.org/lang/es/).
 ## [0.1.1] - 2026-06-16
 
 ### Añadido
-- **nano-TGA** (sensado de masa por posición): constante de resorte efectiva k(x)=k(L)/(x/L)³ según la posición de carga x/L de la spícula/liquid marble; fórmula Δm = k(x)/(4π²)·(1/f₁²−1/f₀²) del SPM Lab UTFSM, con control de posición en la GUI y opción --position en la CLI.
+- **Sensado de masa por posición de carga**: constante de resorte efectiva k(x)=k(L)/(x/L)³ según la posición de carga x/L de la masa; fórmula Δm = k(x)/(4π²)·(1/f₁²−1/f₀²), con control de posición en la GUI y opción --position en la CLI.
 - **Evaporación avanzada**: ajuste SHO/Lorentziano del pico, ley d² (radio de
   gota, régimen de difusión) y exportación de la evaporación como animación GIF.
 - **Vista 3D** de topografía (superficie con dorado, hillshade, exageración Z).
@@ -21,9 +21,8 @@ el versionado es [SemVer](https://semver.org/lang/es/).
 - **Resonancia y sensado de masa** (`core/analysis/resonance.py`): lee espectros
   de *thermal tuning* de NanoSurf, detecta la resonancia y sigue la masa por
   desplazamiento de frecuencia (`m = k/(2πf)²`, `Δf ∝ Δm`). Pestaña GUI
-  **Resonancia** y comando `spmkit evaporation` para evaporación de *liquid
-  marbles*: f(t), masa añadida Δm(t) y tasa de evaporación dΔm/dt. Validado con una serie
-  de evaporación (Δm del orden de ~1 ng).
+  **Resonancia** y comando `spmkit evaporation` para seguimiento de masa en el
+  tiempo: f(t), masa añadida Δm(t) y tasa dΔm/dt.
 - **Detección de granos/partículas** (`core/analysis/grains.py`, extra `[grains]`):
   segmentación con `scipy.ndimage`, estadística de tamaños (diámetro equivalente,
   cobertura, densidad) y comando `spmkit grains`.

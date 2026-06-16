@@ -3,7 +3,7 @@
 Modela el espectro de ruido térmico (densidad espectral de amplitud, ASD) de
 un oscilador armónico simple (SHO) y el corrimiento de frecuencia al añadir
 masa en la punta — fenómeno observado experimentalmente durante la evaporación
-de *liquid marbles*.
+de muestras.
 
 Física del oscilador armónico:
     * Resonancia natural:  ``f0 = (1/2π) √(k / m_eff)``

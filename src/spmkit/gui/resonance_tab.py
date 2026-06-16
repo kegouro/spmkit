@@ -162,7 +162,7 @@ class ResonanceTab(QtWidgets.QWidget):
         ax.plot(ev.time / 3600, ev.added_mass * 1e12, "o-", color="#4ea1ff")
         ax.set_xlabel("Tiempo (h)")
         ax.set_ylabel("Δm (ng)")
-        ax.set_title("Masa añadida (liquid marble)")
+        ax.set_title("Masa añadida")
 
         # 4) tasa de evaporación
         ax = axes[1][1]

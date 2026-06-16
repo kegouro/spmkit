@@ -44,7 +44,7 @@ def test_effective_spring_constant() -> None:
 
 
 def test_x_over_l_scales_mass() -> None:
-    # Cargar más cerca de la base (x/L<1) → k(x) mayor → masa mayor (fórmula nano-TGA).
+    # Cargar más cerca de la base (x/L<1) → k(x) mayor → masa mayor (k(x)=k(L)/(x/L)³).
     t = np.array([0.0, 3600.0])
     f = np.array([72_800.0, 79_000.0])
     ev_tip = resonance.track_evaporation(t, f, 1.175, x_over_l=1.0)

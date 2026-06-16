@@ -1,6 +1,6 @@
 """Parser del formato NanoSurf ``.nid`` (clásico).
 
-Estructura del archivo (verificada con archivos reales del SPM Lab UTFSM):
+Estructura del archivo (verificada con archivos reales):
 
 * Cabecera de texto tipo INI codificada en ``latin-1``.
 * Un marcador binario ``#!`` (2 bytes) separa la cabecera de los datos.

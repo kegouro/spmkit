@@ -1,4 +1,4 @@
-"""Validación con datos reales de evaporación de liquid marbles (thermal tuning)."""
+"""Validación con datos reales de muestras que pierden masa en el tiempo (thermal tuning)."""
 
 from __future__ import annotations
 
@@ -36,7 +36,7 @@ def test_evaporation_series_physics() -> None:
     assert len(ev.time) == len(_FILES)
     # La frecuencia sube con el tiempo (la masa baja al evaporarse).
     assert ev.frequency[-1] > ev.frequency[0]
-    # La masa de la liquid marble es del orden de ~1 ng.
+    # La masa de la masa añadida es del orden de ~1 ng.
     assert 0.1e-12 < ev.added_mass[0] < 5e-12
     # Δm decrece hasta ~0 al final.
     assert ev.added_mass[-1] < ev.added_mass[0]
