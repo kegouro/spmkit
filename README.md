@@ -14,8 +14,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Checked with mypy](https://img.shields.io/badge/mypy-checked-2a6db2.svg)](https://mypy-lang.org/)
+[![Docs](https://img.shields.io/badge/docs-kegouro.github.io%2Fspmkit-2dd4bf.svg)](https://kegouro.github.io/spmkit/)
 
-[Instalación](#-instalación) · [Uso rápido](#-uso-rápido) · [Características](#-características) · [Validación](#-validación-científica) · [Arquitectura](#-arquitectura) · [Contribuir](CONTRIBUTING.md)
+**[📖 Documentación](https://kegouro.github.io/spmkit/)** · [Instalación](#-instalación) · [Uso rápido](#-uso-rápido) · [Características](#-características) · [Validación](#-validación-científica) · [Arquitectura](#-arquitectura) · [Contribuir](CONTRIBUTING.md)
 
 <img src="docs/images/screenshot_viewer.png" alt="spmkit GUI" width="820">
 
