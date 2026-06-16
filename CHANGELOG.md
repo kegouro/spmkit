@@ -7,6 +7,7 @@ el versionado es [SemVer](https://semver.org/lang/es/).
 ## [Unreleased]
 
 ### Añadido
+- **nano-TGA** (sensado de masa por posición): constante de resorte efectiva k(x)=k(L)/(x/L)³ según la posición de carga x/L de la spícula/liquid marble; fórmula Δm = k(x)/(4π²)·(1/f₁²−1/f₀²) del SPM Lab UTFSM, con control de posición en la GUI y opción --position en la CLI.
 - **Evaporación avanzada**: ajuste SHO/Lorentziano del pico, ley d² (radio de
   gota, régimen de difusión) y exportación de la evaporación como animación GIF.
 - **Vista 3D** de topografía (superficie con dorado, hillshade, exageración Z).

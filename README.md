@@ -21,6 +21,8 @@
 
 <sub>Interfaz de spmkit · <i>captura con datos sintéticos de ejemplo</i></sub>
 
+> 📖 **Guía de estudio**: teoría de AFM con diagramas en [docs/theory/index.html](docs/theory/index.html) (ábrela en el navegador).
+
 </div>
 
 ---
