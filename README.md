@@ -207,4 +207,6 @@ Si usas spmkit en tu investigación, cítalo según [`CITATION.cff`](CITATION.cf
 
 ---
 
+[![DOI](https://zenodo.org/badge/1270254374.svg)](https://zenodo.org/badge/latestdoi/1270254374)
+
 <sub>Parte del **[Pharos Project](https://kegouro.github.io)** — infraestructura científica y educativa sin barreras de entrada. · José Labarca Baeza</sub>
