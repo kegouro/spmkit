@@ -60,3 +60,10 @@ nav:
       - Trazabilidad del pipeline: TRACEABILITY.md
       - Roadmap: ROADMAP.md
       - Diseño de UI: UI_DESIGN.md
+  - ↗ Pharos Project: https://kegouro.github.io
+
+extra:
+  social:
+    - icon: material/lighthouse
+      link: https://kegouro.github.io
+      name: Pharos Project — el ecosistema
