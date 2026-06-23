@@ -1,0 +1,30 @@
+{
+  "title": "spmkit — análisis de datos AFM/KPFM",
+  "description": "Analizador open-source de datos de microscopía de sonda de barrido (AFM/KPFM), validado contra Gwyddion.",
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "MIT",
+  "creators": [
+    {
+      "name": "Labarca Baeza, José",
+      "orcid": "0009-0006-8890-4048",
+      "affiliation": "Universidad Técnica Federico Santa María, Valparaíso, Chile"
+    }
+  ],
+  "keywords": [
+    "AFM",
+    "KPFM",
+    "scanning probe microscopy",
+    "SPM",
+    "data analysis",
+    "materials science",
+    "Python"
+  ],
+  "related_identifiers": [
+    {
+      "relation": "isPartOf",
+      "identifier": "https://kegouro.github.io",
+      "scheme": "url"
+    }
+  ]
+}
