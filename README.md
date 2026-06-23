@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🔬 SPM-Kit
+# 🔬 SPM-Kit 🔬
 
 ### Analizador open-source de datos **AFM / KPFM** para microscopía de sonda de barrido
 
