@@ -2,10 +2,6 @@
 
 <img src="docs/images/brand/banner.png" alt="SPM-Kit Banner" width="820">
 
-<a href="https://github.com/kegouro/spmkit">
-  <img src="docs/images/brand/logo.png" alt="SPM-Kit Logo" width="200" style="margin-top: 20px; margin-bottom: 20px;">
-</a>
-
 # 🔬 SPM-Kit 🔬
 
 ### Analizador open-source de datos **AFM / KPFM** para microscopía de sonda de barrido
