@@ -97,3 +97,9 @@ def test_dissipation_positive_with_hysteresis() -> None:
     sep, f_ext = _hertz(young=1.0e6)
     _, f_ret = _hertz(young=2.0e6)  # retract con más fuerza → área de histéresis
     assert fc.dissipation_energy(sep, f_ext, sep, f_ret) > 0.0
+
+
+def test_fit_repr_html() -> None:
+    sep, force = _hertz()
+    html = fc.fit_force_curve(sep, force, tip_radius=10e-9)._repr_html_()
+    assert "<table>" in html and "Módulo de Young" in html and "R²" in html

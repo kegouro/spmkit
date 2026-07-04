@@ -38,6 +38,20 @@ class ForceCurveFit:
     def to_dict(self) -> dict:
         return asdict(self)
 
+    def _repr_html_(self) -> str:
+        """Render inline en Jupyter (tabla compacta del ajuste)."""
+        e = self.young_modulus / 1e3
+        es = self.young_modulus_std / 1e3
+        return (
+            "<table><tbody>"
+            f"<tr><th align='left'>Módulo de Young</th><td>{e:.3g} ± {es:.2g} kPa</td></tr>"
+            f"<tr><th align='left'>R²</th><td>{self.r_squared:.4f}</td></tr>"
+            f"<tr><th align='left'>Adhesión</th><td>{self.adhesion * 1e9:.3g} nN</td></tr>"
+            f"<tr><th align='left'>Modelo</th><td>{self.model}</td></tr>"
+            f"<tr><th align='left'>Puntos ajustados</th><td>{self.n_fit}</td></tr>"
+            "</tbody></table>"
+        )
+
 
 def _orient(x: np.ndarray, f: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """Ordena la curva con la línea base (fuerza plana) primero.
