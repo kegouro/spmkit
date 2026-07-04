@@ -496,6 +496,7 @@ def forcemap(
     model: str = typer.Option("sphere", "--model", help="sphere|paraboloid|cone|dmt"),
     tip_radius: float = typer.Option(10e-9, "--tip-radius", help="Radio de punta (m)"),
     output: Path | None = typer.Option(None, "--output", "-o", help="CSV del mapa de módulo"),
+    figure: Path | None = typer.Option(None, "--figure", "-f", help="PNG de los mapas"),
     parallel: bool = typer.Option(False, "--parallel", help="Ejecución en paralelo"),
 ) -> None:
     """Analiza un force-volume y muestra la estadística de los mapas de propiedades."""
@@ -521,6 +522,11 @@ def forcemap(
     if output is not None:
         np.savetxt(output, result.maps["young_modulus"], delimiter=",")
         console.print(f"[green]✓[/] Mapa de módulo → {output}")
+    if figure is not None:
+        from spmkit.core.viz.maps import save_property_maps
+
+        save_property_maps(result.maps, figure, title=file.name)
+        console.print(f"[green]✓[/] Figura de mapas → {figure}")
 
 
 @app.command()
