@@ -444,9 +444,12 @@ def _apply_level(ch, level: str):  # type: ignore[no-untyped-def]
     raise typer.BadParameter("level debe ser plane|poly|none")
 
 
-def _force_recipe(model: str, tip_radius: float):  # type: ignore[no-untyped-def]
+def _force_recipe(model: str, tip_radius: float, recipe_path: Path | None = None):  # type: ignore[no-untyped-def]
+    """Recipe de un archivo YAML (reproducible) o el pipeline por defecto."""
     from spmkit.core.pipeline import Recipe, Step
 
+    if recipe_path is not None:
+        return Recipe.from_yaml(recipe_path.read_text(encoding="utf-8"))
     return Recipe(
         steps=(
             Step(op="find_contact_point"),
@@ -536,11 +539,14 @@ def fbatch(
     model: str = typer.Option("sphere", "--model", help="sphere|paraboloid|cone|dmt"),
     tip_radius: float = typer.Option(10e-9, "--tip-radius", help="Radio de punta (m)"),
     parallel: bool = typer.Option(False, "--parallel", help="Ejecución en paralelo"),
+    recipe: Path | None = typer.Option(None, "--recipe", help="Recipe YAML reproducible"),
 ) -> None:
     """Procesa por lotes todas las curvas de fuerza de una carpeta → CSV resumen."""
     from spmkit.core.forcebatch import process_force_folder
 
-    result = process_force_folder(folder, _force_recipe(model, tip_radius), parallel=parallel)
+    result = process_force_folder(
+        folder, _force_recipe(model, tip_radius, recipe), parallel=parallel
+    )
     result.to_csv(output)
     console.print(
         f"[green]✓[/] {len(result.rows)} archivos ({result.n_failed} con error) → {output}"
