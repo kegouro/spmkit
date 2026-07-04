@@ -19,8 +19,10 @@ from __future__ import annotations
 from dataclasses import replace
 from typing import Any
 
+import numpy as np
+
 from spmkit.core.analysis import calibration as _cal
-from spmkit.core.analysis import mechanics
+from spmkit.core.analysis import forcecurve
 from spmkit.core.models import ForceCurve
 from spmkit.core.pipeline.operations import operation
 
@@ -34,17 +36,20 @@ def _primary_segment(curve: ForceCurve) -> Any:
     return curve.extend or (curve.segments[0] if curve.segments else None)
 
 
-def _indentation_axis(seg: Any) -> Any:
-    """Eje ``x`` para el ajuste, orientado como espera :mod:`mechanics`.
+def _axis(seg: Any) -> Any:
+    """Eje del ajuste: separación punta-muestra si es utilizable, si no la altura.
 
-    La nanomecánica de ``mechanics`` supone "x creciente ⇒ más indentación". En una
-    curva de fuerza eso corresponde a la **separación punta-muestra decreciente**
-    (el piezo empuja hacia la muestra), así que se usa ``-separación``. Como la
-    separación ya corrige la flexión del cantiléver, el ajuste NO vuelve a corregir
-    por ``k``. Sin separación (curva no calibrada), cae a ``-raw_height``.
+    Se prefiere la separación (indentación real, corregida por flexión). Pero algunos
+    instrumentos la entregan **saturada/clipada** (muchos valores repetidos en el
+    contacto), inservible para el ajuste; en ese caso se usa la altura del piezo
+    (siempre limpia y monótona), que da el módulo "aparente".
     """
-    sep = seg.separation if seg.separation is not None else seg.raw_height
-    return -sep
+    sep = seg.separation
+    if sep is not None:
+        sep = np.asarray(sep, dtype=np.float64)
+        if np.unique(sep).size >= 0.9 * sep.size:  # separación no degenerada
+            return sep
+    return seg.raw_height
 
 
 @operation("calibrate")
@@ -62,7 +67,9 @@ def calibrate(
     cal = curve.calibration
     inv = _resolve(invols, cal.invols if cal else None)
     k = _resolve(spring_constant, cal.spring_constant if cal else None)
-    if inv is None or k is None:
+    # Solo se necesita calibración si algún segmento aún no tiene fuerza (V/m crudos).
+    needs_calibration = any(seg.force is None for seg in curve.segments)
+    if needs_calibration and (inv is None or k is None):
         raise ValueError("calibrate: faltan invols/k (ni en params ni en curve.calibration)")
 
     new_segments = []
@@ -98,10 +105,7 @@ def find_contact_point(curve: ForceCurve, ctx: dict[str, Any], method: str = "ro
     if seg is None or seg.force is None:
         ctx["contact_detected"] = False
         return curve
-    mech = mechanics.ForceCurve(z=_indentation_axis(seg), force=seg.force)
-    corrected = mechanics.baseline_correct(mech)
-    z0 = mechanics.find_contact_point(corrected, method=method)
-    ctx["contact_point"] = float(z0)
+    ctx["contact_point"] = forcecurve.find_contact(_axis(seg), seg.force)
     ctx["contact_detected"] = True
     return curve
 
@@ -124,19 +128,20 @@ def fit_elasticity(
     if seg is None:
         raise ValueError("fit_elasticity: la curva no tiene segmentos")
     force = seg.require_force()
-    mech = mechanics.ForceCurve(z=_indentation_axis(seg), force=force)
-    # La separación ya corrige la flexión → no volver a corregir por k aquí.
-    result = mechanics.fit_hertz(
-        mech,
-        tip_radius=tip_radius,
-        model=model,
-        poisson=poisson,
-        spring_constant=None,
-        contact_point=ctx.get("contact_point"),
+    fit = forcecurve.fit_force_curve(
+        _axis(seg), force, model=model, tip_radius=tip_radius, poisson=poisson
     )
-    ctx["young_modulus"] = result.young_modulus
-    ctx["young_modulus_std"] = result.young_modulus_std
-    ctx["r_squared"] = result.r_squared
-    ctx["adhesion"] = result.adhesion
-    ctx["fit"] = result
+    ctx["young_modulus"] = fit.young_modulus
+    ctx["young_modulus_std"] = fit.young_modulus_std
+    ctx["r_squared"] = fit.r_squared
+    ctx["contact_point"] = fit.contact_point
+    ctx["adhesion"] = fit.adhesion
+    ctx["fit"] = fit
+
+    # Energía de disipación (histéresis) si hay segmento de retract.
+    retract = curve.retract
+    if retract is not None and retract.force is not None:
+        ctx["dissipation"] = forcecurve.dissipation_energy(
+            _axis(seg), force, _axis(retract), retract.force
+        )
     return curve
