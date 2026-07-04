@@ -1,6 +1,7 @@
 """Análisis numérico de datos SPM."""
 
 from spmkit.core.analysis import (
+    calibration,
     grains,
     kpfm,
     leveling,
@@ -31,6 +32,7 @@ from spmkit.core.analysis.simulation import SimulatedCantilever
 from spmkit.core.analysis.spectral import FractalResult, RadialPSD
 
 __all__ = [
+    "calibration",
     "leveling",
     "roughness",
     "profiles",
