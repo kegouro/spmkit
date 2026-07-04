@@ -31,12 +31,31 @@ _ALLOWED_CMP = {
 }
 
 
+class _Undefined:
+    """Marcador para un nombre ausente en el contexto (evalúa como falso).
+
+    Permite que una condición referida a un campo que un paso anterior no fijó
+    (p. ej. ``contact_detected`` cuando no se corrió la detección) simplemente
+    salte el paso, en vez de lanzar un error.
+    """
+
+    def __bool__(self) -> bool:
+        return False
+
+    def __repr__(self) -> str:
+        return "<undefined>"
+
+
+_UNDEFINED = _Undefined()
+
+
 def evaluate_condition(expr: str, context: dict[str, Any]) -> bool:
     """Evalúa una condición booleana restringida contra ``context``.
 
-    Solo admite nombres presentes en ``context`` (lista blanca), literales,
-    comparaciones y ``and``/``or``/``not``. Cualquier otra construcción (llamadas a
-    función, atributos, índices, etc.) lanza ``ValueError``. No usa ``eval()``.
+    Admite nombres (resueltos contra ``context``; los ausentes son "indefinidos" y
+    cuentan como falsos), literales, comparaciones y ``and``/``or``/``not``.
+    Cualquier otra construcción (llamadas a función, atributos, índices, etc.) lanza
+    ``ValueError``. No usa ``eval()``.
     """
     try:
         tree = ast.parse(expr, mode="eval")
@@ -62,14 +81,13 @@ def _eval_node(node: ast.AST, ctx: dict[str, Any]) -> Any:
             if fn is None:
                 raise ValueError(f"Operador de comparación no permitido: {type(op).__name__}")
             right = _eval_node(comparator, ctx)
-            if not fn(left, right):
+            # Un operando indefinido hace la comparación falsa (no un error).
+            if left is _UNDEFINED or right is _UNDEFINED or not fn(left, right):
                 return False
             left = right
         return True
     if isinstance(node, ast.Name):
-        if node.id in ctx:
-            return ctx[node.id]
-        raise ValueError(f"Nombre no permitido en condición: {node.id!r}")
+        return ctx.get(node.id, _UNDEFINED)
     if isinstance(node, ast.Constant):
         return node.value
     raise ValueError(f"Expresión no permitida en condición: {type(node).__name__}")

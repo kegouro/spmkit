@@ -38,10 +38,18 @@ def test_evaluate_condition_basic() -> None:
 
 def test_evaluate_condition_rejects_unsafe() -> None:
     ctx = {"x": 1}
-    with pytest.raises(ValueError):  # llamada a función: no permitida
+    with pytest.raises(ValueError):  # llamada a función: no permitida (seguridad)
         evaluate_condition("__import__('os').system('echo hi')", ctx)
-    with pytest.raises(ValueError, match="Nombre no permitido"):  # nombre fuera de la lista blanca
-        evaluate_condition("y > 0", ctx)
+    with pytest.raises(ValueError):  # atributo: no permitido (seguridad)
+        evaluate_condition("x.__class__", ctx)
+
+
+def test_evaluate_condition_missing_name_is_falsy() -> None:
+    """Un nombre ausente es indefinido (falso), para poder saltar pasos del pipeline."""
+    ctx = {"x": 1}
+    assert evaluate_condition("y", ctx) is False
+    assert evaluate_condition("y > 0", ctx) is False
+    assert evaluate_condition("x > 0 and missing", ctx) is False
 
 
 # Operaciones de prueba (las reales de física se registran en fases posteriores).
