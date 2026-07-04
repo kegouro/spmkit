@@ -6,6 +6,28 @@ el versionado es [SemVer](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+### Añadido — Plataforma de espectroscopía de fuerza (curvas de fuerza)
+- **Modelo de datos de curvas de fuerza** (`core/models/force.py`): `ForceSegment`
+  (extend/retract/pause con canales crudos + estado de calibración), `ForceCurve`
+  y `ForceVolume` con **carga perezosa** (loader picklable) para mapas grandes.
+- **Motor de pipeline reproducible** (`core/pipeline/`): `Recipe` serializable a
+  YAML (la GUI podrá grabarlo), condiciones seguras evaluadas con `ast` (sin
+  `eval()`), registro de operaciones y ejecución con callback de progreso.
+- **Calibración del cantiléver** (`core/analysis/calibration.py`): sensibilidad de
+  deflexión (InVOLS), constante de resorte por ruido térmico (Butt-Jaschke).
+- **Mecánica nativa de curvas de fuerza** (`core/analysis/forcecurve.py`): ajuste
+  robusto al signo/orden del eje (JPK y NanoSurf a la par), modelos Hertz/
+  paraboloide/cono/DMT, incertidumbre **Monte Carlo** (propaga InVOLS y k),
+  adhesión y **energía de disipación** (histéresis approach/retract).
+- **Lectores de curvas de fuerza**: `.jpk-force` (JPK/Bruker, con calibración
+  desde metadatos) y force-volume `.nid` (NanoSurf, extend/retract).
+- **Mapas de force-volume** (`core/analysis/forcevolume.py`): corre el pipeline
+  por píxel → mapas de módulo/adhesión/disipación + estadística e histogramas,
+  con **ejecución en paralelo** opcional.
+- **Batch de curvas de fuerza** (`core/forcebatch.py`): procesa una carpeta de
+  archivos → tabla resumen (`to_csv`/`to_dataframe`).
+- **CLI**: comandos `forcecurve`, `forcemap` y `fbatch`.
+
 ### Añadido
 - **Nanomecánica — modelo DMT** (Derjaguin-Muller-Toporov): Hertz esférico con la
   adhesión como offset constante, para muestras rígidas con adhesión no

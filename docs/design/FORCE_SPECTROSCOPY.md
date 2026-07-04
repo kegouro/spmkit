@@ -576,4 +576,38 @@ segments/1/...                                 # segmento 1 (retract)
 aplicar la cascada de conversiones. La `Calibration` se lee directa de los slots
 `distance`/`force`. El ecosistema `afmformats`/`nanite`/`PyJibe` (Paul Müller) sirve
 de referencia de implementación (y de datos de test).
+
+---
+
+## 18. Estado de implementación (2026-07)
+
+**Hecho y validado (en la rama `feat/force-spectroscopy`):**
+
+| Módulo | Qué hace | Validación |
+|---|---|---|
+| `core/models/force.py` | Modelo de segmentos + ForceVolume lazy | pickling, shim, guardas |
+| `core/pipeline/` | Recipe YAML + condiciones seguras + run | roundtrip, evaluador `ast` |
+| `core/analysis/calibration.py` | InVOLS, k térmico, conversiones | known-answer |
+| `core/analysis/forcecurve.py` | Ajuste nativo robusto + MC + disipación | sintético (E exacto), JPK real 302 kPa R²0.97 |
+| `core/io/jpk.py` | Lector `.jpk-force` | fixture + JPK real (InVOLS/k recuperados) |
+| `core/io/nid.py` `load_nid_force` | Force-volume NanoSurf (extend/retract) | `.nid` real 10×10, 100 curvas |
+| `core/analysis/forcevolume.py` | Mapas por píxel + paralelo + estadística | mapa recupera módulo, paralelo==secuencial |
+| `core/forcebatch.py` | Batch de carpeta → CSV/DataFrame | sintético + `.nid` real |
+| CLI | `forcecurve`, `forcemap`, `fbatch` | tests + corridas reales |
+
+**Caveats / follow-ups conocidos:**
+
+1. **Calidad de ajuste en `.nid` real:** las curvas NanoSurf de nanomecánica traen
+   snap-in/adhesión fuertes y el canal `Tip-Sample Separation` viene **saturado**
+   en el contacto (≈85% de valores únicos), así que se cae a la altura del piezo →
+   módulo "aparente" (sobreestimado, R² moderado). Refinamiento pendiente: corrección
+   de flexión con k del `.nid`, manejo dedicado del snap-in, y contacto por RoV sobre
+   la rama de carga. El pipeline corre end-to-end y no produce basura (E finito), pero
+   el número absoluto en `.nid` aún no es de publicación (en JPK sí: 302 kPa, R²0.97).
+2. **`.jpk-force-map` (force-volume JPK):** su ZIP usa `shared-data/` con conversiones
+   compartidas e indirección `lcd-info` por segmento (headers pequeños que referencian
+   la calibración compartida). Parsearlo bien requiere resolver esa indirección; queda
+   como follow-up. Los mapas ya funcionan vía `.nid`; el `.jpk-force` de curva única sí.
+3. **Provenance en exports** (recipe + hash + versión) y la **GUI workspace** (Fase 6)
+   siguen pendientes.
 ```
