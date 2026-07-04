@@ -17,12 +17,19 @@ Estructura del archivo (verificada con archivos reales):
 
 from __future__ import annotations
 
+import math
 import re
 from pathlib import Path
 
 import numpy as np
 
-from spmkit.core.models import SPMChannel, SPMData
+from spmkit.core.models import (
+    ForceCurve,
+    ForceSegment,
+    ForceVolume,
+    SPMChannel,
+    SPMData,
+)
 
 _MARKER = b"#!"
 _SECTION_RE = re.compile(r"^\[(?P<name>[^\]]+)\]\s*$")
@@ -161,3 +168,95 @@ def load_nid(path: str | Path) -> SPMData:
         "version": sections["DataSet"].get("Version", ""),
     }
     return SPMData(channels=tuple(channels), metadata=metadata, source_path=str(path))
+
+
+# --------------------------------------------------------------------------- #
+# Curvas de fuerza (espectroscopía) → ForceVolume
+# --------------------------------------------------------------------------- #
+
+
+def _find_channel(channels: list[SPMChannel], name: str, frame_contains: str) -> SPMChannel | None:
+    """Primer canal con ``name`` cuyo ``Frame`` contiene ``frame_contains``."""
+    for c in channels:
+        if c.name == name and frame_contains in c.metadata.get("Frame", ""):
+            return c
+    return None
+
+
+def load_nid_force(path: str | Path) -> ForceVolume:
+    """Lee la espectroscopía de un ``.nid`` como :class:`ForceVolume`.
+
+    NanoSurf guarda las curvas de fuerza como canales de espectroscopía
+    (``Dim1Name=SpecPoint``): ``Deflection`` (N, ya calibrada) y ``Z-Axis Sensor``
+    (m, altura) en ``Spec forward`` (extend) y ``Spec backward`` (retract). Si están,
+    usa además los canales ``Tip-Sample Separation`` (m, separación ya computada por
+    el instrumento; frames ``Indentation…Fwd/Bwd``). Cada fila es una curva.
+
+    Devuelve un :class:`ForceVolume` de ``Lines`` curvas, cada una con segmentos
+    extend/retract calibrados (``state="force_n"``).
+    """
+    data = load_nid(path)
+    chs = list(data.channels)
+
+    ext_force = _find_channel(chs, "Deflection", "Spec forward")
+    ext_z = _find_channel(chs, "Z-Axis Sensor", "Spec forward")
+    ret_force = _find_channel(chs, "Deflection", "Spec backward")
+    ret_z = _find_channel(chs, "Z-Axis Sensor", "Spec backward")
+    if ext_force is None or ext_z is None:
+        raise ValueError(f"El .nid no contiene curvas de fuerza (canales Spec): {path}")
+
+    ext_sep = _find_channel(chs, "Tip-Sample Separation", "Fwd")
+    ret_sep = _find_channel(chs, "Tip-Sample Separation", "Bwd")
+
+    n_curves = int(ext_force.data.shape[0])
+
+    def _segment(
+        kind: str,
+        direction: str,
+        z_ch: SPMChannel,
+        f_ch: SPMChannel,
+        sep_ch: SPMChannel | None,
+        i: int,
+    ) -> ForceSegment:
+        height = np.asarray(z_ch.data[i], dtype=np.float64)
+        force = np.asarray(f_ch.data[i], dtype=np.float64)
+        separation = None
+        deflection = None
+        if sep_ch is not None:
+            separation = np.asarray(sep_ch.data[i], dtype=np.float64)
+            deflection = height - separation  # sep = height − deflexión
+        return ForceSegment(
+            segment_type=kind,  # type: ignore[arg-type]
+            direction=direction,
+            raw_height=height,
+            raw_deflection=deflection if deflection is not None else force,
+            deflection=deflection,
+            force=force,
+            separation=separation,
+            state="force_n",
+            metadata={"num_points": int(height.size)},
+        )
+
+    def _load_curve(i: int) -> ForceCurve:
+        segments = [_segment("extend", "approach", ext_z, ext_force, ext_sep, i)]
+        if ret_force is not None and ret_z is not None:
+            segments.append(_segment("retract", "retract", ret_z, ret_force, ret_sep, i))
+        return ForceCurve(segments=tuple(segments), index=i, metadata={"format": "nid"})
+
+    curves = tuple(_load_curve(i) for i in range(n_curves))
+
+    # Grilla espacial: cuadrada si es un cuadrado perfecto, si no una línea 1×N.
+    side = int(math.isqrt(n_curves))
+    grid_shape = (side, side) if side * side == n_curves else (1, n_curves)
+    # Extensión XY del mapa: del canal de topografía si existe, si no desconocida.
+    topo = _find_channel(chs, "Z-Axis", "Scan forward")
+    x_range = float(topo.x_range) if topo is not None else 0.0
+    y_range = float(topo.y_range) if topo is not None else 0.0
+
+    return ForceVolume.from_curves(
+        curves,
+        grid_shape=grid_shape,
+        x_range=x_range,
+        y_range=y_range,
+        metadata={"format": "nid", "source_path": str(path)},
+    )
