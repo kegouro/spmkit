@@ -6,6 +6,34 @@ el versionado es [SemVer](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+### Añadido
+- **Nanomecánica — modelo DMT** (Derjaguin-Muller-Toporov): Hertz esférico con la
+  adhesión como offset constante, para muestras rígidas con adhesión no
+  despreciable (`--model dmt`).
+- **Incertidumbre y bondad de ajuste**: `IndentationResult` ahora reporta la
+  incertidumbre 1σ del módulo (`young_modulus_std`), el `r_squared` y el número
+  de puntos ajustados (`n_fit`); la CLI `nanomech` los muestra (`E ± σ`, `R²`).
+- **Detección de contacto robusta** por *ratio of variances* (Gavara 2016),
+  seleccionable con `--contact-method rov` (más robusto al ruido que el umbral
+  de k·σ).
+- Factor de corrección de forma de modo (`correction_factor`, Butt-Jaschke) en
+  `thermal_spring_constant` para calibración por palanca óptica.
+- Tests known-answer para los modelos DMT y cónico (Sneddon), momentos
+  gaussianos de rugosidad (Ssk≈0, Sku≈3) y contacto bajo ruido.
+
+### Corregido
+- `adhesion` en el ajuste de curvas se mide ahora sobre la curva **corregida de
+  línea base** (antes usaba la curva cruda, sesgando el pull-off por el offset).
+- `fit_all` propaga el semiángulo (`half_angle`) a cada ajuste cónico (antes
+  quedaba fijo en 20° en los mapas de módulo).
+- CLI `nanomech`: valida el índice de curva fuera de rango con un mensaje claro
+  en vez de un `IndexError`.
+- Docstring de `thermal_spring_constant` con un ejemplo numérico incorrecto
+  (×100); corregido y verificado.
+- **Privacidad**: se retiraron de la documentación pública (`VALIDATION.md`,
+  `cli.md`) el identificador de muestra del lab y un valor medido específico,
+  según la política de neutralidad experimental del proyecto.
+
 ## [0.1.2] - 2026-06-16
 
 ### Cambiado

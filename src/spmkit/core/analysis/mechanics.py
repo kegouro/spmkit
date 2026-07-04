@@ -31,6 +31,7 @@ _MODELS = {
     "sphere": 1.5,  # Hertz esférico / paraboloide (R = radio de punta)
     "paraboloid": 1.5,
     "cone": 2.0,  # Sneddon cónico (alpha = semiángulo)
+    "dmt": 1.5,  # Derjaguin-Muller-Toporov: Hertz + adhesión como offset constante
 }
 
 
@@ -52,7 +53,20 @@ class ForceCurve:
 
 @dataclass(frozen=True)
 class IndentationResult:
-    """Resultado del ajuste de una curva fuerza-indentación."""
+    """Resultado del ajuste de una curva fuerza-indentación.
+
+    Attributes:
+        young_modulus: Módulo de Young estimado (Pa).
+        young_modulus_std: Incertidumbre 1σ del módulo (Pa), propagada de la
+            covarianza del ajuste lineal. Cero para curvas sin ruido.
+        r_squared: Bondad de ajuste (coeficiente de determinación) en [−∞, 1].
+        contact_point: Posición ``z0`` del contacto (m).
+        adhesion: Fuerza de adhesión / pull-off (N), medida sobre la curva
+            corregida de línea base.
+        model: Modelo de contacto usado.
+        rmse: Error cuadrático medio del ajuste (N).
+        n_fit: Número de puntos usados en el ajuste.
+    """
 
     young_modulus: float
     contact_point: float
@@ -60,6 +74,9 @@ class IndentationResult:
     model: str
     rmse: float
     unit_modulus: str = "Pa"
+    young_modulus_std: float = 0.0
+    r_squared: float = 1.0
+    n_fit: int = 0
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -110,18 +127,51 @@ def baseline_correct(curve: ForceCurve, fraction: float = 0.3) -> ForceCurve:
     )
 
 
-def find_contact_point(curve: ForceCurve, fraction: float = 0.3, k: float = 5.0) -> float:
-    """Devuelve el ``z`` del punto de contacto (primer cruce sobre el ruido).
+def find_contact_point(
+    curve: ForceCurve, fraction: float = 0.3, k: float = 5.0, method: str = "threshold"
+) -> float:
+    """Devuelve el ``z`` del punto de contacto. Asume ``curve`` corregida de base.
 
-    Usa la desviación estándar de la línea base como umbral (``k`` sigmas).
-    Asume que ``curve`` ya está corregida de base.
+    Args:
+        method: ``"threshold"`` (primer cruce sobre ``k``·σ del ruido de la línea
+            base; rápido pero sensible al ruido) o ``"rov"`` (*ratio of variances*,
+            Gavara 2016; mucho más robusto en curvas reales ruidosas).
+        fraction: Fracción inicial usada como línea base para el umbral.
+        k: Número de sigmas del umbral (solo ``method="threshold"``).
     """
+    if method == "rov":
+        cp = _contact_point_rov(curve.z, curve.force)
+        if cp is not None:
+            return cp
+        # RoV no aplicable (curva muy corta): cae al método de umbral.
     n = max(2, int(curve.z.size * fraction))
     threshold = k * float(np.std(curve.force[:n]))
     above = np.flatnonzero(curve.force > threshold)
     if above.size == 0:
         return float(curve.z[-1])
     return float(curve.z[above[0]])
+
+
+def _contact_point_rov(z: np.ndarray, force: np.ndarray, window: int | None = None) -> float | None:
+    """Punto de contacto por *ratio of variances* (Gavara, Sci. Rep. 2016).
+
+    Compara, punto a punto, la varianza de la ventana posterior con la anterior;
+    al entrar en contacto la varianza salta, así que el contacto es el máximo del
+    cociente. Robusto al ruido a diferencia del umbral de ``k``·σ. Devuelve
+    ``None`` si la curva es demasiado corta para el método.
+    """
+    n = int(force.size)
+    w = window if window is not None else max(3, n // 20)
+    if n < 2 * w + 1:
+        return None
+    eps = 1e-12 * float(np.max(force**2)) + 1e-300  # evita 0/0 en líneas base sin ruido
+    # ponytail: bucle O(n) claro; vectorizar con momentos acumulados si las curvas crecen mucho.
+    rov = np.full(n, -np.inf)
+    for i in range(w, n - w):
+        var_before = float(np.var(force[i - w : i]))
+        var_after = float(np.var(force[i : i + w]))
+        rov[i] = var_after / (var_before + eps)
+    return float(z[int(np.argmax(rov))])
 
 
 def fit_hertz(
@@ -131,29 +181,41 @@ def fit_hertz(
     model: str = "sphere",
     contact_point: float | None = None,
     spring_constant: float | None = None,
+    contact_method: str = "threshold",
     half_angle: float = np.deg2rad(20.0),
 ) -> IndentationResult:
     """Ajusta un modelo de contacto a la curva y estima el módulo de Young.
 
     * ``sphere``/``paraboloid``: ``F = (4/3) E* sqrt(R) delta^1.5``
     * ``cone`` (Sneddon): ``F = (2/pi) E* tan(alpha) delta^2``
+    * ``dmt`` (Derjaguin-Muller-Toporov): ``F = (4/3) E* sqrt(R) delta^1.5 - F_adh``,
+      idéntico a Hertz esférico salvo un offset de adhesión constante; recomendado
+      para muestras rígidas con adhesión no despreciable.
 
-    con ``E* = E / (1 - nu^2)``.
+    con ``E* = E / (1 - nu^2)`` (punta rígida). El resultado incluye la
+    incertidumbre 1σ del módulo y el R² del ajuste.
 
     Args:
-        tip_radius: Radio de la punta ``R`` (m) para modelos esféricos.
+        tip_radius: Radio de la punta ``R`` (m) para modelos esféricos/DMT.
         poisson: Coeficiente de Poisson de la muestra.
-        model: ``"sphere"``, ``"paraboloid"`` o ``"cone"``.
+        model: ``"sphere"``, ``"paraboloid"``, ``"cone"`` o ``"dmt"``.
         contact_point: ``z0`` (m). Si es ``None`` se detecta automáticamente.
         spring_constant: Constante del cantiléver (N/m) para corregir la
             indentación por la deflexión. Si es ``None``, ``delta ≈ z - z0``.
+        contact_method: Método de detección del contacto (``"threshold"`` o
+            ``"rov"``), solo si ``contact_point is None``.
         half_angle: Semiángulo de la punta cónica (rad), solo para ``cone``.
     """
     if model not in _MODELS:
         raise ValueError(f"model debe ser uno de {sorted(_MODELS)}")
 
     corrected = baseline_correct(curve)
-    z0 = find_contact_point(corrected) if contact_point is None else contact_point
+    adh = adhesion(corrected)  # pull-off medido sobre la curva corregida de base
+    z0 = (
+        find_contact_point(corrected, method=contact_method)
+        if contact_point is None
+        else contact_point
+    )
 
     mask = corrected.z >= z0
     z_c = corrected.z[mask]
@@ -169,22 +231,38 @@ def fit_hertz(
     if delta.size < 3:
         raise ValueError("Indentación insuficiente tras la corrección")
 
+    # DMT: la parte elástica es F_medida + F_adh (adhesión como offset constante).
+    f_fit = f_c + adh if model == "dmt" else f_c
+
     exponent = _MODELS[model]
     basis = delta**exponent
-    stiffness = float(np.sum(basis * f_c) / np.sum(basis**2))  # k tal que F = k·delta^n
+    denom = float(np.sum(basis**2))
+    stiffness = float(np.sum(basis * f_fit) / denom)  # k tal que F = k·delta^n
 
     e_star = _e_star_from_stiffness(stiffness, model, tip_radius, half_angle)
     young = e_star * (1.0 - poisson**2)
 
     predicted = stiffness * basis
-    rmse = float(np.sqrt(np.mean((f_c - predicted) ** 2)))
+    residuals = f_fit - predicted
+    ssr = float(np.sum(residuals**2))
+    rmse = float(np.sqrt(ssr / residuals.size))
+
+    # Bondad de ajuste e incertidumbre (modelo lineal F = k·basis por el origen).
+    sst = float(np.sum((f_fit - f_fit.mean()) ** 2))
+    r_squared = 1.0 - ssr / sst if sst > 0 else 1.0
+    dof = max(1, delta.size - 1)
+    var_stiffness = (ssr / dof) / denom
+    sigma_young = young * float(np.sqrt(var_stiffness)) / stiffness if stiffness > 0 else 0.0
 
     return IndentationResult(
         young_modulus=young,
         contact_point=float(z0),
-        adhesion=adhesion(curve),
+        adhesion=adh,
         model=model,
         rmse=rmse,
+        young_modulus_std=sigma_young,
+        r_squared=r_squared,
+        n_fit=int(delta.size),
     )
 
 
@@ -229,12 +307,17 @@ def fit_all(
     model: str = "sphere",
     spring_constant: float | None = None,
     grid: tuple[int, int] | None = None,
+    contact_method: str = "threshold",
+    half_angle: float = np.deg2rad(20.0),
 ) -> MechanicalMap:
     """Ajusta todas las curvas de un canal y arma mapas de módulo y adhesión.
 
     Args:
         grid: Forma ``(rows, cols)`` de la grilla espacial. Si es ``None`` se
             infiere una grilla cuadrada cuando es posible; si no, queda ``1×N``.
+        contact_method: Método de detección del contacto para cada curva.
+        half_angle: Semiángulo de la punta cónica (rad), propagado a cada ajuste
+            ``cone`` (antes quedaba fijo en el valor por defecto).
     """
     curves = extract_curves(channel)
     n = len(curves)
@@ -251,6 +334,8 @@ def fit_all(
                 poisson=poisson,
                 model=model,
                 spring_constant=spring_constant,
+                contact_method=contact_method,
+                half_angle=half_angle,
             )
             young[i], adh[i], contact[i] = r.young_modulus, r.adhesion, r.contact_point
         except (ValueError, ZeroDivisionError):
@@ -269,20 +354,30 @@ def _e_star_from_stiffness(
     stiffness: float, model: str, tip_radius: float, half_angle: float
 ) -> float:
     """Despeja el módulo reducido E* de la rigidez ajustada ``F = k·delta^n``."""
-    if model in ("sphere", "paraboloid"):
+    if model in ("sphere", "paraboloid", "dmt"):
         return stiffness / ((4.0 / 3.0) * np.sqrt(tip_radius))
     # cone (Sneddon)
     return stiffness * np.pi / (2.0 * np.tan(half_angle))
 
 
-def thermal_spring_constant(deflection_variance: float, temperature: float = 293.15) -> float:
+def thermal_spring_constant(
+    deflection_variance: float,
+    temperature: float = 293.15,
+    correction_factor: float = 1.0,
+) -> float:
     """Estima la constante de resorte del cantiléver por el método de equipartición.
 
     Aplica el **teorema de equipartición de la energía**: en equilibrio térmico,
     cada grado de libertad cuadrático almacena una energía promedio de ½·k_B·T.
     Para un cantiléver de constante k::
 
-        ½·k·⟨x²⟩ = ½·k_B·T  →  k = k_B·T / ⟨x²⟩
+        ½·k·⟨x²⟩ = ½·k_B·T  →  k = χ · k_B·T / ⟨x²⟩
+
+    donde ``χ`` (``correction_factor``) corrige por la forma del modo cuando la
+    deflexión se mide con palanca óptica: la equipartición cruda supone el
+    desplazamiento del extremo, pero el detector integra la pendiente, de modo
+    que para el primer modo ``χ ≈ 0.817`` (Butt & Jaschke 1995). Con
+    ``correction_factor=1.0`` se recupera la equipartición sin corregir.
 
     Args:
         deflection_variance: Varianza de la deflexión térmica del cantiléver
@@ -291,6 +386,8 @@ def thermal_spring_constant(deflection_variance: float, temperature: float = 293
             Debe ser estrictamente positivo.
         temperature: Temperatura de la muestra en Kelvin (por defecto 293.15 K
             ≈ 20 °C).
+        correction_factor: Factor de corrección de forma de modo ``χ`` (1.0 por
+            defecto; ≈0.817 para el primer modo con detección por palanca óptica).
 
     Returns:
         Constante de resorte k en N/m.
@@ -300,11 +397,11 @@ def thermal_spring_constant(deflection_variance: float, temperature: float = 293
 
     Example::
 
-        >>> thermal_spring_constant(1e-20)
-        40.50...
+        >>> round(thermal_spring_constant(1e-20), 4)
+        0.4047
     """
     if deflection_variance <= 0:
         raise ValueError(
             f"deflection_variance debe ser estrictamente positivo, se recibió {deflection_variance}"
         )
-    return _BOLTZMANN * temperature / deflection_variance
+    return correction_factor * _BOLTZMANN * temperature / deflection_variance

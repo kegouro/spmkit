@@ -148,14 +148,17 @@ def nanomech(
     channel: str = typer.Option("Deflection", "--channel", "-c", help="Canal de fuerza (N)"),
     curve: int = typer.Option(-1, "--curve", help="Índice de curva (-1 = la del medio)"),
     tip_radius: float = typer.Option(10e-9, "--tip-radius", help="Radio de punta (m)"),
-    model: str = typer.Option("sphere", "--model", help="sphere|paraboloid|cone"),
+    model: str = typer.Option("sphere", "--model", help="sphere|paraboloid|cone|dmt"),
+    contact_method: str = typer.Option(
+        "threshold", "--contact-method", help="Detección de contacto: threshold|rov"
+    ),
     spring_constant: float | None = typer.Option(
         None,
         "--spring-constant",
         help="Constante de resorte del cantiléver (N/m) para corregir la indentación",
     ),
 ) -> None:
-    """Ajusta una curva fuerza-distancia (Hertz) y estima el módulo de Young."""
+    """Ajusta una curva fuerza-distancia (Hertz/DMT/Sneddon) y estima el módulo de Young."""
     from spmkit.core.analysis import mechanics
 
     data = load(file)
@@ -165,16 +168,27 @@ def nanomech(
         console.print("[red]No se encontraron curvas en el canal.[/]")
         raise typer.Exit(1)
     idx = len(curves) // 2 if curve < 0 else curve
+    if not 0 <= idx < len(curves):
+        console.print(f"[red]Curva {idx} fuera de rango (0..{len(curves) - 1}).[/]")
+        raise typer.Exit(1)
     result = mechanics.fit_hertz(
-        curves[idx], tip_radius=tip_radius, model=model, spring_constant=spring_constant
+        curves[idx],
+        tip_radius=tip_radius,
+        model=model,
+        contact_method=contact_method,
+        spring_constant=spring_constant,
     )
+    e_mpa = result.young_modulus / 1e6
+    e_std_mpa = result.young_modulus_std / 1e6
     table = Table(title=f"Nanomecánica · curva {idx}/{len(curves)} · {model}")
     table.add_column("Parámetro", style="cyan")
     table.add_column("Valor", justify="right")
-    table.add_row("Módulo de Young", f"{result.young_modulus / 1e6:.4g} MPa")
+    table.add_row("Módulo de Young", f"{e_mpa:.4g} ± {e_std_mpa:.2g} MPa")
+    table.add_row("R²", f"{result.r_squared:.5f}")
     table.add_row("Punto de contacto", f"{result.contact_point * 1e9:.2f} nm")
     table.add_row("Adhesión", f"{result.adhesion * 1e9:.3g} nN")
     table.add_row("RMSE", f"{result.rmse:.3e}")
+    table.add_row("Puntos ajustados", str(result.n_fit))
     console.print(table)
 
 
