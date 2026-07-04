@@ -37,6 +37,7 @@ gwy = ["gwyfile>=0.3"]                       # interop con Gwyddion (.gwy)
 nanosurf = ["NSFopen>=2.2"]                  # lector .nhf validado (NanoSurf)
 grains = ["scipy>=1.10"]                     # detección de granos/partículas
 parallel = ["joblib>=1.3"]                   # backend paralelo opcional para force-volumes grandes
+pandas = ["pandas>=2.0"]                      # export a DataFrame (batch, resultados)
 viz = [                                       # figuras de publicación
     "matplotlib>=3.8",
     "cmcrameri>=1.7",
