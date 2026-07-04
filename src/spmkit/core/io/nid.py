@@ -103,6 +103,20 @@ def _direction(frame: str) -> str:
     return "backward" if "backward" in frame.lower() else "forward"
 
 
+def _parse_cantilever_k(sections: dict[str, dict[str, str]]) -> float | None:
+    """Extrae la constante de resorte del cantiléver (N/m) del header, si está.
+
+    NanoSurf la guarda en ``[DataSet\\Calibration\\Cantilever]`` con formato tipado
+    ``Prop0=D[2.66102]*[N/m]``.
+    """
+    cal = sections.get("DataSet\\Calibration\\Cantilever", {})
+    for value in cal.values():
+        m = re.search(r"D\[([\d.eE+\-]+)\]\s*\*\s*\[\s*N/m", value)
+        if m:
+            return float(m.group(1))
+    return None
+
+
 def load_nid(path: str | Path) -> SPMData:
     """Lee un archivo NanoSurf ``.nid`` y devuelve un :class:`SPMData`."""
     path = Path(path)
@@ -166,6 +180,7 @@ def load_nid(path: str | Path) -> SPMData:
         "format": "nid",
         "info": sections.get("DataSet-Info", {}),
         "version": sections["DataSet"].get("Version", ""),
+        "spring_constant": _parse_cantilever_k(sections),  # N/m del cantiléver, si está
     }
     return SPMData(channels=tuple(channels), metadata=metadata, source_path=str(path))
 
@@ -258,5 +273,9 @@ def load_nid_force(path: str | Path) -> ForceVolume:
         grid_shape=grid_shape,
         x_range=x_range,
         y_range=y_range,
-        metadata={"format": "nid", "source_path": str(path)},
+        metadata={
+            "format": "nid",
+            "source_path": str(path),
+            "spring_constant": data.metadata.get("spring_constant"),
+        },
     )

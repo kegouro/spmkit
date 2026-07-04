@@ -33,6 +33,7 @@ def test_load_nid_force_volume() -> None:
     assert curve.extend.force is not None
     assert np.all(np.isfinite(curve.extend.force))
     assert curve.retract is not None  # este .nid tiene approach y retract
+    assert vol.metadata["spring_constant"] == pytest.approx(2.66102, rel=1e-3)  # k del header
 
 
 def test_load_nid_basic(nid_file: Path) -> None:
