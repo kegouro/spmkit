@@ -542,4 +542,38 @@ columns = [curve_index, x, y, segment, cycle, model,
 ```
 
 Una fila por (curva × segmento ajustado). Unidades SI explícitas en el nombre de columna.
+
+---
+
+## 17. Resultado del spike JPK (Fase 0.5) — ✅ hecho
+
+Se desempaquetaron curvas de fuerza JPK reales (dataset abierto **afmformats**,
+`AFM-analysis/afmformats`). Muestras en `reference/jpk_samples/` (gitignored). Un
+`.jpk-force`/`.jpk-force-map` es un **ZIP** con esta estructura:
+
+```
+header.properties                              # cabecera global
+segments/0/segment-header.properties           # segmento 0 (extend)
+segments/0/channels/height.dat                 # canales crudos (enteros)
+segments/0/channels/vDeflection.dat
+segments/0/channels/strainGaugeHeight.dat
+segments/1/...                                 # segmento 1 (retract)
+```
+
+- **Segmentos**: `force-segment-header.name.name = extend-spm` / `retract-spm`;
+  `num-points` por segmento. → mapea 1:1 a `ForceSegment` (§4).
+- **Canales `.dat`**: enteros crudos, `data.type = short` (int16, big-endian JPK).
+- **Conversión = cascada de "calibration slots"** (cada uno `offset + multiplier`):
+  1. `encoder` (short → V): `multiplier`, `offset`.
+  2. `conversion.distance` (V → m): `multiplier` = **InVOLS** (sensibilidad, m/V).
+  3. `conversion.force` (m → N): `multiplier` = **constante de resorte k** (N/m).
+
+  Ejemplo real del sample: InVOLS ≈ 7.0e-8 m/V, k ≈ 0.0435 N/m — **ambos vienen en
+  el archivo** (confirma §16.2 `from_metadata`).
+
+**Implicancia para el lector JPK (Fase 4):** `io/jpk.py` = `zipfile` + parseo de
+`.properties` (INI-like `clave=valor`) + `np.frombuffer(dtype='>i2')` por canal +
+aplicar la cascada de conversiones. La `Calibration` se lee directa de los slots
+`distance`/`force`. El ecosistema `afmformats`/`nanite`/`PyJibe` (Paul Müller) sirve
+de referencia de implementación (y de datos de test).
 ```
