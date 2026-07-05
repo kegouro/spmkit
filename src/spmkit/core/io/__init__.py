@@ -5,6 +5,7 @@ distinto (``ForceCurve``): se leen con ``load_jpk_force`` (y, más adelante, un
 dispatcher ``load_force`` por extensión).
 """
 
+from spmkit.core.io.forceload import load_force, supported_force_extensions
 from spmkit.core.io.gwy import load_gwy, save_gwy
 from spmkit.core.io.jpk import load_jpk_force
 from spmkit.core.io.nhf import load_nhf
@@ -19,5 +20,7 @@ __all__ = [
     "load_gwy",
     "save_gwy",
     "load_jpk_force",
+    "load_force",
+    "supported_force_extensions",
     "supported_extensions",
 ]

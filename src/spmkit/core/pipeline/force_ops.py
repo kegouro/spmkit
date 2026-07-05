@@ -19,8 +19,6 @@ from __future__ import annotations
 from dataclasses import replace
 from typing import Any
 
-import numpy as np
-
 from spmkit.core.analysis import calibration as _cal
 from spmkit.core.analysis import forcecurve
 from spmkit.core.models import ForceCurve
@@ -37,19 +35,8 @@ def _primary_segment(curve: ForceCurve) -> Any:
 
 
 def _axis(seg: Any) -> Any:
-    """Eje del ajuste: separación punta-muestra si es utilizable, si no la altura.
-
-    Se prefiere la separación (indentación real, corregida por flexión). Pero algunos
-    instrumentos la entregan **saturada/clipada** (muchos valores repetidos en el
-    contacto), inservible para el ajuste; en ese caso se usa la altura del piezo
-    (siempre limpia y monótona), que da el módulo "aparente".
-    """
-    sep = seg.separation
-    if sep is not None:
-        sep = np.asarray(sep, dtype=np.float64)
-        if np.unique(sep).size >= 0.9 * sep.size:  # separación no degenerada
-            return sep
-    return seg.raw_height
+    """Eje del ajuste (ver :func:`forcecurve.display_axis`): separación o altura."""
+    return forcecurve.display_axis(seg.separation, seg.raw_height)
 
 
 @operation("calibrate")

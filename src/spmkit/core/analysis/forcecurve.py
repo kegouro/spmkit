@@ -15,7 +15,7 @@ con incertidumbre y R², adhesión y —con approach+retract— energía de disi
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 
 import numpy as np
 
@@ -34,9 +34,17 @@ class ForceCurveFit:
     model: str
     n_fit: int
     unit_modulus: str = "Pa"
+    #: Línea de ajuste en coordenadas de display (eje ``x`` y fuerza cruda), para
+    #: dibujarla superpuesta a los datos. No forma parte de ``to_dict`` (escalares).
+    x_fit: np.ndarray = field(default_factory=lambda: np.empty(0), repr=False, compare=False)
+    f_fit: np.ndarray = field(default_factory=lambda: np.empty(0), repr=False, compare=False)
 
     def to_dict(self) -> dict:
-        return asdict(self)
+        """Sólo los escalares (para CSV/JSON/CLI); omite las curvas de ajuste."""
+        d = asdict(self)
+        d.pop("x_fit", None)
+        d.pop("f_fit", None)
+        return d
 
     def _repr_html_(self) -> str:
         """Render inline en Jupyter (tabla compacta del ajuste)."""
@@ -53,6 +61,21 @@ class ForceCurveFit:
         )
 
 
+def display_axis(separation: np.ndarray | None, raw_height: np.ndarray) -> np.ndarray:
+    """Eje para ajustar/dibujar: separación punta-muestra si es utilizable, si no altura.
+
+    Se prefiere la separación (indentación real, corregida por flexión). Pero algunos
+    instrumentos la entregan **saturada/clipada** (muchos valores repetidos en el
+    contacto), inservible; en ese caso se usa la altura del piezo (limpia y monótona),
+    que da el módulo "aparente". Fuente única para el pipeline y el lienzo.
+    """
+    if separation is not None:
+        sep = np.asarray(separation, dtype=np.float64)
+        if np.unique(sep).size >= 0.9 * sep.size:  # separación no degenerada
+            return sep
+    return np.asarray(raw_height, dtype=np.float64)
+
+
 def _orient(x: np.ndarray, f: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """Ordena la curva con la línea base (fuerza plana) primero.
 
@@ -65,8 +88,8 @@ def _orient(x: np.ndarray, f: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     return x[::-1], f[::-1]
 
 
-def _baseline_corrected(force: np.ndarray, baseline_fraction: float) -> np.ndarray:
-    """Resta la línea base ajustada como recta **en función del índice**.
+def _fit_baseline(force: np.ndarray, baseline_fraction: float) -> np.ndarray:
+    """Recta de línea base ajustada **en función del índice** (no del eje físico).
 
     Se usa el índice (0…N) en vez del eje físico (separación ~1e-6 m) porque un
     ``polyfit`` sobre valores ~µm queda mal condicionado; sobre el índice la zona
@@ -75,7 +98,12 @@ def _baseline_corrected(force: np.ndarray, baseline_fraction: float) -> np.ndarr
     n_base = max(3, int(force.size * baseline_fraction))
     idx = np.arange(force.size, dtype=np.float64)
     coeffs = np.polyfit(idx[:n_base], force[:n_base], 1)
-    return force - np.polyval(coeffs, idx)
+    return np.polyval(coeffs, idx)
+
+
+def _baseline_corrected(force: np.ndarray, baseline_fraction: float) -> np.ndarray:
+    """Fuerza con la línea base restada (ver :func:`_fit_baseline`)."""
+    return force - _fit_baseline(force, baseline_fraction)
 
 
 def _contact_index(f_corr: np.ndarray, baseline_fraction: float, k: float) -> int:
@@ -150,7 +178,8 @@ def fit_force_curve(
     x, force = _orient(x, force)
 
     # Corrección de línea base (recta en función del índice, bien condicionada).
-    f_corr = _baseline_corrected(force, baseline_fraction)
+    baseline = _fit_baseline(force, baseline_fraction)
+    f_corr = force - baseline
 
     adhesion = float(max(0.0, -f_corr.min()))  # pull-off respecto a la base
 
@@ -192,6 +221,14 @@ def fit_force_curve(
     var_stiffness = (ssr / dof) / denom
     sigma_young = young * float(np.sqrt(var_stiffness)) / stiffness if stiffness > 0 else 0.0
 
+    # Línea de ajuste en coordenadas de display: predicción (en fuerza corregida)
+    # devuelta a fuerza cruda sumando la línea base. Para DMT se descuenta el offset
+    # de adhesión que se había añadido al objetivo del ajuste.
+    x_fit = x[i0:hi][valid]
+    f_fit_line = predicted + baseline[i0:hi][valid]
+    if model == "dmt":
+        f_fit_line = f_fit_line - adhesion
+
     return ForceCurveFit(
         young_modulus=young,
         young_modulus_std=sigma_young,
@@ -200,6 +237,8 @@ def fit_force_curve(
         adhesion=adhesion,
         model=model,
         n_fit=int(delta.size),
+        x_fit=np.asarray(x_fit, dtype=np.float64),
+        f_fit=np.asarray(f_fit_line, dtype=np.float64),
     )
 
 

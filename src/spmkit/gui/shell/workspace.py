@@ -83,12 +83,22 @@ def default_panels() -> dict[str, Panel]:
 class Workspace(QMainWindow):
     """Ventana principal: perspectivas + lienzo central + docks + paleta + estado."""
 
-    def __init__(self, panels: dict[str, Panel] | None = None, mode: str = "dark") -> None:
+    def __init__(
+        self,
+        panels: dict[str, Panel] | None = None,
+        mode: str = "dark",
+        extra_commands: list[Command] | None = None,
+    ) -> None:
         super().__init__()
         self.setWindowTitle("spmkit")
         self.resize(1200, 760)
         self._mode = mode
-        self._panels = panels if panels is not None else default_panels()
+        # Placeholders por defecto, sobrescritos por los paneles reales inyectados.
+        merged = default_panels()
+        if panels:
+            merged.update(panels)
+        self._panels = merged
+        self._extra_commands = list(extra_commands or ())
         self._docks: dict[str, QDockWidget] = {}
         self._active = ""
 
@@ -156,9 +166,19 @@ class Workspace(QMainWindow):
             Command(f"Ir a {p.label}", partial(self.set_perspective, p.key)) for p in PERSPECTIVES
         ]
         commands.append(Command("Tema: alternar claro/oscuro", self.toggle_theme, "Ctrl+Shift+L"))
+        commands.extend(self._extra_commands)
         return commands
 
     # ---- API ----
+    def register_command(self, command: Command, install_shortcut: bool = True) -> None:
+        """Añade un comando a la paleta y, si tiene atajo, lo instala como QAction."""
+        self._commands.append(command)
+        if install_shortcut and command.shortcut:
+            action = QAction(command.title, self)
+            action.setShortcut(QKeySequence(command.shortcut))
+            action.triggered.connect(lambda _checked=False: command.callback())
+            self.addAction(action)
+
     def set_perspective(self, key: str) -> None:
         """Activa una perspectiva: cambia el lienzo central y muestra sus docks."""
         persp = perspective(key)
@@ -174,6 +194,14 @@ class Workspace(QMainWindow):
     @property
     def active_perspective(self) -> str:
         return self._active
+
+    def panel(self, key: str) -> Panel | None:
+        """Devuelve el panel montado bajo ``key`` (para tests, plugins y estado)."""
+        return self._panels.get(key)
+
+    def show_status(self, message: str) -> None:
+        """Muestra un mensaje en la barra de estado."""
+        self._status.set_message(message)
 
     def visible_docks(self) -> set[str]:
         """Claves de los docks mostrados en la perspectiva activa (para tests/estado)."""
