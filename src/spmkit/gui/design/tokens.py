@@ -28,6 +28,8 @@ _COLORS: dict[str, dict[str, str]] = {
         "accent_press": "#14B8A6",
         "accent_soft": "#0F3A37",
         "on_accent": "#04342C",
+        "accent_2": "#E8A94B",  # oro cálido de marca (Fathom): complementa el teal
+        "accent_2_soft": "#33280F",
         "success": "#4ADE80",
         "warning": "#FBBF24",
         "danger": "#F87171",
@@ -47,6 +49,8 @@ _COLORS: dict[str, dict[str, str]] = {
         "accent_press": "#0B7C72",
         "accent_soft": "#CFEEE9",
         "on_accent": "#FFFFFF",
+        "accent_2": "#B26A1E",  # oro cálido de marca en modo claro
+        "accent_2_soft": "#F1E4CE",
         "success": "#15803D",
         "warning": "#B45309",
         "danger": "#B91C1C",

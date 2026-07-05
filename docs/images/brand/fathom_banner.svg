@@ -1,0 +1,41 @@
+<svg viewBox="0 0 820 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fathom — curvas de fuerza, a fondo">
+  <title>Fathom — curvas de fuerza, a fondo · powered by spmkit</title>
+  <defs>
+    <linearGradient id="fbg" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#141B24"/>
+      <stop offset="1" stop-color="#0B0E13"/>
+    </linearGradient>
+    <linearGradient id="fcurve" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#2DD4BF"/>
+      <stop offset="1" stop-color="#5EEAD4"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="1" y="1" width="818" height="198" rx="18" fill="url(#fbg)" stroke="#232C38" stroke-width="1.5"/>
+
+  <!-- curva de fuerza decorativa (derecha) -->
+  <g font-family="'SF Mono','JetBrains Mono','Menlo',monospace">
+    <line x1="500" y1="150" x2="778" y2="150" stroke="#232C38" stroke-width="1" stroke-dasharray="2 5"/>
+    <line x1="614" y1="40" x2="614" y2="164" stroke="#232C38" stroke-width="1" stroke-dasharray="2 5"/>
+    <path d="M500 132 H612" fill="none" stroke="#4A5765" stroke-width="3" stroke-linecap="round"/>
+    <path d="M612 132 q11 17 22 -1" fill="none" stroke="#4A5765" stroke-width="3" stroke-linecap="round"/>
+    <path d="M634 131 C 682 128 716 96 778 44" fill="none" stroke="url(#fcurve)" stroke-width="4.5" stroke-linecap="round"/>
+    <circle cx="612" cy="132" r="5.5" fill="#E8A94B"/>
+    <text x="624" y="182" font-size="12.5" fill="#5C6875" letter-spacing="1">δ  →  E,  adhesión,  disipación</text>
+  </g>
+
+  <!-- marca (izquierda) -->
+  <g transform="translate(48,64)">
+    <rect x="0" y="0" width="72" height="72" rx="16" fill="#121821" stroke="#2A3644" stroke-width="1.5"/>
+    <path d="M16 50 H33" stroke="#4A5765" stroke-width="3.6" stroke-linecap="round" fill="none"/>
+    <path d="M33 50 C44 50 50 39 58 18" stroke="#2DD4BF" stroke-width="4.2" stroke-linecap="round" fill="none"/>
+    <circle cx="33" cy="50" r="3.6" fill="#E8A94B"/>
+  </g>
+
+  <!-- wordmark + tagline -->
+  <g font-family="-apple-system,'Segoe UI','Inter',system-ui,sans-serif">
+    <text x="140" y="94" font-size="46" font-weight="700" fill="#E8EEF5" letter-spacing="0.5">Fathom</text>
+    <text x="143" y="122" font-size="18" fill="#E8A94B">Curvas de fuerza, a fondo.</text>
+    <text x="143" y="148" font-size="12.5" fill="#5C6875" letter-spacing="1.4" font-family="'SF Mono','Menlo',monospace">POWERED BY SPMKIT · REEMPLAZA ANA / JPK</text>
+  </g>
+</svg>

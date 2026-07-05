@@ -1,10 +1,13 @@
 <div align="center">
 
-<img src="docs/images/brand/banner.png" alt="SPM-Kit Banner" width="820">
+<img src="docs/images/brand/fathom_banner.svg" alt="Fathom — curvas de fuerza, a fondo · powered by spmkit" width="820">
 
-# 🔬 SPM-Kit 🔬
+# 🔬 spmkit 🔬
 
 ### Analizador open-source de datos **AFM / KPFM** para microscopía de sonda de barrido
+
+**Fathom** es su workspace insignia de **curvas de fuerza** — pensado para reemplazar
+Nanosurf ANA y JPK Data Processing. Lánzalo con `spmkit workspace`.
 
 *Desarrollado en el **SPM Lab** de la Universidad Técnica Federico Santa María (UTFSM)*
 
@@ -119,18 +122,20 @@ spmkit figure   scan.nid -o fig.svg          # figura de publicación
 spmkit convert  scan.nid scan.gwy            # → Gwyddion
 spmkit forcecurve spec.jpk-force             # ajuste de una curva de fuerza
 spmkit fbatch   carpeta/ -o batch.csv        # lote de curvas → CSV
-spmkit workspace [archivo]                   # workspace de curvas de fuerza (rediseño)
+spmkit workspace [archivo]                   # Fathom · workspace de curvas de fuerza
 spmkit gui                                   # interfaz gráfica clásica
 ```
 
-### Workspace de curvas de fuerza
+### Fathom · el workspace de curvas de fuerza
 
-`spmkit workspace` abre el entorno rediseñado para espectroscopía de fuerza —
-pensado para **reemplazar Nanosurf ANA y JPK Data Processing** en el análisis de
-curvas de fuerza: pipeline de ajuste **en vivo** (Hertz/paraboloide/Sneddon/DMT,
-radio de punta, Poisson, suavizado, calibración, región de ajuste manual), lienzo
-con residuos e indentación δ, mapas de propiedades de force-volume con *linked
-brushing*, procesamiento por lotes y exportación (figura, mapa, CSV/JSON).
+<img src="docs/images/brand/fathom_lockup.svg" alt="Fathom · powered by spmkit" width="240">
+
+`spmkit workspace` abre **Fathom**, el entorno de espectroscopía de fuerza —
+pensado para **reemplazar Nanosurf ANA y JPK Data Processing**: pipeline de ajuste
+**en vivo** (Hertz/paraboloide/Sneddon/DMT, radio de punta, Poisson, suavizado,
+calibración, región de ajuste manual), lienzo con residuos e indentación δ, mapas
+de propiedades de force-volume con *linked brushing*, procesamiento por lotes
+(paralelo) y exportación (figura, mapa, CSV/JSON). Arrastra un archivo para abrirlo.
 
 **Como librería**
 

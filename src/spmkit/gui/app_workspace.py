@@ -14,9 +14,10 @@ import sys
 from pathlib import Path
 
 from PyQt6.QtCore import QSettings
-from PyQt6.QtWidgets import QApplication, QFileDialog
+from PyQt6.QtWidgets import QApplication, QFileDialog, QMessageBox
 
 from spmkit.core.io import load_force, supported_force_extensions
+from spmkit.gui.design import brand
 from spmkit.gui.panels.batch_table import BatchTablePanel
 from spmkit.gui.panels.force_canvas import ForceCanvasPanel
 from spmkit.gui.panels.histogram_panel import HistogramPanel
@@ -61,6 +62,7 @@ def build_workspace(
         "log": LogPanel((vm, map_vm, batch_vm)),
     }
     ws = Workspace(panels=panels, mode=mode, persist=persist)
+    ws.setWindowTitle(brand.WINDOW_TITLE)
     map_vm.taskStarted.connect(ws.bind_task)
     batch_vm.taskStarted.connect(ws.bind_task)
     ws.fileDropped.connect(lambda p: _load_into(ws, vm, image_vm, p))
@@ -83,6 +85,7 @@ def build_workspace(
     )
     ws.register_command(Command("Primera curva", lambda: vm.set_curve(0), "Ctrl+Home"))
     ws.register_command(Command("Última curva", lambda: vm.set_curve(vm.n_curves - 1), "Ctrl+End"))
+    ws.register_command(Command(f"Acerca de {brand.PRODUCT_NAME}", lambda: _about(ws)))
     if open_path is not None:
         _load_into(ws, vm, image_vm, open_path)
     return ws
@@ -110,6 +113,19 @@ def _load_into(
     _remember_dir(str(path))
     ws.set_perspective("force")
     ws.show_status(f"{name} — {vm.n_curves} curva(s)")
+
+
+def _about(ws: Workspace) -> None:
+    """Diálogo 'Acerca de' con la identidad del producto."""
+    box = QMessageBox(ws)
+    box.setWindowTitle(f"Acerca de {brand.PRODUCT_NAME}")
+    box.setText(
+        f"<h2 style='margin:0'>{brand.PRODUCT_NAME}</h2>"
+        f"<p style='color:#93A0AE;margin:4px 0'>{brand.TAGLINE_ES}</p>"
+        f"<p style='margin:8px 0'>{brand.DESCRIPTION}</p>"
+        f"<p style='color:#93A0AE;margin:0'>{brand.BYLINE}</p>"
+    )
+    box.exec()
 
 
 def _last_dir() -> str:

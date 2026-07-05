@@ -1,0 +1,18 @@
+<svg viewBox="0 0 300 84" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fathom · powered by spmkit">
+  <title>Fathom · powered by spmkit</title>
+  <rect x="1" y="1" width="298" height="82" rx="14" fill="#0B0E13" stroke="#232C38" stroke-width="1.2"/>
+
+  <!-- marca -->
+  <g transform="translate(20,18)">
+    <rect x="0" y="0" width="48" height="48" rx="11" fill="#121821" stroke="#2A3644" stroke-width="1.2"/>
+    <path d="M11 33 H22" stroke="#4A5765" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+    <path d="M22 33 C29 33 33 26 38.5 12" stroke="#2DD4BF" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+    <circle cx="22" cy="33" r="2.4" fill="#E8A94B"/>
+  </g>
+
+  <!-- wordmark -->
+  <g font-family="-apple-system,'Segoe UI','Inter',system-ui,sans-serif">
+    <text x="82" y="45" font-size="30" font-weight="700" fill="#E8EEF5" letter-spacing="0.4">Fathom</text>
+    <text x="84" y="64" font-size="11" fill="#93A0AE" letter-spacing="1.3" font-family="'SF Mono','Menlo',monospace">POWERED BY SPMKIT</text>
+  </g>
+</svg>
