@@ -33,6 +33,32 @@ def test_toggle_theme_flips_mode(qtbot) -> None:  # type: ignore[no-untyped-def]
     assert ws.mode == "dark"
 
 
+def test_persistence_roundtrips_theme_and_perspective(qtbot) -> None:  # type: ignore[no-untyped-def]
+    from PyQt6.QtCore import QSettings
+
+    settings = QSettings("spmkit", "spmkit")
+    for key in ("theme", "perspective", "geometry"):
+        settings.remove(key)  # empezar limpio (namespace propio de la app)
+    try:
+        ws = Workspace(mode="dark", persist=True)
+        qtbot.addWidget(ws)
+        ws.toggle_theme()  # → light, persistido
+        ws.set_perspective("map")  # persistido
+        ws2 = Workspace(mode="dark", persist=True)
+        qtbot.addWidget(ws2)
+        assert ws2.mode == "light"
+        assert ws2.active_perspective == "map"
+    finally:
+        for key in ("theme", "perspective", "geometry"):
+            settings.remove(key)
+
+
+def test_no_persist_is_default(qtbot) -> None:  # type: ignore[no-untyped-def]
+    ws = Workspace()  # persist=False por defecto
+    qtbot.addWidget(ws)
+    assert ws.active_perspective == "force"  # ignora cualquier estado guardado
+
+
 def test_command_palette_filters_and_runs(qtbot) -> None:  # type: ignore[no-untyped-def]
     ran = {"ok": False}
     commands = [

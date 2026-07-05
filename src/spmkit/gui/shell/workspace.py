@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from functools import partial
 
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import QSettings, Qt
 from PyQt6.QtGui import QAction, QKeySequence
 from PyQt6.QtWidgets import (
     QApplication,
@@ -88,11 +88,14 @@ class Workspace(QMainWindow):
         panels: dict[str, Panel] | None = None,
         mode: str = "dark",
         extra_commands: list[Command] | None = None,
+        persist: bool = False,
     ) -> None:
         super().__init__()
         self.setWindowTitle("spmkit")
         self.resize(1200, 760)
-        self._mode = mode
+        # Persistencia opt-in (los tests construyen sin persistir para no contaminar QSettings).
+        self._settings: QSettings | None = QSettings("spmkit", "spmkit") if persist else None
+        self._mode = self._saved("theme", mode)
         # Placeholders por defecto, sobrescritos por los paneles reales inyectados.
         merged = default_panels()
         if panels:
@@ -118,7 +121,31 @@ class Workspace(QMainWindow):
         if app is not None:
             theme.apply(app, self._mode)
 
-        self.set_perspective("force")
+        self._restore_geometry()
+        self.set_perspective(self._saved("perspective", "force"))
+
+    # ---- persistencia (opt-in) ----
+    def _saved(self, key: str, default: str) -> str:
+        if self._settings is None:
+            return default
+        value = self._settings.value(key, default)
+        return str(value) if value is not None else default
+
+    def _restore_geometry(self) -> None:
+        if self._settings is None:
+            return
+        geo = self._settings.value("geometry")
+        if geo is not None:
+            self.restoreGeometry(geo)
+
+    def _persist(self, key: str, value: object) -> None:
+        if self._settings is not None:
+            self._settings.setValue(key, value)
+
+    def closeEvent(self, event: object) -> None:  # noqa: N802 - override Qt
+        if self._settings is not None:
+            self._settings.setValue("geometry", self.saveGeometry())
+        super().closeEvent(event)  # type: ignore[arg-type]
 
     # ---- construcción ----
     def _build_perspective_bar(self) -> None:
@@ -190,6 +217,7 @@ class Workspace(QMainWindow):
         for panel_key, action in self._persp_actions.items():
             action.setChecked(panel_key == key)
         self._active = key
+        self._persist("perspective", key)
 
     @property
     def active_perspective(self) -> str:
@@ -219,6 +247,7 @@ class Workspace(QMainWindow):
         app = QApplication.instance()
         if app is not None:
             theme.apply(app, self._mode)
+        self._persist("theme", self._mode)
 
     @property
     def mode(self) -> str:

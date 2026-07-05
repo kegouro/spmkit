@@ -30,10 +30,13 @@ from spmkit.gui.shell.workspace import Workspace
 from spmkit.gui.viewmodels import BatchViewModel, ForceViewModel, MapViewModel
 
 
-def build_workspace(mode: str = "dark", open_path: str | Path | None = None) -> Workspace:
+def build_workspace(
+    mode: str = "dark", open_path: str | Path | None = None, persist: bool = False
+) -> Workspace:
     """Construye el workspace con las perspectivas de curva, mapa y batch cableadas.
 
-    Si se pasa ``open_path``, carga ese archivo de curvas al arrancar.
+    Si se pasa ``open_path``, carga ese archivo de curvas al arrancar. ``persist`` guarda
+    tema/geometría/perspectiva entre sesiones (activo en la app real, no en los tests).
     """
     vm = ForceViewModel()
     map_vm = MapViewModel(vm)
@@ -49,7 +52,7 @@ def build_workspace(mode: str = "dark", open_path: str | Path | None = None) -> 
         "batch_table": BatchTablePanel(batch_vm),
         "log": LogPanel((vm, map_vm, batch_vm)),
     }
-    ws = Workspace(panels=panels, mode=mode)
+    ws = Workspace(panels=panels, mode=mode, persist=persist)
     map_vm.taskStarted.connect(ws.bind_task)
     batch_vm.taskStarted.connect(ws.bind_task)
     ws.register_command(Command("Abrir curva/volumen…", lambda: _open_dialog(ws, vm), "Ctrl+O"))
@@ -208,7 +211,7 @@ def _open_dialog(ws: Workspace, vm: ForceViewModel) -> None:
 def run(open_path: str | Path | None = None) -> int:
     """Lanza el workspace del rediseño como app independiente (abre ``open_path`` si se da)."""
     app = QApplication.instance() or QApplication(sys.argv)
-    ws = build_workspace(open_path=open_path)
+    ws = build_workspace(open_path=open_path, persist=True)
     ws.show()
     return app.exec()
 
