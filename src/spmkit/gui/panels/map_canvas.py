@@ -67,9 +67,6 @@ class MapCanvasPanel(Panel):
         for key in self._vm.keys:
             self._selector.addItem(PROPERTIES.get(key, (key,))[0], key)
         self._selector.currentIndexChanged.connect(self._on_selector)
-        self._compute_btn = QPushButton("Calcular mapa")
-        self._compute_btn.setProperty("primary", "true")
-        self._compute_btn.clicked.connect(lambda: self._vm.compute(self._engine.currentData()))
         # Motor: rápido (vectorizado CPU/GPU) o pipeline. GPU sólo si hay CUDA.
         gpu_ok = "gpu" in compute.available_backends()
         self._engine = QComboBox()
@@ -77,6 +74,9 @@ class MapCanvasPanel(Panel):
             if value == "fast_gpu" and not gpu_ok:
                 continue
             self._engine.addItem(label, value)
+        self._compute_btn = QPushButton("Calcular mapa")
+        self._compute_btn.setProperty("primary", "true")
+        self._compute_btn.clicked.connect(lambda: self._vm.compute(self._engine.currentData()))
         self._info = QToolButton()
         self._info.setText("ⓘ")
         self._info.setToolTip("¿CPU o GPU? — diferencias")

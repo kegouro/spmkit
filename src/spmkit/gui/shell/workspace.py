@@ -14,7 +14,7 @@ from __future__ import annotations
 from functools import partial
 
 from PyQt6.QtCore import QSettings, Qt, pyqtSignal
-from PyQt6.QtGui import QAction, QDragEnterEvent, QDropEvent, QKeySequence
+from PyQt6.QtGui import QAction, QCloseEvent, QDragEnterEvent, QDropEvent, QKeySequence
 from PyQt6.QtWidgets import (
     QApplication,
     QDockWidget,
@@ -146,10 +146,10 @@ class Workspace(QMainWindow):
         if self._settings is not None:
             self._settings.setValue(key, value)
 
-    def closeEvent(self, event: object) -> None:  # noqa: N802 - override Qt
+    def closeEvent(self, event: QCloseEvent | None) -> None:  # noqa: N802 - override Qt
         if self._settings is not None:
             self._settings.setValue("geometry", self.saveGeometry())
-        super().closeEvent(event)  # type: ignore[arg-type]
+        super().closeEvent(event)
 
     # ---- drag & drop de archivos ----
     def dragEnterEvent(self, event: QDragEnterEvent | None) -> None:  # noqa: N802 - override Qt
