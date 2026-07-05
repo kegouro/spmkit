@@ -117,8 +117,20 @@ spmkit nanomech spec.nid --tip-radius 10e-9  # ajuste Hertz → módulo de Young
 spmkit grains   scan.nid                     # detección de granos
 spmkit figure   scan.nid -o fig.svg          # figura de publicación
 spmkit convert  scan.nid scan.gwy            # → Gwyddion
-spmkit gui                                   # interfaz gráfica
+spmkit forcecurve spec.jpk-force             # ajuste de una curva de fuerza
+spmkit fbatch   carpeta/ -o batch.csv        # lote de curvas → CSV
+spmkit workspace [archivo]                   # workspace de curvas de fuerza (rediseño)
+spmkit gui                                   # interfaz gráfica clásica
 ```
+
+### Workspace de curvas de fuerza
+
+`spmkit workspace` abre el entorno rediseñado para espectroscopía de fuerza —
+pensado para **reemplazar Nanosurf ANA y JPK Data Processing** en el análisis de
+curvas de fuerza: pipeline de ajuste **en vivo** (Hertz/paraboloide/Sneddon/DMT,
+radio de punta, Poisson, suavizado, calibración, región de ajuste manual), lienzo
+con residuos e indentación δ, mapas de propiedades de force-volume con *linked
+brushing*, procesamiento por lotes y exportación (figura, mapa, CSV/JSON).
 
 **Como librería**
 
