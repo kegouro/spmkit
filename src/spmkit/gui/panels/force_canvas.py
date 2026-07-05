@@ -63,11 +63,14 @@ class ForceCanvasPanel(Panel):
 
     title = "Curva de fuerza"
 
+    _PINNED_MAX = 6
+
     def __init__(self, vm: ForceViewModel, parent: QWidget | None = None) -> None:
         self._vm = vm
         self._offset = 0.0  # shift del eje (m): contacto en modo indentación
         self._contact: float | None = None
         self._last_ctx: dict = {}
+        self._pinned: list = []  # trazas fijadas para comparar
         super().__init__(parent)
         vm.curveChanged.connect(self._on_curve_changed)
         vm.resultsChanged.connect(self._on_results)
@@ -75,6 +78,7 @@ class ForceCanvasPanel(Panel):
     def build(self) -> QWidget:
         import pyqtgraph as pg  # extra opcional: si falta, el sandbox muestra Error Card
 
+        self._pg = pg
         root = QWidget()
         lay = QVBoxLayout(root)
         lay.setContentsMargins(0, 0, 0, 0)
@@ -196,6 +200,24 @@ class ForceCanvasPanel(Panel):
             self._on_results(self._last_ctx)
         elif self._vm.n_curves:
             self._draw_data(self._vm.current_curve())
+
+    # ---- curvas fijadas (comparación) ----
+    def pin_current(self) -> None:
+        """Fija la traza approach actual (faded) para comparar con otras curvas."""
+        x, y = self._extend_item.getData()
+        if x is None or len(x) == 0:
+            return
+        item = self._plot.plot(x, y, pen=self._pg.mkPen("#5C6875", width=1.0))
+        item.setZValue(-10)
+        self._pinned.append(item)
+        if len(self._pinned) > self._PINNED_MAX:
+            self._plot.removeItem(self._pinned.pop(0))
+
+    def clear_pinned(self) -> None:
+        """Quita todas las trazas fijadas."""
+        for item in self._pinned:
+            self._plot.removeItem(item)
+        self._pinned.clear()
 
     # ---- región de ajuste manual (sólo en modo separación) ----
     def _on_region_toggle(self, on: bool) -> None:

@@ -58,6 +58,19 @@ def test_canvas_scrubber_tracks_volume(qtbot, synthetic_volume) -> None:  # type
     assert vm.index == 3
 
 
+def test_canvas_pin_and_clear_curves(qtbot, synthetic_volume) -> None:  # type: ignore[no-untyped-def]
+    vm = ForceViewModel()
+    panel = ForceCanvasPanel(vm)
+    qtbot.addWidget(panel)
+    vm.set_volume(synthetic_volume(3))
+    panel.pin_current()
+    vm.set_curve(1)
+    panel.pin_current()
+    assert len(panel._pinned) == 2
+    panel.clear_pinned()
+    assert panel._pinned == []
+
+
 def test_inspector_shows_modulus(qtbot, synthetic_volume) -> None:  # type: ignore[no-untyped-def]
     vm = ForceViewModel()
     panel = InspectorPanel(vm)

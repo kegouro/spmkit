@@ -38,8 +38,9 @@ def build_workspace(mode: str = "dark", open_path: str | Path | None = None) -> 
     vm = ForceViewModel()
     map_vm = MapViewModel(vm)
     batch_vm = BatchViewModel(vm)
+    force_canvas = ForceCanvasPanel(vm)
     panels = {
-        "force_canvas": ForceCanvasPanel(vm),
+        "force_canvas": force_canvas,
         "inspector": InspectorPanel(vm),
         "navigator": NavigatorPanel(vm),
         "pipeline": PipelinePanel(vm),
@@ -60,6 +61,8 @@ def build_workspace(mode: str = "dark", open_path: str | Path | None = None) -> 
     ws.register_command(Command("Exportar mapa (figura)…", lambda: _export_map_figure(ws, map_vm)))
     ws.register_command(Command("Exportar mapa (CSV)…", lambda: _export_map_csv(ws, map_vm)))
     ws.register_command(Command("Copiar resultados", lambda: _copy_results(ws, vm), "Ctrl+Shift+C"))
+    ws.register_command(Command("Fijar curva actual", force_canvas.pin_current, "Ctrl+P"))
+    ws.register_command(Command("Limpiar curvas fijadas", force_canvas.clear_pinned))
     ws.register_command(Command("Curva anterior", lambda: vm.set_curve(vm.index - 1), "Ctrl+Left"))
     ws.register_command(
         Command("Curva siguiente", lambda: vm.set_curve(vm.index + 1), "Ctrl+Right")
