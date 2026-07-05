@@ -92,7 +92,9 @@ line-length = 100
 target-version = ["py311"]
 
 [tool.mypy]
-python_version = "3.11"
+# 3.12 para que mypy parsee los stubs de numpy ≥2.5 (usan `type` statements). El código
+# sigue siendo compatible con 3.11+ (lo garantiza ruff target-version py311).
+python_version = "3.12"
 packages = ["spmkit"]
 ignore_missing_imports = true
 disallow_untyped_defs = true

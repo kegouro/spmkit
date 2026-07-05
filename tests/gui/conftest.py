@@ -1,4 +1,9 @@
-"""Fixtures compartidas de los tests de GUI (curvas sintéticas para la VM/paneles)."""
+"""Fixtures compartidas de los tests de GUI (curvas sintéticas para la VM/paneles).
+
+Si el entorno no tiene el stack de GUI (PyQt6 + pytest-qt) —como el CI, que instala sin
+el extra ``gui``— se omite toda la carpeta ``tests/gui`` en la colección, en vez de
+fallar al importar. Local, con el extra ``gui``, los tests se corren normalmente.
+"""
 
 from __future__ import annotations
 
@@ -6,6 +11,17 @@ import numpy as np
 import pytest
 
 from spmkit.core.models import ForceCurve, ForceSegment, ForceVolume
+
+try:
+    import PyQt6  # noqa: F401
+    import pytestqt  # noqa: F401
+
+    _HAS_GUI = True
+except ImportError:  # pragma: no cover - CI sin extra gui
+    _HAS_GUI = False
+
+#: Sin el stack de GUI, pytest ignora los ``test_*.py`` de esta carpeta.
+collect_ignore_glob = [] if _HAS_GUI else ["test_*.py"]
 
 
 def _hertz_curve(
