@@ -100,6 +100,7 @@ def apply_pyqtgraph(mode: str = "dark") -> None:
     pg.setConfigOption("background", c["bg"])
     pg.setConfigOption("foreground", c["text_muted"])
     pg.setConfigOption("antialias", True)
+    pg.setConfigOption("imageAxisOrder", "row-major")  # setImage([rows, cols]) sin transponer
 
 
 def apply_matplotlib(mode: str = "dark") -> None:

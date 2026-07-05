@@ -15,23 +15,30 @@ from PyQt6.QtWidgets import QApplication, QFileDialog
 
 from spmkit.core.io import load_force, supported_force_extensions
 from spmkit.gui.panels.force_canvas import ForceCanvasPanel
+from spmkit.gui.panels.histogram_panel import HistogramPanel
 from spmkit.gui.panels.inspector import InspectorPanel
+from spmkit.gui.panels.map_canvas import MapCanvasPanel
 from spmkit.gui.panels.navigator import NavigatorPanel
 from spmkit.gui.shell.command_palette import Command
 from spmkit.gui.shell.workspace import Workspace
-from spmkit.gui.viewmodels import ForceViewModel
+from spmkit.gui.viewmodels import ForceViewModel, MapViewModel
 
 
 def build_workspace(mode: str = "dark") -> Workspace:
-    """Construye el workspace con la perspectiva de curva de fuerza cableada."""
+    """Construye el workspace con las perspectivas de curva y mapa cableadas."""
     vm = ForceViewModel()
+    map_vm = MapViewModel(vm)
     panels = {
         "force_canvas": ForceCanvasPanel(vm),
         "inspector": InspectorPanel(vm),
         "navigator": NavigatorPanel(vm),
+        "map_canvas": MapCanvasPanel(map_vm, vm),
+        "histogram": HistogramPanel(map_vm),
     }
     ws = Workspace(panels=panels, mode=mode)
+    map_vm.taskStarted.connect(ws.bind_task)
     ws.register_command(Command("Abrir curva/volumen…", lambda: _open_dialog(ws, vm), "Ctrl+O"))
+    ws.register_command(Command("Calcular mapa de propiedades", map_vm.compute, "Ctrl+M"))
     return ws
 
 

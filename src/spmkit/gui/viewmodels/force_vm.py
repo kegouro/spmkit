@@ -72,6 +72,10 @@ class ForceViewModel(QObject):
         return self._index
 
     @property
+    def volume(self) -> ForceVolume | None:
+        return self._volume
+
+    @property
     def recipe(self) -> Recipe:
         return self._recipe
 

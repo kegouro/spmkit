@@ -203,6 +203,10 @@ class Workspace(QMainWindow):
         """Muestra un mensaje en la barra de estado."""
         self._status.set_message(message)
 
+    def bind_task(self, task: object) -> None:
+        """Engancha un ``Task`` a la barra de progreso global (progreso + cancelar)."""
+        self._status.bind_task(task)
+
     def visible_docks(self) -> set[str]:
         """Claves de los docks mostrados en la perspectiva activa (para tests/estado)."""
         return {key for key, dock in self._docks.items() if not dock.isHidden()}
