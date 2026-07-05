@@ -11,7 +11,15 @@ import contextlib
 
 import numpy as np
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QComboBox, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import (
+    QCheckBox,
+    QComboBox,
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 
 from spmkit.core.analysis.forcevolume import VolumeResult
 from spmkit.gui.panels.base import Panel
@@ -52,12 +60,15 @@ class MapCanvasPanel(Panel):
         self._selector.currentIndexChanged.connect(self._on_selector)
         self._compute_btn = QPushButton("Calcular mapa")
         self._compute_btn.setProperty("primary", "true")
-        self._compute_btn.clicked.connect(lambda: self._vm.compute())
+        self._compute_btn.clicked.connect(lambda: self._vm.compute(self._parallel.isChecked()))
+        self._parallel = QCheckBox("Paralelo")
+        self._parallel.setToolTip("Usa múltiples procesos (más rápido en mapas grandes)")
         self._status = QLabel("mapa sin calcular")
         self._status.setProperty("role", "muted")
         bar.addWidget(QLabel("Propiedad:"))
         bar.addWidget(self._selector)
         bar.addWidget(self._compute_btn)
+        bar.addWidget(self._parallel)
         bar.addStretch(1)
         bar.addWidget(self._status)
 

@@ -11,6 +11,7 @@ import math
 
 from PyQt6.QtGui import QStandardItem, QStandardItemModel
 from PyQt6.QtWidgets import (
+    QCheckBox,
     QFileDialog,
     QHBoxLayout,
     QLabel,
@@ -76,10 +77,13 @@ class BatchTablePanel(Panel):
         self._export_btn = QPushButton("Exportar CSV…")
         self._export_btn.clicked.connect(self._export_csv)
         self._export_btn.setEnabled(False)
+        self._parallel = QCheckBox("Paralelo")
+        self._parallel.setToolTip("Procesa los archivos en múltiples procesos (más rápido)")
         self._status = QLabel("sin lote")
         self._status.setProperty("role", "muted")
         bar.addWidget(self._open_btn)
         bar.addWidget(self._export_btn)
+        bar.addWidget(self._parallel)
         bar.addStretch(1)
         bar.addWidget(self._status)
         lay.addLayout(bar)
@@ -98,7 +102,7 @@ class BatchTablePanel(Panel):
         folder = QFileDialog.getExistingDirectory(self, "Elegir carpeta de curvas")
         if folder:
             self._status.setText("procesando…")
-            self._vm.run(folder)
+            self._vm.run(folder, parallel=self._parallel.isChecked())
 
     def _export_csv(self) -> None:
         result = self._vm.result
