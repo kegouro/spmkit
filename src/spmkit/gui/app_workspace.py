@@ -15,6 +15,7 @@ from pathlib import Path
 from PyQt6.QtWidgets import QApplication, QFileDialog
 
 from spmkit.core.io import load_force, supported_force_extensions
+from spmkit.gui.panels.batch_table import BatchTablePanel
 from spmkit.gui.panels.force_canvas import ForceCanvasPanel
 from spmkit.gui.panels.histogram_panel import HistogramPanel
 from spmkit.gui.panels.inspector import InspectorPanel
@@ -23,13 +24,14 @@ from spmkit.gui.panels.navigator import NavigatorPanel
 from spmkit.gui.panels.pipeline_panel import PipelinePanel
 from spmkit.gui.shell.command_palette import Command
 from spmkit.gui.shell.workspace import Workspace
-from spmkit.gui.viewmodels import ForceViewModel, MapViewModel
+from spmkit.gui.viewmodels import BatchViewModel, ForceViewModel, MapViewModel
 
 
 def build_workspace(mode: str = "dark") -> Workspace:
-    """Construye el workspace con las perspectivas de curva y mapa cableadas."""
+    """Construye el workspace con las perspectivas de curva, mapa y batch cableadas."""
     vm = ForceViewModel()
     map_vm = MapViewModel(vm)
+    batch_vm = BatchViewModel(vm)
     panels = {
         "force_canvas": ForceCanvasPanel(vm),
         "inspector": InspectorPanel(vm),
@@ -37,9 +39,11 @@ def build_workspace(mode: str = "dark") -> Workspace:
         "pipeline": PipelinePanel(vm),
         "map_canvas": MapCanvasPanel(map_vm, vm),
         "histogram": HistogramPanel(map_vm),
+        "batch_table": BatchTablePanel(batch_vm),
     }
     ws = Workspace(panels=panels, mode=mode)
     map_vm.taskStarted.connect(ws.bind_task)
+    batch_vm.taskStarted.connect(ws.bind_task)
     ws.register_command(Command("Abrir curva/volumen…", lambda: _open_dialog(ws, vm), "Ctrl+O"))
     ws.register_command(Command("Calcular mapa de propiedades", map_vm.compute, "Ctrl+M"))
     ws.register_command(

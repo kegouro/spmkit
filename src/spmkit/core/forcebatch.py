@@ -9,6 +9,7 @@ Exporta a CSV y —si hay pandas— a ``DataFrame``.
 from __future__ import annotations
 
 import csv
+from collections.abc import Callable
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
@@ -95,19 +96,22 @@ def process_force_folder(
     keys: tuple[str, ...] = DEFAULT_KEYS,
     parallel: bool = False,
     pattern: str = "*",
+    progress: Callable[[float, str], None] | None = None,
 ) -> ForceBatchResult:
     """Procesa todas las curvas de fuerza de ``folder`` con ``recipe``.
 
     Recorre los archivos ``.jpk-force``/``.nid`` (según ``pattern``), corre el pipeline
     en cada uno y resume la estadística por archivo. Un archivo que falla queda con su
-    error en la fila, sin abortar el lote.
+    error en la fila, sin abortar el lote. ``progress(fracción, nombre)`` se invoca tras
+    cada archivo (para la barra de progreso de la GUI).
     """
     folder = Path(folder)
     files = sorted(
         f for f in folder.glob(pattern) if f.suffix.lower() in FORCE_EXTENSIONS and f.is_file()
     )
     rows: list[ForceBatchRow] = []
-    for f in files:
+    total = len(files)
+    for i, f in enumerate(files):
         try:
             volume = load_force(f)
             result = analyze_volume(volume, recipe, keys=keys, parallel=parallel)
@@ -127,4 +131,6 @@ def process_force_folder(
             )
         except Exception as exc:  # noqa: BLE001 - un archivo malo no aborta el lote
             rows.append(ForceBatchRow(source=f.name, error=str(exc)))
+        if progress is not None:
+            progress((i + 1) / total if total else 1.0, f.name)
     return ForceBatchResult(rows=rows)
