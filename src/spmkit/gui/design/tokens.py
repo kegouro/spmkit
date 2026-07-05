@@ -62,7 +62,7 @@ TRACES: dict[str, str] = {
     "extend": "#C9D3DE",  # dato crudo (neutral frío)
     "retract": "#B49A6E",  # dato crudo (ámbar apagado)
     "fit": "#2DD4BF",  # ajuste = teal (héroe visual)
-    "contact": "#2DD4BF",  # marcador de contacto
+    "contact": "#E8A94B",  # punto de contacto = oro de marca (como el logo Fathom)
     "residual": "#33404F",  # residuos (silenciados)
 }
 

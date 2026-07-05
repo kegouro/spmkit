@@ -14,6 +14,7 @@ import sys
 from pathlib import Path
 
 from PyQt6.QtCore import QSettings
+from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication, QFileDialog, QMessageBox
 
 from spmkit.core.io import load_force, supported_force_extensions
@@ -63,6 +64,9 @@ def build_workspace(
     }
     ws = Workspace(panels=panels, mode=mode, persist=persist)
     ws.setWindowTitle(brand.WINDOW_TITLE)
+    icon = _brand_icon()
+    if icon is not None:
+        ws.setWindowIcon(icon)
     map_vm.taskStarted.connect(ws.bind_task)
     batch_vm.taskStarted.connect(ws.bind_task)
     ws.fileDropped.connect(lambda p: _load_into(ws, vm, image_vm, p))
@@ -113,6 +117,23 @@ def _load_into(
     _remember_dir(str(path))
     ws.set_perspective("force")
     ws.show_status(f"{name} — {vm.n_curves} curva(s)")
+
+
+def _brand_icon() -> QIcon | None:
+    """Construye un ``QIcon`` del logo-símbolo (SVG embebido); ``None`` si falta QtSvg."""
+    try:
+        from PyQt6.QtCore import QByteArray, Qt
+        from PyQt6.QtGui import QImage, QPainter, QPixmap
+        from PyQt6.QtSvg import QSvgRenderer
+    except ImportError:  # pragma: no cover - QtSvg es parte de PyQt6, casi siempre está
+        return None
+    renderer = QSvgRenderer(QByteArray(brand.MARK_SVG.encode()))
+    image = QImage(128, 128, QImage.Format.Format_ARGB32)
+    image.fill(Qt.GlobalColor.transparent)
+    painter = QPainter(image)
+    renderer.render(painter)
+    painter.end()
+    return QIcon(QPixmap.fromImage(image))
 
 
 def _about(ws: Workspace) -> None:
