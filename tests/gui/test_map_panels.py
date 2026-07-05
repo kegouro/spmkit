@@ -38,6 +38,17 @@ def test_map_engine_selector_reflects_backends(qtbot, synthetic_volume) -> None:
         assert "fast_gpu" not in values
 
 
+def test_map_colormap_selector(qtbot, synthetic_volume) -> None:  # type: ignore[no-untyped-def]
+    fvm = ForceViewModel()
+    mvm = MapViewModel(fvm)
+    panel = MapCanvasPanel(mvm, fvm)
+    qtbot.addWidget(panel)
+    assert panel._cmap.count() >= 4  # varias paletas disponibles
+    panel._cmap.setCurrentText("viridis")  # dispara _apply_colormap
+    panel._cmap.setCurrentText("gold")
+    assert not panel.errored
+
+
 def test_map_canvas_click_selects_curve(qtbot, synthetic_volume) -> None:  # type: ignore[no-untyped-def]
     fvm = ForceViewModel()
     mvm = MapViewModel(fvm)
