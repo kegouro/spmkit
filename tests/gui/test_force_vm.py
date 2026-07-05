@@ -47,6 +47,21 @@ def test_recipe_change_invalidates_cache(qtbot, synthetic_volume) -> None:  # ty
     assert seen == [DEFAULT_RECIPE]
 
 
+def test_set_param_rebuilds_recipe(synthetic_volume) -> None:
+    vm = ForceViewModel()
+    vm.set_param("model", "cone")
+    assert vm.params["model"] == "cone"
+    assert vm.recipe.steps[-1].params["model"] == "cone"
+
+
+def test_fit_range_param_enters_and_leaves_recipe(synthetic_volume) -> None:
+    vm = ForceViewModel()
+    vm.set_params(fit_min=1e-7, fit_max=3e-7)
+    assert vm.recipe.steps[-1].params["fit_range"] == (1e-7, 3e-7)
+    vm.set_params(fit_min=None, fit_max=None)
+    assert "fit_range" not in vm.recipe.steps[-1].params
+
+
 def test_curve_cache_survives_navigation(synthetic_volume) -> None:
     vm = ForceViewModel()
     vm.set_volume(synthetic_volume(3))

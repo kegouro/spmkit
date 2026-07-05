@@ -25,6 +25,17 @@ def test_fit_returns_overlay_line_close_to_data() -> None:
     assert fit.r_squared > 0.98
 
 
+def test_fit_range_window_and_fallback() -> None:
+    x, f = _hertz()
+    full = fit_force_curve(x, f)
+    # Ventana razonable (incluye contacto y carga): recupera un módulo positivo.
+    windowed = fit_force_curve(x, f, fit_range=(-1e-9, 3e-7))
+    assert windowed.young_modulus > 0
+    # Ventana vacía (fuera de rango, mm) → se ignora y equivale al ajuste completo.
+    empty = fit_force_curve(x, f, fit_range=(1e-3, 2e-3))
+    assert abs(empty.young_modulus - full.young_modulus) < 1e-6 * full.young_modulus
+
+
 def test_to_dict_excludes_arrays() -> None:
     x, f = _hertz()
     d = fit_force_curve(x, f).to_dict()

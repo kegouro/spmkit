@@ -12,7 +12,15 @@ from __future__ import annotations
 
 import numpy as np
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QComboBox, QHBoxLayout, QLabel, QSlider, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import (
+    QCheckBox,
+    QComboBox,
+    QHBoxLayout,
+    QLabel,
+    QSlider,
+    QVBoxLayout,
+    QWidget,
+)
 
 from spmkit.core.analysis.forcecurve import display_axis
 from spmkit.core.models import ForceCurve, ForceSegment
@@ -99,6 +107,13 @@ class ForceCanvasPanel(Panel):
         )
         self._contact_line.setVisible(False)
         self._plot.addItem(self._contact_line)
+        self._region = pg.LinearRegionItem(
+            brush=(45, 212, 191, 25), pen=pg.mkPen(tokens.TRACES["fit"], width=1.0)
+        )
+        self._region.setZValue(-5)
+        self._region.setVisible(False)
+        self._region.sigRegionChangeFinished.connect(self._on_region_changed)
+        self._plot.addItem(self._region)
         self._resid.addLine(y=0, pen=pg.mkPen(tokens.TRACES["residual"], width=1.0))
         self._resid_item = self._resid.plot(
             [], [], pen=None, symbol="o", symbolSize=3, symbolBrush=tokens.TRACES["fit"]
@@ -112,12 +127,16 @@ class ForceCanvasPanel(Panel):
         self._axis_mode.addItem("Separación", "sep")
         self._axis_mode.addItem("Indentación δ", "ind")
         self._axis_mode.currentIndexChanged.connect(self._on_axis_mode)
+        self._region_check = QCheckBox("Región")
+        self._region_check.setToolTip("Ajustar sólo dentro de una ventana manual del eje")
+        self._region_check.toggled.connect(self._on_region_toggle)
         self._scrubber = QSlider(Qt.Orientation.Horizontal)
         self._scrubber.setMinimum(0)
         self._scrubber.valueChanged.connect(self._vm.set_curve)
         self._counter = QLabel("—")
         self._counter.setProperty("role", "readout")
         crow.addWidget(self._axis_mode)
+        crow.addWidget(self._region_check)
         crow.addWidget(self._scrubber, 1)
         crow.addWidget(self._counter)
 
@@ -177,6 +196,37 @@ class ForceCanvasPanel(Panel):
             self._on_results(self._last_ctx)
         elif self._vm.n_curves:
             self._draw_data(self._vm.current_curve())
+
+    # ---- región de ajuste manual (sólo en modo separación) ----
+    def _on_region_toggle(self, on: bool) -> None:
+        if on:
+            with _blocked(self._axis_mode):
+                self._axis_mode.setCurrentIndex(self._axis_mode.findData("sep"))
+            self._axis_mode.setEnabled(False)
+            self._update_axis_label()
+            self._init_region_bounds()
+            self._region.setVisible(True)
+            self._on_region_changed()
+        else:
+            self._region.setVisible(False)
+            self._axis_mode.setEnabled(True)
+            self._vm.set_params(fit_min=None, fit_max=None)
+
+    def _init_region_bounds(self) -> None:
+        fit = self._last_ctx.get("fit")
+        if fit is not None and getattr(fit, "x_fit", None) is not None and len(fit.x_fit):
+            xs = self._x(fit.x_fit)  # offset 0 en modo separación
+            lo, hi = float(np.min(xs)), float(np.max(xs))
+        else:
+            lo, hi = self._plot.getViewBox().viewRange()[0]
+        with _blocked(self._region):
+            self._region.setRegion((lo, hi))
+
+    def _on_region_changed(self, *_args: object) -> None:
+        if not self._region.isVisible():
+            return
+        lo_nm, hi_nm = self._region.getRegion()
+        self._vm.set_params(fit_min=lo_nm / _NM, fit_max=hi_nm / _NM)
 
     # ---- dibujo ----
     def _x(self, axis_m: np.ndarray) -> np.ndarray:

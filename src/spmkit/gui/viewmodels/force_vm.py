@@ -20,18 +20,47 @@ from PyQt6.QtCore import QObject, QTimer, pyqtSignal
 from spmkit.core.models import ForceCurve, ForceVolume
 from spmkit.core.pipeline import Recipe, Step, run
 
-#: Receta por defecto (Hertz esférico con detección de contacto).
-DEFAULT_RECIPE = Recipe(
-    steps=(
-        Step(op="calibrate"),
-        Step(op="find_contact_point"),
-        Step(
-            op="fit_elasticity",
-            params={"model": "sphere", "tip_radius": 10e-9},
-            condition="contact_detected",
-        ),
+#: Parámetros por defecto del pipeline de ajuste (fuente única de la receta).
+DEFAULT_PARAMS: dict[str, Any] = {
+    "model": "sphere",
+    "tip_radius": 10e-9,
+    "poisson": 0.3,
+    "half_angle": None,  # rad; sólo modelo cone
+    "invols": None,  # m/V; None = usar metadatos
+    "spring_constant": None,  # N/m; None = usar metadatos
+    "fit_min": None,  # m; ventana de ajuste manual (con fit_max)
+    "fit_max": None,
+}
+
+
+def build_recipe(params: dict[str, Any]) -> Recipe:
+    """Construye la :class:`Recipe` de ajuste desde el dict de parámetros (pura)."""
+    cal: dict[str, Any] = {}
+    if params.get("invols"):
+        cal["invols"] = params["invols"]
+    if params.get("spring_constant"):
+        cal["spring_constant"] = params["spring_constant"]
+    fit: dict[str, Any] = {
+        "model": params["model"],
+        "tip_radius": params["tip_radius"],
+        "poisson": params["poisson"],
+    }
+    if params["model"] == "cone" and params.get("half_angle") is not None:
+        fit["half_angle"] = params["half_angle"]
+    fmin, fmax = params.get("fit_min"), params.get("fit_max")
+    if fmin is not None and fmax is not None:
+        fit["fit_range"] = (fmin, fmax)
+    return Recipe(
+        steps=(
+            Step(op="calibrate", params=cal),
+            Step(op="find_contact_point"),
+            Step(op="fit_elasticity", params=fit, condition="contact_detected"),
+        )
     )
-)
+
+
+#: Receta por defecto (Hertz esférico con detección de contacto).
+DEFAULT_RECIPE = build_recipe(DEFAULT_PARAMS)
 
 _FIT_DEBOUNCE_MS = 150
 _CURVE_CACHE_MAX = 64
@@ -50,6 +79,7 @@ class ForceViewModel(QObject):
         super().__init__(parent)
         self._volume: ForceVolume | None = None
         self._index = 0
+        self._params: dict[str, Any] = dict(DEFAULT_PARAMS)
         self._recipe = DEFAULT_RECIPE
         self._curve_cache: dict[int, Any] = {}
         self._curve_order: list[int] = []
@@ -78,6 +108,28 @@ class ForceViewModel(QObject):
     @property
     def recipe(self) -> Recipe:
         return self._recipe
+
+    @property
+    def params(self) -> dict[str, Any]:
+        """Copia de los parámetros del pipeline de ajuste."""
+        return dict(self._params)
+
+    def set_param(self, key: str, value: Any) -> None:
+        """Actualiza un parámetro del ajuste y reconstruye la receta (re-ajuste)."""
+        if self._params.get(key) == value:
+            return
+        self._params[key] = value
+        self.set_recipe(build_recipe(self._params))
+
+    def set_params(self, **kwargs: Any) -> None:
+        """Actualiza varios parámetros de una vez (una sola reconstrucción)."""
+        changed = False
+        for key, value in kwargs.items():
+            if self._params.get(key) != value:
+                self._params[key] = value
+                changed = True
+        if changed:
+            self.set_recipe(build_recipe(self._params))
 
     def set_volume(self, volume: ForceVolume) -> None:
         """Carga un force-volume nuevo y activa la primera curva."""

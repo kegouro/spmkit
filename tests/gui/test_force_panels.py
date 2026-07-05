@@ -33,6 +33,21 @@ def test_canvas_residuals_and_indentation_mode(qtbot, synthetic_volume) -> None:
     assert abs(panel._contact_line.value()) < 1e-6
 
 
+def test_canvas_region_sets_fit_window(qtbot, synthetic_volume) -> None:  # type: ignore[no-untyped-def]
+    vm = ForceViewModel()
+    panel = ForceCanvasPanel(vm)
+    qtbot.addWidget(panel)
+    vm.set_volume(synthetic_volume(1))
+    vm.run_fit_now()
+    panel._region_check.setChecked(True)
+    assert panel._region.isVisible()
+    assert not panel._axis_mode.isEnabled()  # región fuerza modo separación
+    assert vm.params["fit_min"] is not None and vm.params["fit_max"] is not None
+    panel._region_check.setChecked(False)
+    assert vm.params["fit_min"] is None
+    assert panel._axis_mode.isEnabled()
+
+
 def test_canvas_scrubber_tracks_volume(qtbot, synthetic_volume) -> None:  # type: ignore[no-untyped-def]
     vm = ForceViewModel()
     panel = ForceCanvasPanel(vm)

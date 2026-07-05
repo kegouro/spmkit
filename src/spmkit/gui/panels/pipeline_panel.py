@@ -19,7 +19,6 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from spmkit.core.pipeline import Recipe, Step
 from spmkit.gui.panels.base import Panel
 from spmkit.gui.viewmodels import ForceViewModel
 
@@ -115,28 +114,15 @@ class PipelinePanel(Panel):
         self._angle.setEnabled(is_cone)
         self._radius.setEnabled(not is_cone)
 
-    def _build_recipe(self) -> Recipe:
-        cal_params: dict[str, float] = {}
-        if self._invols.value() > 0:
-            cal_params["invols"] = self._invols.value() * 1e-9
-        if self._k.value() > 0:
-            cal_params["spring_constant"] = self._k.value()
-        fit_params: dict[str, object] = {
-            "model": self._model.currentData(),
-            "tip_radius": self._radius.value() * 1e-9,
-            "poisson": self._poisson.value(),
-        }
-        if self._model.currentData() == "cone":
-            fit_params["half_angle"] = math.radians(self._angle.value())
-        return Recipe(
-            steps=(
-                Step(op="calibrate", params=cal_params),
-                Step(op="find_contact_point"),
-                Step(op="fit_elasticity", params=fit_params, condition="contact_detected"),
-            )
-        )
-
     def _apply(self, *_args: object) -> None:
+        """Empuja todos los controles a los parámetros del ViewModel (un re-ajuste)."""
         if self._building:
             return
-        self._vm.set_recipe(self._build_recipe())
+        self._vm.set_params(
+            model=self._model.currentData(),
+            tip_radius=self._radius.value() * 1e-9,
+            poisson=self._poisson.value(),
+            half_angle=math.radians(self._angle.value()),
+            invols=(self._invols.value() * 1e-9) or None,
+            spring_constant=self._k.value() or None,
+        )

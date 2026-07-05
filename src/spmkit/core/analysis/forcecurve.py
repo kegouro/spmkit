@@ -161,12 +161,17 @@ def fit_force_curve(
     half_angle: float = np.deg2rad(20.0),
     baseline_fraction: float = 0.3,
     k_sigma: float = 5.0,
+    fit_range: tuple[float, float] | None = None,
 ) -> ForceCurveFit:
     """Ajusta un modelo de contacto a una curva de fuerza (eje ``x`` = separación).
 
     Robusto al signo/orden del eje: orienta por la línea base, corrige base, detecta
     contacto y ajusta ``F = A·δ^n`` con ``δ = |x − x₀|`` (por eso ``A`` y el módulo
     salen positivos con cualquier convención).
+
+    ``fit_range`` (min, max en unidades del eje) restringe el análisis a esa ventana
+    (selección manual estilo JPK); si deja menos de 10 puntos, se ignora y se usa toda
+    la curva (para que arrastrar la región en vivo nunca rompa el ajuste).
     """
     if model not in _MODELS:
         raise ValueError(f"model debe ser uno de {sorted(_MODELS)}")
@@ -174,6 +179,11 @@ def fit_force_curve(
     force = np.asarray(force, dtype=np.float64)
     finite = np.isfinite(x) & np.isfinite(force)
     x, force = x[finite], force[finite]
+    if fit_range is not None:
+        lo, hi = sorted(fit_range)
+        window = (x >= lo) & (x <= hi)
+        if int(np.count_nonzero(window)) >= 10:  # si no, se ignora la ventana
+            x, force = x[window], force[window]
     if x.size < 10:
         raise ValueError("Muy pocos puntos finitos para ajustar la curva de fuerza")
 
