@@ -424,7 +424,7 @@ def verify(
 
 @app.command()
 def gui() -> None:
-    """Lanza la interfaz gráfica (requiere el extra 'gui')."""
+    """Lanza la interfaz gráfica clásica (requiere el extra 'gui')."""
     try:
         from spmkit.gui.app import run
 
@@ -432,6 +432,19 @@ def gui() -> None:
     except ImportError:
         console.print("[red]La GUI requiere PyQt6. Instala con:[/] pip install 'spmkit[gui]'")
         raise typer.Exit(code=1) from None
+
+
+@app.command()
+def workspace(
+    file: Path | None = typer.Argument(None, help="Archivo de curvas a abrir al arrancar"),
+) -> None:
+    """Lanza el nuevo workspace de curvas de fuerza (rediseño; requiere 'gui')."""
+    try:
+        from spmkit.gui.app_workspace import run
+    except ImportError:
+        console.print("[red]El workspace requiere PyQt6. Instala con:[/] pip install 'spmkit[gui]'")
+        raise typer.Exit(code=1) from None
+    raise typer.Exit(code=run(str(file) if file else None))
 
 
 def _apply_level(ch, level: str):  # type: ignore[no-untyped-def]

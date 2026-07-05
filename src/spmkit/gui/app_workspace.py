@@ -29,8 +29,11 @@ from spmkit.gui.shell.workspace import Workspace
 from spmkit.gui.viewmodels import BatchViewModel, ForceViewModel, MapViewModel
 
 
-def build_workspace(mode: str = "dark") -> Workspace:
-    """Construye el workspace con las perspectivas de curva, mapa y batch cableadas."""
+def build_workspace(mode: str = "dark", open_path: str | Path | None = None) -> Workspace:
+    """Construye el workspace con las perspectivas de curva, mapa y batch cableadas.
+
+    Si se pasa ``open_path``, carga ese archivo de curvas al arrancar.
+    """
     vm = ForceViewModel()
     map_vm = MapViewModel(vm)
     batch_vm = BatchViewModel(vm)
@@ -60,7 +63,20 @@ def build_workspace(mode: str = "dark") -> Workspace:
     )
     ws.register_command(Command("Primera curva", lambda: vm.set_curve(0), "Ctrl+Home"))
     ws.register_command(Command("Última curva", lambda: vm.set_curve(vm.n_curves - 1), "Ctrl+End"))
+    if open_path is not None:
+        _load_into(ws, vm, open_path)
     return ws
+
+
+def _load_into(ws: Workspace, vm: ForceViewModel, path: str | Path) -> None:
+    """Carga un archivo de curvas en el ViewModel (usado al arrancar y desde el diálogo)."""
+    try:
+        vm.set_volume(load_force(path))
+    except Exception as exc:  # noqa: BLE001 - error de IO se muestra, no tumba la app
+        ws.show_status(f"No se pudo abrir {Path(path).name}: {exc}")
+        return
+    ws.set_perspective("force")
+    ws.show_status(f"{Path(path).name} — {vm.n_curves} curva(s)")
 
 
 def _scalar_results(ctx: dict) -> dict:
@@ -123,24 +139,17 @@ def _open_dialog(ws: Workspace, vm: ForceViewModel) -> None:
     path, _ = QFileDialog.getOpenFileName(
         ws, "Abrir curva de fuerza", "", f"Curvas de fuerza ({exts})"
     )
-    if not path:
-        return
-    try:
-        vm.set_volume(load_force(path))
-    except Exception as exc:  # noqa: BLE001 - error de IO se muestra, no tumba la app
-        ws.show_status(f"No se pudo abrir {Path(path).name}: {exc}")
-        return
-    ws.set_perspective("force")
-    ws.show_status(f"{Path(path).name} — {vm.n_curves} curva(s)")
+    if path:
+        _load_into(ws, vm, path)
 
 
-def main() -> int:
-    """Lanza el workspace del rediseño como app independiente."""
+def run(open_path: str | Path | None = None) -> int:
+    """Lanza el workspace del rediseño como app independiente (abre ``open_path`` si se da)."""
     app = QApplication.instance() or QApplication(sys.argv)
-    ws = build_workspace()
+    ws = build_workspace(open_path=open_path)
     ws.show()
     return app.exec()
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run())

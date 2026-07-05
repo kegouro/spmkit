@@ -48,3 +48,10 @@ def test_map_perspective_switches(qtbot) -> None:  # type: ignore[no-untyped-def
     ws.set_perspective("map")
     assert ws.active_perspective == "map"
     assert ws.visible_docks() == {"navigator", "inspector", "histogram"}
+
+
+def test_build_workspace_bad_open_path_is_safe(qtbot) -> None:  # type: ignore[no-untyped-def]
+    # Un archivo inexistente al arrancar no debe tumbar la app (se informa y sigue).
+    ws = build_workspace(open_path="/no/such/file.nid")
+    qtbot.addWidget(ws)
+    assert isinstance(ws.panel("force_canvas"), ForceCanvasPanel)
