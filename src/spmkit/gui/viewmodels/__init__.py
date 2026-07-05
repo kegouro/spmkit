@@ -2,6 +2,7 @@
 
 from spmkit.gui.viewmodels.batch_vm import BatchViewModel
 from spmkit.gui.viewmodels.force_vm import DEFAULT_RECIPE, ForceViewModel
+from spmkit.gui.viewmodels.image_vm import ImageViewModel
 from spmkit.gui.viewmodels.map_vm import PROPERTIES, MapViewModel
 
 __all__ = [
@@ -10,4 +11,5 @@ __all__ = [
     "MapViewModel",
     "PROPERTIES",
     "BatchViewModel",
+    "ImageViewModel",
 ]

@@ -20,6 +20,7 @@ from spmkit.core.io import load_force, supported_force_extensions
 from spmkit.gui.panels.batch_table import BatchTablePanel
 from spmkit.gui.panels.force_canvas import ForceCanvasPanel
 from spmkit.gui.panels.histogram_panel import HistogramPanel
+from spmkit.gui.panels.image_canvas import ImageCanvasPanel
 from spmkit.gui.panels.inspector import InspectorPanel
 from spmkit.gui.panels.log_panel import LogPanel
 from spmkit.gui.panels.map_canvas import MapCanvasPanel
@@ -27,7 +28,12 @@ from spmkit.gui.panels.navigator import NavigatorPanel
 from spmkit.gui.panels.pipeline_panel import PipelinePanel
 from spmkit.gui.shell.command_palette import Command
 from spmkit.gui.shell.workspace import Workspace
-from spmkit.gui.viewmodels import BatchViewModel, ForceViewModel, MapViewModel
+from spmkit.gui.viewmodels import (
+    BatchViewModel,
+    ForceViewModel,
+    ImageViewModel,
+    MapViewModel,
+)
 
 
 def build_workspace(
@@ -41,6 +47,7 @@ def build_workspace(
     vm = ForceViewModel()
     map_vm = MapViewModel(vm)
     batch_vm = BatchViewModel(vm)
+    image_vm = ImageViewModel()
     force_canvas = ForceCanvasPanel(vm)
     panels = {
         "force_canvas": force_canvas,
@@ -50,13 +57,16 @@ def build_workspace(
         "map_canvas": MapCanvasPanel(map_vm, vm),
         "histogram": HistogramPanel(map_vm),
         "batch_table": BatchTablePanel(batch_vm),
+        "image_canvas": ImageCanvasPanel(image_vm),
         "log": LogPanel((vm, map_vm, batch_vm)),
     }
     ws = Workspace(panels=panels, mode=mode, persist=persist)
     map_vm.taskStarted.connect(ws.bind_task)
     batch_vm.taskStarted.connect(ws.bind_task)
-    ws.fileDropped.connect(lambda p: _load_into(ws, vm, p))
-    ws.register_command(Command("Abrir curva/volumen…", lambda: _open_dialog(ws, vm), "Ctrl+O"))
+    ws.fileDropped.connect(lambda p: _load_into(ws, vm, image_vm, p))
+    ws.register_command(
+        Command("Abrir curva o imagen…", lambda: _open_dialog(ws, vm, image_vm), "Ctrl+O")
+    )
     ws.register_command(Command("Calcular mapa de propiedades", map_vm.compute, "Ctrl+M"))
     ws.register_command(
         Command("Exportar resultados (JSON)…", lambda: _export_results(ws, vm), "Ctrl+E")
@@ -74,20 +84,32 @@ def build_workspace(
     ws.register_command(Command("Primera curva", lambda: vm.set_curve(0), "Ctrl+Home"))
     ws.register_command(Command("Última curva", lambda: vm.set_curve(vm.n_curves - 1), "Ctrl+End"))
     if open_path is not None:
-        _load_into(ws, vm, open_path)
+        _load_into(ws, vm, image_vm, open_path)
     return ws
 
 
-def _load_into(ws: Workspace, vm: ForceViewModel, path: str | Path) -> None:
-    """Carga un archivo de curvas en el ViewModel (usado al arrancar y desde el diálogo)."""
+def _load_into(
+    ws: Workspace, vm: ForceViewModel, image_vm: ImageViewModel, path: str | Path
+) -> None:
+    """Abre ``path`` como curva de fuerza; si no lo es, como imagen. Se informa si falla."""
+    name = Path(path).name
     try:
         vm.set_volume(load_force(path))
-    except Exception as exc:  # noqa: BLE001 - error de IO se muestra, no tumba la app
-        ws.show_status(f"No se pudo abrir {Path(path).name}: {exc}")
+    except Exception:  # noqa: BLE001 - no era curva de fuerza: probamos imagen
+        try:
+            from spmkit.core.io import load as load_image
+
+            image_vm.set_data(load_image(path))
+        except Exception as exc:  # noqa: BLE001 - tampoco imagen: se informa, no tumba
+            ws.show_status(f"No se pudo abrir {name}: {exc}")
+            return
+        _remember_dir(str(path))
+        ws.set_perspective("image")
+        ws.show_status(f"{name} — imagen ({len(image_vm.names)} canales)")
         return
     _remember_dir(str(path))
     ws.set_perspective("force")
-    ws.show_status(f"{Path(path).name} — {vm.n_curves} curva(s)")
+    ws.show_status(f"{name} — {vm.n_curves} curva(s)")
 
 
 def _last_dir() -> str:
@@ -200,13 +222,14 @@ def _export_figure(ws: Workspace, vm: ForceViewModel) -> None:
     ws.show_status(f"figura exportada a {Path(path).name}")
 
 
-def _open_dialog(ws: Workspace, vm: ForceViewModel) -> None:
-    exts = " ".join(f"*{e}" for e in supported_force_extensions())
+def _open_dialog(ws: Workspace, vm: ForceViewModel, image_vm: ImageViewModel) -> None:
+    force = {f"*{e}" for e in supported_force_extensions()}
+    both = " ".join(sorted(force | {"*.nid", "*.nhf", "*.gwy"}))
     path, _ = QFileDialog.getOpenFileName(
-        ws, "Abrir curva de fuerza", _last_dir(), f"Curvas de fuerza ({exts})"
+        ws, "Abrir curva o imagen", _last_dir(), f"Datos SPM ({both})"
     )
     if path:
-        _load_into(ws, vm, path)
+        _load_into(ws, vm, image_vm, path)
 
 
 def run(open_path: str | Path | None = None) -> int:
