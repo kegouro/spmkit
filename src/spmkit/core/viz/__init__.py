@@ -4,6 +4,7 @@ from spmkit.core.viz import colormaps
 from spmkit.core.viz.figure import (
     Annotation,
     FigureSpec,
+    render_annotation,
     render_channel,
     render_grid,
     save_figure,
@@ -15,6 +16,7 @@ __all__ = [
     "colormaps",
     "FigureSpec",
     "Annotation",
+    "render_annotation",
     "render_channel",
     "render_grid",
     "save_figure",
