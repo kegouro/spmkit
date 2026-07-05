@@ -452,20 +452,23 @@ emite señales; snapshots de layout. Threading testeado con señales esperadas (
 
 Estrategia de bajo riesgo, incremental, siempre con la app funcionando:
 
-- **Fase A — Cimientos**: `design/tokens.py` + motor de tema (QSS/pyqtgraph/matplotlib
-  sincronizados) + `runtime/tasks.py` (threading) + `panels/base.py`. Arregla ya los
-  congelamientos y el desajuste de tema, sin tocar el layout.
-- **Fase B — Shell**: `shell/workspace.py` con dock manager + barra de perspectivas +
-  paleta de comandos + barra de estado con progreso. Las 7 pestañas actuales entran como
-  paneles provisionales dentro del nuevo shell (siguen funcionando).
-- **Fase C — Perspectiva Curva de fuerza**: `force_canvas` + `pipeline_panel` +
-  `inspector`, sobre el core que ya construimos. Es la joya y el mayor "wow".
-- **Fase D — Perspectiva Mapa** (brushing ligado) y **Batch**.
-- **Fase E — Migrar** Imagen/Figura/Simulador a paneles nativos; retirar las tabs viejas.
-- **Fase F — Extensibilidad**: layouts guardables, editor de tema/atajos, plugins,
-  `.spmproj`, i18n.
+- **Fase A — Cimientos** ✅: `design/tokens.py` + motor de tema (QSS/pyqtgraph/matplotlib
+  sincronizados) + `runtime/tasks.py` (threading) + `panels/base.py`.
+- **Fase B — Shell** ✅: `shell/workspace.py` con dock manager + barra de perspectivas +
+  paleta de comandos (⌘K) + barra de estado con progreso cancelable.
+- **Fase C — Perspectiva Curva de fuerza** ✅: `force_canvas` (datos+ajuste+residuos+
+  indentación δ+región manual+fijar curvas) + `pipeline_panel` en vivo (modelo/geometría/
+  Poisson/suavizado/calibración) + `inspector` (E±σ, R², adhesión, disipación, F/δ máx).
+- **Fase D — Perspectiva Mapa** ✅ (brushing ligado, ImageView, histograma, export) y
+  **Batch** ✅ (carpeta→tabla→CSV, paralelo). Lanzable con `spmkit workspace [archivo]`.
+- **Fase E — Migrar** Imagen/Figura/Simulador a paneles nativos; retirar las tabs viejas
+  (pendiente).
+- **Fase F — Extensibilidad**: persistencia (tema/geometría/perspectiva) ✅; pendientes:
+  layouts guardables, editor de tema/atajos, plugins, `.spmproj`, i18n. Posible modelo JKR
+  (con validación previa; hoy están Hertz/paraboloide/Sneddon/DMT).
 
-Cada fase entra con smoke tests de GUI (pytest-qt offscreen) y deja la app usable.
+Cada fase entró con smoke tests de GUI (pytest-qt offscreen) y dejó la app usable.
+Verificado end-to-end con datos reales (JPK y force-volume `.nid` 10×10).
 
 ---
 
