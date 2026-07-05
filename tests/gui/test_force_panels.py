@@ -67,6 +67,8 @@ def test_inspector_shows_modulus(qtbot, synthetic_volume) -> None:  # type: igno
     assert not panel.errored
     assert panel._values["young"].text() != "—"
     assert panel._values["r_squared"].text() != "—"
+    assert panel._values["max_force"].text() != "—"
+    assert panel._values["max_indentation"].text() != "—"
 
 
 def test_navigator_lists_and_steps(qtbot, synthetic_volume) -> None:  # type: ignore[no-untyped-def]

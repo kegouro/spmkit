@@ -20,6 +20,8 @@ _ROWS: tuple[tuple[str, str], ...] = (
     ("r_squared", "R²"),
     ("contact", "Contacto"),
     ("adhesion", "Adhesión"),
+    ("max_force", "Fuerza máx"),
+    ("max_indentation", "δ máx"),
     ("dissipation", "Disipación"),
     ("model", "Modelo"),
     ("n_fit", "Puntos"),
@@ -101,6 +103,8 @@ class InspectorPanel(Panel):
         )
         self._values["contact"].setText(_fmt_scaled(ctx.get("contact_point"), 1e9, "nm"))
         self._values["adhesion"].setText(_fmt_scaled(ctx.get("adhesion"), 1e9, "nN"))
+        self._values["max_force"].setText(_fmt_scaled(ctx.get("max_force"), 1e9, "nN"))
+        self._values["max_indentation"].setText(_fmt_scaled(ctx.get("max_indentation"), 1e9, "nm"))
         self._values["dissipation"].setText(_fmt_scaled(ctx.get("dissipation"), 1e15, "fJ"))
         fit = ctx.get("fit")
         self._values["model"].setText(fit.model if fit is not None else _EMPTY)

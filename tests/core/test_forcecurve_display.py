@@ -36,12 +36,16 @@ def test_fit_range_window_and_fallback() -> None:
     assert abs(empty.young_modulus - full.young_modulus) < 1e-6 * full.young_modulus
 
 
-def test_to_dict_excludes_arrays() -> None:
+def test_to_dict_excludes_arrays_but_keeps_scalars() -> None:
     x, f = _hertz()
-    d = fit_force_curve(x, f).to_dict()
-    assert "x_fit" not in d and "f_fit" not in d
+    fit = fit_force_curve(x, f)
+    d = fit.to_dict()
+    assert "x_fit" not in d and "f_fit" not in d and "residual" not in d
     assert d["young_modulus"] > 0
     assert isinstance(d["young_modulus"], float)
+    # Los escalares extra (paridad con ANA/JPK) sí quedan en el CSV.
+    assert fit.max_indentation > 0 and d["max_indentation"] > 0
+    assert fit.max_force > 0 and d["max_force"] > 0
 
 
 def test_display_axis_prefers_separation_but_falls_back() -> None:

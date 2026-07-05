@@ -20,6 +20,7 @@ from spmkit.gui.panels.batch_table import BatchTablePanel
 from spmkit.gui.panels.force_canvas import ForceCanvasPanel
 from spmkit.gui.panels.histogram_panel import HistogramPanel
 from spmkit.gui.panels.inspector import InspectorPanel
+from spmkit.gui.panels.log_panel import LogPanel
 from spmkit.gui.panels.map_canvas import MapCanvasPanel
 from spmkit.gui.panels.navigator import NavigatorPanel
 from spmkit.gui.panels.pipeline_panel import PipelinePanel
@@ -41,6 +42,7 @@ def build_workspace(mode: str = "dark") -> Workspace:
         "map_canvas": MapCanvasPanel(map_vm, vm),
         "histogram": HistogramPanel(map_vm),
         "batch_table": BatchTablePanel(batch_vm),
+        "log": LogPanel((vm, map_vm, batch_vm)),
     }
     ws = Workspace(panels=panels, mode=mode)
     map_vm.taskStarted.connect(ws.bind_task)

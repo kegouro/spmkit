@@ -132,6 +132,8 @@ def fit_elasticity(
     ctx["r_squared"] = fit.r_squared
     ctx["contact_point"] = fit.contact_point
     ctx["adhesion"] = fit.adhesion
+    ctx["max_indentation"] = fit.max_indentation
+    ctx["max_force"] = fit.max_force
     ctx["fit"] = fit
 
     # Energía de disipación (histéresis) si hay segmento de retract.

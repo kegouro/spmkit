@@ -34,6 +34,8 @@ class ForceCurveFit:
     model: str
     n_fit: int
     unit_modulus: str = "Pa"
+    max_indentation: float = 0.0  # m, profundidad máxima ajustada (δ máx)
+    max_force: float = 0.0  # N, fuerza pico de la rama de carga (sobre la base)
     #: Línea de ajuste en coordenadas de display (eje ``x`` y fuerza cruda), para
     #: dibujarla superpuesta a los datos. No forma parte de ``to_dict`` (escalares).
     x_fit: np.ndarray = field(default_factory=lambda: np.empty(0), repr=False, compare=False)
@@ -249,6 +251,8 @@ def fit_force_curve(
         adhesion=adhesion,
         model=model,
         n_fit=int(delta.size),
+        max_indentation=float(delta.max()),
+        max_force=float(f_fit.max()),
         x_fit=np.asarray(x_fit, dtype=np.float64),
         f_fit=np.asarray(f_fit_line, dtype=np.float64),
         residual=np.asarray(residuals, dtype=np.float64),
