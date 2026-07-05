@@ -71,6 +71,7 @@ packages = ["src/spmkit"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q --cov=spmkit --cov-report=term-missing"
+qt_api = "pyqt6"  # los tests de GUI usan PyQt6 (no PySide6 si coexiste)
 
 [tool.ruff]
 line-length = 100
@@ -83,6 +84,8 @@ select = ["E", "F", "I", "UP", "B", "C4", "SIM"]
 [tool.ruff.lint.per-file-ignores]
 # typer usa llamadas a Option()/Argument() en los defaults (patrón idiomático).
 "src/spmkit/cli/*.py" = ["B008"]
+# theme.py es mayormente una hoja de estilo QSS; envolver sus líneas la haría ilegible.
+"src/spmkit/gui/design/theme.py" = ["E501"]
 
 [tool.black]
 line-length = 100
