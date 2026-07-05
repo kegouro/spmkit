@@ -28,6 +28,28 @@ el versionado es [SemVer](https://semver.org/lang/es/).
   archivos → tabla resumen (`to_csv`/`to_dataframe`).
 - **CLI**: comandos `forcecurve`, `forcemap` y `fbatch`.
 
+### Añadido — Fathom: workspace de curvas de fuerza (rediseño de UI)
+- **Fathom**, el workspace de curvas de fuerza (producto sobre la librería `spmkit`),
+  pensado para **reemplazar Nanosurf ANA y JPK Data Processing**. Se lanza con
+  `spmkit workspace [archivo]`. Estética "Instrumento": grafito + teal + oro; MVVM;
+  perspectivas + paleta de comandos (⌘K) en vez de pestañas planas.
+- **Perspectiva Curva de fuerza**: lienzo con approach/retract, overlay de ajuste,
+  **tira de residuos**, eje conmuta separación/**indentación δ**, **región de ajuste
+  manual**, **fijar/superponer curvas**; **pipeline en vivo** (modelo Hertz/paraboloide/
+  Sneddon/DMT, radio, Poisson, semiángulo, **suavizado Savitzky-Golay**, calibración);
+  inspector con E±σ, R², adhesión, disipación, F máx y δ máx.
+- **Perspectiva Mapa** (force-volume): imagen de propiedad + **linked brushing** +
+  histograma; **motor de cálculo CPU/GPU** con ruta **vectorizada** (misma física a
+  precisión de máquina, mucho más rápida; GPU vía CuPy/CUDA) y pop-up explicativo.
+- **Perspectiva Batch**: carpeta → tabla → CSV (paralelo). **Perspectiva Imagen**:
+  visor de canal + nivelado + rugosidad (colormap gold).
+- **Optimización**: `core/compute.py` (backend CPU/GPU) y `core/analysis/forcevolume_fast.py`
+  (mapa de elasticidad vectorizado, validado contra el ajuste por curva). `forcemap`
+  gana `--fast/--pipeline` y `--backend cpu|gpu`.
+- **Calidad de vida**: exportar figura/mapa/JSON, copiar resultados, navegación por
+  teclado, **arrastrar y soltar** archivos, temas claro/oscuro con **persistencia**
+  (tema/geometría/perspectiva), panel de log, memoria del último directorio.
+
 ### Añadido
 - **Nanomecánica — modelo DMT** (Derjaguin-Muller-Toporov): Hertz esférico con la
   adhesión como offset constante, para muestras rígidas con adhesión no

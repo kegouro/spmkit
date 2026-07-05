@@ -12,7 +12,7 @@ Nanosurf ANA y JPK Data Processing. Lánzalo con `spmkit workspace`.
 *Desarrollado en el **SPM Lab** de la Universidad Técnica Federico Santa María (UTFSM)*
 
 [![CI](https://github.com/kegouro/spmkit/actions/workflows/ci.yml/badge.svg)](https://github.com/kegouro/spmkit/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-106%20passing-brightgreen.svg)](https://github.com/kegouro/spmkit/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-287%20passing-brightgreen.svg)](https://github.com/kegouro/spmkit/actions/workflows/ci.yml)
 [![Coverage](https://img.shields.io/badge/coverage-73%25-green.svg)](#-tests-y-calidad)
 [![PyPI](https://img.shields.io/pypi/v/spmkit.svg?color=2dd4bf)](https://pypi.org/project/spmkit/)
 [![Python](https://img.shields.io/badge/python-3.11%20|%203.12-blue.svg)](https://pypi.org/project/spmkit/)
