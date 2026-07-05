@@ -34,6 +34,9 @@ _ENGINES = (
     ("pipeline", "CPU · pipeline"),
 )
 
+#: Paletas de color disponibles para el mapa (paridad con ANA/JPK).
+_COLORMAPS = ("inferno", "viridis", "magma", "plasma", "gold", "gray")
+
 
 class MapCanvasPanel(Panel):
     """Panel central de la perspectiva de mapa: imagen de propiedad + cruz enlazada."""
@@ -81,6 +84,10 @@ class MapCanvasPanel(Panel):
         self._info.setText("ⓘ")
         self._info.setToolTip("¿CPU o GPU? — diferencias")
         self._info.clicked.connect(self._show_engine_info)
+        # Colormap (paridad con ANA/JPK: elegir la paleta del mapa).
+        self._cmap = QComboBox()
+        self._cmap.addItems(_COLORMAPS)
+        self._cmap.currentTextChanged.connect(self._apply_colormap)
         self._status = QLabel("mapa sin calcular")
         self._status.setProperty("role", "muted")
         bar.addWidget(QLabel("Propiedad:"))
@@ -88,6 +95,8 @@ class MapCanvasPanel(Panel):
         bar.addWidget(QLabel("Motor:"))
         bar.addWidget(self._engine)
         bar.addWidget(self._info)
+        bar.addWidget(QLabel("Color:"))
+        bar.addWidget(self._cmap)
         bar.addWidget(self._compute_btn)
         bar.addStretch(1)
         bar.addWidget(self._status)
@@ -95,8 +104,7 @@ class MapCanvasPanel(Panel):
         self._image = pg.ImageView()
         self._image.ui.roiBtn.hide()
         self._image.ui.menuBtn.hide()
-        with contextlib.suppress(Exception):  # colormap opcional; el default sirve
-            self._image.setColorMap(pg.colormap.get("inferno"))
+        self._apply_colormap()
         self._target = pg.TargetItem(movable=False, pen=pg.mkPen("#2DD4BF", width=1.5), size=14)
         self._target.setVisible(False)
         self._image.getView().addItem(self._target)
@@ -105,6 +113,23 @@ class MapCanvasPanel(Panel):
         lay.addLayout(bar)
         lay.addWidget(self._image, 1)
         return root
+
+    def _apply_colormap(self, name: str = "") -> None:
+        """Aplica la paleta seleccionada al mapa (matplotlib o 'gold' del laboratorio)."""
+        import pyqtgraph as pg
+
+        name = name or self._cmap.currentText()
+        cmap = None
+        if name == "gold":
+            from spmkit.core.viz import colormaps
+
+            with contextlib.suppress(Exception):
+                cmap = colormaps.pyqtgraph_cmap("gold")
+        else:
+            with contextlib.suppress(Exception):
+                cmap = pg.colormap.get(name)
+        if cmap is not None:
+            self._image.setColorMap(cmap)
 
     def _show_engine_info(self) -> None:
         """Pop-up breve explicando la diferencia CPU vs GPU y el pipeline."""
