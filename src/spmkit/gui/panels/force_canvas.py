@@ -160,6 +160,7 @@ class ForceCanvasPanel(Panel):
             self._scrubber.setValue(index)
         n = self._vm.n_curves
         self._counter.setText(f"{index + 1:>4} / {n}" if n else "—")
+        self._plot.setTitle(None if n else "Abre una curva de fuerza · ⌘O o arrástrala aquí")
         self._fit_item.setData([], [])
         self._resid_item.setData([], [])
         self._contact_line.setVisible(False)
