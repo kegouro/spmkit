@@ -1,0 +1,14 @@
+# Receta DMT (muestras rígidas con adhesión) con ajuste condicional.
+# El ajuste solo corre si se detectó contacto (la condición se evalúa de forma
+# segura, sin eval()). Uso:
+#   spmkit forcemap muestra.nid --recipe examples/recipes/adhesion_dmt.yaml --figure mapas.png
+name: nanoindentacion_dmt
+steps:
+  - op: calibrate
+  - op: find_contact_point
+  - op: fit_elasticity
+    params:
+      model: dmt              # Hertz + adhesión como offset constante
+      tip_radius: 2.0e-8      # 20 nm
+      poisson: 0.5            # material incompresible (p. ej. hidrogel/célula)
+    condition: contact_detected

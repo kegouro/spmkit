@@ -1,0 +1,91 @@
+"""Test de ensamblado del workspace del rediseño (paneles reales cableados)."""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+import pytest
+
+from spmkit.gui.app_workspace import _results_tsv, _scalar_results, build_workspace
+from spmkit.gui.panels.force_canvas import ForceCanvasPanel
+from spmkit.gui.panels.map_canvas import MapCanvasPanel
+
+_JPK = Path(__file__).resolve().parents[2] / "reference" / "jpk_samples" / "sample.jpk-force"
+
+
+def test_build_workspace_wires_force_and_map_panels(qtbot) -> None:  # type: ignore[no-untyped-def]
+    ws = build_workspace()
+    qtbot.addWidget(ws)
+    assert ws.active_perspective == "force"
+    assert isinstance(ws.panel("force_canvas"), ForceCanvasPanel)
+    assert isinstance(ws.panel("map_canvas"), MapCanvasPanel)
+    titles = [c.title for c in ws._commands]
+    assert any("Abrir" in t for t in titles)
+    assert any("Calcular mapa" in t for t in titles)
+    assert any("Exportar figura" in t for t in titles)
+    assert any("Exportar mapa" in t for t in titles)
+
+
+def test_scalar_results_drops_nonserializable() -> None:
+    ctx = {"young_modulus": 1e6, "model": "sphere", "fit": object(), "ok": True, "none": None}
+    out = _scalar_results(ctx)
+    assert out == {"young_modulus": 1e6, "model": "sphere", "ok": True, "none": None}
+    assert "fit" not in out
+
+
+def test_suggested_uses_last_dir(monkeypatch) -> None:  # type: ignore[no-untyped-def]
+    import spmkit.gui.app_workspace as aw
+
+    monkeypatch.setattr(aw, "_last_dir", lambda: "/data/curvas")
+    assert aw._suggested("mapa.png") == "/data/curvas/mapa.png"
+    monkeypatch.setattr(aw, "_last_dir", lambda: "")
+    assert aw._suggested("mapa.png") == "mapa.png"
+
+
+def test_results_tsv_serializes_scalars() -> None:
+    tsv = _results_tsv({"young_modulus": 1e6, "fit": object(), "model": "sphere"})
+    assert "young_modulus\t1000000.0" in tsv
+    assert "model\tsphere" in tsv
+    assert "fit" not in tsv
+
+
+def test_navigation_and_copy_commands_registered(qtbot) -> None:  # type: ignore[no-untyped-def]
+    ws = build_workspace()
+    qtbot.addWidget(ws)
+    titles = [c.title for c in ws._commands]
+    assert "Curva siguiente" in titles
+    assert "Curva anterior" in titles
+    assert "Copiar resultados" in titles
+
+
+def test_map_perspective_switches(qtbot) -> None:  # type: ignore[no-untyped-def]
+    ws = build_workspace()
+    qtbot.addWidget(ws)
+    ws.set_perspective("map")
+    assert ws.active_perspective == "map"
+    assert ws.visible_docks() == {"navigator", "inspector", "histogram"}
+
+
+def test_build_workspace_bad_open_path_is_safe(qtbot) -> None:  # type: ignore[no-untyped-def]
+    # Un archivo inexistente al arrancar no debe tumbar la app (se informa y sigue).
+    ws = build_workspace(open_path="/no/such/file.nid")
+    qtbot.addWidget(ws)
+    assert isinstance(ws.panel("force_canvas"), ForceCanvasPanel)
+
+
+def test_file_dropped_bad_path_is_safe(qtbot) -> None:  # type: ignore[no-untyped-def]
+    ws = build_workspace()
+    qtbot.addWidget(ws)
+    ws.fileDropped.emit("/no/such/curve.jpk-force")  # no debe romper
+    assert ws.panel("force_canvas") is not None
+
+
+@pytest.mark.skipif(not _JPK.exists(), reason="muestra JPK no disponible (gitignored)")
+def test_file_dropped_loads_real_curve(qtbot) -> None:  # type: ignore[no-untyped-def]
+    ws = build_workspace()
+    qtbot.addWidget(ws)
+    ws.fileDropped.emit(str(_JPK))
+    canvas = ws.panel("force_canvas")
+    assert canvas is not None
+    assert canvas._vm.n_curves == 1
+    assert ws.active_perspective == "force"

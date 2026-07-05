@@ -1,6 +1,9 @@
 """Análisis numérico de datos SPM."""
 
 from spmkit.core.analysis import (
+    calibration,
+    forcecurve,
+    forcevolume,
     grains,
     kpfm,
     leveling,
@@ -11,6 +14,8 @@ from spmkit.core.analysis import (
     simulation,
     spectral,
 )
+from spmkit.core.analysis.forcecurve import ForceCurveFit
+from spmkit.core.analysis.forcevolume import VolumeResult, analyze_volume
 from spmkit.core.analysis.grains import GrainResult
 from spmkit.core.analysis.kpfm import CPDResult
 from spmkit.core.analysis.mechanics import (
@@ -31,15 +36,21 @@ from spmkit.core.analysis.simulation import SimulatedCantilever
 from spmkit.core.analysis.spectral import FractalResult, RadialPSD
 
 __all__ = [
+    "calibration",
     "leveling",
     "roughness",
     "profiles",
     "kpfm",
     "mechanics",
+    "forcecurve",
+    "forcevolume",
     "grains",
     "resonance",
     "simulation",
     "spectral",
+    "ForceCurveFit",
+    "VolumeResult",
+    "analyze_volume",
     "RoughnessResult",
     "Profile",
     "CPDResult",

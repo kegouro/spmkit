@@ -8,8 +8,8 @@ resultados. Las pruebas viven en `tests/validation/` y se ejecutan con
 ## 1. Validación contra ground truth (Gwyddion)
 
 Se comparó la lectura del `.nid` (crudo del instrumento) contra el `.gwy`
-exportado por el Gwyddion del lab **para la misma medida**
-(`Image00851 small nanofiber`).
+exportado por el Gwyddion del lab **para una misma medida** (un barrido de
+topografía con canales de imagen y espectroscopía).
 
 | Canal | Resultado |
 |-------|-----------|
@@ -37,7 +37,8 @@ exactamente con Gwyddion/NanoSurf.
 Los canales de **espectroscopía** (`Dim1Name = SpecPoint`, curvas
 fuerza-distancia) **no se voltean**: sus filas son curvas independientes y
 voltearlas reasignaría mal la posición espacial de cada medida. Esto se
-verifica en `test_nanomech_real.py` (el módulo de Young es estable: ~26 MPa).
+verifica en `test_nanomech_real.py` (el módulo de Young estimado es estable y
+repetible entre curvas de la misma medida).
 
 ## 3. Robustez
 

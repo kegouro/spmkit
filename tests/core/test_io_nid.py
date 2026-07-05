@@ -8,12 +8,32 @@ import numpy as np
 import pytest
 
 from spmkit import load
-from spmkit.core.io import load_nid, supported_extensions
+from spmkit.core.io import load_nid, load_nid_force, supported_extensions
+
+_NANOMECH_NID = (
+    Path(__file__).resolve().parents[2]
+    / "reference"
+    / "sample_files"
+    / "Image00860 nanomech small nanofiber.nid"
+)
 
 
 def test_supported_extensions() -> None:
     assert ".nid" in supported_extensions()
     assert ".nhf" in supported_extensions()
+
+
+@pytest.mark.skipif(not _NANOMECH_NID.exists(), reason="sample .nid de nanomecánica no disponible")
+def test_load_nid_force_volume() -> None:
+    """La espectroscopía de un .nid real carga como ForceVolume con extend/retract."""
+    vol = load_nid_force(_NANOMECH_NID)
+    assert vol.n_curves > 0
+    curve = vol.curve(vol.n_curves // 2)
+    assert curve.extend is not None
+    assert curve.extend.force is not None
+    assert np.all(np.isfinite(curve.extend.force))
+    assert curve.retract is not None  # este .nid tiene approach y retract
+    assert vol.metadata["spring_constant"] == pytest.approx(2.66102, rel=1e-3)  # k del header
 
 
 def test_load_nid_basic(nid_file: Path) -> None:

@@ -28,6 +28,7 @@ dependencies = [
     "numpy>=1.24",
     "typer>=0.12",
     "rich>=13.0",
+    "pyyaml>=6.0",  # serialización de Recipe (pipeline reproducible)
 ]
 
 [project.optional-dependencies]
@@ -35,6 +36,8 @@ hdf5 = ["h5py>=3.8"]
 gwy = ["gwyfile>=0.3"]                       # interop con Gwyddion (.gwy)
 nanosurf = ["NSFopen>=2.2"]                  # lector .nhf validado (NanoSurf)
 grains = ["scipy>=1.10"]                     # detección de granos/partículas
+parallel = ["joblib>=1.3"]                   # backend paralelo opcional para force-volumes grandes
+pandas = ["pandas>=2.0"]                      # export a DataFrame (batch, resultados)
 viz = [                                       # figuras de publicación
     "matplotlib>=3.8",
     "cmcrameri>=1.7",
@@ -68,6 +71,7 @@ packages = ["src/spmkit"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q --cov=spmkit --cov-report=term-missing"
+qt_api = "pyqt6"  # los tests de GUI usan PyQt6 (no PySide6 si coexiste)
 
 [tool.ruff]
 line-length = 100
@@ -80,13 +84,17 @@ select = ["E", "F", "I", "UP", "B", "C4", "SIM"]
 [tool.ruff.lint.per-file-ignores]
 # typer usa llamadas a Option()/Argument() en los defaults (patrón idiomático).
 "src/spmkit/cli/*.py" = ["B008"]
+# theme.py es mayormente una hoja de estilo QSS; envolver sus líneas la haría ilegible.
+"src/spmkit/gui/design/theme.py" = ["E501"]
 
 [tool.black]
 line-length = 100
 target-version = ["py311"]
 
 [tool.mypy]
-python_version = "3.11"
+# 3.12 para que mypy parsee los stubs de numpy ≥2.5 (usan `type` statements). El código
+# sigue siendo compatible con 3.11+ (lo garantiza ruff target-version py311).
+python_version = "3.12"
 packages = ["spmkit"]
 ignore_missing_imports = true
 disallow_untyped_defs = true

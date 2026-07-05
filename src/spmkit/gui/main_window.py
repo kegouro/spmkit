@@ -39,6 +39,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setAcceptDrops(True)
 
         self._data: SPMData | None = None
+        self._fathom: QtWidgets.QWidget | None = None  # ventana Fathom (curvas de fuerza)
         self._settings = QtCore.QSettings("SPMLabUTFSM", "spmkit")
         self._theme = self._settings.value("theme", "dark", type=str)
 
@@ -120,6 +121,9 @@ class MainWindow(QtWidgets.QMainWindow):
         tb.addAction("Reporte…", self._make_report)
         tb.addAction("Exportar .gwy", self._export_gwy)
         tb.addAction("Abrir en Gwyddion", self._open_in_gwyddion)
+        tb.addSeparator()
+        # Acceso al workspace Fathom (curvas de fuerza, mapas y batch processing).
+        tb.addAction("Curvas de fuerza (Fathom) ⤢", self._open_fathom)
 
         spacer = QtWidgets.QWidget()
         spacer.setSizePolicy(
@@ -127,6 +131,19 @@ class MainWindow(QtWidgets.QMainWindow):
         )
         tb.addWidget(spacer)
         self.theme_action = tb.addAction("☀ / 🌙", self._toggle_theme)
+
+    def _open_fathom(self) -> None:
+        """Abre el workspace Fathom (curvas de fuerza, mapas y batch) en otra ventana."""
+        try:
+            from spmkit.gui.app_workspace import build_workspace
+        except ImportError as exc:  # pragma: no cover - depende del extra gui/viz
+            QtWidgets.QMessageBox.warning(self, "Fathom", f"No disponible: {exc}")
+            return
+        if self._fathom is None:
+            self._fathom = build_workspace(mode=self._theme, persist=True)
+        self._fathom.show()
+        self._fathom.raise_()
+        self._fathom.activateWindow()
 
     # ------------------------------------------------------------- carga
     def _open_dialog(self) -> None:

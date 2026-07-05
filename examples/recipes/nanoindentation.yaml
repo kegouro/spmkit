@@ -1,0 +1,12 @@
+# Receta de nanoindentación estándar (Hertz esférico).
+# Uso reproducible: spmkit fbatch <carpeta> --recipe examples/recipes/nanoindentation.yaml
+name: nanoindentacion_hertz
+steps:
+  - op: calibrate            # V -> m -> N (usa la calibración del archivo si existe)
+  - op: find_contact_point
+  - op: fit_elasticity
+    params:
+      model: sphere          # sphere | paraboloid | cone | dmt
+      tip_radius: 1.0e-8      # radio de punta (m) = 10 nm
+      poisson: 0.3
+    condition: contact_detected

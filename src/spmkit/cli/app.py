@@ -148,14 +148,17 @@ def nanomech(
     channel: str = typer.Option("Deflection", "--channel", "-c", help="Canal de fuerza (N)"),
     curve: int = typer.Option(-1, "--curve", help="Índice de curva (-1 = la del medio)"),
     tip_radius: float = typer.Option(10e-9, "--tip-radius", help="Radio de punta (m)"),
-    model: str = typer.Option("sphere", "--model", help="sphere|paraboloid|cone"),
+    model: str = typer.Option("sphere", "--model", help="sphere|paraboloid|cone|dmt"),
+    contact_method: str = typer.Option(
+        "threshold", "--contact-method", help="Detección de contacto: threshold|rov"
+    ),
     spring_constant: float | None = typer.Option(
         None,
         "--spring-constant",
         help="Constante de resorte del cantiléver (N/m) para corregir la indentación",
     ),
 ) -> None:
-    """Ajusta una curva fuerza-distancia (Hertz) y estima el módulo de Young."""
+    """Ajusta una curva fuerza-distancia (Hertz/DMT/Sneddon) y estima el módulo de Young."""
     from spmkit.core.analysis import mechanics
 
     data = load(file)
@@ -165,16 +168,27 @@ def nanomech(
         console.print("[red]No se encontraron curvas en el canal.[/]")
         raise typer.Exit(1)
     idx = len(curves) // 2 if curve < 0 else curve
+    if not 0 <= idx < len(curves):
+        console.print(f"[red]Curva {idx} fuera de rango (0..{len(curves) - 1}).[/]")
+        raise typer.Exit(1)
     result = mechanics.fit_hertz(
-        curves[idx], tip_radius=tip_radius, model=model, spring_constant=spring_constant
+        curves[idx],
+        tip_radius=tip_radius,
+        model=model,
+        contact_method=contact_method,
+        spring_constant=spring_constant,
     )
+    e_mpa = result.young_modulus / 1e6
+    e_std_mpa = result.young_modulus_std / 1e6
     table = Table(title=f"Nanomecánica · curva {idx}/{len(curves)} · {model}")
     table.add_column("Parámetro", style="cyan")
     table.add_column("Valor", justify="right")
-    table.add_row("Módulo de Young", f"{result.young_modulus / 1e6:.4g} MPa")
+    table.add_row("Módulo de Young", f"{e_mpa:.4g} ± {e_std_mpa:.2g} MPa")
+    table.add_row("R²", f"{result.r_squared:.5f}")
     table.add_row("Punto de contacto", f"{result.contact_point * 1e9:.2f} nm")
     table.add_row("Adhesión", f"{result.adhesion * 1e9:.3g} nN")
     table.add_row("RMSE", f"{result.rmse:.3e}")
+    table.add_row("Puntos ajustados", str(result.n_fit))
     console.print(table)
 
 
@@ -410,7 +424,7 @@ def verify(
 
 @app.command()
 def gui() -> None:
-    """Lanza la interfaz gráfica (requiere el extra 'gui')."""
+    """Lanza la interfaz gráfica clásica (requiere el extra 'gui')."""
     try:
         from spmkit.gui.app import run
 
@@ -418,6 +432,19 @@ def gui() -> None:
     except ImportError:
         console.print("[red]La GUI requiere PyQt6. Instala con:[/] pip install 'spmkit[gui]'")
         raise typer.Exit(code=1) from None
+
+
+@app.command()
+def workspace(
+    file: Path | None = typer.Argument(None, help="Archivo de curvas a abrir al arrancar"),
+) -> None:
+    """Lanza el nuevo workspace de curvas de fuerza (rediseño; requiere 'gui')."""
+    try:
+        from spmkit.gui.app_workspace import run
+    except ImportError:
+        console.print("[red]El workspace requiere PyQt6. Instala con:[/] pip install 'spmkit[gui]'")
+        raise typer.Exit(code=1) from None
+    raise typer.Exit(code=run(str(file) if file else None))
 
 
 def _apply_level(ch, level: str):  # type: ignore[no-untyped-def]
@@ -428,6 +455,128 @@ def _apply_level(ch, level: str):  # type: ignore[no-untyped-def]
     if level == "none":
         return ch
     raise typer.BadParameter("level debe ser plane|poly|none")
+
+
+def _force_recipe(model: str, tip_radius: float, recipe_path: Path | None = None):  # type: ignore[no-untyped-def]
+    """Recipe de un archivo YAML (reproducible) o el pipeline por defecto."""
+    from spmkit.core.pipeline import Recipe, Step
+
+    if recipe_path is not None:
+        return Recipe.from_yaml(recipe_path.read_text(encoding="utf-8"))
+    return Recipe(
+        steps=(
+            Step(op="find_contact_point"),
+            Step(
+                op="fit_elasticity",
+                params={"model": model, "tip_radius": tip_radius},
+                condition="contact_detected",
+            ),
+        )
+    )
+
+
+@app.command()
+def forcecurve(
+    file: Path = typer.Argument(..., exists=True, help="Archivo .jpk-force o .nid"),
+    curve: int = typer.Option(0, "--curve", help="Índice de curva (para force-volume)"),
+    model: str = typer.Option("sphere", "--model", help="sphere|paraboloid|cone|dmt"),
+    tip_radius: float = typer.Option(10e-9, "--tip-radius", help="Radio de punta (m)"),
+) -> None:
+    """Ajusta una curva de fuerza (JPK/NanoSurf) y reporta el módulo, R², adhesión."""
+    from spmkit.core.forcebatch import load_force
+    from spmkit.core.pipeline import run
+
+    vol = load_force(file)
+    if not 0 <= curve < vol.n_curves:
+        console.print(f"[red]Curva {curve} fuera de rango (0..{vol.n_curves - 1}).[/]")
+        raise typer.Exit(1)
+    _, ctx = run(_force_recipe(model, tip_radius), vol.curve(curve))
+    if "young_modulus" not in ctx:
+        console.print("[yellow]No se detectó contacto; no se ajustó.[/]")
+        raise typer.Exit(1)
+    e, es = ctx["young_modulus"] / 1e3, ctx["young_modulus_std"] / 1e3
+    table = Table(title=f"Curva de fuerza · {file.name} · {curve}/{vol.n_curves} · {model}")
+    table.add_column("Parámetro", style="cyan")
+    table.add_column("Valor", justify="right")
+    table.add_row("Módulo de Young", f"{e:.4g} ± {es:.2g} kPa")
+    table.add_row("R²", f"{ctx['r_squared']:.4f}")
+    table.add_row("Adhesión", f"{ctx['adhesion'] * 1e9:.3g} nN")
+    if ctx.get("dissipation") is not None:
+        table.add_row("Disipación", f"{ctx['dissipation'] * 1e15:.3g} fJ")
+    console.print(table)
+
+
+@app.command()
+def forcemap(
+    file: Path = typer.Argument(..., exists=True, help="Force-volume .nid"),
+    model: str = typer.Option("sphere", "--model", help="sphere|paraboloid|cone|dmt"),
+    tip_radius: float = typer.Option(10e-9, "--tip-radius", help="Radio de punta (m)"),
+    output: Path | None = typer.Option(None, "--output", "-o", help="CSV del mapa de módulo"),
+    figure: Path | None = typer.Option(None, "--figure", "-f", help="PNG de los mapas"),
+    parallel: bool = typer.Option(False, "--parallel", help="Pipeline por curva en paralelo"),
+    fast: bool = typer.Option(True, "--fast/--pipeline", help="Ruta vectorizada (rápida)"),
+    backend: str = typer.Option("cpu", "--backend", help="cpu|gpu (ruta rápida)"),
+) -> None:
+    """Analiza un force-volume y muestra la estadística de los mapas de propiedades."""
+    import numpy as np
+
+    from spmkit.core.analysis.forcevolume import analyze_volume
+    from spmkit.core.analysis.forcevolume_fast import elasticity_map
+    from spmkit.core.forcebatch import load_force
+
+    vol = load_force(file)
+    if fast:
+        result = elasticity_map(vol, tip_radius=tip_radius, model=model, backend=backend)
+    else:
+        result = analyze_volume(vol, _force_recipe(model, tip_radius), parallel=parallel)
+    rows, cols = vol.grid_shape
+    table = Table(
+        title=f"Force-volume · {file.name} · {rows}×{cols} · {result.n_ok}/{vol.n_curves} ok"
+    )
+    table.add_column("Propiedad", style="cyan")
+    table.add_column("Mediana", justify="right")
+    table.add_column("σ", justify="right")
+    e = result.stats("young_modulus")
+    table.add_row("Módulo (kPa)", f"{e['median'] / 1e3:.3g}", f"{e['std'] / 1e3:.2g}")
+    a = result.stats("adhesion")
+    table.add_row("Adhesión (nN)", f"{a['median'] * 1e9:.3g}", f"{a['std'] * 1e9:.2g}")
+    console.print(table)
+    if output is not None:
+        np.savetxt(output, result.maps["young_modulus"], delimiter=",")
+        console.print(f"[green]✓[/] Mapa de módulo → {output}")
+    if figure is not None:
+        from spmkit.core.viz.maps import save_property_maps
+
+        save_property_maps(result.maps, figure, title=file.name)
+        console.print(f"[green]✓[/] Figura de mapas → {figure}")
+
+
+@app.command()
+def fbatch(
+    folder: Path = typer.Argument(..., exists=True, file_okay=False, help="Carpeta de curvas"),
+    output: Path = typer.Option(Path("force_batch.csv"), "--output", "-o", help="CSV resumen"),
+    model: str = typer.Option("sphere", "--model", help="sphere|paraboloid|cone|dmt"),
+    tip_radius: float = typer.Option(10e-9, "--tip-radius", help="Radio de punta (m)"),
+    parallel: bool = typer.Option(False, "--parallel", help="Ejecución en paralelo"),
+    recipe: Path | None = typer.Option(None, "--recipe", help="Recipe YAML reproducible"),
+) -> None:
+    """Procesa por lotes todas las curvas de fuerza de una carpeta → CSV resumen."""
+    from spmkit.core.forcebatch import process_force_folder
+
+    result = process_force_folder(
+        folder, _force_recipe(model, tip_radius, recipe), parallel=parallel
+    )
+    result.to_csv(output)
+    console.print(
+        f"[green]✓[/] {len(result.rows)} archivos ({result.n_failed} con error) → {output}"
+    )
+    for r in result.rows[:20]:
+        if r.error:
+            console.print(f"  [red]{r.source}: {r.error}[/]")
+        else:
+            console.print(
+                f"  {r.source}: {r.n_curves} curvas · E={r.young_modulus_median / 1e3:.3g} kPa"
+            )
 
 
 if __name__ == "__main__":

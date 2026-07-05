@@ -20,13 +20,63 @@ from spmkit.core.viz import colormaps
 
 @dataclass
 class Annotation:
-    """Texto colocado sobre la figura (posición en fracción de ejes 0..1)."""
+    """Texto colocado sobre la figura (posición en fracción de ejes 0..1).
+
+    Totalmente personalizable: color, tamaño, negrita/cursiva, familia, alineación de
+    ancla (``ha``/``va``), justificado multilínea (``multialignment``), interlineado,
+    rotación y un **fondo** opcional (color sólido o semitransparente vía ``bg_alpha``).
+    """
 
     text: str
     x: float = 0.5
     y: float = 0.9
     fontsize: float = 12.0
     color: str = "white"
+    ha: str = "center"  # ancla horizontal: left|center|right
+    va: str = "center"  # ancla vertical: top|center|bottom|baseline
+    multialignment: str = "center"  # justificado del bloque multilínea: left|center|right
+    weight: str = "normal"  # normal|bold
+    style: str = "normal"  # normal|italic
+    family: str = "sans-serif"
+    rotation: float = 0.0
+    linespacing: float = 1.2  # interlineado
+    bg_color: str | None = None  # fondo (None = sin fondo)
+    bg_alpha: float = 1.0  # opacidad del fondo (0..1)
+    bg_edge: str | None = None  # color del borde del fondo (None = sin borde)
+    bg_pad: float = 0.4  # relleno del fondo (en fracción de fontsize)
+
+
+def render_annotation(ax: Any, ann: Annotation) -> Any:
+    """Dibuja ``ann`` en ``ax`` (coords de ejes) con todas sus propiedades.
+
+    Fuente única de render de anotaciones (la usan ``render_channel`` y el editor de
+    figuras de la GUI), para que la vista previa y la exportación coincidan.
+    """
+    bbox = None
+    if ann.bg_color:
+        bbox = {
+            "boxstyle": f"round,pad={ann.bg_pad}",
+            "facecolor": ann.bg_color,
+            "alpha": ann.bg_alpha,
+            "edgecolor": ann.bg_edge or "none",
+        }
+    return ax.text(
+        ann.x,
+        ann.y,
+        ann.text,
+        transform=ax.transAxes,
+        fontsize=ann.fontsize,
+        color=ann.color,
+        ha=ann.ha,
+        va=ann.va,
+        multialignment=ann.multialignment,
+        fontweight=ann.weight,
+        fontstyle=ann.style,
+        fontfamily=ann.family,
+        rotation=ann.rotation,
+        linespacing=ann.linespacing,
+        bbox=bbox,
+    )
 
 
 @dataclass
@@ -91,16 +141,7 @@ def render_channel(channel: SPMChannel, spec: FigureSpec | None = None, fig: Any
             _add_scalebar(ax, channel, spec.scalebar_color)
 
         for ann in spec.annotations:
-            ax.text(
-                ann.x,
-                ann.y,
-                ann.text,
-                transform=ax.transAxes,
-                fontsize=ann.fontsize,
-                color=ann.color,
-                ha="center",
-                va="center",
-            )
+            render_annotation(ax, ann)
         fig.tight_layout()
     return fig
 
