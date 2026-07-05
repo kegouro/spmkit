@@ -513,16 +513,22 @@ def forcemap(
     tip_radius: float = typer.Option(10e-9, "--tip-radius", help="Radio de punta (m)"),
     output: Path | None = typer.Option(None, "--output", "-o", help="CSV del mapa de módulo"),
     figure: Path | None = typer.Option(None, "--figure", "-f", help="PNG de los mapas"),
-    parallel: bool = typer.Option(False, "--parallel", help="Ejecución en paralelo"),
+    parallel: bool = typer.Option(False, "--parallel", help="Pipeline por curva en paralelo"),
+    fast: bool = typer.Option(True, "--fast/--pipeline", help="Ruta vectorizada (rápida)"),
+    backend: str = typer.Option("cpu", "--backend", help="cpu|gpu (ruta rápida)"),
 ) -> None:
     """Analiza un force-volume y muestra la estadística de los mapas de propiedades."""
     import numpy as np
 
     from spmkit.core.analysis.forcevolume import analyze_volume
+    from spmkit.core.analysis.forcevolume_fast import elasticity_map
     from spmkit.core.forcebatch import load_force
 
     vol = load_force(file)
-    result = analyze_volume(vol, _force_recipe(model, tip_radius), parallel=parallel)
+    if fast:
+        result = elasticity_map(vol, tip_radius=tip_radius, model=model, backend=backend)
+    else:
+        result = analyze_volume(vol, _force_recipe(model, tip_radius), parallel=parallel)
     rows, cols = vol.grid_shape
     table = Table(
         title=f"Force-volume · {file.name} · {rows}×{cols} · {result.n_ok}/{vol.n_curves} ok"
