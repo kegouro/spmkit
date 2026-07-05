@@ -552,6 +552,38 @@ def forcemap(
 
 
 @app.command()
+def forcereport(
+    file: Path = typer.Argument(..., exists=True, help="Force-volume .nid o curva de fuerza"),
+    output: Path = typer.Option(Path("informe"), "--output", "-o", help="Ruta base del informe"),
+    model: str = typer.Option("sphere", "--model", help="sphere|paraboloid|cone|dmt"),
+    tip_radius: float = typer.Option(10e-9, "--tip-radius", help="Radio de punta (m)"),
+    formats: str = typer.Option(
+        "html,pdf", "--formats", help="html,latex,pdf (separados por coma)"
+    ),
+    backend: str = typer.Option("cpu", "--backend", help="cpu|gpu (ruta vectorizada)"),
+) -> None:
+    """Genera un informe magistral (HTML/LaTeX/PDF) de un force-volume."""
+    from spmkit.core.forcebatch import load_force
+    from spmkit.core.forcereport import build_force_report
+
+    vol = load_force(file)
+    fmts = tuple(f.strip().lower() for f in formats.split(",") if f.strip())
+    produced = build_force_report(
+        vol,
+        output,
+        source_name=file.name,
+        model=model,
+        tip_radius=tip_radius,
+        backend=backend,
+        formats=fmts,
+    )
+    for fmt, path in produced.items():
+        console.print(f"[green]✓[/] {fmt.upper()} → {path}")
+    if "pdf" in fmts and "pdf" not in produced:
+        console.print("[yellow]![/] PDF omitido: instala una cadena LaTeX (tectonic/pdflatex).")
+
+
+@app.command()
 def fbatch(
     folder: Path = typer.Argument(..., exists=True, file_okay=False, help="Carpeta de curvas"),
     output: Path = typer.Option(Path("force_batch.csv"), "--output", "-o", help="CSV resumen"),

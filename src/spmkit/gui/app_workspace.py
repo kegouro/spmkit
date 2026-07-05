@@ -78,6 +78,9 @@ def build_workspace(
         Command("Exportar resultados (JSON)…", lambda: _export_results(ws, vm), "Ctrl+E")
     )
     ws.register_command(Command("Exportar figura…", lambda: _export_figure(ws, vm)))
+    ws.register_command(
+        Command("Generar informe (HTML/PDF)…", lambda: _generate_report(ws, vm), "Ctrl+Shift+R")
+    )
     ws.register_command(Command("Exportar mapa (figura)…", lambda: _export_map_figure(ws, map_vm)))
     ws.register_command(Command("Exportar mapa (CSV)…", lambda: _export_map_csv(ws, map_vm)))
     ws.register_command(Command("Copiar resultados", lambda: _copy_results(ws, vm), "Ctrl+Shift+C"))
@@ -198,6 +201,46 @@ def _export_results(ws: Workspace, vm: ForceViewModel) -> None:
     Path(path).write_text(json.dumps(_scalar_results(ctx), indent=2, ensure_ascii=False))
     _remember_dir(path)
     ws.show_status(f"resultados exportados a {Path(path).name}")
+
+
+def _generate_report(ws: Workspace, vm: ForceViewModel) -> None:
+    """Genera un informe magistral (HTML + PDF) del force-volume activo, en un hilo."""
+    volume = vm.volume
+    if volume is None:
+        ws.show_status("no hay force-volume cargado para el informe")
+        return
+    path, _ = QFileDialog.getSaveFileName(
+        ws, "Guardar informe", _suggested("informe.pdf"), "PDF (*.pdf);;HTML (*.html)"
+    )
+    if not path:
+        return
+    from spmkit.core.forcereport import build_force_report
+    from spmkit.gui.runtime.tasks import Task, run_task
+
+    base = str(Path(path).with_suffix(""))
+    formats = ("html",) if Path(path).suffix.lower() == ".html" else ("html", "pdf")
+    p = vm.params
+    _remember_dir(path)
+
+    def _work() -> dict:
+        return build_force_report(
+            volume,
+            base,
+            source_name=Path(base).name,
+            model=p["model"],
+            tip_radius=p["tip_radius"],
+            poisson=p["poisson"],
+            formats=formats,
+        )
+
+    task = Task(_work)
+    task.signals.done.connect(
+        lambda produced: ws.show_status(f"informe generado: {', '.join(sorted(produced))}")
+    )
+    task.signals.error.connect(lambda exc: ws.show_status(f"informe falló: {exc}"))
+    ws.bind_task(task)
+    ws.show_status("generando informe…")
+    run_task(task)
 
 
 def _export_map_figure(ws: Workspace, map_vm: MapViewModel) -> None:
