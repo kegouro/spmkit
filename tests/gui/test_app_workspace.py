@@ -2,9 +2,15 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
+import pytest
+
 from spmkit.gui.app_workspace import _results_tsv, _scalar_results, build_workspace
 from spmkit.gui.panels.force_canvas import ForceCanvasPanel
 from spmkit.gui.panels.map_canvas import MapCanvasPanel
+
+_JPK = Path(__file__).resolve().parents[2] / "reference" / "jpk_samples" / "sample.jpk-force"
 
 
 def test_build_workspace_wires_force_and_map_panels(qtbot) -> None:  # type: ignore[no-untyped-def]
@@ -65,3 +71,21 @@ def test_build_workspace_bad_open_path_is_safe(qtbot) -> None:  # type: ignore[n
     ws = build_workspace(open_path="/no/such/file.nid")
     qtbot.addWidget(ws)
     assert isinstance(ws.panel("force_canvas"), ForceCanvasPanel)
+
+
+def test_file_dropped_bad_path_is_safe(qtbot) -> None:  # type: ignore[no-untyped-def]
+    ws = build_workspace()
+    qtbot.addWidget(ws)
+    ws.fileDropped.emit("/no/such/curve.jpk-force")  # no debe romper
+    assert ws.panel("force_canvas") is not None
+
+
+@pytest.mark.skipif(not _JPK.exists(), reason="muestra JPK no disponible (gitignored)")
+def test_file_dropped_loads_real_curve(qtbot) -> None:  # type: ignore[no-untyped-def]
+    ws = build_workspace()
+    qtbot.addWidget(ws)
+    ws.fileDropped.emit(str(_JPK))
+    canvas = ws.panel("force_canvas")
+    assert canvas is not None
+    assert canvas._vm.n_curves == 1
+    assert ws.active_perspective == "force"

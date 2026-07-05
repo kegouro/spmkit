@@ -55,6 +55,7 @@ def build_workspace(
     ws = Workspace(panels=panels, mode=mode, persist=persist)
     map_vm.taskStarted.connect(ws.bind_task)
     batch_vm.taskStarted.connect(ws.bind_task)
+    ws.fileDropped.connect(lambda p: _load_into(ws, vm, p))
     ws.register_command(Command("Abrir curva/volumen…", lambda: _open_dialog(ws, vm), "Ctrl+O"))
     ws.register_command(Command("Calcular mapa de propiedades", map_vm.compute, "Ctrl+M"))
     ws.register_command(

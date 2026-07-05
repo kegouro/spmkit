@@ -13,8 +13,8 @@ from __future__ import annotations
 
 from functools import partial
 
-from PyQt6.QtCore import QSettings, Qt
-from PyQt6.QtGui import QAction, QKeySequence
+from PyQt6.QtCore import QSettings, Qt, pyqtSignal
+from PyQt6.QtGui import QAction, QDragEnterEvent, QDropEvent, QKeySequence
 from PyQt6.QtWidgets import (
     QApplication,
     QDockWidget,
@@ -83,6 +83,9 @@ def default_panels() -> dict[str, Panel]:
 class Workspace(QMainWindow):
     """Ventana principal: perspectivas + lienzo central + docks + paleta + estado."""
 
+    #: Se emite con la ruta de un archivo soltado sobre la ventana (drag & drop).
+    fileDropped = pyqtSignal(str)
+
     def __init__(
         self,
         panels: dict[str, Panel] | None = None,
@@ -93,6 +96,7 @@ class Workspace(QMainWindow):
         super().__init__()
         self.setWindowTitle("spmkit")
         self.resize(1200, 760)
+        self.setAcceptDrops(True)  # abrir archivos arrastrándolos a la ventana
         # Persistencia opt-in (los tests construyen sin persistir para no contaminar QSettings).
         self._settings: QSettings | None = QSettings("spmkit", "spmkit") if persist else None
         self._mode = self._saved("theme", mode)
@@ -146,6 +150,20 @@ class Workspace(QMainWindow):
         if self._settings is not None:
             self._settings.setValue("geometry", self.saveGeometry())
         super().closeEvent(event)  # type: ignore[arg-type]
+
+    # ---- drag & drop de archivos ----
+    def dragEnterEvent(self, event: QDragEnterEvent | None) -> None:  # noqa: N802 - override Qt
+        if event is not None and (md := event.mimeData()) is not None and md.hasUrls():
+            event.acceptProposedAction()
+
+    def dropEvent(self, event: QDropEvent | None) -> None:  # noqa: N802 - override Qt
+        if event is None or (md := event.mimeData()) is None:
+            return
+        for url in md.urls():
+            if url.isLocalFile():
+                self.fileDropped.emit(url.toLocalFile())
+                event.acceptProposedAction()
+                return
 
     # ---- construcción ----
     def _build_perspective_bar(self) -> None:
