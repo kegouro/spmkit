@@ -56,6 +56,8 @@ def build_workspace(mode: str = "dark", open_path: str | Path | None = None) -> 
         Command("Exportar resultados (JSON)…", lambda: _export_results(ws, vm), "Ctrl+E")
     )
     ws.register_command(Command("Exportar figura…", lambda: _export_figure(ws, vm)))
+    ws.register_command(Command("Exportar mapa (figura)…", lambda: _export_map_figure(ws, map_vm)))
+    ws.register_command(Command("Exportar mapa (CSV)…", lambda: _export_map_csv(ws, map_vm)))
     ws.register_command(Command("Copiar resultados", lambda: _copy_results(ws, vm), "Ctrl+Shift+C"))
     ws.register_command(Command("Curva anterior", lambda: vm.set_curve(vm.index - 1), "Ctrl+Left"))
     ws.register_command(
@@ -112,6 +114,38 @@ def _export_results(ws: Workspace, vm: ForceViewModel) -> None:
         return
     Path(path).write_text(json.dumps(_scalar_results(ctx), indent=2, ensure_ascii=False))
     ws.show_status(f"resultados exportados a {Path(path).name}")
+
+
+def _export_map_figure(ws: Workspace, map_vm: MapViewModel) -> None:
+    result = map_vm.result
+    if result is None:
+        ws.show_status("no hay mapa calculado (calcúlalo primero)")
+        return
+    path, _ = QFileDialog.getSaveFileName(ws, "Exportar mapa", "mapa.png", "Imagen (*.png *.pdf)")
+    if not path:
+        return
+    try:
+        from spmkit.core.viz.maps import save_property_maps
+
+        save_property_maps(result.maps, path, keys=[map_vm.key])
+    except Exception as exc:  # noqa: BLE001 - falta extra viz o mapa vacío: se informa
+        ws.show_status(f"no se pudo exportar el mapa: {exc}")
+        return
+    ws.show_status(f"mapa exportado a {Path(path).name}")
+
+
+def _export_map_csv(ws: Workspace, map_vm: MapViewModel) -> None:
+    result = map_vm.result
+    if result is None:
+        ws.show_status("no hay mapa calculado (calcúlalo primero)")
+        return
+    path, _ = QFileDialog.getSaveFileName(ws, "Exportar mapa CSV", "mapa.csv", "CSV (*.csv)")
+    if not path:
+        return
+    import numpy as np
+
+    np.savetxt(path, result.maps[map_vm.key], delimiter=",")
+    ws.show_status(f"mapa CSV exportado a {Path(path).name}")
 
 
 def _export_figure(ws: Workspace, vm: ForceViewModel) -> None:

@@ -15,8 +15,9 @@ def test_build_workspace_wires_force_and_map_panels(qtbot) -> None:  # type: ign
     assert isinstance(ws.panel("map_canvas"), MapCanvasPanel)
     titles = [c.title for c in ws._commands]
     assert any("Abrir" in t for t in titles)
-    assert any("mapa" in t.lower() for t in titles)
-    assert any("Exportar" in t for t in titles)
+    assert any("Calcular mapa" in t for t in titles)
+    assert any("Exportar figura" in t for t in titles)
+    assert any("Exportar mapa" in t for t in titles)
 
 
 def test_scalar_results_drops_nonserializable() -> None:
