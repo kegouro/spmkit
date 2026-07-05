@@ -83,7 +83,8 @@ def render_force_curve(
                 label="ajuste",
             )
         if isinstance(contact, (int, float)) and ctx.get("contact_detected", True):
-            ax.axvline((float(contact) - offset) * _NM, color="#0E9488", ls="--", lw=0.8)
+            # Punto de contacto en oro (coherente con la app y el logo Fathom).
+            ax.axvline((float(contact) - offset) * _NM, color="#B26A1E", ls="--", lw=0.9)
 
         ax.set_xlabel("Indentación δ (nm)" if indentation else "Separación (nm)")
         ax.set_ylabel("Fuerza (nN)")
