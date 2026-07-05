@@ -7,6 +7,8 @@ fallar al importar. Local, con el extra ``gui``, los tests se corren normalmente
 
 from __future__ import annotations
 
+import gc
+
 import numpy as np
 import pytest
 
@@ -22,6 +24,27 @@ except ImportError:  # pragma: no cover - CI sin extra gui
 
 #: Sin el stack de GUI, pytest ignora los ``test_*.py`` de esta carpeta.
 collect_ignore_glob = [] if _HAS_GUI else ["test_*.py"]
+
+
+if _HAS_GUI:
+
+    @pytest.fixture(autouse=True)
+    def _flush_qt():  # type: ignore[no-untyped-def]
+        """Purga los widgets pendientes (deleteLater) entre tests.
+
+        Evita el segfault por acumulación de recursos nativos al correr muchos tests
+        de GUI pesados en un mismo proceso (cada uno crea un Workspace completo).
+        """
+        yield
+        from PyQt6.QtWidgets import QApplication
+
+        app = QApplication.instance()
+        if app is not None:
+            app.processEvents()
+            app.sendPostedEvents(None, 0)  # ejecuta los deleteLater encolados
+        gc.collect()
+        if app is not None:
+            app.processEvents()
 
 
 def _hertz_curve(
