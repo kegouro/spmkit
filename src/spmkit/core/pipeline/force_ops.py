@@ -81,6 +81,33 @@ def calibrate(
     return replace(curve, segments=tuple(new_segments))
 
 
+@operation("smooth")
+def smooth(
+    curve: ForceCurve, ctx: dict[str, Any], window: int = 11, polyorder: int = 3
+) -> ForceCurve:
+    """Suaviza la fuerza de cada segmento con Savitzky-Golay (opcional, como ANA/JPK).
+
+    ``window`` se fuerza impar; con menos de 3 (o segmentos cortos) es un no-op. Reduce
+    el ruido antes del ajuste; úsalo con criterio (un suavizado agresivo sesga el módulo).
+    """
+    from scipy.signal import savgol_filter
+
+    w = int(window)
+    if w < 3:
+        return curve
+    if w % 2 == 0:
+        w += 1
+    new_segments = []
+    for seg in curve.segments:
+        if seg.force is not None and seg.force.size > w:
+            po = min(int(polyorder), w - 1)
+            new_segments.append(replace(seg, force=savgol_filter(seg.force, w, po)))
+        else:
+            new_segments.append(seg)
+    ctx["smoothed"] = w
+    return replace(curve, segments=tuple(new_segments))
+
+
 @operation("find_contact_point")
 def find_contact_point(curve: ForceCurve, ctx: dict[str, Any], method: str = "rov") -> ForceCurve:
     """Detecta el punto de contacto del segmento de aproximación.

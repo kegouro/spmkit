@@ -44,6 +44,18 @@ def test_calibration_override_maps_units(qtbot, synthetic_volume) -> None:  # ty
     assert cal.params["spring_constant"] == 2.5
 
 
+def test_smoothing_adds_step_to_recipe(qtbot, synthetic_volume) -> None:  # type: ignore[no-untyped-def]
+    vm = ForceViewModel()
+    panel = PipelinePanel(vm)
+    qtbot.addWidget(panel)
+    panel._smooth.setValue(15)
+    ops = [s.op for s in vm.recipe.steps]
+    assert "smooth" in ops
+    assert vm.recipe.steps[ops.index("smooth")].params["window"] == 15
+    panel._smooth.setValue(0)
+    assert "smooth" not in [s.op for s in vm.recipe.steps]
+
+
 def test_cone_fit_runs_end_to_end(qtbot, synthetic_volume) -> None:  # type: ignore[no-untyped-def]
     vm = ForceViewModel()
     vm.set_volume(synthetic_volume(1))

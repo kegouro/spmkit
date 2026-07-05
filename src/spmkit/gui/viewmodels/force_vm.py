@@ -28,6 +28,7 @@ DEFAULT_PARAMS: dict[str, Any] = {
     "half_angle": None,  # rad; sólo modelo cone
     "invols": None,  # m/V; None = usar metadatos
     "spring_constant": None,  # N/m; None = usar metadatos
+    "smooth_window": 0,  # ventana Savitzky-Golay (0/<3 = sin suavizado)
     "fit_min": None,  # m; ventana de ajuste manual (con fit_max)
     "fit_max": None,
 }
@@ -50,13 +51,13 @@ def build_recipe(params: dict[str, Any]) -> Recipe:
     fmin, fmax = params.get("fit_min"), params.get("fit_max")
     if fmin is not None and fmax is not None:
         fit["fit_range"] = (fmin, fmax)
-    return Recipe(
-        steps=(
-            Step(op="calibrate", params=cal),
-            Step(op="find_contact_point"),
-            Step(op="fit_elasticity", params=fit, condition="contact_detected"),
-        )
-    )
+    steps = [Step(op="calibrate", params=cal)]
+    window = int(params.get("smooth_window") or 0)
+    if window >= 3:
+        steps.append(Step(op="smooth", params={"window": window}))
+    steps.append(Step(op="find_contact_point"))
+    steps.append(Step(op="fit_elasticity", params=fit, condition="contact_detected"))
+    return Recipe(steps=tuple(steps))
 
 
 #: Receta por defecto (Hertz esférico con detección de contacto).

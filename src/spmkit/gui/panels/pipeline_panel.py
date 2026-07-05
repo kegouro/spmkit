@@ -68,6 +68,10 @@ class PipelinePanel(Panel):
         self._poisson = self._spin(0.0, 0.5, 0.3, "", 2, step=0.05)
         form.addRow("Poisson ν", self._poisson)
 
+        self._smooth = self._spin(0.0, 99.0, 0.0, " pts", 0, step=2.0)
+        self._smooth.setToolTip("Suavizado Savitzky-Golay antes del ajuste (0 = ninguno)")
+        form.addRow("Suavizado", self._smooth)
+
         cal = QLabel("Calibración (0 = usar metadatos del archivo)")
         cal.setProperty("role", "muted")
         outer.addLayout(form)
@@ -125,4 +129,5 @@ class PipelinePanel(Panel):
             half_angle=math.radians(self._angle.value()),
             invols=(self._invols.value() * 1e-9) or None,
             spring_constant=self._k.value() or None,
+            smooth_window=int(self._smooth.value()),
         )
