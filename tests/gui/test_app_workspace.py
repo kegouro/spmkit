@@ -27,6 +27,15 @@ def test_scalar_results_drops_nonserializable() -> None:
     assert "fit" not in out
 
 
+def test_suggested_uses_last_dir(monkeypatch) -> None:  # type: ignore[no-untyped-def]
+    import spmkit.gui.app_workspace as aw
+
+    monkeypatch.setattr(aw, "_last_dir", lambda: "/data/curvas")
+    assert aw._suggested("mapa.png") == "/data/curvas/mapa.png"
+    monkeypatch.setattr(aw, "_last_dir", lambda: "")
+    assert aw._suggested("mapa.png") == "mapa.png"
+
+
 def test_results_tsv_serializes_scalars() -> None:
     tsv = _results_tsv({"young_modulus": 1e6, "fit": object(), "model": "sphere"})
     assert "young_modulus\t1000000.0" in tsv

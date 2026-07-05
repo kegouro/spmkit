@@ -13,6 +13,7 @@ import json
 import sys
 from pathlib import Path
 
+from PyQt6.QtCore import QSettings
 from PyQt6.QtWidgets import QApplication, QFileDialog
 
 from spmkit.core.io import load_force, supported_force_extensions
@@ -77,8 +78,24 @@ def _load_into(ws: Workspace, vm: ForceViewModel, path: str | Path) -> None:
     except Exception as exc:  # noqa: BLE001 - error de IO se muestra, no tumba la app
         ws.show_status(f"No se pudo abrir {Path(path).name}: {exc}")
         return
+    _remember_dir(str(path))
     ws.set_perspective("force")
     ws.show_status(f"{Path(path).name} — {vm.n_curves} curva(s)")
+
+
+def _last_dir() -> str:
+    """Último directorio usado en los diálogos (persistido con QSettings)."""
+    return str(QSettings("spmkit", "spmkit").value("last_dir", "") or "")
+
+
+def _remember_dir(path: str) -> None:
+    QSettings("spmkit", "spmkit").setValue("last_dir", str(Path(path).parent))
+
+
+def _suggested(name: str) -> str:
+    """Ruta sugerida en un diálogo de guardado: último directorio + nombre por defecto."""
+    base = _last_dir()
+    return str(Path(base) / name) if base else name
 
 
 def _scalar_results(ctx: dict) -> dict:
@@ -108,11 +125,12 @@ def _export_results(ws: Workspace, vm: ForceViewModel) -> None:
         ws.show_status("no hay resultados que exportar (abre una curva y ajusta)")
         return
     path, _ = QFileDialog.getSaveFileName(
-        ws, "Exportar resultados", "resultados.json", "JSON (*.json)"
+        ws, "Exportar resultados", _suggested("resultados.json"), "JSON (*.json)"
     )
     if not path:
         return
     Path(path).write_text(json.dumps(_scalar_results(ctx), indent=2, ensure_ascii=False))
+    _remember_dir(path)
     ws.show_status(f"resultados exportados a {Path(path).name}")
 
 
@@ -121,7 +139,9 @@ def _export_map_figure(ws: Workspace, map_vm: MapViewModel) -> None:
     if result is None:
         ws.show_status("no hay mapa calculado (calcúlalo primero)")
         return
-    path, _ = QFileDialog.getSaveFileName(ws, "Exportar mapa", "mapa.png", "Imagen (*.png *.pdf)")
+    path, _ = QFileDialog.getSaveFileName(
+        ws, "Exportar mapa", _suggested("mapa.png"), "Imagen (*.png *.pdf)"
+    )
     if not path:
         return
     try:
@@ -131,6 +151,7 @@ def _export_map_figure(ws: Workspace, map_vm: MapViewModel) -> None:
     except Exception as exc:  # noqa: BLE001 - falta extra viz o mapa vacío: se informa
         ws.show_status(f"no se pudo exportar el mapa: {exc}")
         return
+    _remember_dir(path)
     ws.show_status(f"mapa exportado a {Path(path).name}")
 
 
@@ -139,12 +160,15 @@ def _export_map_csv(ws: Workspace, map_vm: MapViewModel) -> None:
     if result is None:
         ws.show_status("no hay mapa calculado (calcúlalo primero)")
         return
-    path, _ = QFileDialog.getSaveFileName(ws, "Exportar mapa CSV", "mapa.csv", "CSV (*.csv)")
+    path, _ = QFileDialog.getSaveFileName(
+        ws, "Exportar mapa CSV", _suggested("mapa.csv"), "CSV (*.csv)"
+    )
     if not path:
         return
     import numpy as np
 
     np.savetxt(path, result.maps[map_vm.key], delimiter=",")
+    _remember_dir(path)
     ws.show_status(f"mapa CSV exportado a {Path(path).name}")
 
 
@@ -154,7 +178,7 @@ def _export_figure(ws: Workspace, vm: ForceViewModel) -> None:
         ws.show_status("no hay curva ajustada que exportar")
         return
     path, _ = QFileDialog.getSaveFileName(
-        ws, "Exportar figura", "curva.png", "Imagen (*.png *.pdf *.svg)"
+        ws, "Exportar figura", _suggested("curva.png"), "Imagen (*.png *.pdf *.svg)"
     )
     if not path:
         return
@@ -165,13 +189,14 @@ def _export_figure(ws: Workspace, vm: ForceViewModel) -> None:
     except Exception as exc:  # noqa: BLE001 - falta extra viz o error de IO: se informa
         ws.show_status(f"no se pudo exportar la figura: {exc}")
         return
+    _remember_dir(path)
     ws.show_status(f"figura exportada a {Path(path).name}")
 
 
 def _open_dialog(ws: Workspace, vm: ForceViewModel) -> None:
     exts = " ".join(f"*{e}" for e in supported_force_extensions())
     path, _ = QFileDialog.getOpenFileName(
-        ws, "Abrir curva de fuerza", "", f"Curvas de fuerza ({exts})"
+        ws, "Abrir curva de fuerza", _last_dir(), f"Curvas de fuerza ({exts})"
     )
     if path:
         _load_into(ws, vm, path)
