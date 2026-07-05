@@ -50,6 +50,16 @@ el versionado es [SemVer](https://semver.org/lang/es/).
   teclado, **arrastrar y soltar** archivos, temas claro/oscuro con **persistencia**
   (tema/geometría/perspectiva), panel de log, memoria del último directorio.
 
+### Mejorado — app clásica (`spmkit gui`)
+- **Anotaciones de figura totalmente personalizables** (editor de figuras): color,
+  tamaño, negrita/cursiva, fuente, alineación de ancla, **justificado** multilínea,
+  **interlineado**, rotación y **fondo** (color sólido o **semitransparente con selector
+  de opacidad** y borde opcional). Se editan con doble-clic y se arrastran.
+- **Vista 3D**: el eje Z se muestra en **unidades físicas legibles** (nm/µm) en vez de
+  metros crudos con `1e-6`; la exageración pasó a ser un **estiramiento visual** (los
+  valores del eje son alturas reales, honestas).
+- **Acceso a Fathom** desde la barra de la app clásica (curvas de fuerza, mapas y batch).
+
 ### Añadido
 - **Nanomecánica — modelo DMT** (Derjaguin-Muller-Toporov): Hertz esférico con la
   adhesión como offset constante, para muestras rígidas con adhesión no
