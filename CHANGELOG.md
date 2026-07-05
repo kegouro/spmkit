@@ -46,6 +46,13 @@ el versionado es [SemVer](https://semver.org/lang/es/).
 - **Optimización**: `core/compute.py` (backend CPU/GPU) y `core/analysis/forcevolume_fast.py`
   (mapa de elasticidad vectorizado, validado contra el ajuste por curva). `forcemap`
   gana `--fast/--pipeline` y `--backend cpu|gpu`.
+- **Informe magistral** (`core/forcereport.py`): informe profesional de un force-volume
+  en **HTML** (autocontenido), **LaTeX** (`.tex`) y **PDF** (compilado con tectonic/
+  pdflatex) — con tabla de estadística, mapas de propiedades, histogramas y una curva
+  representativa. CLI `spmkit forcereport`; comando "Generar informe" en Fathom.
+- **Exportar todo** (`core/forceexport.py`): vuelca a una carpeta los mapas en CSV, una
+  tabla por curva, el resumen estadístico y el informe. CLI `spmkit forceexport`; comando
+  "Exportar todo" en Fathom.
 - **Calidad de vida**: exportar figura/mapa/JSON, copiar resultados, navegación por
   teclado, **arrastrar y soltar** archivos, temas claro/oscuro con **persistencia**
   (tema/geometría/perspectiva), panel de log, memoria del último directorio.
