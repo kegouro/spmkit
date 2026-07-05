@@ -22,6 +22,20 @@ _CMAPS = ["gold", "viridis", "inferno", "afmhot", "gray"]
 _MAX_SURFACE_PTS = 200
 
 
+def _height_units(unit: str, data: np.ndarray) -> tuple[float, str]:
+    """Escala y unidad de display para alturas: metros → nm/µm según el rango.
+
+    El eje Z se muestra en **unidades físicas legibles** (nm si el rango es sub-µm,
+    µm si es mayor), no en metros crudos con notación ``1e-6``.
+    """
+    if unit != "m":
+        return 1.0, unit
+    span = float(np.nanmax(data) - np.nanmin(data)) if data.size else 0.0
+    if span < 1e-6:  # menos de 1 µm de relieve → nanómetros
+        return 1e9, "nm"
+    return 1e6, "µm"
+
+
 class View3DTab(QtWidgets.QWidget):
     """Vista de superficie 3D para topografía AFM/KPFM.
 
@@ -161,8 +175,10 @@ class View3DTab(QtWidgets.QWidget):
         y_um = np.linspace(0.0, ch.y_range * 1e6, sub_rows)
         X, Y = np.meshgrid(x_um, y_um)
 
-        # Aplicar exageración Z (en las mismas unidades que los datos)
-        Z = z_data * z_exag
+        # Alturas en unidades físicas legibles (nm/µm) — NO se exageran los datos;
+        # la exageración se aplica como estiramiento visual del eje (box aspect).
+        z_scale, z_unit = _height_units(ch.unit, z_data)
+        Z = z_data * z_scale
 
         # Colormap
         cmap = colormaps.get_cmap(cmap_name)
@@ -201,9 +217,16 @@ class View3DTab(QtWidgets.QWidget):
                 antialiased=False,
             )
 
+        # Exageración = estiramiento VISUAL del eje Z (los datos siguen físicos, así
+        # los valores del eje Z son alturas reales en nm/µm).
+        x_m = ch.x_range or 1.0
+        y_m = ch.y_range or x_m
+        z_stretch = min(6.0, max(0.02, 0.6 * z_exag / 50.0))
+        ax.set_box_aspect((1.0, (y_m / x_m) if x_m else 1.0, z_stretch))
+
         ax.set_xlabel("X (µm)")
         ax.set_ylabel("Y (µm)")
-        ax.set_zlabel(f"Z ({ch.unit})")
+        ax.set_zlabel(f"Z ({z_unit})")
         ax.set_title(ch.name)
 
         self.figure.tight_layout()
