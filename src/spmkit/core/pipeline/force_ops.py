@@ -104,19 +104,22 @@ def fit_elasticity(
     model: str = "sphere",
     tip_radius: float = 10e-9,
     poisson: float = 0.3,
+    half_angle: float | None = None,
 ) -> ForceCurve:
     """Ajusta un modelo de contacto al segmento de aproximación.
 
     Usa el punto de contacto de ``ctx`` si está (de ``find_contact_point``), o lo
     detecta. Escribe ``ctx["young_modulus"]``, ``ctx["r_squared"]``, ``ctx["adhesion"]``
-    y el objeto completo en ``ctx["fit"]``.
+    y el objeto completo en ``ctx["fit"]``. ``half_angle`` (rad) sólo aplica al modelo
+    ``cone``; ``None`` usa el valor por defecto del core.
     """
     seg = _primary_segment(curve)
     if seg is None:
         raise ValueError("fit_elasticity: la curva no tiene segmentos")
     force = seg.require_force()
+    extra = {} if half_angle is None else {"half_angle": half_angle}
     fit = forcecurve.fit_force_curve(
-        _axis(seg), force, model=model, tip_radius=tip_radius, poisson=poisson
+        _axis(seg), force, model=model, tip_radius=tip_radius, poisson=poisson, **extra
     )
     ctx["young_modulus"] = fit.young_modulus
     ctx["young_modulus_std"] = fit.young_modulus_std

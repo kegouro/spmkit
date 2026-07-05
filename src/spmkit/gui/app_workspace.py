@@ -19,6 +19,7 @@ from spmkit.gui.panels.histogram_panel import HistogramPanel
 from spmkit.gui.panels.inspector import InspectorPanel
 from spmkit.gui.panels.map_canvas import MapCanvasPanel
 from spmkit.gui.panels.navigator import NavigatorPanel
+from spmkit.gui.panels.pipeline_panel import PipelinePanel
 from spmkit.gui.shell.command_palette import Command
 from spmkit.gui.shell.workspace import Workspace
 from spmkit.gui.viewmodels import ForceViewModel, MapViewModel
@@ -32,6 +33,7 @@ def build_workspace(mode: str = "dark") -> Workspace:
         "force_canvas": ForceCanvasPanel(vm),
         "inspector": InspectorPanel(vm),
         "navigator": NavigatorPanel(vm),
+        "pipeline": PipelinePanel(vm),
         "map_canvas": MapCanvasPanel(map_vm, vm),
         "histogram": HistogramPanel(map_vm),
     }
