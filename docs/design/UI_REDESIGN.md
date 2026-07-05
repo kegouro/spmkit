@@ -479,3 +479,76 @@ Cada fase entra con smoke tests de GUI (pytest-qt offscreen) y deja la app usabl
 - [ ] Configurable sin código: layouts, tema, atajos, plugins.
 - [ ] Accesible: contraste AA, foco visible, `prefers-reduced-motion`.
 - [ ] Se ve como un **instrumento**, no como un template. Si dudas, reinicia.
+
+---
+
+## 13. Refinamientos tras revisión senior (v2)
+
+Ajustes que corrigen puntos ciegos arquitectónicos detectados en revisión. DFII
+recalibrado a **14/15** (−1 por el riesgo técnico de scrubbing 60fps + IPC, mitigado
+abajo).
+
+### 13.1 Jerarquía de color de trazas (CRÍTICO — corrige *halation*)
+Un teal brillante sobre grafito casi negro produce **halation** (halo que difumina el
+borde de la curva) y arruina la precisión al localizar el punto de contacto. Regla nueva:
+- **Datos crudos = neutral frío.** Extend `#C9D3DE` (blanco desaturado), retract
+  `#B49A6E` (ámbar apagado, no saturado). Son el sustrato, no el foco.
+- **Teal `#2DD4BF` RESERVADO** al **ajuste (fit)**, la **traza activa/seleccionada** y el
+  marcador de **contacto**. El modelo es el héroe visual, no el ruido.
+- Jerarquía inmediata: **gris = dato/ruido, teal = modelo/ajuste**. (Actualiza §2.1 y §5.)
+
+### 13.2 Peso 600 en modo claro (legibilidad AA)
+En modo claro, texto 400 sobre papel cálido puede sentirse "lavado". Se permite **peso
+600 solo para labels de sección y headers críticos** en modo claro; el resto sigue 400/500
+(en oscuro nunca >500, para evitar halo). El peso no cambia el contraste (eso es color),
+pero sí la legibilidad a tamaños chicos.
+
+### 13.3 Scrubbing sin recomputar (rendimiento real)
+El cuello de botella del scrubbing no es el render (pyqtgraph es C++/GPU) sino el **I/O y
+el recálculo del pipeline**. Solución:
+- Al **hacer scrub, solo se re-renderiza la curva** (lazy loader del core + caché **LRU**
+  de curvas en el ViewModel); NO se corre el pipeline.
+- El **ajuste corre con debounce** (`QTimer.singleShot(150ms)`) tras soltar el cursor.
+- Los resultados por curva se **precalculan en background** (Task) y se cachean; al pasar
+  por una curva ya calculada, el overlay aparece instantáneo.
+
+### 13.4 Optimistic UI en el pipeline (estados transitorios)
+Editar un paso en vivo puede dejar el pipeline momentáneamente inválido. Regla: si un paso
+falla al evaluar, se marca con **warning naranja** en ese paso, **se conserva en pantalla
+el último resultado válido** y el scrubbing **no se rompe**. El usuario sigue trabajando;
+el error es reversible y localizado.
+
+### 13.5 Sandbox de paneles/plugins (aislamiento de fallos)
+Un plugin de terceros que crashea **no puede tumbar la app**. El `Panel base` envuelve el
+render en un try/except: ante una excepción muestra un **"Error Card"** dentro del panel
+(mensaje + traceback plegable + `[Reiniciar panel]` `[Reportar]`), como VS Code con
+extensiones rotas. El resto del workspace sigue vivo.
+
+### 13.6 IPC seguro pool↔Qt (CRÍTICO — nunca emitir desde un hijo)
+Fronteras explícitas para no crashear Qt:
+- Los **procesos hijo** del `ProcessPoolExecutor` son **cómputo puro**: jamás importan ni
+  tocan Qt ni emiten señales.
+- El pool corre dentro del **hilo worker** del `QThreadPool` (mismo proceso que la UI, pero
+  no el hilo principal). El callback de progreso se ejecuta ahí y **emite un `pyqtSignal`**,
+  que Qt **encola de forma segura** al hilo principal (conexión cross-thread por defecto).
+- Alternativa aún más desacoplada (recomendada si el pool se vuelve complejo):
+  `multiprocessing.Queue` para el progreso + un `QTimer` en la UI que hace **polling cada
+  50ms** y emite la señal. Cero acoplamiento entre el pool y Qt.
+
+### 13.7 `.spmproj` versionado y tolerante
+El JSON del proyecto lleva `schema_version` estricto y funciones `migrate_vN_a_vN1()`. Si
+al abrir un proyecto un panel del layout **no existe** (plugin desinstalado, panel
+renombrado), la app lo **ignora con gracia** y abre el resto — nunca falla la apertura.
+
+### 13.8 Abstracción de `Canvas` (a prueba de futuro)
+Todos los objetos de pyqtgraph se envuelven en una clase propia `Canvas`
+(`draw_curve/draw_map/set_theme/...`). Los paneles hablan con `Canvas`, no con pyqtgraph
+directo. Así, si mañana migramos a **vispy/pygfx** (GPU puro) por rendimiento, se cambia
+`Canvas` sin reescribir un solo panel.
+
+### 13.9 Orden de ejecución y spikes
+- **Empezar por Fase A** (tokens + threading). Si no se paraleliza un mapa 100×100 sin
+  congelar la UI, lo demás no importa.
+- **Spike de brushing (2 días)** antes de la Fase D: prototipo mínimo en pyqtgraph que
+  sincronice un heatmap y un histograma (selección bidireccional). Es lo más difícil de
+  sincronizar; validarlo temprano de-riesga la killer feature.
