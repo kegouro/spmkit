@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from spmkit.gui.app_workspace import build_workspace
+from spmkit.gui.app_workspace import _scalar_results, build_workspace
 from spmkit.gui.panels.force_canvas import ForceCanvasPanel
 from spmkit.gui.panels.map_canvas import MapCanvasPanel
 
@@ -16,6 +16,14 @@ def test_build_workspace_wires_force_and_map_panels(qtbot) -> None:  # type: ign
     titles = [c.title for c in ws._commands]
     assert any("Abrir" in t for t in titles)
     assert any("mapa" in t.lower() for t in titles)
+    assert any("Exportar" in t for t in titles)
+
+
+def test_scalar_results_drops_nonserializable() -> None:
+    ctx = {"young_modulus": 1e6, "model": "sphere", "fit": object(), "ok": True, "none": None}
+    out = _scalar_results(ctx)
+    assert out == {"young_modulus": 1e6, "model": "sphere", "ok": True, "none": None}
+    assert "fit" not in out
 
 
 def test_map_perspective_switches(qtbot) -> None:  # type: ignore[no-untyped-def]

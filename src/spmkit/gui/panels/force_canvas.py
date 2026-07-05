@@ -1,17 +1,18 @@
 """Lienzo de la curva de fuerza — el corazón visual de la perspectiva.
 
 Dibuja la curva activa (approach en gris, retract en ámbar), superpone la línea de
-ajuste (teal) y marca el punto de contacto. Un *scrubber* recorre las curvas del
-force-volume: al arrastrarlo sólo se re-renderiza (barato), el ajuste va con debounce
-en el :class:`ForceViewModel`. Jerarquía de color v2: **dato = neutral, ajuste = teal**
-(evita el halation del teal sobre grafito).
+ajuste (teal), marca el contacto y muestra una **tira de residuos** debajo (lo que
+ANA/JPK no dan de un vistazo). El eje se conmuta entre **separación** e **indentación
+δ** (contacto en el origen). Un *scrubber* recorre las curvas del force-volume: al
+arrastrarlo sólo se re-renderiza (barato); el ajuste va con debounce en el
+:class:`ForceViewModel`. Jerarquía de color v2: **dato = neutral, ajuste = teal**.
 """
 
 from __future__ import annotations
 
 import numpy as np
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QHBoxLayout, QLabel, QSlider, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QComboBox, QHBoxLayout, QLabel, QSlider, QVBoxLayout, QWidget
 
 from spmkit.core.analysis.forcecurve import display_axis
 from spmkit.core.models import ForceCurve, ForceSegment
@@ -24,15 +25,29 @@ _NN = 1e9  # N → nN
 
 
 def _segment_xy(seg: ForceSegment) -> tuple[np.ndarray, np.ndarray, bool]:
-    """Devuelve ``(eje_nm, y, calibrado)`` de un segmento para dibujar.
+    """Devuelve ``(eje_m, y_display, calibrado)`` de un segmento para dibujar.
 
-    Si el segmento está calibrado usa fuerza (nN) vs separación/altura (nm); si no,
-    la deflexión cruda vs altura (nm). El flag ``calibrado`` decide las etiquetas.
+    Si el segmento está calibrado usa fuerza (nN) vs eje (m); si no, la deflexión
+    cruda vs eje. El flag ``calibrado`` decide las etiquetas. El eje se deja en metros
+    (el shift de indentación y la escala a nm los aplica el panel).
     """
-    axis = display_axis(seg.separation, seg.raw_height) * _NM
+    axis = display_axis(seg.separation, seg.raw_height)
     if seg.force is not None:
         return axis, np.asarray(seg.force, dtype=np.float64) * _NN, True
     return axis, np.asarray(seg.raw_deflection, dtype=np.float64), False
+
+
+class _blocked:
+    """Context manager: bloquea señales de un widget mientras se ajusta programático."""
+
+    def __init__(self, widget: QWidget) -> None:
+        self._w = widget
+
+    def __enter__(self) -> None:
+        self._prev = self._w.blockSignals(True)
+
+    def __exit__(self, *exc: object) -> None:
+        self._w.blockSignals(self._prev)
 
 
 class ForceCanvasPanel(Panel):
@@ -42,6 +57,9 @@ class ForceCanvasPanel(Panel):
 
     def __init__(self, vm: ForceViewModel, parent: QWidget | None = None) -> None:
         self._vm = vm
+        self._offset = 0.0  # shift del eje (m): contacto en modo indentación
+        self._contact: float | None = None
+        self._last_ctx: dict = {}
         super().__init__(parent)
         vm.curveChanged.connect(self._on_curve_changed)
         vm.resultsChanged.connect(self._on_results)
@@ -54,11 +72,16 @@ class ForceCanvasPanel(Panel):
         lay.setContentsMargins(0, 0, 0, 0)
         lay.setSpacing(tokens.SPACE["2"])
 
-        self._plot = pg.PlotWidget()
+        glw = pg.GraphicsLayoutWidget()
+        self._plot = glw.addPlot(row=0, col=0)
         self._plot.showGrid(x=True, y=True, alpha=0.15)
-        self._plot.setLabel("bottom", "Separación", units="nm")
         self._plot.setLabel("left", "Fuerza", units="nN")
         self._plot.addLegend(offset=(-10, 10))
+        self._resid = glw.addPlot(row=1, col=0)
+        self._resid.setMaximumHeight(110)
+        self._resid.showGrid(x=True, y=True, alpha=0.12)
+        self._resid.setLabel("left", "resid", units="nN")
+        self._resid.setXLink(self._plot)
 
         self._extend_item = self._plot.plot(
             [], [], pen=pg.mkPen(tokens.TRACES["extend"], width=1.6), name="approach"
@@ -76,22 +99,32 @@ class ForceCanvasPanel(Panel):
         )
         self._contact_line.setVisible(False)
         self._plot.addItem(self._contact_line)
+        self._resid.addLine(y=0, pen=pg.mkPen(tokens.TRACES["residual"], width=1.0))
+        self._resid_item = self._resid.plot(
+            [], [], pen=None, symbol="o", symbolSize=3, symbolBrush=tokens.TRACES["fit"]
+        )
 
-        # Scrubber de curvas + contador.
+        # Controles: modo de eje + scrubber + contador.
         controls = QWidget()
         crow = QHBoxLayout(controls)
         crow.setContentsMargins(tokens.SPACE["1"], 0, tokens.SPACE["1"], 0)
+        self._axis_mode = QComboBox()
+        self._axis_mode.addItem("Separación", "sep")
+        self._axis_mode.addItem("Indentación δ", "ind")
+        self._axis_mode.currentIndexChanged.connect(self._on_axis_mode)
         self._scrubber = QSlider(Qt.Orientation.Horizontal)
         self._scrubber.setMinimum(0)
         self._scrubber.valueChanged.connect(self._vm.set_curve)
         self._counter = QLabel("—")
         self._counter.setProperty("role", "readout")
+        crow.addWidget(self._axis_mode)
         crow.addWidget(self._scrubber, 1)
         crow.addWidget(self._counter)
 
-        lay.addWidget(self._plot, 1)
+        lay.addWidget(glw, 1)
         lay.addWidget(controls)
 
+        self._update_axis_label()
         self._sync_scrubber_range()
         self._on_curve_changed(self._vm.index)
         return root
@@ -105,58 +138,77 @@ class ForceCanvasPanel(Panel):
         n = self._vm.n_curves
         self._counter.setText(f"{index + 1:>4} / {n}" if n else "—")
         self._fit_item.setData([], [])
+        self._resid_item.setData([], [])
         self._contact_line.setVisible(False)
+        self._contact = None
+        self._last_ctx = {}
+        self._offset = 0.0
         curve = self._vm.current_curve() if n else None
         if curve is not None:
             self._draw_data(curve)
 
     def _on_results(self, ctx: dict) -> None:
-        """Re-render con la curva calibrada + overlay de ajuste."""
+        """Re-render con la curva calibrada + overlay de ajuste + residuos."""
+        self._last_ctx = ctx
+        cp = ctx.get("contact_point")
+        self._contact = float(cp) if isinstance(cp, (int, float)) else None
+        self._refresh_offset()
         curve = self._vm.result_curve()
         if curve is not None:
             self._draw_data(curve)
         fit = ctx.get("fit")
         if fit is not None and getattr(fit, "x_fit", None) is not None and len(fit.x_fit):
-            self._fit_item.setData(np.asarray(fit.x_fit) * _NM, np.asarray(fit.f_fit) * _NN)
+            self._fit_item.setData(self._x(fit.x_fit), np.asarray(fit.f_fit) * _NN)
+            self._resid_item.setData(self._x(fit.x_fit), np.asarray(fit.residual) * _NN)
         else:
             self._fit_item.setData([], [])
-        cp = ctx.get("contact_point")
-        if cp is not None and ctx.get("contact_detected", True):
-            self._contact_line.setPos(float(cp) * _NM)
+            self._resid_item.setData([], [])
+        if self._contact is not None and ctx.get("contact_detected", True):
+            self._contact_line.setPos(self._x(np.array([self._contact]))[0])
             self._contact_line.setVisible(True)
         else:
             self._contact_line.setVisible(False)
 
+    def _on_axis_mode(self, _idx: int) -> None:
+        self._update_axis_label()
+        # Re-render con el modo nuevo: si hay ajuste, re-emite todo (datos+fit+residuos);
+        # si no, sólo la curva cruda.
+        if self._last_ctx:
+            self._on_results(self._last_ctx)
+        elif self._vm.n_curves:
+            self._draw_data(self._vm.current_curve())
+
     # ---- dibujo ----
+    def _x(self, axis_m: np.ndarray) -> np.ndarray:
+        """Eje en nm, con shift a indentación (contacto en 0) si corresponde."""
+        return (np.asarray(axis_m, dtype=np.float64) - self._offset) * _NM
+
+    def _refresh_offset(self) -> None:
+        indent = self._axis_mode.currentData() == "ind"
+        self._offset = self._contact if (indent and self._contact is not None) else 0.0
+
     def _draw_data(self, curve: ForceCurve) -> None:
         calibrated = False
         if curve.extend is not None:
-            x, y, calibrated = _segment_xy(curve.extend)
-            self._extend_item.setData(x, y)
+            axis, y, calibrated = _segment_xy(curve.extend)
+            self._extend_item.setData(self._x(axis), y)
         else:
             self._extend_item.setData([], [])
         if curve.retract is not None:
-            xr, yr, _ = _segment_xy(curve.retract)
-            self._retract_item.setData(xr, yr)
+            axis_r, yr, _ = _segment_xy(curve.retract)
+            self._retract_item.setData(self._x(axis_r), yr)
         else:
             self._retract_item.setData([], [])
         label, units = ("Fuerza", "nN") if calibrated else ("Deflexión", "")
         self._plot.setLabel("left", label, units=units)
 
+    def _update_axis_label(self) -> None:
+        if self._axis_mode.currentData() == "ind":
+            self._resid.setLabel("bottom", "Indentación δ", units="nm")
+        else:
+            self._resid.setLabel("bottom", "Separación", units="nm")
+
     def _sync_scrubber_range(self) -> None:
         n = self._vm.n_curves
         self._scrubber.setMaximum(max(0, n - 1))
         self._scrubber.setEnabled(n > 1)
-
-
-class _blocked:
-    """Context manager: bloquea señales de un widget mientras se ajusta programático."""
-
-    def __init__(self, widget: QWidget) -> None:
-        self._w = widget
-
-    def __enter__(self) -> None:
-        self._prev = self._w.blockSignals(True)
-
-    def __exit__(self, *exc: object) -> None:
-        self._w.blockSignals(self._prev)

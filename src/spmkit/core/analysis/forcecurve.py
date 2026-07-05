@@ -38,12 +38,14 @@ class ForceCurveFit:
     #: dibujarla superpuesta a los datos. No forma parte de ``to_dict`` (escalares).
     x_fit: np.ndarray = field(default_factory=lambda: np.empty(0), repr=False, compare=False)
     f_fit: np.ndarray = field(default_factory=lambda: np.empty(0), repr=False, compare=False)
+    #: Residuos (dato − ajuste, N) alineados con ``x_fit`` — para la tira de residuos.
+    residual: np.ndarray = field(default_factory=lambda: np.empty(0), repr=False, compare=False)
 
     def to_dict(self) -> dict:
         """Sólo los escalares (para CSV/JSON/CLI); omite las curvas de ajuste."""
         d = asdict(self)
-        d.pop("x_fit", None)
-        d.pop("f_fit", None)
+        for k in ("x_fit", "f_fit", "residual"):
+            d.pop(k, None)
         return d
 
     def _repr_html_(self) -> str:
@@ -239,6 +241,7 @@ def fit_force_curve(
         n_fit=int(delta.size),
         x_fit=np.asarray(x_fit, dtype=np.float64),
         f_fit=np.asarray(f_fit_line, dtype=np.float64),
+        residual=np.asarray(residuals, dtype=np.float64),
     )
 
 

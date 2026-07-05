@@ -99,6 +99,10 @@ class ForceViewModel(QObject):
         """Curva calibrada del pipeline para el índice actual (o ``None`` si aún no)."""
         return self._result_curve_cache.get(self._index)
 
+    def current_results(self) -> dict[str, Any]:
+        """Contexto del pipeline (resultados) cacheado para el índice actual."""
+        return dict(self._results_cache.get(self._index, {}))
+
     def set_curve(self, index: int) -> None:
         """Cambia la curva activa (render inmediato; ajuste con debounce)."""
         if self._volume is None or not (0 <= index < self._volume.n_curves):

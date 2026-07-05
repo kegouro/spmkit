@@ -9,6 +9,7 @@ from spmkit.core.viz.figure import (
     save_figure,
     save_grid,
 )
+from spmkit.core.viz.forcecurve import render_force_curve, save_force_curve
 
 __all__ = [
     "colormaps",
@@ -18,4 +19,6 @@ __all__ = [
     "render_grid",
     "save_figure",
     "save_grid",
+    "render_force_curve",
+    "save_force_curve",
 ]
