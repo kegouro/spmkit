@@ -23,7 +23,15 @@ from spmkit.core.models import ForceVolume
 from spmkit.core.pipeline import Recipe, run
 
 #: Cantidades del contexto del pipeline que se mapean por defecto.
-DEFAULT_KEYS = ("young_modulus", "adhesion", "dissipation", "r_squared", "contact_point")
+DEFAULT_KEYS = (
+    "young_modulus",
+    "adhesion",
+    "dissipation",
+    "r_squared",
+    "contact_point",
+    "max_force",
+    "max_indentation",
+)
 
 ProgressCallback = Callable[[float, int], None]
 

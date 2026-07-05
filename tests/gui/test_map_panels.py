@@ -23,6 +23,21 @@ def test_map_canvas_draws_and_links(qtbot, synthetic_volume) -> None:  # type: i
     assert panel._target.isVisible()
 
 
+def test_map_engine_selector_reflects_backends(qtbot, synthetic_volume) -> None:  # type: ignore[no-untyped-def]
+    fvm = ForceViewModel()
+    mvm = MapViewModel(fvm)
+    panel = MapCanvasPanel(mvm, fvm)
+    qtbot.addWidget(panel)
+    values = [panel._engine.itemData(i) for i in range(panel._engine.count())]
+    assert "fast_cpu" in values
+    assert "pipeline" in values
+    # Sin GPU CUDA en este equipo, el motor GPU no debe aparecer.
+    from spmkit.core import compute
+
+    if "gpu" not in compute.available_backends():
+        assert "fast_gpu" not in values
+
+
 def test_map_canvas_click_selects_curve(qtbot, synthetic_volume) -> None:  # type: ignore[no-untyped-def]
     fvm = ForceViewModel()
     mvm = MapViewModel(fvm)

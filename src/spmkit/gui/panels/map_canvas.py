@@ -12,18 +12,27 @@ import contextlib
 import numpy as np
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
-    QCheckBox,
     QComboBox,
     QHBoxLayout,
     QLabel,
+    QMessageBox,
     QPushButton,
+    QToolButton,
     QVBoxLayout,
     QWidget,
 )
 
+from spmkit.core import compute
 from spmkit.core.analysis.forcevolume import VolumeResult
 from spmkit.gui.panels.base import Panel
 from spmkit.gui.viewmodels import PROPERTIES, ForceViewModel, MapViewModel
+
+#: Motores de cálculo del mapa: valor interno → etiqueta.
+_ENGINES = (
+    ("fast_cpu", "CPU · rápido"),
+    ("fast_gpu", "GPU · rápido"),
+    ("pipeline", "CPU · pipeline"),
+)
 
 
 class MapCanvasPanel(Panel):
@@ -60,15 +69,26 @@ class MapCanvasPanel(Panel):
         self._selector.currentIndexChanged.connect(self._on_selector)
         self._compute_btn = QPushButton("Calcular mapa")
         self._compute_btn.setProperty("primary", "true")
-        self._compute_btn.clicked.connect(lambda: self._vm.compute(self._parallel.isChecked()))
-        self._parallel = QCheckBox("Paralelo")
-        self._parallel.setToolTip("Usa múltiples procesos (más rápido en mapas grandes)")
+        self._compute_btn.clicked.connect(lambda: self._vm.compute(self._engine.currentData()))
+        # Motor: rápido (vectorizado CPU/GPU) o pipeline. GPU sólo si hay CUDA.
+        gpu_ok = "gpu" in compute.available_backends()
+        self._engine = QComboBox()
+        for value, label in _ENGINES:
+            if value == "fast_gpu" and not gpu_ok:
+                continue
+            self._engine.addItem(label, value)
+        self._info = QToolButton()
+        self._info.setText("ⓘ")
+        self._info.setToolTip("¿CPU o GPU? — diferencias")
+        self._info.clicked.connect(self._show_engine_info)
         self._status = QLabel("mapa sin calcular")
         self._status.setProperty("role", "muted")
         bar.addWidget(QLabel("Propiedad:"))
         bar.addWidget(self._selector)
+        bar.addWidget(QLabel("Motor:"))
+        bar.addWidget(self._engine)
+        bar.addWidget(self._info)
         bar.addWidget(self._compute_btn)
-        bar.addWidget(self._parallel)
         bar.addStretch(1)
         bar.addWidget(self._status)
 
@@ -85,6 +105,20 @@ class MapCanvasPanel(Panel):
         lay.addLayout(bar)
         lay.addWidget(self._image, 1)
         return root
+
+    def _show_engine_info(self) -> None:
+        """Pop-up breve explicando la diferencia CPU vs GPU y el pipeline."""
+        gpu_ok = "gpu" in compute.available_backends()
+        gpu_line = compute.GPU_INFO if gpu_ok else (compute.GPU_INFO + "\n\n(No disponible aquí.)")
+        box = QMessageBox(self)
+        box.setWindowTitle("Motor de cálculo del mapa")
+        box.setText(
+            f"<b>CPU · rápido</b><br>{compute.CPU_INFO}<br><br>"
+            f"<b>GPU · rápido</b><br>{gpu_line}<br><br>"
+            "<b>CPU · pipeline</b><br>Ajuste por curva: más lento pero respeta suavizado, "
+            "región de ajuste y calibración manual, y calcula todas las propiedades."
+        )
+        box.exec()
 
     # ---- reacciones ----
     def _on_selector(self, _idx: int) -> None:
