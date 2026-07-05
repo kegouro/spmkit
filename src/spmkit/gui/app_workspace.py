@@ -1,9 +1,10 @@
-"""Ensamblado del nuevo workspace (rediseño): VM de fuerza + paneles reales.
+"""Ensamblado del nuevo workspace (rediseño): ViewModels + paneles reales.
 
-Punto de entrada del rediseño. Construye el :class:`ForceViewModel`, cablea los
-paneles de la perspectiva de curva de fuerza (lienzo, inspector, navegador) y añade
-el comando "Abrir…" (``QFileDialog`` → :func:`load_force`). Las demás perspectivas
-siguen con placeholders hasta sus fases.
+Punto de entrada del rediseño. Construye los ViewModels (curva, mapa, batch) sobre un
+mismo hub y cablea sus paneles: curva de fuerza (lienzo, inspector, navegador, pipeline),
+mapa de propiedades + histograma y tabla de batch. Registra comandos globales (abrir,
+calcular mapa, exportar, copiar, navegar). Las perspectivas imagen/figura/simulador
+siguen con placeholders hasta su fase de migración.
 """
 
 from __future__ import annotations
@@ -50,12 +51,35 @@ def build_workspace(mode: str = "dark") -> Workspace:
         Command("Exportar resultados (JSON)…", lambda: _export_results(ws, vm), "Ctrl+E")
     )
     ws.register_command(Command("Exportar figura…", lambda: _export_figure(ws, vm)))
+    ws.register_command(Command("Copiar resultados", lambda: _copy_results(ws, vm), "Ctrl+Shift+C"))
+    ws.register_command(Command("Curva anterior", lambda: vm.set_curve(vm.index - 1), "Ctrl+Left"))
+    ws.register_command(
+        Command("Curva siguiente", lambda: vm.set_curve(vm.index + 1), "Ctrl+Right")
+    )
+    ws.register_command(Command("Primera curva", lambda: vm.set_curve(0), "Ctrl+Home"))
+    ws.register_command(Command("Última curva", lambda: vm.set_curve(vm.n_curves - 1), "Ctrl+End"))
     return ws
 
 
 def _scalar_results(ctx: dict) -> dict:
     """Filtra el contexto a valores serializables (descarta el objeto de ajuste)."""
     return {k: v for k, v in ctx.items() if isinstance(v, (int, float, str, bool)) or v is None}
+
+
+def _results_tsv(ctx: dict) -> str:
+    """Serializa los resultados escalares como texto tabulado (para el portapapeles)."""
+    return "\n".join(f"{k}\t{v}" for k, v in _scalar_results(ctx).items())
+
+
+def _copy_results(ws: Workspace, vm: ForceViewModel) -> None:
+    ctx = vm.current_results()
+    if not ctx:
+        ws.show_status("no hay resultados que copiar")
+        return
+    clipboard = QApplication.clipboard()
+    if clipboard is not None:
+        clipboard.setText(_results_tsv(ctx))
+        ws.show_status("resultados copiados al portapapeles")
 
 
 def _export_results(ws: Workspace, vm: ForceViewModel) -> None:

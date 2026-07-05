@@ -10,6 +10,7 @@ from __future__ import annotations
 import contextlib
 
 import numpy as np
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QComboBox, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
 
 from spmkit.core.analysis.forcevolume import VolumeResult
@@ -119,6 +120,8 @@ class MapCanvasPanel(Panel):
     def _on_click(self, event: object) -> None:
         if self._vm.result is None:
             return
+        if getattr(event, "button", lambda: None)() != Qt.MouseButton.LeftButton:
+            return  # sólo clic izquierdo selecciona (el derecho es menú de contexto)
         view = self._image.getView()
         point = view.mapSceneToView(event.scenePos())  # type: ignore[attr-defined]
         rows, cols = self._grid
