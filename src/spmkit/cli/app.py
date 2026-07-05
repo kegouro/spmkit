@@ -584,6 +584,33 @@ def forcereport(
 
 
 @app.command()
+def forceexport(
+    file: Path = typer.Argument(..., exists=True, help="Force-volume .nid o curva de fuerza"),
+    output: Path = typer.Option(Path("export"), "--output", "-o", help="Carpeta de salida"),
+    model: str = typer.Option("sphere", "--model", help="sphere|paraboloid|cone|dmt"),
+    tip_radius: float = typer.Option(10e-9, "--tip-radius", help="Radio de punta (m)"),
+    backend: str = typer.Option("cpu", "--backend", help="cpu|gpu"),
+    no_report: bool = typer.Option(False, "--no-report", help="Omite el informe HTML/PDF"),
+) -> None:
+    """Exporta TODO (mapas CSV, tabla por curva, resumen e informe) a una carpeta."""
+    from spmkit.core.forcebatch import load_force
+    from spmkit.core.forceexport import export_bundle
+
+    vol = load_force(file)
+    fmts: tuple[str, ...] = () if no_report else ("html", "pdf")
+    manifest = export_bundle(
+        vol,
+        output,
+        source_name=file.name,
+        model=model,
+        tip_radius=tip_radius,
+        backend=backend,
+        report_formats=fmts,
+    )
+    console.print(f"[green]✓[/] {len(manifest)} archivos exportados → {output}")
+
+
+@app.command()
 def fbatch(
     folder: Path = typer.Argument(..., exists=True, file_okay=False, help="Carpeta de curvas"),
     output: Path = typer.Option(Path("force_batch.csv"), "--output", "-o", help="CSV resumen"),

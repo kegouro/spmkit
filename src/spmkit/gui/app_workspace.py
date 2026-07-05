@@ -81,6 +81,7 @@ def build_workspace(
     ws.register_command(
         Command("Generar informe (HTML/PDF)…", lambda: _generate_report(ws, vm), "Ctrl+Shift+R")
     )
+    ws.register_command(Command("Exportar todo…", lambda: _export_all(ws, vm)))
     ws.register_command(Command("Exportar mapa (figura)…", lambda: _export_map_figure(ws, map_vm)))
     ws.register_command(Command("Exportar mapa (CSV)…", lambda: _export_map_csv(ws, map_vm)))
     ws.register_command(Command("Copiar resultados", lambda: _copy_results(ws, vm), "Ctrl+Shift+C"))
@@ -240,6 +241,41 @@ def _generate_report(ws: Workspace, vm: ForceViewModel) -> None:
     task.signals.error.connect(lambda exc: ws.show_status(f"informe falló: {exc}"))
     ws.bind_task(task)
     ws.show_status("generando informe…")
+    run_task(task)
+
+
+def _export_all(ws: Workspace, vm: ForceViewModel) -> None:
+    """Exporta todo el force-volume (mapas CSV, tabla, resumen, informe) a una carpeta."""
+    volume = vm.volume
+    if volume is None:
+        ws.show_status("no hay force-volume cargado para exportar")
+        return
+    folder = QFileDialog.getExistingDirectory(ws, "Carpeta para exportar todo", _last_dir())
+    if not folder:
+        return
+    from spmkit.core.forceexport import export_bundle
+    from spmkit.gui.runtime.tasks import Task, run_task
+
+    p = vm.params
+    _remember_dir(folder)
+
+    def _work() -> dict:
+        return export_bundle(
+            volume,
+            folder,
+            source_name=Path(folder).name,
+            model=p["model"],
+            tip_radius=p["tip_radius"],
+            poisson=p["poisson"],
+        )
+
+    task = Task(_work)
+    task.signals.done.connect(
+        lambda m: ws.show_status(f"exportados {len(m)} archivos a {Path(folder).name}")
+    )
+    task.signals.error.connect(lambda exc: ws.show_status(f"exportación falló: {exc}"))
+    ws.bind_task(task)
+    ws.show_status("exportando todo…")
     run_task(task)
 
 
