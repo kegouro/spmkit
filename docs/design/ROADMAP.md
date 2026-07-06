@@ -33,10 +33,40 @@ Una sola aplicación de escritorio (el workspace Fathom) reemplaza a la app clá
 5. **Física honesta.** Modelos sin validación independiente se **construyen pero se
    marcan como experimentales** (flag en core + UI), nunca se presentan como
    publication-grade hasta revalidarlos.
+6. **No-acoplamiento como código.** Un test de arquitectura (`tests/test_architecture.py`)
+   + `ruff` banned-api prohíben importar `PyQt6`/`PySide6`/`pyqtgraph` dentro de `core/`.
+   La regla no depende de disciplina humana: CI la hace fallar.
+7. **API pública estable y versionada.** El contrato de plugins es `spmkit.plugins.v1`
+   (Protocols). Cambios incompatibles → `v2` con compatibilidad hacia atrás; nunca se
+   rompe la firma de `load_any`/registries sin bump de versión (protege extensiones de
+   terceros — como los drivers de Napalm o las extensiones de VS Code).
 
 ## 3. Framework de extensiones (la pieza future-proof)
 
-`spmkit` expone **entry-points** (grupo `spmkit.plugins`) y un registry en proceso para:
+Los contratos son **`typing.Protocol`s versionados** en `core/plugins/contracts.py`
+(grupo de entry-points **`spmkit.plugins.v1`**). Firmas clave:
+
+```python
+class DatasetInfo(Protocol):     # metadatos SIN cargar datos pesados
+    kinds: tuple[Kind, ...]      # p.ej. ("image", "force") — un .spm QI es ambos
+    channels: tuple[str, ...]
+    grid_shape: tuple[int, int] | None
+
+class Reader(Protocol):
+    extensions: tuple[str, ...]
+    def inspect(self, path) -> DatasetInfo: ...      # barato: solo cabecera
+    def load(self, path, kind: Kind | None = None): ...  # carga perezosa del kind pedido
+
+class Domain(Protocol):          # una física completa (Fathom = AFM)
+    name: str
+    readers: tuple[Reader, ...]
+    analyses: tuple[Analysis, ...]
+    perspectives: tuple[str, ...]
+```
+
+`load_any(path)` primero hace `inspect` (rápido), la GUI **pregunta al lector "¿qué hay
+aquí?"** y —si hay varios `kind`— ofrece abrir como *Imagen* o *Mapa de curvas* **antes**
+de cargar los megabytes. Registry en proceso para:
 
 | Punto de extensión | Registra | Ejemplo Fathom |
 |---|---|---|
@@ -59,10 +89,15 @@ Cada fase: spec breve → plan → build → tests (unit + validación contra ar
 **agentes con modelo barato (haiku)** en paralelo; diseño, física e integración en Opus.
 
 ### F1 — Plataforma de formatos (la base) · *en curso*
-- `core/io/registry.py` v2: registry de lectores **con capacidades**; `load_any(path)`
-  unificado que devuelve `(dato, kind)`.
-- **Arnés de datos de prueba**: script que descarga samples open-source por formato a
-  `reference/` (gitignored, **nunca commiteado**); tests con `skipif`-missing.
+- `core/plugins/contracts.py`: los **Protocols versionados** (`Reader`/`DatasetInfo`/
+  `Analysis`/`Domain`) — **se escriben primero**, todo lo demás depende de ellos.
+- `core/io/registry.py` v2: registry de lectores **con capacidades** + `inspect()`;
+  `load_any(path, kind=None)` que **inspecciona antes de cargar** y soporta múltiples
+  `kind` por archivo (QI = imagen + force).
+- **Arnés de datos de prueba**: `scripts/fetch_samples.py` descarga samples open-source
+  por formato a `reference/` (gitignored, **nunca commiteado**), con **fallback a assets
+  pequeños offline** (1–2 por formato, vía GitHub Release o mínimos generados) para que
+  el CI valide formato **sin red**. Tests con `skipif`-missing.
 - Lectores nuevos (incrementales, cada uno con su validación):
   `.spm`/`.pfc` (Bruker/NanoScope, imagen + force-volume/QI), `.ibw` (Asylum),
   Park, HDF5 genérico; **`afmformats`** como backend opcional (extra `afm`) para la cola
@@ -75,6 +110,9 @@ Cada fase: spec breve → plan → build → tests (unit + validación contra ar
 - Mover `main_window.py` + `*_tab.py` a **`src/spmkit/gui/legacy/`** — **documentado y
   conservado** (fallback limpio), con un comando `spmkit gui --legacy`. No se borra.
 - Traer lo ya hecho: anotaciones de figura personalizables, Vista 3D en nm/µm.
+- **`.spmproj` mínimo desde el día 1 de la nueva UI**: guarda archivos abiertos + receta
+  activa (el estado analítico básico). El versionado de layouts de dock y preferencias
+  complejas espera a F4.
 - La UI **no** se acopla al core (separación quirúrgica).
 
 ### F3 — Profundidad de análisis (imagen completa + física avanzada)
@@ -99,6 +137,11 @@ Cada fase: spec breve → plan → build → tests (unit + validación contra ar
 
 - **Fuentes open-source**: samples de Gwyddion, datos de test de `afmformats`, demos
   públicas de Bruker/Asylum. URLs resueltas por agentes de investigación (haiku).
+- **Resiliencia offline (crítico):** depender solo de URLs externas es frágil (mueren,
+  caen). Se conservan **1–2 archivos pequeños por formato** como assets estáticos
+  (GitHub Release del repo, o mínimos generados/base64) para que los tests básicos de
+  formato corran **sin red**. `fetch_samples.py` prefiere el cache local; la red es
+  el último recurso.
 - **Ubicación**: `reference/` (gitignored). Un `scripts/fetch_samples.py` los baja bajo
   demanda; los tests hacen `pytest.importorskip`/`skipif(not path.exists())`.
 - **Archivos del lab**: los `.nid` y **JPK nuevos** ya presentes en `reference/` — se
