@@ -6,6 +6,17 @@ el versionado es [SemVer](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+### Añadido — Modelos mecánicos experimentales, *flagged* (F3.3 del roadmap)
+- **JKR** (contacto adhesivo Johnson-Kendall-Roberts) y **viscoelástico SLS**
+  (relajación de fuerza) en `core.analysis.experimental`, ajuste numpy puro (búsqueda en
+  grilla). ⚠️ **Experimentales / sin validar** contra referencia independiente: se
+  incluyen marcados (`EXPERIMENTAL = True`, `experimental=True` en los resultados) para
+  revalidarlos en el futuro; **no** usar para publicar. Verificados sólo contra límites
+  analíticos (JKR→Hertz con adhesión nula; relajación con τ conocido).
+- **CLI `spmkit jkr`** (con banner de advertencia) ajusta JKR a una curva calibrada,
+  reutilizando la extracción de contacto **validada** (`forcecurve.contact_indentation`,
+  refactor sin cambio de comportamiento del ajuste Hertz/DMT).
+
 ### Añadido — Análisis de imagen completo en Fathom (F3 del roadmap)
 - **Paridad de visor** en la perspectiva Imagen: selector de colormap, nivelado
   plano/polinomio/**por filas**, y **perfil de línea interactivo** (ROI arrastrable) con

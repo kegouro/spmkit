@@ -154,6 +154,74 @@ def find_contact(
     return float(x[_contact_index(f_corr, baseline_fraction, k_sigma)])
 
 
+@dataclass(frozen=True)
+class ContactRegion:
+    """Rama de **carga** de una curva de fuerza (del contacto al pico), ya extraída."""
+
+    delta: np.ndarray  # indentación (m), > 0
+    force: np.ndarray  # fuerza corregida de línea base en contacto (N)
+    contact_point: float  # x0 (unidad del eje)
+    adhesion: float  # pull-off respecto a la base (N)
+    x_window: np.ndarray  # x del tramo (para reconstruir la línea de ajuste)
+    baseline_window: np.ndarray  # línea base del tramo (para volver a fuerza cruda)
+
+
+def contact_indentation(
+    x: np.ndarray,
+    force: np.ndarray,
+    model: str = "sphere",
+    baseline_fraction: float = 0.3,
+    k_sigma: float = 5.0,
+    fit_range: tuple[float, float] | None = None,
+) -> ContactRegion:
+    """Extrae ``(δ, fuerza)`` de la rama de carga con la lógica de contacto **validada**.
+
+    Orienta por la línea base, la corrige, detecta el contacto (snap-in para DMT) y toma
+    del contacto al pico. Es la MISMA extracción que usa :func:`fit_force_curve`; la
+    comparten Hertz/DMT y los modelos experimentales (JKR) para no re-derivarla.
+    """
+    x = np.asarray(x, dtype=np.float64)
+    force = np.asarray(force, dtype=np.float64)
+    finite = np.isfinite(x) & np.isfinite(force)
+    x, force = x[finite], force[finite]
+    if fit_range is not None:
+        lo, hi_r = sorted(fit_range)
+        window = (x >= lo) & (x <= hi_r)
+        if int(np.count_nonzero(window)) >= 10:  # si no, se ignora la ventana
+            x, force = x[window], force[window]
+    if x.size < 10:
+        raise ValueError("Muy pocos puntos finitos para ajustar la curva de fuerza")
+
+    x, force = _orient(x, force)
+    baseline = _fit_baseline(force, baseline_fraction)
+    f_corr = force - baseline
+    adhesion = float(max(0.0, -f_corr.min()))  # pull-off respecto a la base
+
+    if model == "dmt":
+        # DMT: el contacto es el snap-in (mínimo de fuerza / máxima adhesión), δ=0, F=−F_adh.
+        i0 = int(np.argmin(f_corr))
+    else:
+        i0 = _contact_index(f_corr, baseline_fraction, k_sigma)
+    # Ajustar solo la rama de CARGA: de contacto al máximo de fuerza (tras el pico es
+    # turnaround/relajación y rompería el ajuste monótono).
+    i_peak = int(np.argmax(f_corr))
+    hi = i_peak + 1 if i_peak > i0 + 2 else f_corr.size
+    x0 = float(x[i0])
+    delta = np.abs(x[i0:hi] - x0)
+    valid = delta > 0
+    delta = delta[valid]
+    if delta.size < 3:
+        raise ValueError("Indentación insuficiente tras detectar el contacto")
+    return ContactRegion(
+        delta=delta,
+        force=f_corr[i0:hi][valid],
+        contact_point=x0,
+        adhesion=adhesion,
+        x_window=x[i0:hi][valid],
+        baseline_window=baseline[i0:hi][valid],
+    )
+
+
 def fit_force_curve(
     x: np.ndarray,
     force: np.ndarray,
@@ -177,47 +245,12 @@ def fit_force_curve(
     """
     if model not in _MODELS:
         raise ValueError(f"model debe ser uno de {sorted(_MODELS)}")
-    x = np.asarray(x, dtype=np.float64)
-    force = np.asarray(force, dtype=np.float64)
-    finite = np.isfinite(x) & np.isfinite(force)
-    x, force = x[finite], force[finite]
-    if fit_range is not None:
-        lo, hi = sorted(fit_range)
-        window = (x >= lo) & (x <= hi)
-        if int(np.count_nonzero(window)) >= 10:  # si no, se ignora la ventana
-            x, force = x[window], force[window]
-    if x.size < 10:
-        raise ValueError("Muy pocos puntos finitos para ajustar la curva de fuerza")
 
-    x, force = _orient(x, force)
-
-    # Corrección de línea base (recta en función del índice, bien condicionada).
-    baseline = _fit_baseline(force, baseline_fraction)
-    f_corr = force - baseline
-
-    adhesion = float(max(0.0, -f_corr.min()))  # pull-off respecto a la base
-
-    if model == "dmt":
-        # DMT: el contacto es el punto de snap-in (mínimo de fuerza / máxima adhesión),
-        # donde δ=0 y F=−F_adh.
-        i0 = int(np.argmin(f_corr))
-    else:
-        i0 = _contact_index(f_corr, baseline_fraction, k_sigma)
-    # Ajustar solo la curva de CARGA: de contacto al máximo de fuerza. Tras el pico,
-    # la curva es turnaround/relajación (fuerza baja con la punta ya indentada) y
-    # rompería el ajuste monótono F = A·δ^n.
-    i_peak = int(np.argmax(f_corr))
-    hi = i_peak + 1 if i_peak > i0 + 2 else f_corr.size
-    x0 = float(x[i0])
-    delta = np.abs(x[i0:hi] - x0)
-    f_fit = f_corr[i0:hi]
+    region = contact_indentation(x, force, model, baseline_fraction, k_sigma, fit_range)
+    delta, f_fit = region.delta, region.force
+    adhesion, x0 = region.adhesion, region.contact_point
     if model == "dmt":
         f_fit = f_fit + adhesion  # DMT: adhesión como offset constante
-
-    valid = delta > 0
-    delta, f_fit = delta[valid], f_fit[valid]
-    if delta.size < 3:
-        raise ValueError("Indentación insuficiente tras detectar el contacto")
 
     exponent = _MODELS[model]
     basis = delta**exponent
@@ -238,8 +271,8 @@ def fit_force_curve(
     # Línea de ajuste en coordenadas de display: predicción (en fuerza corregida)
     # devuelta a fuerza cruda sumando la línea base. Para DMT se descuenta el offset
     # de adhesión que se había añadido al objetivo del ajuste.
-    x_fit = x[i0:hi][valid]
-    f_fit_line = predicted + baseline[i0:hi][valid]
+    x_fit = region.x_window
+    f_fit_line = predicted + region.baseline_window
     if model == "dmt":
         f_fit_line = f_fit_line - adhesion
 

@@ -645,5 +645,47 @@ def fbatch(
             )
 
 
+@app.command()
+def jkr(
+    file: Path = typer.Argument(..., exists=True, help="Curva de fuerza calibrada (fuerza en N)"),
+    curve: int = typer.Option(0, "--curve", help="Índice de curva (para force-volume)"),
+    tip_radius: float = typer.Option(10e-9, "--tip-radius", help="Radio de punta (m)"),
+    poisson: float = typer.Option(0.3, "--poisson", help="Coeficiente de Poisson"),
+) -> None:
+    """[EXPERIMENTAL] Ajuste JKR (contacto adhesivo) — módulo + trabajo de adhesión.
+
+    ⚠️  Modelo experimental **sin validar** contra referencia independiente. No usar para
+    resultados publicables hasta revalidarlo (ver ``core.analysis.experimental``).
+    """
+    from spmkit.core.analysis import forcecurve
+    from spmkit.core.analysis.experimental import fit_jkr
+    from spmkit.core.io import load_any
+
+    console.print("[yellow bold]⚠ Modelo JKR EXPERIMENTAL sin validar — no usar para publicar.[/]")
+    vol = load_any(file, "force")[0]
+    if not 0 <= curve < vol.n_curves:
+        console.print(f"[red]Curva {curve} fuera de rango (0..{vol.n_curves - 1}).[/]")
+        raise typer.Exit(1)
+    c = vol.curve(curve)
+    seg = c.extend or (c.segments[0] if c.segments else None)
+    if seg is None or seg.force is None:
+        console.print("[red]La curva no está calibrada (fuerza en N). Calíbrala primero.[/]")
+        raise typer.Exit(1)
+    x = forcecurve.display_axis(seg.separation, seg.raw_height)
+    try:
+        region = forcecurve.contact_indentation(x, seg.force)
+        res = fit_jkr(region.delta, region.force, tip_radius=tip_radius, poisson=poisson)
+    except ValueError as exc:
+        console.print(f"[yellow]No se pudo ajustar JKR: {exc}[/]")
+        raise typer.Exit(1) from exc
+    table = Table(title=f"JKR (experimental) · {file.name} · curva {curve}")
+    table.add_column("Parámetro", style="cyan")
+    table.add_column("Valor", justify="right")
+    table.add_row("Módulo de Young", f"{res.young_modulus / 1e3:.4g} kPa")
+    table.add_row("Trabajo de adhesión", f"{res.work_of_adhesion * 1e3:.4g} mJ/m²")
+    table.add_row("R²", f"{res.r_squared:.4f}")
+    console.print(table)
+
+
 if __name__ == "__main__":
     app()
