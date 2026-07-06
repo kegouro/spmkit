@@ -28,7 +28,11 @@
 <div align="center">
 <img src="docs/images/brand/fathom_banner_v2.png" alt="Fathom Workspace Banner" width="100%">
 <br>
-<img src="docs/images/brand/fathom_lockup.svg" alt="Fathom Lockup" width="240" style="margin-top: 15px; margin-bottom: 15px;">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/brand/fathom_logo_dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="docs/images/brand/fathom_logo_light.png">
+  <img src="docs/images/brand/fathom_logo_light.png" alt="Fathom Logo" width="300" style="margin-top: 15px; margin-bottom: 15px;">
+</picture>
 </div>
 
 Mientras que `spmkit` actúa como la capa computacional subyacente, **Fathom** es el espacio de trabajo (*workspace*) interactivo insignia construido sobre su API. Fathom ha sido diseñado arquitectónicamente para sustituir herramientas propietarias de alto costo (como Nanosurf ANA y JPK Data Processing) en ecosistemas de investigación intensiva.
