@@ -423,15 +423,22 @@ def verify(
 
 
 @app.command()
-def gui() -> None:
-    """Lanza la interfaz gráfica clásica (requiere el extra 'gui')."""
+def gui(
+    file: Path | None = typer.Argument(None, help="Archivo a abrir al arrancar (solo Fathom)"),
+    legacy: bool = typer.Option(False, "--legacy", help="Lanza la app clásica de 7 pestañas"),
+) -> None:
+    """Lanza la GUI: **Fathom** por defecto, o la clásica con ``--legacy`` (requiere 'gui')."""
     try:
-        from spmkit.gui.app import run
+        if legacy:
+            from spmkit.gui.legacy import run as run_legacy
 
-        run()
+            run_legacy()
+            return
+        from spmkit.gui.app import run
     except ImportError:
         console.print("[red]La GUI requiere PyQt6. Instala con:[/] pip install 'spmkit[gui]'")
         raise typer.Exit(code=1) from None
+    raise typer.Exit(code=run(str(file) if file else None))
 
 
 @app.command()

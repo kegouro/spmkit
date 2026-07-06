@@ -12,6 +12,7 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 from PyQt6.QtCore import QSettings
 from PyQt6.QtGui import QIcon
@@ -69,9 +70,16 @@ def build_workspace(
         ws.setWindowIcon(icon)
     map_vm.taskStarted.connect(ws.bind_task)
     batch_vm.taskStarted.connect(ws.bind_task)
-    ws.fileDropped.connect(lambda p: _load_into(ws, vm, image_vm, p))
+    session: dict[str, Any] = {}  # último archivo abierto (para .spmproj)
+    ws.fileDropped.connect(lambda p: _load_into(ws, vm, image_vm, p, session))
     ws.register_command(
-        Command("Abrir curva o imagen…", lambda: _open_dialog(ws, vm, image_vm), "Ctrl+O")
+        Command("Abrir curva o imagen…", lambda: _open_dialog(ws, vm, image_vm, session), "Ctrl+O")
+    )
+    ws.register_command(
+        Command("Guardar proyecto…", lambda: _save_project(ws, vm, session), "Ctrl+S")
+    )
+    ws.register_command(
+        Command("Abrir proyecto…", lambda: _open_project(ws, vm, image_vm, session))
     )
     ws.register_command(Command("Calcular mapa de propiedades", map_vm.compute, "Ctrl+M"))
     ws.register_command(
@@ -95,7 +103,7 @@ def build_workspace(
     ws.register_command(Command("Última curva", lambda: vm.set_curve(vm.n_curves - 1), "Ctrl+End"))
     ws.register_command(Command(f"Acerca de {brand.PRODUCT_NAME}", lambda: _about(ws)))
     if open_path is not None:
-        _load_into(ws, vm, image_vm, open_path)
+        _load_into(ws, vm, image_vm, open_path, session)
     return ws
 
 
@@ -119,7 +127,12 @@ def _choose_kind(ws: Workspace, info: DatasetInfo) -> Kind | None:
 
 
 def _load_into(
-    ws: Workspace, vm: ForceViewModel, image_vm: ImageViewModel, path: str | Path
+    ws: Workspace,
+    vm: ForceViewModel,
+    image_vm: ImageViewModel,
+    path: str | Path,
+    session: dict[str, Any] | None = None,
+    kind_hint: Kind | None = None,
 ) -> None:
     """Abre ``path`` por capacidades (``inspect_any``/``load_any``) y rutea a la perspectiva."""
     from spmkit.core.io import inspect_any, load_any
@@ -130,7 +143,7 @@ def _load_into(
     except Exception as exc:  # noqa: BLE001 - formato no soportado / error IO: se informa
         ws.show_status(f"No se pudo abrir {name}: {exc}")
         return
-    kind = _choose_kind(ws, info)
+    kind = kind_hint or _choose_kind(ws, info)
     if kind is None:
         return  # cancelado
     try:
@@ -139,6 +152,8 @@ def _load_into(
         ws.show_status(f"No se pudo abrir {name}: {exc}")
         return
     _remember_dir(str(path))
+    if session is not None:
+        session["path"], session["kind"] = str(path), kind
     if kind == "force":
         vm.set_volume(data)
         ws.set_perspective("force")
@@ -147,6 +162,49 @@ def _load_into(
         image_vm.set_data(data)
         ws.set_perspective("image")
         ws.show_status(f"{name} — imagen ({len(image_vm.names)} canales)")
+
+
+def _save_project(ws: Workspace, vm: ForceViewModel, session: dict[str, Any]) -> None:
+    """Guarda un ``.spmproj``: archivo abierto + parámetros + perspectiva."""
+    from spmkit.core.project import OpenFile, ProjectState, save_project
+
+    path, _ = QFileDialog.getSaveFileName(
+        ws, "Guardar proyecto", _suggested("sesion.spmproj"), "Proyecto spmkit (*.spmproj)"
+    )
+    if not path:
+        return
+    files = [OpenFile(session["path"], session["kind"])] if session.get("path") else []
+    state = ProjectState(files=files, params=vm.params, perspective=ws.active_perspective)
+    save_project(state, path)
+    _remember_dir(path)
+    ws.show_status(f"proyecto guardado: {Path(path).name}")
+
+
+def _open_project(
+    ws: Workspace, vm: ForceViewModel, image_vm: ImageViewModel, session: dict[str, Any]
+) -> None:
+    """Abre un ``.spmproj``: reabre el archivo, aplica parámetros y perspectiva."""
+    from spmkit.core.project import load_project
+
+    path, _ = QFileDialog.getOpenFileName(
+        ws, "Abrir proyecto", _last_dir(), "Proyecto spmkit (*.spmproj)"
+    )
+    if not path:
+        return
+    try:
+        state = load_project(path)
+    except Exception as exc:  # noqa: BLE001 - .spmproj corrupto: se informa
+        ws.show_status(f"no se pudo abrir el proyecto: {exc}")
+        return
+    if state.params:
+        vm.set_params(**state.params)
+    for f in state.files:
+        if Path(f.path).exists():
+            _load_into(ws, vm, image_vm, f.path, session, kind_hint=f.kind)  # type: ignore[arg-type]
+        else:
+            ws.show_status(f"archivo del proyecto no encontrado: {Path(f.path).name}")
+    if state.perspective:
+        ws.set_perspective(state.perspective)
 
 
 def _brand_icon() -> QIcon | None:
@@ -364,7 +422,9 @@ def _export_figure(ws: Workspace, vm: ForceViewModel) -> None:
     ws.show_status(f"figura exportada a {Path(path).name}")
 
 
-def _open_dialog(ws: Workspace, vm: ForceViewModel, image_vm: ImageViewModel) -> None:
+def _open_dialog(
+    ws: Workspace, vm: ForceViewModel, image_vm: ImageViewModel, session: dict[str, Any]
+) -> None:
     from spmkit.core.plugins import supported_extensions
 
     globs = " ".join(f"*{e}" for e in supported_extensions())
@@ -372,7 +432,7 @@ def _open_dialog(ws: Workspace, vm: ForceViewModel, image_vm: ImageViewModel) ->
         ws, "Abrir datos SPM", _last_dir(), f"Datos SPM ({globs})"
     )
     if path:
-        _load_into(ws, vm, image_vm, path)
+        _load_into(ws, vm, image_vm, path, session)
 
 
 def run(open_path: str | Path | None = None) -> int:

@@ -5,7 +5,7 @@ from __future__ import annotations
 import numpy as np
 
 from spmkit.core.models import SPMChannel, SPMData
-from spmkit.gui.view3d_tab import View3DTab, _height_units
+from spmkit.gui.legacy.view3d_tab import View3DTab, _height_units
 
 
 def test_height_units_autoscale() -> None:
