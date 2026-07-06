@@ -35,6 +35,35 @@ def test_fast_and_pipeline_engines_agree(synthetic_volume) -> None:
     assert np.allclose(fast[ok], slow[ok], rtol=1e-9)  # motores coinciden
 
 
+def test_ragged_volume_falls_back_to_pipeline() -> None:
+    from spmkit.core.models import ForceCurve, ForceSegment, ForceVolume
+
+    curves = []
+    for length in (200, 260, 200):  # curvas de largo VARIABLE (como un QI)
+        sep = np.linspace(6e-7, 0.0, length)
+        e_star = 1.0e6 / (1 - 0.3**2)
+        k = (4.0 / 3.0) * e_star * np.sqrt(10e-9)
+        force = k * np.clip(3e-7 - sep, 0.0, None) ** 1.5
+        seg = ForceSegment(
+            segment_type="extend",
+            direction="approach",
+            raw_height=sep,
+            raw_deflection=np.zeros_like(sep),
+            force=force,
+            separation=sep,
+            state="force_n",
+        )
+        curves.append(ForceCurve(segments=(seg,)))
+    vol = ForceVolume.from_curves(curves, grid_shape=(1, 3), x_range=1e-6, y_range=1e-6)
+    fvm = ForceViewModel()
+    fvm.set_volume(vol)
+    mvm = MapViewModel(fvm)
+    mvm.compute_now("fast_cpu")  # ruta rápida no aplica → cae al pipeline sin romper
+    assert mvm.result is not None
+    assert "young_modulus" in mvm.result.maps
+    assert mvm.result.n_ok == 3
+
+
 def test_nonstandard_recipe_falls_back_to_pipeline(qtbot, synthetic_volume) -> None:  # type: ignore[no-untyped-def]
     fvm = ForceViewModel()
     fvm.set_volume(synthetic_volume(4))

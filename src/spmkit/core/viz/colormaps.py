@@ -79,19 +79,6 @@ def get_cmap(name: str) -> Any:
         return plt.get_cmap("viridis")
 
 
-def pyqtgraph_cmap(name: str) -> Any:
-    """Devuelve un ``pyqtgraph.ColorMap`` equivalente (para el visor)."""
-    import numpy as np
-    import pyqtgraph as pg
-    from matplotlib.colors import to_rgba
-
-    resolved = _ALIASES.get(name, name)
-    if resolved == "gold":
-        pos = np.array([s[0] for s in _GOLD_STOPS])
-        cols = np.array([[int(c * 255) for c in to_rgba(s[1])] for s in _GOLD_STOPS])
-        return pg.ColorMap(pos, cols)
-    # Para otros: muestrea el colormap de matplotlib en 256 niveles.
-    mpl = get_cmap(resolved)
-    pos = np.linspace(0.0, 1.0, 256)
-    cols = (np.array([mpl(x) for x in pos]) * 255).astype(int)
-    return pg.ColorMap(pos, cols)
+#: NOTA: el equivalente ``pyqtgraph.ColorMap`` (para el visor) vive en la capa GUI
+#: (``spmkit.gui.design.pg_colormaps``) — ``core`` no importa toolkits de UI. Aquí solo
+#: se exponen los datos puros (``_GOLD_STOPS``, ``get_cmap`` de matplotlib) que reutiliza.

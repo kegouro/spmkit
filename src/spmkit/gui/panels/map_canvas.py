@@ -121,10 +121,10 @@ class MapCanvasPanel(Panel):
         name = name or self._cmap.currentText()
         cmap = None
         if name == "gold":
-            from spmkit.core.viz import colormaps
+            from spmkit.gui.design.pg_colormaps import pyqtgraph_cmap
 
             with contextlib.suppress(Exception):
-                cmap = colormaps.pyqtgraph_cmap("gold")
+                cmap = pyqtgraph_cmap("gold")
         else:
             with contextlib.suppress(Exception):
                 cmap = pg.colormap.get(name)

@@ -14,7 +14,7 @@ from spmkit.core.analysis import kpfm, leveling, profiles, roughness
 from spmkit.core.analysis.profiles import Profile
 from spmkit.core.export import to_csv
 from spmkit.core.models import SPMChannel, SPMData
-from spmkit.core.viz import colormaps
+from spmkit.gui.design.pg_colormaps import pyqtgraph_cmap
 
 # Interpreta los arreglos como [fila, columna] = [y, x], igual que numpy/matplotlib.
 pg.setConfigOption("imageAxisOrder", "row-major")
@@ -150,7 +150,7 @@ class ViewerTab(QtWidgets.QWidget):
         # desplazarse por el panel para encontrarla).
         view.autoRange(padding=0.02)
         with contextlib.suppress(Exception):
-            self.image_view.setColorMap(colormaps.pyqtgraph_cmap(self.cmap_combo.currentText()))
+            self.image_view.setColorMap(pyqtgraph_cmap(self.cmap_combo.currentText()))
 
     def _update_profile(self) -> None:
         if self._channel is None:
