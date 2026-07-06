@@ -483,10 +483,10 @@ def forcecurve(
     tip_radius: float = typer.Option(10e-9, "--tip-radius", help="Radio de punta (m)"),
 ) -> None:
     """Ajusta una curva de fuerza (JPK/NanoSurf) y reporta el módulo, R², adhesión."""
-    from spmkit.core.forcebatch import load_force
+    from spmkit.core.io import load_any
     from spmkit.core.pipeline import run
 
-    vol = load_force(file)
+    vol = load_any(file, "force")[0]
     if not 0 <= curve < vol.n_curves:
         console.print(f"[red]Curva {curve} fuera de rango (0..{vol.n_curves - 1}).[/]")
         raise typer.Exit(1)
@@ -522,9 +522,9 @@ def forcemap(
 
     from spmkit.core.analysis.forcevolume import analyze_volume
     from spmkit.core.analysis.forcevolume_fast import elasticity_map
-    from spmkit.core.forcebatch import load_force
+    from spmkit.core.io import load_any
 
-    vol = load_force(file)
+    vol = load_any(file, "force")[0]
     if fast:
         result = elasticity_map(vol, tip_radius=tip_radius, model=model, backend=backend)
     else:
@@ -563,10 +563,10 @@ def forcereport(
     backend: str = typer.Option("cpu", "--backend", help="cpu|gpu (ruta vectorizada)"),
 ) -> None:
     """Genera un informe magistral (HTML/LaTeX/PDF) de un force-volume."""
-    from spmkit.core.forcebatch import load_force
     from spmkit.core.forcereport import build_force_report
+    from spmkit.core.io import load_any
 
-    vol = load_force(file)
+    vol = load_any(file, "force")[0]
     fmts = tuple(f.strip().lower() for f in formats.split(",") if f.strip())
     produced = build_force_report(
         vol,
@@ -593,10 +593,10 @@ def forceexport(
     no_report: bool = typer.Option(False, "--no-report", help="Omite el informe HTML/PDF"),
 ) -> None:
     """Exporta TODO (mapas CSV, tabla por curva, resumen e informe) a una carpeta."""
-    from spmkit.core.forcebatch import load_force
     from spmkit.core.forceexport import export_bundle
+    from spmkit.core.io import load_any
 
-    vol = load_force(file)
+    vol = load_any(file, "force")[0]
     fmts: tuple[str, ...] = () if no_report else ("html", "pdf")
     manifest = export_bundle(
         vol,
