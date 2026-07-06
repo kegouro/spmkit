@@ -17,7 +17,7 @@ from PyQt6.QtCore import QSettings
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication, QFileDialog, QMessageBox
 
-from spmkit.core.io import load_force, supported_force_extensions
+from spmkit.core.plugins.contracts import DatasetInfo, Kind
 from spmkit.gui.design import brand
 from spmkit.gui.panels.batch_table import BatchTablePanel
 from spmkit.gui.panels.force_canvas import ForceCanvasPanel
@@ -99,28 +99,54 @@ def build_workspace(
     return ws
 
 
+def _choose_kind(ws: Workspace, info: DatasetInfo) -> Kind | None:
+    """Si el archivo declara varios ``kinds``, pregunta cuál abrir; si no, el único."""
+    if len(info.kinds) <= 1:
+        return info.kinds[0] if info.kinds else None
+    box = QMessageBox(ws)
+    box.setWindowTitle("Abrir como…")
+    box.setText(f"{info.path.name} contiene imagen y curvas de fuerza. ¿Cómo abrirlo?")
+    img_btn = box.addButton("Imagen", QMessageBox.ButtonRole.AcceptRole)
+    force_btn = box.addButton("Mapa de curvas", QMessageBox.ButtonRole.AcceptRole)
+    box.addButton("Cancelar", QMessageBox.ButtonRole.RejectRole)
+    box.exec()
+    clicked = box.clickedButton()
+    if clicked is img_btn:
+        return "image"
+    if clicked is force_btn:
+        return "force"
+    return None
+
+
 def _load_into(
     ws: Workspace, vm: ForceViewModel, image_vm: ImageViewModel, path: str | Path
 ) -> None:
-    """Abre ``path`` como curva de fuerza; si no lo es, como imagen. Se informa si falla."""
+    """Abre ``path`` por capacidades (``inspect_any``/``load_any``) y rutea a la perspectiva."""
+    from spmkit.core.io import inspect_any, load_any
+
     name = Path(path).name
     try:
-        vm.set_volume(load_force(path))
-    except Exception:  # noqa: BLE001 - no era curva de fuerza: probamos imagen
-        try:
-            from spmkit.core.io import load as load_image
-
-            image_vm.set_data(load_image(path))
-        except Exception as exc:  # noqa: BLE001 - tampoco imagen: se informa, no tumba
-            ws.show_status(f"No se pudo abrir {name}: {exc}")
-            return
-        _remember_dir(str(path))
-        ws.set_perspective("image")
-        ws.show_status(f"{name} — imagen ({len(image_vm.names)} canales)")
+        info = inspect_any(path)
+    except Exception as exc:  # noqa: BLE001 - formato no soportado / error IO: se informa
+        ws.show_status(f"No se pudo abrir {name}: {exc}")
+        return
+    kind = _choose_kind(ws, info)
+    if kind is None:
+        return  # cancelado
+    try:
+        data, kind = load_any(path, kind)
+    except Exception as exc:  # noqa: BLE001 - error de carga: se informa, no tumba
+        ws.show_status(f"No se pudo abrir {name}: {exc}")
         return
     _remember_dir(str(path))
-    ws.set_perspective("force")
-    ws.show_status(f"{name} — {vm.n_curves} curva(s)")
+    if kind == "force":
+        vm.set_volume(data)
+        ws.set_perspective("force")
+        ws.show_status(f"{name} — {vm.n_curves} curva(s)")
+    else:
+        image_vm.set_data(data)
+        ws.set_perspective("image")
+        ws.show_status(f"{name} — imagen ({len(image_vm.names)} canales)")
 
 
 def _brand_icon() -> QIcon | None:
@@ -339,10 +365,11 @@ def _export_figure(ws: Workspace, vm: ForceViewModel) -> None:
 
 
 def _open_dialog(ws: Workspace, vm: ForceViewModel, image_vm: ImageViewModel) -> None:
-    force = {f"*{e}" for e in supported_force_extensions()}
-    both = " ".join(sorted(force | {"*.nid", "*.nhf", "*.gwy"}))
+    from spmkit.core.plugins import supported_extensions
+
+    globs = " ".join(f"*{e}" for e in supported_extensions())
     path, _ = QFileDialog.getOpenFileName(
-        ws, "Abrir curva o imagen", _last_dir(), f"Datos SPM ({both})"
+        ws, "Abrir datos SPM", _last_dir(), f"Datos SPM ({globs})"
     )
     if path:
         _load_into(ws, vm, image_vm, path)
