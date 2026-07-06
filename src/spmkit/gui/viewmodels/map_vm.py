@@ -10,6 +10,8 @@ fuera del hilo de UI; ``compute_now`` corre sincrónico para los tests.
 
 from __future__ import annotations
 
+from typing import Any
+
 from PyQt6.QtCore import QObject, pyqtSignal
 
 from spmkit.core.analysis.forcevolume import DEFAULT_KEYS, VolumeResult, analyze_volume
@@ -92,16 +94,27 @@ class MapViewModel(QObject):
             or p.get("spring_constant")
         )
 
+    def _fast_map(self, engine: str, volume: Any) -> VolumeResult:
+        """Ruta rápida vectorizada con **fallback** al pipeline si no aplica.
+
+        La ruta rápida requiere curvas del mismo largo; los QI/force-maps con curvas de
+        largo variable caen al pipeline por curva automáticamente.
+        """
+        backend = "gpu" if engine == "fast_gpu" else "cpu"
+        try:
+            return elasticity_map(volume, **self._fast_kwargs(backend))
+        except ValueError:
+            return analyze_volume(volume, self._force_vm.recipe)
+
     def compute_now(self, engine: str = "fast_cpu") -> None:
         """Calcula el mapa de forma sincrónica (tests / volúmenes chicos)."""
         volume = self._force_vm.volume
         if volume is None:
             return
-        if engine == "pipeline":
+        if engine == "pipeline" or self._nonstandard():
             self._result = analyze_volume(volume, self._force_vm.recipe)
         else:
-            backend = "gpu" if engine == "fast_gpu" else "cpu"
-            self._result = elasticity_map(volume, **self._fast_kwargs(backend))
+            self._result = self._fast_map(engine, volume)
         self.mapReady.emit(self._result)
 
     def compute(self, engine: str = "fast_cpu", parallel: bool = False) -> None:
@@ -129,8 +142,7 @@ class MapViewModel(QObject):
                 provide_progress=True,
             )
         else:
-            backend = "gpu" if engine == "fast_gpu" else "cpu"
-            task = Task(elasticity_map, volume, **self._fast_kwargs(backend))
+            task = Task(self._fast_map, engine, volume)  # con fallback a pipeline
         task.signals.done.connect(self._on_done)
         task.signals.error.connect(lambda exc: self.statusChanged.emit(f"mapa falló: {exc}"))
         task.signals.finished.connect(self._on_finished)
