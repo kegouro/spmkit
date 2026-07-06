@@ -1,11 +1,14 @@
-# Guía de usuario — Interfaz gráfica (GUI)
+# Guía de usuario — Fathom (GUI)
 
-La GUI de spmkit es una aplicación de escritorio construida con **PyQt6 + pyqtgraph**, organizada en **7 pestañas** que cubren desde la visualización de imágenes AFM hasta el análisis avanzado de resonancia y simulación.
+La GUI de spmkit es **Fathom**, un workspace de escritorio (PyQt6 + pyqtgraph) organizado en
+**perspectivas** (no pestañas planas): cambias de *tarea*, no de pestaña, y cada perspectiva
+muestra sólo los paneles que necesita. Una **paleta de comandos** (⌘K) da acceso a todo.
 
 ## Abrir la GUI
 
 ```bash
-spmkit gui
+spmkit gui           # Fathom (por defecto)
+spmkit gui --legacy  # la app clásica de 7 pestañas (conservada como fallback)
 ```
 
 O desde Python:
@@ -16,121 +19,101 @@ run()
 ```
 
 !!! note "Requisito"
-    Instala el extra `gui` antes: `pip install "spmkit[gui]"`
+    Instala el extra `gui`: `pip install "spmkit[gui]"`. Para detección de granos añade
+    `grains` (scipy): `pip install "spmkit[gui,grains]"`.
+
+## Abrir datos
+
+- **Arrastra y suelta** un archivo sobre la ventana, o `Ctrl+O`.
+- Fathom **inspecciona** el archivo y lo rutea solo: imágenes (`.nid`, `.nhf`, `.gwy`) van a
+  las perspectivas de imagen; curvas/force-volume (`.jpk-force`, `.nid` de espectroscopía,
+  y con el extra `afm`: QI/force-map de JPK, `.ibw`, HDF5…) van a las de fuerza. Si un
+  archivo trae imagen **y** curvas, pregunta cómo abrirlo.
 
 ---
 
-## Pestaña 1 — Visor
+## Perspectivas
 
-La pestaña principal de visualización de imágenes AFM/KPFM.
+### Imagen
+Visor de canales: elige canal, **nivela** (plano / polinomio / por filas), **colormap**, y
+traza un **perfil de línea** arrastrando el ROI sobre la imagen. El panel *Análisis* grafica
+el perfil y muestra rugosidad (Sa/Sq/Sz/Ssk/Sku) y **KPFM/CPD** para canales de potencial;
+exporta el perfil a CSV.
 
-**Qué hace:**
+### Granos
+Detección de partículas sobre la topografía nivelada: **overlay** coloreado + estadística
+(conteo, diámetro equivalente medio, cobertura, densidad por µm²). Ajusta tamaño mínimo y
+altura relativa y pulsa **Detectar**. Requiere el extra `grains`.
 
-- Carga archivos `.nid`, `.nhf` y `.gwy` (arrastrar y soltar, o menú Abrir).
-- Lista todos los canales del archivo (Z-Axis, CPD, Phase, Deflection, etc.) con dirección forward/backward.
-- Muestra el **heatmap** del canal seleccionado con colormap configurable.
-- Permite elegir la **nivelación**: plano (`plane`), polinómica (`poly`) o sin nivelar (`none`).
-- Panel derecho con **estadísticas de rugosidad** en tiempo real (Sa, Sq, Sz, Ssk, Sku) y estadísticas KPFM si el canal está en voltios.
-- **Perfil de línea**: arrastra los extremos de la línea sobre la imagen; el gráfico inferior se actualiza en vivo con interpolación bilineal.
-- Exporta el perfil o la rugosidad a CSV con un clic.
+### Espectral
+**PSD radial** en log-log + **dimensión fractal** / exponente de Hurst / longitud de
+correlación. Se recalcula al cambiar de canal.
 
----
+### Curva de fuerza
+La joya: navega curva a curva, ve el ajuste de contacto (Hertz / paraboloide / cono / DMT),
+módulo ± incertidumbre, R², adhesión y disipación. El **pipeline** (calibración, contacto,
+región de ajuste) es una receta reproducible.
 
-## Pestaña 2 — Nanomecánica
+### Mapa
+Corre el pipeline por cada curva de un force-volume y arma **mapas de propiedades** (módulo,
+adhesión, contacto…) + histograma. Rápido (vectorizado, CPU/GPU) con *fallback* al pipeline
+para curvas de largo variable (QI).
 
-Análisis de curvas fuerza-distancia (force-volume).
+### Batch
+Procesa carpetas de curvas y arma una tabla resumen.
 
-**Qué hace:**
+### Figura
+Editor WYSIWYG de figuras de publicación: canal + colormap + título/ejes + barra de escala +
+colorbar + **anotaciones de texto arrastrables** totalmente personalizables. Exporta PNG/SVG/PDF.
 
-- Carga archivos con espectroscopía (canal `Deflection` o similar).
-- Muestra la curva fuerza-distancia seleccionada con corrección de baseline.
-- Ajuste de modelos de contacto: **Hertz** (esfera / paraboloide) y **Sneddon** (cono).
-- Reporta módulo de Young (MPa / GPa), punto de contacto y adhesión (nN) con RMSE del ajuste.
-- Genera **mapas de módulo y adhesión** a partir de todos los puntos del force-volume.
-- Admite constante de resorte del cantiléver para corrección de indentación real.
+### Vista 3D
+Superficie de topografía con iluminación (hillshade) y **exageración Z visual** (los datos
+siguen físicos; el eje Z se muestra en nm/µm).
 
----
-
-## Pestaña 3 — Vista 3D
-
-Visualización tridimensional interactiva de la superficie.
-
-**Qué hace:**
-
-- Renderiza el canal de topografía como una **superficie 3D** usando OpenGL acelerado (pyqtgraph).
-- Iluminación hillshade configurable para resaltar la textura superficial.
-- Colormap dorado estilo NanoSurf y otros colormaps perceptualmente uniformes (Crameri).
-- Rotación, zoom y paneo con el ratón.
-- Exporta la vista actual a PNG.
-
----
-
-## Pestaña 4 — Resonancia
-
-Análisis de curvas de resonancia del cantiléver (thermal tuning).
-
-**Qué hace:**
-
-- Carga una serie temporal de espectros de thermal tuning (archivos `.nid` ordenados cronológicamente).
-- Extrae la **frecuencia de resonancia** f(t) y la masa efectiva m(t) del cantiléver.
-- Calcula la **tasa de evaporación** dm/dt y ajusta la **ley d²** (evaporación limitada por difusión).
-- Muestra gráficos de f(t), Δm(t) y el ajuste d² con R² e intervalo de tiempo de vida τ.
-- Exporta la serie temporal a CSV.
+### Simulador
+Gemelo digital educativo del cantiléver: cómo la masa añadida desplaza la resonancia y el
+espectro de ruido térmico.
 
 ---
 
-## Pestaña 5 — Simulador
+## Personalizar la apariencia
 
-Gemelo digital del cantiléver AFM.
+`Ctrl+Shift+A` (o la paleta → **Personalizar apariencia…**) abre un diálogo con **vista previa
+en vivo**:
 
-**Qué hace:**
+- **Tema** entre presets: Grafito (oscuro), Papel (claro), NanoSurf oro, Nord, Dracula,
+  Solarized (oscuro/claro), Gruvbox — mostrados como tarjetas con sus propios colores.
+- **Acento** personalizado (cualquier color).
+- **Tamaño de fuente** (Compacto / Normal / Cómodo / Grande).
 
-- Simula el **ruido térmico** del cantiléver a temperatura ambiente a partir de k y f₀.
-- Modela el **corrimiento de frecuencia** Δf por adición de masa Δm (sensado de masa).
-- Permite explorar parámetros (constante de resorte, frecuencia de resonancia, temperatura, Q) y ver el efecto en la PSD de ruido y la sensibilidad de masa.
-- Útil para calibración y diseño de experimentos de sensado.
-
----
-
-## Pestaña 6 — Editor de figuras
-
-Editor WYSIWYG para figuras de publicación.
-
-**Qué hace:**
-
-- Carga cualquier canal del archivo abierto y genera una figura de publicación.
-- Configura **colormap** (Crameri: batlow, tokyo, vik, davos…), título, etiquetas de ejes y colorbar.
-- Ajusta el **rango de color** (vmin / vmax) con sliders interactivos.
-- Añade y arrastra **barra de escala física** (µm / nm) y anotaciones de texto.
-- Previsualización en vivo; exporta a **PNG**, **SVG** o **PDF** de alta resolución.
+La elección se **persiste** entre sesiones. `Ctrl+Shift+L` alterna claro/oscuro rápido
+preservando acento y fuente. El tema alimenta a la vez la app, pyqtgraph y matplotlib, así los
+gráficos se sienten nativos.
 
 ---
 
-## Pestaña 7 — Comparar
+## Proyectos, informes y exportación
 
-Comparación multi-archivo.
-
-**Qué hace:**
-
-- Carga 2 a 4 archivos AFM/KPFM simultáneamente.
-- Muestra un panel fusionado con colorbar y escala compartidas (o una colorbar por panel si los barridos tienen rangos distintos).
-- Permite seleccionar el canal a comparar en todos los archivos a la vez.
-- Útil para comparar muestras tratadas vs. control, o el mismo sitio antes/después de un proceso.
+- **Proyecto `.spmproj`** (`Ctrl+S` / *Abrir proyecto*): guarda el archivo abierto, los
+  parámetros del pipeline y la perspectiva activa.
+- **Informe** (`Ctrl+Shift+R`): genera un informe *pre-hecho* con gráficos en HTML y PDF (y
+  LaTeX). También **Exportar todo** (mapas CSV, tabla por curva, resumen e informe).
 
 ---
 
-## Atajos de teclado
+## Atajos
 
 | Acción | Atajo |
 |--------|-------|
+| Paleta de comandos | `Ctrl+K` |
 | Abrir archivo | `Ctrl+O` |
-| Cambiar tema claro/oscuro | `Ctrl+T` |
-| Exportar CSV | `Ctrl+E` |
-| Cambiar pestaña siguiente | `Ctrl+Tab` |
+| Guardar proyecto | `Ctrl+S` |
+| Calcular mapa | `Ctrl+M` |
+| Generar informe | `Ctrl+Shift+R` |
+| Personalizar apariencia | `Ctrl+Shift+A` |
+| Alternar tema claro/oscuro | `Ctrl+Shift+L` |
+| Curva anterior / siguiente | `Ctrl+←` / `Ctrl+→` |
 
----
-
-## Archivos recientes y drag & drop
-
-- La barra de menú guarda los **archivos recientes** para acceso rápido.
-- Se puede **arrastrar y soltar** un archivo `.nid`, `.nhf` o `.gwy` directamente sobre la ventana principal para abrirlo.
+!!! tip "¿Extender Fathom?"
+    Añadir una perspectiva o un formato nuevo es un trámite corto — ver
+    [Extender spmkit y Fathom](extending.md).
