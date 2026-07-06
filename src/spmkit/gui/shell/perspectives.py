@@ -1,60 +1,33 @@
-"""Perspectivas del workspace — presets de paneles por tarea.
+"""Perspectivas del workspace — **derivadas de los módulos de fábrica**.
 
-Reemplazan las 7 pestañas planas: el usuario cambia de *tarea* (perspectiva), no de
-pestaña. Cada perspectiva declara qué paneles muestra; el :class:`~spmkit.gui.shell.
-workspace.Workspace` muestra/oculta los docks correspondientes al activarla.
+Ya no hay una lista hardcodeada: las perspectivas, etiquetas de panel y áreas de dock se
+derivan de :data:`~spmkit.gui.builtin_modules.BUILTIN_MODULES` (ver
+:mod:`spmkit.gui.extensions`). Añadir una perspectiva = añadir un ``ModuleSpec``; esta capa
+la recoge sola. Se conservan los nombres públicos (``PERSPECTIVES``, ``PANEL_LABELS``,
+``ALL_PANELS``, ``perspective``) por compatibilidad con la shell y los tests.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from spmkit.gui.builtin_modules import BUILTIN_MODULES
+from spmkit.gui.extensions import PerspectiveSpec as Perspective
+from spmkit.gui.extensions import spec_metadata
 
-
-@dataclass(frozen=True)
-class Perspective:
-    """Un preset de layout: qué paneles se muestran para una tarea."""
-
-    key: str
-    label: str
-    panels: tuple[str, ...]  # claves de panel a mostrar
-
-
-#: Etiqueta legible de cada panel (para docks y la paleta de comandos).
-PANEL_LABELS: dict[str, str] = {
-    "navigator": "Datos",
-    "inspector": "Inspector",
-    "pipeline": "Pipeline",
-    "image_canvas": "Imagen",
-    "image_analysis": "Análisis",
-    "grains_canvas": "Granos",
-    "spectral_canvas": "Espectral",
-    "force_canvas": "Curva de fuerza",
-    "map_canvas": "Mapa",
-    "histogram": "Histograma",
-    "batch_table": "Batch",
-    "figure_editor": "Figura",
-    "view3d": "Vista 3D",
-    "simulator": "Simulador",
-    "log": "Log",
-}
-
-#: Perspectivas de fábrica, en orden de la barra superior.
-PERSPECTIVES: tuple[Perspective, ...] = (
-    Perspective("image", "Imagen", ("navigator", "image_canvas", "image_analysis")),
-    Perspective("grains", "Granos", ("navigator", "grains_canvas")),
-    Perspective("spectral", "Espectral", ("navigator", "spectral_canvas")),
-    Perspective("force", "Curva de fuerza", ("navigator", "force_canvas", "inspector", "pipeline")),
-    Perspective("map", "Mapa", ("navigator", "map_canvas", "inspector", "histogram")),
-    Perspective("batch", "Batch", ("navigator", "batch_table", "log")),
-    Perspective("figure", "Figura", ("figure_editor", "inspector")),
-    Perspective("view3d", "Vista 3D", ("view3d",)),
-    Perspective("simulator", "Simulador", ("simulator",)),
-)
+# Derivado de los módulos de fábrica (fuente única de verdad).
+PERSPECTIVES, PANEL_LABELS, DOCK_AREAS, CENTRAL_PANELS = spec_metadata(BUILTIN_MODULES)
 
 #: Todos los paneles que alguna perspectiva usa (unión, orden estable).
-ALL_PANELS: tuple[str, ...] = tuple(
-    dict.fromkeys(panel for p in PERSPECTIVES for panel in p.panels)
-)
+ALL_PANELS: tuple[str, ...] = tuple(PANEL_LABELS)
+
+__all__ = [
+    "Perspective",
+    "PERSPECTIVES",
+    "PANEL_LABELS",
+    "DOCK_AREAS",
+    "CENTRAL_PANELS",
+    "ALL_PANELS",
+    "perspective",
+]
 
 
 def perspective(key: str) -> Perspective:

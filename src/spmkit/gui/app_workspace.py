@@ -20,33 +20,14 @@ from PyQt6.QtWidgets import QApplication, QFileDialog, QMessageBox
 
 from spmkit.core.plugins.contracts import DatasetInfo, Kind
 from spmkit.gui.design import brand
-from spmkit.gui.panels.batch_table import BatchTablePanel
-from spmkit.gui.panels.figure_panel import FigurePanel
-from spmkit.gui.panels.force_canvas import ForceCanvasPanel
-from spmkit.gui.panels.grains_canvas import GrainsCanvasPanel
-from spmkit.gui.panels.histogram_panel import HistogramPanel
-from spmkit.gui.panels.image_analysis import ImageAnalysisPanel
-from spmkit.gui.panels.image_canvas import ImageCanvasPanel
-from spmkit.gui.panels.inspector import InspectorPanel
-from spmkit.gui.panels.log_panel import LogPanel
-from spmkit.gui.panels.map_canvas import MapCanvasPanel
-from spmkit.gui.panels.navigator import NavigatorPanel
-from spmkit.gui.panels.pipeline_panel import PipelinePanel
-from spmkit.gui.panels.simulator_panel import SimulatorPanel
-from spmkit.gui.panels.spectral_canvas import SpectralCanvasPanel
-from spmkit.gui.panels.view3d_panel import View3DPanel
+from spmkit.gui.extensions import ModuleContext, assemble, iter_modules
 from spmkit.gui.shell.command_palette import Command
 from spmkit.gui.shell.workspace import Workspace
 from spmkit.gui.viewmodels import (
     BatchViewModel,
-    FigureViewModel,
     ForceViewModel,
-    GrainsViewModel,
     ImageViewModel,
     MapViewModel,
-    SimulatorViewModel,
-    SpectralViewModel,
-    View3DViewModel,
 )
 
 
@@ -58,43 +39,35 @@ def build_workspace(
     Si se pasa ``open_path``, carga ese archivo de curvas al arrancar. ``persist`` guarda
     tema/geometría/perspectiva entre sesiones (activo en la app real, no en los tests).
     """
+    # Hubs compartidos (curva/mapa/batch e imagen); los módulos cablean sus paneles a ellos.
     vm = ForceViewModel()
     map_vm = MapViewModel(vm)
     batch_vm = BatchViewModel(vm)
     image_vm = ImageViewModel()
-    figure_vm = FigureViewModel(image_vm)  # comparten el hub de imagen
-    view3d_vm = View3DViewModel(image_vm)
-    grains_vm = GrainsViewModel(image_vm)
-    spectral_vm = SpectralViewModel(image_vm)
-    simulator_vm = SimulatorViewModel()
-    force_canvas = ForceCanvasPanel(vm)
-    panels = {
-        "force_canvas": force_canvas,
-        "inspector": InspectorPanel(vm),
-        "navigator": NavigatorPanel(vm),
-        "pipeline": PipelinePanel(vm),
-        "map_canvas": MapCanvasPanel(map_vm, vm),
-        "histogram": HistogramPanel(map_vm),
-        "batch_table": BatchTablePanel(batch_vm),
-        "image_canvas": ImageCanvasPanel(image_vm),
-        "image_analysis": ImageAnalysisPanel(image_vm),
-        "grains_canvas": GrainsCanvasPanel(grains_vm),
-        "spectral_canvas": SpectralCanvasPanel(spectral_vm),
-        "figure_editor": FigurePanel(figure_vm),
-        "view3d": View3DPanel(view3d_vm),
-        "simulator": SimulatorPanel(simulator_vm),
-        "log": LogPanel((vm, map_vm, batch_vm)),
-    }
-    ws = Workspace(panels=panels, mode=mode, persist=persist)
+    ctx = ModuleContext(force_vm=vm, image_vm=image_vm, map_vm=map_vm, batch_vm=batch_vm)
+
+    # La app se ensambla desde los módulos (fábrica + descubiertos por entry-point): añadir
+    # un módulo aporta sus paneles y perspectivas sin tocar la shell (ver gui/extensions.py).
+    modules = iter_modules()
+    layout = assemble(modules, ctx)
+    ws = Workspace(
+        panels=layout.panels,
+        mode=mode,
+        persist=persist,
+        perspectives=layout.perspectives,
+        panel_labels=layout.panel_labels,
+        dock_areas=layout.dock_areas,
+        central_panels=layout.central_panels,
+    )
     ws.setWindowTitle(brand.WINDOW_TITLE)
     icon = _brand_icon()
     if icon is not None:
         ws.setWindowIcon(icon)
-    map_vm.taskStarted.connect(ws.bind_task)
-    batch_vm.taskStarted.connect(ws.bind_task)
-    grains_vm.statusChanged.connect(ws.show_status)
-    spectral_vm.statusChanged.connect(ws.show_status)
-    session: dict[str, Any] = {}  # último archivo abierto (para .spmproj)
+    for module in modules:  # cada módulo conecta sus señales a la shell (estado/progreso)
+        if module.wire is not None:
+            module.wire(ws, ctx)
+    session = ctx.session  # último archivo abierto (para .spmproj)
+    force_canvas = ctx.store["force_canvas"]  # para los comandos fijar/limpiar
     ws.fileDropped.connect(lambda p: _load_into(ws, vm, image_vm, p, session))
     ws.register_command(
         Command("Abrir curva o imagen…", lambda: _open_dialog(ws, vm, image_vm, session), "Ctrl+O")

@@ -6,6 +6,20 @@ el versionado es [SemVer](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+### Cambiado — Estructura de módulos/extensiones de Fathom (F4 del roadmap)
+- **Añadir un módulo es un trámite tonto**: la app se **ensambla desde módulos**
+  (`gui/extensions.py`, `gui/builtin_modules.py`). Un `ModuleSpec` declara sus **paneles**
+  (con *factory* perezosa sobre un `ModuleContext` con los hubs compartidos) y sus
+  **perspectivas**; `build_workspace` deriva de ahí la barra de perspectivas, los docks, los
+  lienzos y el cableado. **Sumar una perspectiva = añadir un `ModuleSpec`** — cero cambios en
+  la shell (antes tocaba 5-7 sitios).
+- **Descubrimiento por entry-points** (grupo `spmkit.gui.modules`): un tercero u **otro core
+  multi-física** publica sus módulos sin tocar `spmkit`. Prepara a `spmkit` como *host* y a
+  Fathom como una de sus extensiones (AFM/fuerza). Un plugin roto se ignora sin tumbar la app;
+  ante choque de claves gana el módulo de fábrica.
+- La shell (`Workspace`) es agnóstica del catálogo: recibe perspectivas/paneles/áreas
+  inyectados (defaults derivados de los módulos de fábrica). Sin regresión funcional.
+
 ### Añadido — Modelos mecánicos experimentales, *flagged* (F3.3 del roadmap)
 - **JKR** (contacto adhesivo Johnson-Kendall-Roberts) y **viscoelástico SLS**
   (relajación de fuerza) en `core.analysis.experimental`, ajuste numpy puro (búsqueda en

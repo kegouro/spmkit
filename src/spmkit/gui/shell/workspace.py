@@ -27,39 +27,23 @@ from PyQt6.QtWidgets import (
 )
 
 from spmkit.gui.design import theme
+from spmkit.gui.extensions import PerspectiveSpec
 from spmkit.gui.panels.base import Panel
 from spmkit.gui.shell.command_palette import Command, CommandPalette
 from spmkit.gui.shell.perspectives import (
-    ALL_PANELS,
+    CENTRAL_PANELS,
+    DOCK_AREAS,
     PANEL_LABELS,
     PERSPECTIVES,
-    perspective,
 )
 from spmkit.gui.shell.status_bar import ProgressStatusBar
 
-#: Paneles que ocupan el lienzo central (uno por perspectiva).
-CENTRAL_PANELS = frozenset(
-    {
-        "image_canvas",
-        "grains_canvas",
-        "spectral_canvas",
-        "force_canvas",
-        "map_canvas",
-        "batch_table",
-        "figure_editor",
-        "view3d",
-        "simulator",
-    }
-)
-
-#: Paneles-dock y su área por defecto.
-_DOCK_AREAS = {
-    "navigator": Qt.DockWidgetArea.LeftDockWidgetArea,
-    "inspector": Qt.DockWidgetArea.RightDockWidgetArea,
-    "histogram": Qt.DockWidgetArea.RightDockWidgetArea,
-    "image_analysis": Qt.DockWidgetArea.RightDockWidgetArea,
-    "pipeline": Qt.DockWidgetArea.BottomDockWidgetArea,
-    "log": Qt.DockWidgetArea.BottomDockWidgetArea,
+#: Traducción de las áreas de dock (string, agnósticas de toolkit) a las de Qt.
+_AREA_MAP = {
+    "left": Qt.DockWidgetArea.LeftDockWidgetArea,
+    "right": Qt.DockWidgetArea.RightDockWidgetArea,
+    "bottom": Qt.DockWidgetArea.BottomDockWidgetArea,
+    "top": Qt.DockWidgetArea.TopDockWidgetArea,
 }
 
 
@@ -86,9 +70,9 @@ class PlaceholderPanel(Panel):
         return content
 
 
-def default_panels() -> dict[str, Panel]:
+def default_panels(labels: dict[str, str]) -> dict[str, Panel]:
     """Construye un panel placeholder por cada clave conocida."""
-    return {key: PlaceholderPanel(PANEL_LABELS.get(key, key)) for key in ALL_PANELS}
+    return {key: PlaceholderPanel(label) for key, label in labels.items()}
 
 
 class Workspace(QMainWindow):
@@ -103,16 +87,27 @@ class Workspace(QMainWindow):
         mode: str = "dark",
         extra_commands: list[Command] | None = None,
         persist: bool = False,
+        perspectives: tuple[PerspectiveSpec, ...] = PERSPECTIVES,
+        panel_labels: dict[str, str] | None = None,
+        dock_areas: dict[str, str] | None = None,
+        central_panels: frozenset[str] = CENTRAL_PANELS,
     ) -> None:
         super().__init__()
         self.setWindowTitle("spmkit")
         self.resize(1200, 760)
         self.setAcceptDrops(True)  # abrir archivos arrastrándolos a la ventana
+        # Layout de la app: por defecto los módulos de fábrica; ``build_workspace`` inyecta
+        # el conjunto completo (fábrica + descubiertos por entry-point).
+        self._perspectives = tuple(perspectives)
+        self._perspective_by_key = {p.key: p for p in self._perspectives}
+        self._panel_labels = dict(panel_labels if panel_labels is not None else PANEL_LABELS)
+        self._dock_areas = dict(dock_areas if dock_areas is not None else DOCK_AREAS)
+        self._central_keys = frozenset(central_panels)
         # Persistencia opt-in (los tests construyen sin persistir para no contaminar QSettings).
         self._settings: QSettings | None = QSettings("spmkit", "spmkit") if persist else None
         self._mode = self._saved("theme", mode)
         # Placeholders por defecto, sobrescritos por los paneles reales inyectados.
-        merged = default_panels()
+        merged = default_panels(self._panel_labels)
         if panels:
             merged.update(panels)
         self._panels = merged
@@ -182,7 +177,7 @@ class Workspace(QMainWindow):
         bar.setMovable(False)
         self.addToolBar(Qt.ToolBarArea.TopToolBarArea, bar)
         self._persp_actions: dict[str, QAction] = {}
-        for persp in PERSPECTIVES:
+        for persp in self._perspectives:
             action = QAction(persp.label, self)
             action.setCheckable(True)
             action.triggered.connect(lambda _checked=False, k=persp.key: self.set_perspective(k))
@@ -190,19 +185,17 @@ class Workspace(QMainWindow):
             self._persp_actions[persp.key] = action
 
     def _build_panels(self) -> None:
-        for key in ALL_PANELS:
-            panel = self._panels.get(key)
+        for key, panel in self._panels.items():
             if panel is None:
                 continue
-            if key in CENTRAL_PANELS:
+            if key in self._central_keys:
                 self._central_index[key] = self._central.addWidget(panel)
             else:
-                dock = QDockWidget(PANEL_LABELS.get(key, key), self)
+                dock = QDockWidget(self._panel_labels.get(key, key), self)
                 dock.setObjectName(f"dock_{key}")
                 dock.setWidget(panel)
-                self.addDockWidget(
-                    _DOCK_AREAS.get(key, Qt.DockWidgetArea.RightDockWidgetArea), dock
-                )
+                area = _AREA_MAP.get(self._dock_areas.get(key, "right"), _AREA_MAP["right"])
+                self.addDockWidget(area, dock)
                 dock.hide()
                 self._docks[key] = dock
 
@@ -219,7 +212,8 @@ class Workspace(QMainWindow):
 
     def _default_commands(self) -> list[Command]:
         commands = [
-            Command(f"Ir a {p.label}", partial(self.set_perspective, p.key)) for p in PERSPECTIVES
+            Command(f"Ir a {p.label}", partial(self.set_perspective, p.key))
+            for p in self._perspectives
         ]
         commands.append(Command("Tema: alternar claro/oscuro", self.toggle_theme, "Ctrl+Shift+L"))
         commands.extend(self._extra_commands)
@@ -237,8 +231,10 @@ class Workspace(QMainWindow):
 
     def set_perspective(self, key: str) -> None:
         """Activa una perspectiva: cambia el lienzo central y muestra sus docks."""
-        persp = perspective(key)
-        central_key = next((k for k in persp.panels if k in CENTRAL_PANELS), None)
+        persp = self._perspective_by_key.get(key)
+        if persp is None:  # clave desconocida (p. ej. una perspectiva persistida ya retirada)
+            return
+        central_key = next((k for k in persp.panels if k in self._central_keys), None)
         if central_key is not None and central_key in self._central_index:
             self._central.setCurrentIndex(self._central_index[central_key])
             # Re-render al mostrar (como main_window.currentChanged→refresh): corrige el
