@@ -3,8 +3,8 @@
 Punto de entrada del rediseño. Construye los ViewModels (curva, mapa, batch) sobre un
 mismo hub y cablea sus paneles: curva de fuerza (lienzo, inspector, navegador, pipeline),
 mapa de propiedades + histograma y tabla de batch. Registra comandos globales (abrir,
-calcular mapa, exportar, copiar, navegar). Las perspectivas imagen/figura/simulador
-siguen con placeholders hasta su fase de migración.
+calcular mapa, exportar, copiar, navegar). Imagen, figura, vista 3D y simulador comparten
+el hub de imagen y ya son paneles reales (perspectivas MVVM, no placeholders).
 """
 
 from __future__ import annotations
@@ -21,6 +21,7 @@ from PyQt6.QtWidgets import QApplication, QFileDialog, QMessageBox
 from spmkit.core.plugins.contracts import DatasetInfo, Kind
 from spmkit.gui.design import brand
 from spmkit.gui.panels.batch_table import BatchTablePanel
+from spmkit.gui.panels.figure_panel import FigurePanel
 from spmkit.gui.panels.force_canvas import ForceCanvasPanel
 from spmkit.gui.panels.histogram_panel import HistogramPanel
 from spmkit.gui.panels.image_canvas import ImageCanvasPanel
@@ -29,13 +30,18 @@ from spmkit.gui.panels.log_panel import LogPanel
 from spmkit.gui.panels.map_canvas import MapCanvasPanel
 from spmkit.gui.panels.navigator import NavigatorPanel
 from spmkit.gui.panels.pipeline_panel import PipelinePanel
+from spmkit.gui.panels.simulator_panel import SimulatorPanel
+from spmkit.gui.panels.view3d_panel import View3DPanel
 from spmkit.gui.shell.command_palette import Command
 from spmkit.gui.shell.workspace import Workspace
 from spmkit.gui.viewmodels import (
     BatchViewModel,
+    FigureViewModel,
     ForceViewModel,
     ImageViewModel,
     MapViewModel,
+    SimulatorViewModel,
+    View3DViewModel,
 )
 
 
@@ -51,6 +57,9 @@ def build_workspace(
     map_vm = MapViewModel(vm)
     batch_vm = BatchViewModel(vm)
     image_vm = ImageViewModel()
+    figure_vm = FigureViewModel(image_vm)  # comparten el hub de imagen
+    view3d_vm = View3DViewModel(image_vm)
+    simulator_vm = SimulatorViewModel()
     force_canvas = ForceCanvasPanel(vm)
     panels = {
         "force_canvas": force_canvas,
@@ -61,6 +70,9 @@ def build_workspace(
         "histogram": HistogramPanel(map_vm),
         "batch_table": BatchTablePanel(batch_vm),
         "image_canvas": ImageCanvasPanel(image_vm),
+        "figure_editor": FigurePanel(figure_vm),
+        "view3d": View3DPanel(view3d_vm),
+        "simulator": SimulatorPanel(simulator_vm),
         "log": LogPanel((vm, map_vm, batch_vm)),
     }
     ws = Workspace(panels=panels, mode=mode, persist=persist)

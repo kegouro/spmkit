@@ -28,8 +28,22 @@ class ImageViewModel(QObject):
         self._leveling = "plane"
 
     @property
+    def data(self) -> SPMData | None:
+        """El :class:`SPMData` cargado (hub compartido con figura/3D), o ``None``."""
+        return self._data
+
+    @property
     def names(self) -> list[str]:
         return list(self._data.names) if self._data is not None else []
+
+    def raw_channel(self, name: str) -> SPMChannel | None:
+        """Canal **crudo** por nombre (sin nivelar), para figura/3D. ``None`` si no existe."""
+        if self._data is None or not name:
+            return None
+        try:
+            return self._data[name]
+        except KeyError:
+            return None
 
     @property
     def channel(self) -> str:

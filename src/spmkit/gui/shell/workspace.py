@@ -39,7 +39,15 @@ from spmkit.gui.shell.status_bar import ProgressStatusBar
 
 #: Paneles que ocupan el lienzo central (uno por perspectiva).
 CENTRAL_PANELS = frozenset(
-    {"image_canvas", "force_canvas", "map_canvas", "batch_table", "figure_editor", "simulator"}
+    {
+        "image_canvas",
+        "force_canvas",
+        "map_canvas",
+        "batch_table",
+        "figure_editor",
+        "view3d",
+        "simulator",
+    }
 )
 
 #: Paneles-dock y su área por defecto.
@@ -230,6 +238,11 @@ class Workspace(QMainWindow):
         central_key = next((k for k in persp.panels if k in CENTRAL_PANELS), None)
         if central_key is not None and central_key in self._central_index:
             self._central.setCurrentIndex(self._central_index[central_key])
+            # Re-render al mostrar (como main_window.currentChanged→refresh): corrige el
+            # lienzo en blanco de paneles que sólo pintan al hacerse visibles (simulador).
+            central = self._panels.get(central_key)
+            if central is not None:
+                central.refresh_safe()
         for panel_key, dock in self._docks.items():
             dock.setVisible(panel_key in persp.panels)
         for panel_key, action in self._persp_actions.items():
