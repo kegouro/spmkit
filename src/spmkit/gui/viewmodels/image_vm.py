@@ -1,8 +1,9 @@
-"""ViewModel de imágenes SPM — canal activo + nivelado, para la perspectiva Imagen.
+"""ViewModel de imágenes SPM — canal activo + nivelado + perfil, perspectiva Imagen.
 
-Un visor básico (no un clon de Gwyddion): abrir un ``.nid``/``.nhf``/``.gwy``, elegir
-canal, nivelar (plano/polinomio) y ver rugosidad. Reutiliza el ``core`` puro
-(``load``, ``leveling``, ``roughness``); la perspectiva de fuerza sigue siendo la joya.
+Visor de imagen con paridad de análisis (nivelado plano/polinomio/filas, perfil de línea,
+rugosidad y KPFM). Reutiliza el ``core`` puro (``leveling``, ``roughness``, ``kpfm``,
+``profiles``); es también el **hub de imagen** que alimentan figura y 3D. La perspectiva
+de fuerza sigue siendo la joya.
 """
 
 from __future__ import annotations
@@ -11,7 +12,9 @@ from typing import Any
 
 from PyQt6.QtCore import QObject, pyqtSignal
 
-from spmkit.core.analysis import leveling, roughness
+from spmkit.core.analysis import kpfm, leveling, roughness
+from spmkit.core.analysis.profiles import Profile
+from spmkit.core.analysis.profiles import line as profile_line
 from spmkit.core.models import SPMChannel, SPMData
 
 
@@ -20,12 +23,14 @@ class ImageViewModel(QObject):
 
     dataChanged = pyqtSignal(list)  # nombres de canales del dato cargado
     channelChanged = pyqtSignal(str)  # canal activo (o re-render tras nivelar)
+    profileChanged = pyqtSignal(object)  # Profile del último trazo (o None)
 
     def __init__(self, parent: QObject | None = None) -> None:
         super().__init__(parent)
         self._data: SPMData | None = None
         self._channel = ""
         self._leveling = "plane"
+        self._last_profile: Profile | None = None
 
     @property
     def data(self) -> SPMData | None:
@@ -80,6 +85,8 @@ class ImageViewModel(QObject):
                 return leveling.plane_fit(ch)
             if self._leveling == "poly":
                 return leveling.polynomial(ch, order=2)
+            if self._leveling == "rows":
+                return leveling.align_rows(ch)
         except Exception:  # noqa: BLE001 - nivelado opcional; si falla, se muestra crudo
             return ch
         return ch
@@ -93,3 +100,34 @@ class ImageViewModel(QObject):
             return roughness.statistics(ch)
         except Exception:  # noqa: BLE001 - no toda imagen es de altura
             return None
+
+    def kpfm(self) -> Any:
+        """CPD/KPFM del canal nivelado si es de potencial (unidad ``V``); si no, ``None``."""
+        ch = self.current_channel()
+        if ch is None or ch.unit.upper() != "V":
+            return None
+        try:
+            return kpfm.statistics(ch)
+        except Exception:  # noqa: BLE001 - análisis opcional
+            return None
+
+    @property
+    def last_profile(self) -> Profile | None:
+        return self._last_profile
+
+    def profile(self, p0: tuple[float, float], p1: tuple[float, float]) -> Profile | None:
+        """Perfil de línea entre dos puntos en píxeles ``(col, row)``; emite ``profileChanged``.
+
+        Devuelve ``None`` (sin emitir) si no hay canal o el trazo queda fuera de rango
+        durante el arrastre.
+        """
+        ch = self.current_channel()
+        if ch is None:
+            return None
+        try:
+            prof = profile_line(ch, p0, p1)
+        except Exception:  # noqa: BLE001 - fuera de rango durante el arrastre
+            return None
+        self._last_profile = prof
+        self.profileChanged.emit(prof)
+        return prof

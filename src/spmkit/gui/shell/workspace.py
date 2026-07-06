@@ -55,6 +55,7 @@ _DOCK_AREAS = {
     "navigator": Qt.DockWidgetArea.LeftDockWidgetArea,
     "inspector": Qt.DockWidgetArea.RightDockWidgetArea,
     "histogram": Qt.DockWidgetArea.RightDockWidgetArea,
+    "image_analysis": Qt.DockWidgetArea.RightDockWidgetArea,
     "pipeline": Qt.DockWidgetArea.BottomDockWidgetArea,
     "log": Qt.DockWidgetArea.BottomDockWidgetArea,
 }

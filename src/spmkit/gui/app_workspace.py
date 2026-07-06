@@ -24,6 +24,7 @@ from spmkit.gui.panels.batch_table import BatchTablePanel
 from spmkit.gui.panels.figure_panel import FigurePanel
 from spmkit.gui.panels.force_canvas import ForceCanvasPanel
 from spmkit.gui.panels.histogram_panel import HistogramPanel
+from spmkit.gui.panels.image_analysis import ImageAnalysisPanel
 from spmkit.gui.panels.image_canvas import ImageCanvasPanel
 from spmkit.gui.panels.inspector import InspectorPanel
 from spmkit.gui.panels.log_panel import LogPanel
@@ -70,6 +71,7 @@ def build_workspace(
         "histogram": HistogramPanel(map_vm),
         "batch_table": BatchTablePanel(batch_vm),
         "image_canvas": ImageCanvasPanel(image_vm),
+        "image_analysis": ImageAnalysisPanel(image_vm),
         "figure_editor": FigurePanel(figure_vm),
         "view3d": View3DPanel(view3d_vm),
         "simulator": SimulatorPanel(simulator_vm),
