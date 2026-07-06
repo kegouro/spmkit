@@ -6,6 +6,22 @@ el versionado es [SemVer](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+### Añadido — Plataforma de formatos y plugins (F1 del roadmap)
+- **Sistema de plugins versionado** (`core/plugins/`, `spmkit.plugins.v1`): contratos
+  ``Reader``/``DatasetInfo``/``Analysis``/``Domain`` como ``Protocol``s estables +
+  registry con descubrimiento por entry-points. Prepara a `spmkit` como **host
+  multi-física** y a Fathom como su extensión de AFM.
+- **Dispatch por capacidades** (`core/io/loadany.py`): ``inspect_any`` (barato, solo
+  cabecera) declara qué contiene un archivo; ``load_any(path, kind)`` carga el tipo
+  pedido. Un `.nid`/QI que trae imagen **y** curvas ofrece elegir cómo abrirlo.
+- **Lector opcional `afmformats`** (extra `afm`): JPK QI/force-map, Asylum `.ibw`, HDF5,
+  NT-MDT, `.tab`, validado contra samples open-source reales (Asylum SiN → 30.8 MPa).
+- **Arnés de datos de prueba** (`scripts/fetch_samples.py`): descarga samples
+  open-source por formato a `reference/` (gitignored); tests con `skipif`.
+- **Test de arquitectura** (`tests/test_architecture.py`): hace **cumplir como código**
+  que `core/` no importe UI (atrapó y corrigió un acoplamiento real con pyqtgraph).
+- GUI (Fathom) y CLI de fuerza abren cualquier formato registrado vía `load_any`.
+
 ### Añadido — Plataforma de espectroscopía de fuerza (curvas de fuerza)
 - **Modelo de datos de curvas de fuerza** (`core/models/force.py`): `ForceSegment`
   (extend/retract/pause con canales crudos + estado de calibración), `ForceCurve`

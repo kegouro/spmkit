@@ -88,7 +88,7 @@ Cada fase: spec breve → plan → build → tests (unit + validación contra ar
 → `ruff`/`black`/`mypy`/CI verde → PR → merge. Investigación de formatos/URLs delegada a
 **agentes con modelo barato (haiku)** en paralelo; diseño, física e integración en Opus.
 
-### F1 — Plataforma de formatos (la base) · *en curso*
+### F1 — Plataforma de formatos (la base) · ✅ *hecho*
 - `core/plugins/contracts.py`: los **Protocols versionados** (`Reader`/`DatasetInfo`/
   `Analysis`/`Domain`) — **se escriben primero**, todo lo demás depende de ellos.
 - `core/io/registry.py` v2: registry de lectores **con capacidades** + `inspect()`;
