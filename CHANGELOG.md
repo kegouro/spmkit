@@ -6,6 +6,15 @@ el versionado es [SemVer](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+### Documentación — Guía de extensión y guía de usuario Fathom (F5 del roadmap)
+- **Nueva guía "Extender spmkit y Fathom"** (`docs/extending.md`): los tres puntos de
+  extensión (formatos/análisis por `spmkit.plugins.v1`, perspectivas/paneles por `ModuleSpec`
+  + entry-point `spmkit.gui.modules`, dominios de otro core) con ejemplos y checklist.
+- **Guía de usuario reescrita a Fathom**: perspectivas (imagen/granos/espectral/curva/mapa/
+  batch/figura/3D/simulador), apertura por capacidades, personalización de apariencia,
+  proyectos `.spmproj`, informes/export y atajos. Sustituye la guía de la app clásica (que
+  sigue disponible con `spmkit gui --legacy`).
+
 ### Añadido — Personalización de apariencia (F4 del roadmap)
 - **Diálogo de apariencia** (⌘⇧A o paleta → "Personalizar apariencia…"): elige **tema**,
   **acento** y **tamaño de fuente** con **vista previa en vivo** (cancelar revierte) y
