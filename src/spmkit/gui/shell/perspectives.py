@@ -30,6 +30,7 @@ PANEL_LABELS: dict[str, str] = {
     "histogram": "Histograma",
     "batch_table": "Batch",
     "figure_editor": "Figura",
+    "view3d": "Vista 3D",
     "simulator": "Simulador",
     "log": "Log",
 }
@@ -41,6 +42,7 @@ PERSPECTIVES: tuple[Perspective, ...] = (
     Perspective("map", "Mapa", ("navigator", "map_canvas", "inspector", "histogram")),
     Perspective("batch", "Batch", ("navigator", "batch_table", "log")),
     Perspective("figure", "Figura", ("figure_editor", "inspector")),
+    Perspective("view3d", "Vista 3D", ("view3d",)),
     Perspective("simulator", "Simulador", ("simulator",)),
 )
 

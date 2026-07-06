@@ -83,6 +83,19 @@ el versionado es [SemVer](https://semver.org/lang/es/).
   valores del eje son alturas reales, honestas).
 - **Acceso a Fathom** desde la barra de la app clásica (curvas de fuerza, mapas y batch).
 
+### Añadido — Fathom: unificación y perspectivas migradas (F2 del roadmap)
+- **Fathom es el default** (`spmkit gui`); la app clásica se conserva intacta y
+  documentada como legacy (`spmkit gui --legacy`), sin perder su historia (`git mv`).
+- **Proyecto `.spmproj`** (`core/project.py`, puro/versionado/tolerante): guarda archivo
+  abierto + receta + perspectiva; comandos Guardar/Abrir proyecto en Fathom.
+- **Figura, Vista 3D y Simulador migrados a perspectivas MVVM** (ViewModel + panel):
+  el editor de figuras (spec + anotaciones ricas arrastrables), la superficie 3D
+  (exageración Z visual, hillshade, Z en nm/µm) y el gemelo digital del cantiléver
+  comparten el **hub de imagen** y reutilizan el `core.viz`/`core.analysis` puro. Dejan
+  de ser placeholders. El diálogo de anotaciones vive en `gui/widgets/` (fuente única
+  compartida con la app clásica). La shell refresca el panel central al activar su
+  perspectiva (corrige el lienzo en blanco del simulador).
+
 ### Añadido
 - **Nanomecánica — modelo DMT** (Derjaguin-Muller-Toporov): Hertz esférico con la
   adhesión como offset constante, para muestras rígidas con adhesión no
