@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from spmkit.core.viz.figure import Annotation
-from spmkit.gui.figure_tab import AnnotationDialog
+from spmkit.gui.legacy.figure_tab import AnnotationDialog
 
 
 def test_dialog_reflects_and_dumps_all_properties(qtbot) -> None:  # type: ignore[no-untyped-def]

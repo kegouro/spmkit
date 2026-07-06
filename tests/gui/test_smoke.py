@@ -20,8 +20,8 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 os.environ.setdefault("MPLBACKEND", "Agg")
 
 from spmkit.core.models import SPMChannel, SPMData  # noqa: E402
-from spmkit.gui import theme  # noqa: E402
-from spmkit.gui.main_window import MainWindow  # noqa: E402
+from spmkit.gui.legacy import theme  # noqa: E402
+from spmkit.gui.legacy.main_window import MainWindow  # noqa: E402
 
 
 def _data() -> SPMData:

@@ -16,15 +16,15 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 from spmkit import load
 from spmkit.core.io import save_gwy, supported_extensions
 from spmkit.core.models import SPMData
-from spmkit.gui import theme
-from spmkit.gui.compare_tab import CompareTab
-from spmkit.gui.figure_tab import FigureTab
-from spmkit.gui.nanomech_tab import NanomechTab
-from spmkit.gui.resonance_tab import ResonanceTab
-from spmkit.gui.simulator_tab import SimulatorTab
-from spmkit.gui.view3d_tab import View3DTab
-from spmkit.gui.viewer_tab import ViewerTab
-from spmkit.gui.welcome import WelcomeDialog
+from spmkit.gui.legacy import theme
+from spmkit.gui.legacy.compare_tab import CompareTab
+from spmkit.gui.legacy.figure_tab import FigureTab
+from spmkit.gui.legacy.nanomech_tab import NanomechTab
+from spmkit.gui.legacy.resonance_tab import ResonanceTab
+from spmkit.gui.legacy.simulator_tab import SimulatorTab
+from spmkit.gui.legacy.view3d_tab import View3DTab
+from spmkit.gui.legacy.viewer_tab import ViewerTab
+from spmkit.gui.legacy.welcome import WelcomeDialog
 
 _MAX_RECENT = 8
 

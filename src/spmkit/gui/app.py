@@ -1,25 +1,20 @@
-"""Punto de entrada de la GUI de spmkit."""
+"""Punto de entrada de la GUI de spmkit — el default es **Fathom**.
+
+``spmkit gui`` lanza el workspace Fathom (rediseño). La app clásica de 7 pestañas se
+conserva en :mod:`spmkit.gui.legacy` y se lanza con ``spmkit gui --legacy``.
+"""
 
 from __future__ import annotations
 
-import sys
+from pathlib import Path
 
 
-def run() -> None:
-    """Lanza la aplicación gráfica."""
-    from PyQt6 import QtCore, QtWidgets
+def run(open_path: str | Path | None = None) -> int:
+    """Lanza el workspace Fathom (abre ``open_path`` si se indica)."""
+    from spmkit.gui.app_workspace import run as run_fathom
 
-    from spmkit.gui import theme
-    from spmkit.gui.main_window import MainWindow
-
-    app = QtWidgets.QApplication(sys.argv)
-    saved_theme = QtCore.QSettings("SPMLabUTFSM", "spmkit").value("theme", "dark", type=str)
-    theme.apply_theme(app, saved_theme)
-    window = MainWindow()
-    window.show()
-    window.show_welcome()
-    sys.exit(app.exec())
+    return run_fathom(open_path)
 
 
 if __name__ == "__main__":
-    run()
+    raise SystemExit(run())
