@@ -18,7 +18,7 @@ from spmkit.gui.design import tokens
 
 # QSS con sustitución $token (las llaves { } de QSS quedan literales).
 _QSS = Template("""
-* { font-family: $ui_font; font-size: 13px; }
+* { font-family: $ui_font; font-size: ${font_px}px; }
 QMainWindow, QDialog { background: $bg; }
 QWidget { background: $bg; color: $text; }
 QToolTip { background: $elevated; color: $text; border: 1px solid $border; padding: 4px 8px; }
@@ -84,10 +84,15 @@ QSplitter::handle:hover { background: $accent; }
 """)
 
 
-def build_qss(mode: str = "dark") -> str:
-    """Genera la hoja de estilo QSS para el modo dado (función pura, testeable)."""
-    palette = tokens.colors(mode)
-    return _QSS.substitute(ui_font=tokens.FONT_UI, mono=tokens.FONT_MONO, **palette)
+def build_qss(mode: str = "dark", accent: str | None = None, font_px: int = 13) -> str:
+    """Genera la hoja de estilo QSS para el tema dado (función pura, testeable).
+
+    ``accent`` (hex) sustituye el color de acento; ``font_px`` escala la tipografía base.
+    """
+    palette = tokens.colors(mode, accent)
+    return _QSS.substitute(
+        ui_font=tokens.FONT_UI, mono=tokens.FONT_MONO, font_px=int(font_px), **palette
+    )
 
 
 def apply_pyqtgraph(mode: str = "dark") -> None:
@@ -126,8 +131,11 @@ def apply_matplotlib(mode: str = "dark") -> None:
     )
 
 
-def apply(app: Any, mode: str = "dark") -> None:
-    """Aplica el tema completo (QSS + pyqtgraph + matplotlib) a la ``QApplication``."""
-    app.setStyleSheet(build_qss(mode))
+def apply(app: Any, mode: str = "dark", accent: str | None = None, font_px: int = 13) -> None:
+    """Aplica el tema completo (QSS + pyqtgraph + matplotlib) a la ``QApplication``.
+
+    ``accent``/``font_px`` personalizan color de acento y tamaño de fuente base.
+    """
+    app.setStyleSheet(build_qss(mode, accent, font_px))
     apply_pyqtgraph(mode)
     apply_matplotlib(mode)

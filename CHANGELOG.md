@@ -6,6 +6,18 @@ el versionado es [SemVer](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+### Añadido — Personalización de apariencia (F4 del roadmap)
+- **Diálogo de apariencia** (⌘⇧A o paleta → "Personalizar apariencia…"): elige **tema**,
+  **acento** y **tamaño de fuente** con **vista previa en vivo** (cancelar revierte) y
+  persistencia entre sesiones. Los temas se muestran como **tarjetas** pintadas con sus
+  propios colores.
+- **Presets de tema** listos: Grafito (oscuro), Papel (claro), **NanoSurf oro** (marca),
+  **Nord**, **Dracula**, **Solarized** (oscuro/claro) y **Gruvbox**. Cada preset alimenta a
+  la vez QSS, pyqtgraph y matplotlib (los gráficos siguen el tema).
+- **Acento personalizado**: cualquier color; deriva solo sus variantes (pulsado/suave/texto
+  legible). **Escala tipográfica** (Compacto/Normal/Cómodo/Grande). El atajo ⌘⇧L sigue
+  alternando claro/oscuro rápido preservando acento y fuente.
+
 ### Cambiado — Estructura de módulos/extensiones de Fathom (F4 del roadmap)
 - **Añadir un módulo es un trámite tonto**: la app se **ensambla desde módulos**
   (`gui/extensions.py`, `gui/builtin_modules.py`). Un `ModuleSpec` declara sus **paneles**

@@ -3,7 +3,8 @@
 Reemplaza el modelo de 7 pestañas planas por: una **barra de perspectivas** (arriba),
 un **lienzo central** (que cambia según la perspectiva), **paneles acoplables** (docks)
 alrededor, una **paleta de comandos** (⌘K) y una **barra de estado** con progreso
-cancelable global. El tema (grafito/teal) se aplica a la ``QApplication``.
+cancelable global. La **apariencia** (tema/acento/fuente, con presets) se aplica a la
+``QApplication`` y se persiste (ver ``design/appearance.py`` y el diálogo de apariencia).
 
 Los paneles se inyectan (por defecto, placeholders); las perspectivas deciden cuál va
 al centro y qué docks se muestran.
@@ -26,7 +27,12 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from spmkit.gui.design import theme
+from spmkit.gui.design.appearance import (
+    Appearance,
+    apply_appearance,
+    load_appearance,
+    save_appearance,
+)
 from spmkit.gui.extensions import PerspectiveSpec
 from spmkit.gui.panels.base import Panel
 from spmkit.gui.shell.command_palette import Command, CommandPalette
@@ -105,7 +111,11 @@ class Workspace(QMainWindow):
         self._central_keys = frozenset(central_panels)
         # Persistencia opt-in (los tests construyen sin persistir para no contaminar QSettings).
         self._settings: QSettings | None = QSettings("spmkit", "spmkit") if persist else None
-        self._mode = self._saved("theme", mode)
+        self._appearance = (
+            load_appearance(self._settings)
+            if self._settings is not None
+            else Appearance(theme=mode)
+        )
         # Placeholders por defecto, sobrescritos por los paneles reales inyectados.
         merged = default_panels(self._panel_labels)
         if panels:
@@ -129,7 +139,7 @@ class Workspace(QMainWindow):
 
         app = QApplication.instance()
         if app is not None:
-            theme.apply(app, self._mode)
+            apply_appearance(app, self._appearance)
 
         self._restore_geometry()
         self.set_perspective(self._saved("perspective", "force"))
@@ -216,6 +226,7 @@ class Workspace(QMainWindow):
             for p in self._perspectives
         ]
         commands.append(Command("Tema: alternar claro/oscuro", self.toggle_theme, "Ctrl+Shift+L"))
+        commands.append(Command("Personalizar apariencia…", self.open_appearance, "Ctrl+Shift+A"))
         commands.extend(self._extra_commands)
         return commands
 
@@ -273,12 +284,43 @@ class Workspace(QMainWindow):
         CommandPalette(self._commands, self).show()
 
     def toggle_theme(self) -> None:
-        self._mode = "light" if self._mode == "dark" else "dark"
+        """Alterna claro/oscuro rápido (Grafito ↔ Papel), preservando acento/fuente."""
+        from dataclasses import replace
+
+        next_theme = "light" if self._appearance.theme == "dark" else "dark"
+        self.set_appearance(replace(self._appearance, theme=next_theme))
+
+    def set_appearance(self, appearance: Appearance) -> None:
+        """Aplica y persiste una apariencia (tema + acento + fuente)."""
+        self._appearance = appearance.normalized()
         app = QApplication.instance()
         if app is not None:
-            theme.apply(app, self._mode)
-        self._persist("theme", self._mode)
+            apply_appearance(app, self._appearance)
+        if self._settings is not None:
+            save_appearance(self._settings, self._appearance)
+
+    def open_appearance(self) -> None:
+        """Abre el diálogo de apariencia con vista previa en vivo (revierte al cancelar)."""
+        from spmkit.gui.widgets import AppearanceDialog
+
+        original = self._appearance
+        dialog = AppearanceDialog(original, self)
+        dialog.changed.connect(self._preview_appearance)  # vista previa en vivo
+        if dialog.exec():
+            self.set_appearance(dialog.appearance())
+        else:
+            self.set_appearance(original)  # cancelado → revierte
+
+    def _preview_appearance(self, appearance: Appearance) -> None:
+        """Aplica (sin persistir) para la vista previa mientras el diálogo está abierto."""
+        app = QApplication.instance()
+        if app is not None:
+            apply_appearance(app, appearance.normalized())
+
+    @property
+    def appearance(self) -> Appearance:
+        return self._appearance
 
     @property
     def mode(self) -> str:
-        return self._mode
+        return self._appearance.theme

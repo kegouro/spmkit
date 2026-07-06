@@ -15,7 +15,7 @@ def test_colors_both_modes() -> None:
 
 
 def test_colors_invalid_mode_raises() -> None:
-    with pytest.raises(ValueError, match="modo debe ser"):
+    with pytest.raises(ValueError, match="tema desconocido"):
         tokens.colors("banana")
 
 
