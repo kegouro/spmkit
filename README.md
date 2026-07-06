@@ -26,7 +26,7 @@
 ## Fathom: Entorno de Análisis Avanzado
 
 <div align="center">
-<img src="docs/images/brand/fathom_banner_v2.jpg" alt="Fathom Workspace Banner" width="100%">
+<img src="docs/images/brand/fathom_banner_v2.png" alt="Fathom Workspace Banner" width="100%">
 <br>
 <img src="docs/images/brand/fathom_lockup.svg" alt="Fathom Lockup" width="240" style="margin-top: 15px; margin-bottom: 15px;">
 </div>
