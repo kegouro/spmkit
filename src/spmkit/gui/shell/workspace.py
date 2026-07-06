@@ -41,6 +41,8 @@ from spmkit.gui.shell.status_bar import ProgressStatusBar
 CENTRAL_PANELS = frozenset(
     {
         "image_canvas",
+        "grains_canvas",
+        "spectral_canvas",
         "force_canvas",
         "map_canvas",
         "batch_table",

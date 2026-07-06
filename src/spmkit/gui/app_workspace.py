@@ -23,6 +23,7 @@ from spmkit.gui.design import brand
 from spmkit.gui.panels.batch_table import BatchTablePanel
 from spmkit.gui.panels.figure_panel import FigurePanel
 from spmkit.gui.panels.force_canvas import ForceCanvasPanel
+from spmkit.gui.panels.grains_canvas import GrainsCanvasPanel
 from spmkit.gui.panels.histogram_panel import HistogramPanel
 from spmkit.gui.panels.image_analysis import ImageAnalysisPanel
 from spmkit.gui.panels.image_canvas import ImageCanvasPanel
@@ -32,6 +33,7 @@ from spmkit.gui.panels.map_canvas import MapCanvasPanel
 from spmkit.gui.panels.navigator import NavigatorPanel
 from spmkit.gui.panels.pipeline_panel import PipelinePanel
 from spmkit.gui.panels.simulator_panel import SimulatorPanel
+from spmkit.gui.panels.spectral_canvas import SpectralCanvasPanel
 from spmkit.gui.panels.view3d_panel import View3DPanel
 from spmkit.gui.shell.command_palette import Command
 from spmkit.gui.shell.workspace import Workspace
@@ -39,9 +41,11 @@ from spmkit.gui.viewmodels import (
     BatchViewModel,
     FigureViewModel,
     ForceViewModel,
+    GrainsViewModel,
     ImageViewModel,
     MapViewModel,
     SimulatorViewModel,
+    SpectralViewModel,
     View3DViewModel,
 )
 
@@ -60,6 +64,8 @@ def build_workspace(
     image_vm = ImageViewModel()
     figure_vm = FigureViewModel(image_vm)  # comparten el hub de imagen
     view3d_vm = View3DViewModel(image_vm)
+    grains_vm = GrainsViewModel(image_vm)
+    spectral_vm = SpectralViewModel(image_vm)
     simulator_vm = SimulatorViewModel()
     force_canvas = ForceCanvasPanel(vm)
     panels = {
@@ -72,6 +78,8 @@ def build_workspace(
         "batch_table": BatchTablePanel(batch_vm),
         "image_canvas": ImageCanvasPanel(image_vm),
         "image_analysis": ImageAnalysisPanel(image_vm),
+        "grains_canvas": GrainsCanvasPanel(grains_vm),
+        "spectral_canvas": SpectralCanvasPanel(spectral_vm),
         "figure_editor": FigurePanel(figure_vm),
         "view3d": View3DPanel(view3d_vm),
         "simulator": SimulatorPanel(simulator_vm),
@@ -84,6 +92,8 @@ def build_workspace(
         ws.setWindowIcon(icon)
     map_vm.taskStarted.connect(ws.bind_task)
     batch_vm.taskStarted.connect(ws.bind_task)
+    grains_vm.statusChanged.connect(ws.show_status)
+    spectral_vm.statusChanged.connect(ws.show_status)
     session: dict[str, Any] = {}  # último archivo abierto (para .spmproj)
     ws.fileDropped.connect(lambda p: _load_into(ws, vm, image_vm, p, session))
     ws.register_command(
