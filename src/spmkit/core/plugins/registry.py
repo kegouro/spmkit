@@ -55,6 +55,18 @@ def _register_builtins() -> None:
 
     for reader in BUILTIN_READERS:
         register_reader(reader)
+    _register_afmformats()
+
+
+def _register_afmformats() -> None:
+    """Registra el lector de afmformats si el extra ``afm`` está instalado (check barato)."""
+    from importlib.util import find_spec
+
+    if find_spec("afmformats") is None:
+        return
+    from spmkit.core.io.afmformats_reader import AfmformatsReader
+
+    register_reader(AfmformatsReader())
 
 
 def _discover_entry_points() -> None:
