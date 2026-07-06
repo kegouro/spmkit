@@ -41,6 +41,8 @@ from spmkit.gui.shell.status_bar import ProgressStatusBar
 CENTRAL_PANELS = frozenset(
     {
         "image_canvas",
+        "grains_canvas",
+        "spectral_canvas",
         "force_canvas",
         "map_canvas",
         "batch_table",
@@ -55,6 +57,7 @@ _DOCK_AREAS = {
     "navigator": Qt.DockWidgetArea.LeftDockWidgetArea,
     "inspector": Qt.DockWidgetArea.RightDockWidgetArea,
     "histogram": Qt.DockWidgetArea.RightDockWidgetArea,
+    "image_analysis": Qt.DockWidgetArea.RightDockWidgetArea,
     "pipeline": Qt.DockWidgetArea.BottomDockWidgetArea,
     "log": Qt.DockWidgetArea.BottomDockWidgetArea,
 }

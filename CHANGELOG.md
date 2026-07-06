@@ -6,6 +6,19 @@ el versionado es [SemVer](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+### Añadido — Análisis de imagen completo en Fathom (F3 del roadmap)
+- **Paridad de visor** en la perspectiva Imagen: selector de colormap, nivelado
+  plano/polinomio/**por filas**, y **perfil de línea interactivo** (ROI arrastrable) con
+  gráfico y exportación a CSV; lectura de rugosidad (Sa/Sq/Sz/Ssk/Sku) y **KPFM/CPD**
+  para canales de potencial (`ImageAnalysisPanel`).
+- **Detección de granos** (perspectiva Granos, paridad JPK/ANA): segmenta partículas
+  sobre la topografía nivelada con overlay coloreado y estadística (conteo, diámetro
+  equivalente medio, cobertura, densidad por µm²). Parámetros ajustables (tamaño mínimo,
+  altura relativa). Requiere scipy (extra `grains`); avisa si falta, sin tumbar la app.
+- **Análisis espectral** (perspectiva Espectral): PSD radialmente promediada en log-log
+  + exponente de Hurst / **dimensión fractal** + longitud de correlación. Antes solo en
+  la CLI; ahora en la GUI. Todo reutiliza el `core.analysis` puro sobre el hub de imagen.
+
 ### Añadido — Plataforma de formatos y plugins (F1 del roadmap)
 - **Sistema de plugins versionado** (`core/plugins/`, `spmkit.plugins.v1`): contratos
   ``Reader``/``DatasetInfo``/``Analysis``/``Domain`` como ``Protocol``s estables +

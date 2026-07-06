@@ -25,6 +25,9 @@ PANEL_LABELS: dict[str, str] = {
     "inspector": "Inspector",
     "pipeline": "Pipeline",
     "image_canvas": "Imagen",
+    "image_analysis": "Análisis",
+    "grains_canvas": "Granos",
+    "spectral_canvas": "Espectral",
     "force_canvas": "Curva de fuerza",
     "map_canvas": "Mapa",
     "histogram": "Histograma",
@@ -37,7 +40,9 @@ PANEL_LABELS: dict[str, str] = {
 
 #: Perspectivas de fábrica, en orden de la barra superior.
 PERSPECTIVES: tuple[Perspective, ...] = (
-    Perspective("image", "Imagen", ("navigator", "image_canvas", "inspector")),
+    Perspective("image", "Imagen", ("navigator", "image_canvas", "image_analysis")),
+    Perspective("grains", "Granos", ("navigator", "grains_canvas")),
+    Perspective("spectral", "Espectral", ("navigator", "spectral_canvas")),
     Perspective("force", "Curva de fuerza", ("navigator", "force_canvas", "inspector", "pipeline")),
     Perspective("map", "Mapa", ("navigator", "map_canvas", "inspector", "histogram")),
     Perspective("batch", "Batch", ("navigator", "batch_table", "log")),

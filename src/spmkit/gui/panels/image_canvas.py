@@ -1,8 +1,8 @@
-"""Visor de imágenes SPM — canal + nivelado + rugosidad, en la perspectiva Imagen.
+"""Visor de imágenes SPM — canal + nivelado + colormap + perfil, perspectiva Imagen.
 
-Básico a propósito (el norte del rediseño son las curvas de fuerza): abrir una imagen,
-elegir canal, nivelar y ver la rugosidad. Usa el colormap "gold" estilo NanoSurf y el
-orden row-major de pyqtgraph (sin transponer), como marca la guía del repo.
+Paridad de visor: elegir canal, nivelar (plano/polinomio/filas), colormap, y **trazar un
+perfil de línea** arrastrando un ROI sobre la imagen (el :class:`ProfilePanel` lo grafica).
+Usa el colormap "gold" estilo NanoSurf y el orden row-major de pyqtgraph (sin transponer).
 """
 
 from __future__ import annotations
@@ -17,7 +17,13 @@ from spmkit.core.models import SPMChannel
 from spmkit.gui.panels.base import Panel
 from spmkit.gui.viewmodels import ImageViewModel
 
-_LEVELING = (("plane", "Plano"), ("poly", "Polinomio"), ("none", "Sin nivelar"))
+_LEVELING = (
+    ("plane", "Plano"),
+    ("poly", "Polinomio"),
+    ("rows", "Filas"),
+    ("none", "Sin nivelar"),
+)
+_COLORMAPS = ("gold", "batlow", "viridis", "inferno", "afmhot", "gray")
 
 
 def _roughness_line(result: RoughnessResult | None) -> str:
@@ -31,7 +37,7 @@ def _roughness_line(result: RoughnessResult | None) -> str:
 
 
 class ImageCanvasPanel(Panel):
-    """Panel central de la perspectiva Imagen: canal + nivelado + rugosidad."""
+    """Panel central de la perspectiva Imagen: canal + nivelado + colormap + perfil."""
 
     title = "Imagen"
 
@@ -45,7 +51,6 @@ class ImageCanvasPanel(Panel):
         import pyqtgraph as pg
 
         pg.setConfigOption("imageAxisOrder", "row-major")
-        from spmkit.gui.design.pg_colormaps import pyqtgraph_cmap
 
         root = QWidget()
         lay = QVBoxLayout(root)
@@ -61,12 +66,17 @@ class ImageCanvasPanel(Panel):
         self._level.currentIndexChanged.connect(
             lambda _i: self._vm.set_leveling(self._level.currentData())
         )
+        self._cmap = QComboBox()
+        self._cmap.addItems(_COLORMAPS)
+        self._cmap.currentTextChanged.connect(self._apply_colormap)
         self._rough = QLabel("—")
         self._rough.setProperty("role", "readout")
         bar.addWidget(QLabel("Canal:"))
         bar.addWidget(self._channel)
         bar.addWidget(QLabel("Nivelado:"))
         bar.addWidget(self._level)
+        bar.addWidget(QLabel("Colormap:"))
+        bar.addWidget(self._cmap)
         bar.addStretch(1)
         bar.addWidget(self._rough)
         lay.addLayout(bar)
@@ -74,10 +84,21 @@ class ImageCanvasPanel(Panel):
         self._image = pg.ImageView()
         self._image.ui.roiBtn.hide()
         self._image.ui.menuBtn.hide()
-        with contextlib.suppress(Exception):
-            self._image.setColorMap(pyqtgraph_cmap("gold"))
+        self._apply_colormap()
+        # ROI de perfil de línea (arrastra los extremos → ProfilePanel lo grafica).
+        self._roi = pg.LineSegmentROI([[10, 10], [40, 40]], pen=pg.mkPen("#4ea1ff", width=2))
+        self._roi.sigRegionChanged.connect(self._update_profile)
+        self._image.addItem(self._roi)
         lay.addWidget(self._image, 1)
         return root
+
+    # ---- colormap (concern de vista, como en map_canvas) ----
+    def _apply_colormap(self, name: str = "") -> None:
+        from spmkit.gui.design.pg_colormaps import pyqtgraph_cmap
+
+        name = name or self._cmap.currentText() or "gold"
+        with contextlib.suppress(Exception):
+            self._image.setColorMap(pyqtgraph_cmap(name))
 
     # ---- reacciones ----
     def _on_data(self, names: list) -> None:
@@ -94,8 +115,18 @@ class ImageCanvasPanel(Panel):
         ch = self._vm.current_channel()
         if ch is not None:
             self._draw(ch)
+            self._update_profile()  # re-traza el perfil sobre el canal nuevo
         self._rough.setText(_roughness_line(self._vm.roughness()))
 
     def _draw(self, channel: SPMChannel) -> None:
         self._image.setImage(np.asarray(channel.data), autoRange=True)
         self._image.getView().autoRange(padding=0.02)
+
+    def _update_profile(self) -> None:
+        """Mapea el ROI a coordenadas de píxel y pide el perfil al VM."""
+        handles = self._roi.getSceneHandlePositions()
+        item = self._image.getImageItem()
+        pts = [item.mapFromScene(h[1]) for h in handles]
+        if len(pts) < 2:
+            return
+        self._vm.profile((pts[0].x(), pts[0].y()), (pts[1].x(), pts[1].y()))
