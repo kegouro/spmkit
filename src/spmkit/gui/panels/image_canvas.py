@@ -45,7 +45,7 @@ class ImageCanvasPanel(Panel):
         import pyqtgraph as pg
 
         pg.setConfigOption("imageAxisOrder", "row-major")
-        from spmkit.core.viz import colormaps
+        from spmkit.gui.design.pg_colormaps import pyqtgraph_cmap
 
         root = QWidget()
         lay = QVBoxLayout(root)
@@ -75,7 +75,7 @@ class ImageCanvasPanel(Panel):
         self._image.ui.roiBtn.hide()
         self._image.ui.menuBtn.hide()
         with contextlib.suppress(Exception):
-            self._image.setColorMap(colormaps.pyqtgraph_cmap("gold"))
+            self._image.setColorMap(pyqtgraph_cmap("gold"))
         lay.addWidget(self._image, 1)
         return root
 
