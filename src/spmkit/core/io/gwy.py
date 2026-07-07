@@ -42,7 +42,12 @@ def load_gwy(path: str | Path) -> SPMData:
     from gwyfile.util import get_datafields
 
     path = Path(path)
-    container = gwyfile.load(str(path))
+    try:
+        container = gwyfile.load(str(path))
+    except (AssertionError, ValueError, OSError, EOFError) as exc:
+        # gwyfile valida el magic number con un `assert` pelado; ante un archivo inválido
+        # o corrupto damos un error claro en vez de filtrar un AssertionError sin mensaje.
+        raise ValueError(f"archivo .gwy inválido o corrupto: {path.name}") from exc
     datafields = get_datafields(container)
 
     channels: list[SPMChannel] = []
