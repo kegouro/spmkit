@@ -99,6 +99,11 @@ def build_workspace(
     ws.register_command(Command("Primera curva", lambda: vm.set_curve(0), "Ctrl+Home"))
     ws.register_command(Command("Última curva", lambda: vm.set_curve(vm.n_curves - 1), "Ctrl+End"))
     ws.register_command(Command(f"Acerca de {brand.PRODUCT_NAME}", lambda: _about(ws)))
+    # Botones visibles de archivo (el drag & drop es incómodo en laptops; el explorador de
+    # archivos permite escribir/pegar una ruta). Sin atajo aquí: los comandos ya tienen Ctrl+O/S.
+    ws.add_toolbar_action("📂  Abrir…", lambda: _open_dialog(ws, vm, image_vm, session))
+    ws.add_toolbar_action("💾  Guardar…", lambda: _save_project(ws, vm, session))
+    ws.add_toolbar_separator()
     if open_path is not None:
         _load_into(ws, vm, image_vm, open_path, session)
     return ws

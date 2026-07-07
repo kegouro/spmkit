@@ -183,16 +183,42 @@ class Workspace(QMainWindow):
 
     # ---- construcción ----
     def _build_perspective_bar(self) -> None:
-        bar = QToolBar("Perspectivas")
+        bar = QToolBar("Barra principal")
         bar.setMovable(False)
         self.addToolBar(Qt.ToolBarArea.TopToolBarArea, bar)
+        self._persp_bar = bar
+        self._first_persp_action: QAction | None = None
         self._persp_actions: dict[str, QAction] = {}
         for persp in self._perspectives:
             action = QAction(persp.label, self)
             action.setCheckable(True)
             action.triggered.connect(lambda _checked=False, k=persp.key: self.set_perspective(k))
             bar.addAction(action)
+            if self._first_persp_action is None:
+                self._first_persp_action = action
             self._persp_actions[persp.key] = action
+
+    def add_toolbar_action(
+        self, text: str, callback: object, shortcut: str | None = None
+    ) -> QAction:
+        """Añade un botón visible a la izquierda de la barra (antes de las perspectivas).
+
+        Para acciones frecuentes (abrir/guardar): más descubrible que sólo la paleta ⌘K.
+        """
+        action = QAction(text, self)
+        if shortcut:
+            action.setShortcut(QKeySequence(shortcut))
+        action.triggered.connect(lambda _checked=False: callback())  # type: ignore[operator]
+        if self._first_persp_action is not None:
+            self._persp_bar.insertAction(self._first_persp_action, action)
+        else:
+            self._persp_bar.addAction(action)
+        return action
+
+    def add_toolbar_separator(self) -> None:
+        """Separador visual entre los botones de archivo y las perspectivas."""
+        if self._first_persp_action is not None:
+            self._persp_bar.insertSeparator(self._first_persp_action)
 
     def _build_panels(self) -> None:
         for key, panel in self._panels.items():
