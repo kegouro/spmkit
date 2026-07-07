@@ -1,41 +1,60 @@
-<svg viewBox="0 0 820 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fathom — curvas de fuerza, a fondo">
-  <title>Fathom — curvas de fuerza, a fondo · powered by spmkit</title>
+<svg viewBox="0 0 1200 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fathom — powered by spmkit">
+  <title>Fathom · powered by spmkit</title>
   <defs>
-    <linearGradient id="fbg" x1="0" y1="0" x2="0.4" y2="1">
-      <stop offset="0" stop-color="#141B24"/>
-      <stop offset="1" stop-color="#0B0E13"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0" stop-color="#141B24"/><stop offset="1" stop-color="#0B0E13"/>
     </linearGradient>
-    <linearGradient id="fcurve" x1="0" y1="1" x2="1" y2="0">
-      <stop offset="0" stop-color="#2DD4BF"/>
-      <stop offset="1" stop-color="#5EEAD4"/>
+    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#AEB9C7"/><stop offset="1" stop-color="#586472"/>
     </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F2CC7A"/><stop offset="1" stop-color="#D2942F"/>
+    </linearGradient>
+    <linearGradient id="laser" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#5EEAD4"/><stop offset="1" stop-color="#2DD4BF"/>
+    </linearGradient>
+    <linearGradient id="depth" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1A2430" stop-opacity="0.9"/><stop offset="1" stop-color="#0B0E13" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#E8A94B" stop-opacity="0.55"/><stop offset="1" stop-color="#E8A94B" stop-opacity="0"/>
+    </radialGradient>
   </defs>
 
-  <rect x="1" y="1" width="818" height="198" rx="18" fill="url(#fbg)" stroke="#232C38" stroke-width="1.5"/>
+  <rect x="1.5" y="1.5" width="1197" height="257" rx="24" fill="url(#bg)" stroke="#232C38" stroke-width="1.5"/>
 
-  <!-- curva de fuerza decorativa (derecha) -->
-  <g font-family="'SF Mono','JetBrains Mono','Menlo',monospace">
-    <line x1="500" y1="150" x2="778" y2="150" stroke="#232C38" stroke-width="1" stroke-dasharray="2 5"/>
-    <line x1="614" y1="40" x2="614" y2="164" stroke="#232C38" stroke-width="1" stroke-dasharray="2 5"/>
-    <path d="M500 132 H612" fill="none" stroke="#4A5765" stroke-width="3" stroke-linecap="round"/>
-    <path d="M612 132 q11 17 22 -1" fill="none" stroke="#4A5765" stroke-width="3" stroke-linecap="round"/>
-    <path d="M634 131 C 682 128 716 96 778 44" fill="none" stroke="url(#fcurve)" stroke-width="4.5" stroke-linecap="round"/>
-    <circle cx="612" cy="132" r="5.5" fill="#E8A94B"/>
-    <text x="624" y="182" font-size="12.5" fill="#5C6875" letter-spacing="1">δ  →  E,  adhesión,  disipación</text>
+  <!-- ===== escena AFM: cantiléver + punta sondeando la superficie ===== -->
+  <g transform="translate(96,32)">
+    <!-- material (la profundidad que se "sondea") bajo la superficie -->
+    <path d="M52 162 C118 162 150 154 196 162 C246 170 282 166 326 162 L326 210 L52 210 Z" fill="url(#depth)"/>
+    <!-- superficie / topografía -->
+    <path d="M52 162 C118 162 150 154 196 162 C246 170 282 166 326 162" fill="none" stroke="#4A5765" stroke-width="2.6" stroke-linecap="round"/>
+
+    <!-- láser de palanca óptica (incidente → reflejado en el dorso del cantiléver) -->
+    <path d="M118 0 L176 118 L262 30" fill="none" stroke="url(#laser)" stroke-width="6" stroke-linecap="round" opacity="0.15"/>
+    <path d="M118 0 L176 118 L262 30" fill="none" stroke="url(#laser)" stroke-width="1.8" stroke-linecap="round"/>
+    <!-- fotodetector de cuadrantes -->
+    <g transform="translate(252,16)" stroke="#2DD4BF" stroke-width="1.4" fill="none">
+      <rect x="0" y="0" width="20" height="20" rx="2" fill="#0E1620"/>
+      <line x1="10" y1="1" x2="10" y2="19"/><line x1="1" y1="10" x2="19" y2="10"/>
+    </g>
+
+    <!-- soporte / chip del cantiléver -->
+    <rect x="0" y="34" width="42" height="26" rx="4" fill="#263140" stroke="#3A4655" stroke-width="1.4"/>
+    <!-- viga del cantiléver (metálica, se afina hacia la punta) -->
+    <path d="M40 43 L198 126 L198 138 L40 57 Z" fill="url(#metal)"/>
+    <path d="M40 43 L198 126" fill="none" stroke="#D7DEE7" stroke-width="1" opacity="0.5"/>
+    <!-- punta piramidal (oro de marca) apoyada en la superficie -->
+    <path d="M185 131 L209 131 L197 162 Z" fill="url(#gold)"/>
+    <!-- punto de contacto -->
+    <circle cx="197" cy="162" r="17" fill="url(#glow)"/>
+    <circle cx="197" cy="162" r="4.5" fill="#E8A94B"/>
   </g>
 
-  <!-- marca (izquierda) -->
-  <g transform="translate(48,64)">
-    <rect x="0" y="0" width="72" height="72" rx="16" fill="#121821" stroke="#2A3644" stroke-width="1.5"/>
-    <path d="M16 50 H33" stroke="#4A5765" stroke-width="3.6" stroke-linecap="round" fill="none"/>
-    <path d="M33 50 C44 50 50 39 58 18" stroke="#2DD4BF" stroke-width="4.2" stroke-linecap="round" fill="none"/>
-    <circle cx="33" cy="50" r="3.6" fill="#E8A94B"/>
-  </g>
-
-  <!-- wordmark + tagline -->
-  <g font-family="-apple-system,'Segoe UI','Inter',system-ui,sans-serif">
-    <text x="140" y="94" font-size="46" font-weight="700" fill="#E8EEF5" letter-spacing="0.5">Fathom</text>
-    <text x="143" y="122" font-size="18" fill="#E8A94B">Curvas de fuerza, a fondo.</text>
-    <text x="143" y="148" font-size="12.5" fill="#5C6875" letter-spacing="1.4" font-family="'SF Mono','Menlo',monospace">POWERED BY SPMKIT · REEMPLAZA ANA / JPK</text>
+  <!-- ===== marca ===== -->
+  <g font-family="-apple-system,'Segoe UI','Inter','Helvetica Neue',system-ui,sans-serif">
+    <text x="470" y="126" font-size="72" font-weight="700" fill="#EDF2F8" letter-spacing="1">Fathom</text>
+    <text x="474" y="162" font-size="21" fill="#E8A94B" letter-spacing="0.2">Curvas de fuerza, a fondo.</text>
+    <text x="475" y="190" font-size="13" fill="#5C6875" letter-spacing="2.2" font-family="'SF Mono','JetBrains Mono','Menlo',monospace">POWERED BY SPMKIT · REEMPLAZA ANA / JPK</text>
   </g>
 </svg>
