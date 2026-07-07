@@ -69,6 +69,16 @@ spmkit = "spmkit.cli.app:app"
 [tool.hatch.build.targets.wheel]
 packages = ["src/spmkit"]
 
+[tool.hatch.build.targets.sdist]
+# El sdist no necesita las imágenes de docs (banners/capturas ~4 MB); mantiene el texto.
+exclude = [
+    "docs/images/",
+    "/.github",
+    "/reference",
+    "/ui_preview",
+    "/site",
+]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q --cov=spmkit --cov-report=term-missing"
