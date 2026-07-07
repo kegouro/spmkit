@@ -7,7 +7,7 @@
 ### Motor Numérico y Framework de Extensibilidad Abierta
 
 [![CI](https://github.com/kegouro/spmkit/actions/workflows/ci.yml/badge.svg)](https://github.com/kegouro/spmkit/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-359%20passing-brightgreen.svg)](https://github.com/kegouro/spmkit/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-312%20passing-brightgreen.svg)](https://github.com/kegouro/spmkit/actions/workflows/ci.yml)
 [![Coverage](https://img.shields.io/badge/coverage-73%25-green.svg)](#validación-científica-y-cobertura)
 [![PyPI](https://img.shields.io/pypi/v/spmkit.svg?color=2dd4bf)](https://pypi.org/project/spmkit/)
 [![Python](https://img.shields.io/badge/python-3.11%20|%203.12-blue.svg)](https://pypi.org/project/spmkit/)
@@ -26,7 +26,7 @@
 ## Fathom: Entorno de Análisis Avanzado
 
 <div align="center">
-<img src="docs/images/brand/fathom_banner_v2.png" alt="Fathom Workspace Banner" width="100%">
+<img src="docs/images/brand/fathom_banner.svg" alt="Fathom Workspace Banner" width="100%">
 <br>
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/brand/fathom_logo_dark.png">
@@ -45,10 +45,12 @@ spmkit workspace [archivo_opcional]
 
 ### Capacidades Funcionales de Fathom
 
-- **Pipeline de Ajuste Nanomecánico en Tiempo Real:** Ajuste algorítmico continuo para curvas de fuerza utilizando modelos de contacto clásicos (Hertz, Sneddon, DMT, JKR). Soporte para estimación de módulo de Young, radio de punta, corrección de Poisson y regiones de ajuste manual.
+- **Pipeline de Ajuste Nanomecánico en Tiempo Real:** Ajuste algorítmico continuo para curvas de fuerza con modelos de contacto clásicos (Hertz, paraboloide, Sneddon cónico, DMT) — módulo de Young con incertidumbre, radio de punta, corrección de Poisson, calibración y regiones de ajuste manual. Modelos adhesivos/viscoelásticos (JKR, relajación SLS) incluidos **marcados como experimentales** (sin validar contra referencia independiente).
 - **Topología de Mapeo de Volúmenes de Fuerza (*Force-Volume*):** Extracción de propiedades locales mapeadas a coordenadas espaciales, implementando *linked brushing* interactivo entre espectros y topografía.
-- **Sistema Modular por Perspectivas:** Superando las interfaces monolíticas, Fathom emplea una estructura de vistas modulares (Perspectivas) que segrega lógicamente las áreas de trabajo: Visor Topográfico, Análisis de Rugosidad (ISO 25178), Mecánica Cuántica (KPFM), Detección Granular y Modelado de Resonancia.
-- **Motor de Renderizado Dinámico:** Renderizado tridimensional interactivo con aplicación de modelos de iluminación (*hillshade*).
+- **Sistema Modular por Perspectivas:** Superando las interfaces monolíticas, Fathom emplea una estructura de vistas modulares (Perspectivas) que segrega lógicamente las áreas de trabajo: **Imagen** (topografía, perfiles de línea, rugosidad ISO 25178 y KPFM/CPD por sonda Kelvin), **Granos** (detección de partículas), **Espectral** (PSD radial, dimensión fractal), **Curva de Fuerza**, **Mapa** de force-volume, **Batch**, **Figura**, **Vista 3D** y **Simulador**.
+- **Framework de Extensibilidad Abierta:** nuevos **formatos**, **análisis** y **perspectivas** se registran por *entry-points* (`spmkit.plugins.v1`, `spmkit.gui.modules`) **sin tocar el núcleo** — la base para que `spmkit` sea un host multi-física y Fathom una de sus extensiones. Añadir un módulo es declarar un `ModuleSpec` (ver la [guía de extensión](https://kegouro.github.io/spmkit/extending/)).
+- **Personalización Visual:** temas con presets (Grafito, Papel, NanoSurf oro, Nord, Dracula, Solarized, Gruvbox), color de acento y escala tipográfica con **vista previa en vivo**, persistentes entre sesiones.
+- **Motor de Renderizado Dinámico:** Renderizado tridimensional interactivo con modelos de iluminación (*hillshade*) y exageración Z visual.
 
 <div align="center">
 <img src="docs/images/screenshot_viewer.png" alt="Fathom Interfaz Principal" width="100%">
@@ -110,7 +112,7 @@ La rigurosidad es el pilar de SPM-Kit. El decodificador de matrices binarias par
 
 La matriz de pruebas demuestra una **correlación de precisión de máquina (1.000000)** en la conversión a unidades métricas físicas. Los informes de prueba y auditoría numérica pueden consultarse íntegramente en `[docs/VALIDATION.md](./docs/VALIDATION.md)` y en el subdirectorio de pruebas `[tests/validation/](./tests/validation)`.
 
-Actualmente, el repositorio ejecuta una suite integral automatizada por GitHub Actions que valida más de **350 iteraciones de prueba** en entornos estandarizados de Python 3.11 y 3.12.
+Actualmente, el repositorio ejecuta una suite integral automatizada por GitHub Actions que valida **312 pruebas de núcleo y validación** (más una suite de GUI aparte) en entornos estandarizados de Python 3.11 y 3.12.
 
 ---
 
