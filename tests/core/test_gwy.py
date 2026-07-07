@@ -56,3 +56,11 @@ def test_gwy_unique_titles(tmp_path: Path) -> None:
 def test_gwy_dispatch(tmp_path: Path) -> None:
     out = save_gwy(_sample(), tmp_path / "d.gwy")
     assert load(out).metadata["format"] == "gwy"
+
+
+def test_gwy_corrupto_da_valueerror_claro(tmp_path: Path) -> None:
+    # Un .gwy inválido no debe filtrar el AssertionError pelado de la librería gwyfile.
+    bad = tmp_path / "corrupto.gwy"
+    bad.write_bytes(b"no soy un archivo gwy")
+    with pytest.raises(ValueError, match="corrupto"):
+        load_gwy(bad)
