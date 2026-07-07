@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# Corre la suite de GUI (tests/gui) **archivo por archivo**, cada uno en su propio proceso
+# pytest. Es necesario porque Qt acumula recursos nativos en el teardown: correr muchos
+# workspaces completos en un mismo proceso puede segfaultear al finalizar (aunque los
+# tests pasen). Aislando por archivo, cada proceso arranca limpio y el resultado es fiable.
+#
+# Uso:
+#   QT_QPA_PLATFORM=offscreen scripts/run_gui_tests.sh          # local (usa `python`)
+#   PYTHON=.venv/bin/python scripts/run_gui_tests.sh            # local con venv explícito
+#   uv run scripts/run_gui_tests.sh                             # CI (uv provee `python`)
+#
+# Sale con código != 0 si algún archivo falla (para que el CI marque rojo).
+set -u
+
+PYTHON="${PYTHON:-python}"
+export QT_QPA_PLATFORM="${QT_QPA_PLATFORM:-offscreen}"
+
+failed=""
+for f in tests/gui/test_*.py; do
+  # -o addopts="" descarta el --cov global (coverage por-archivo se pisaría); faulthandler
+  # off silencia el volcado benigno del teardown de Qt.
+  if "$PYTHON" -m pytest "$f" -o addopts="" --no-cov -q -p no:faulthandler; then
+    printf '  ok   %s\n' "$f"
+  else
+    printf '  FAIL %s\n' "$f"
+    failed="$failed $f"
+  fi
+done
+
+if [ -n "$failed" ]; then
+  echo "GUI tests fallaron en:$failed"
+  exit 1
+fi
+echo "GUI tests: todos los archivos pasaron."
