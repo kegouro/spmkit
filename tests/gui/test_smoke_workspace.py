@@ -7,7 +7,7 @@ bloqueantes neutralizados. Al final, ningún panel debe estar en estado de error
 
 from __future__ import annotations
 
-from PyQt6.QtWidgets import QFileDialog, QMessageBox
+from PyQt6.QtWidgets import QDialog, QFileDialog, QMessageBox
 
 from spmkit.gui.app_workspace import build_workspace
 from spmkit.gui.shell.perspectives import ALL_PANELS, PERSPECTIVES
@@ -18,6 +18,8 @@ def _silence_dialogs(monkeypatch) -> None:  # type: ignore[no-untyped-def]
     monkeypatch.setattr(QFileDialog, "getSaveFileName", staticmethod(lambda *a, **k: ("", "")))
     monkeypatch.setattr(QFileDialog, "getExistingDirectory", staticmethod(lambda *a, **k: ""))
     monkeypatch.setattr(QMessageBox, "exec", lambda self: 0)
+    # Diálogos modales (p. ej. Apariencia) — devuelven "rechazado" sin bloquear headless.
+    monkeypatch.setattr(QDialog, "exec", lambda self: 0)
 
 
 def test_full_workspace_smoke(qtbot, synthetic_volume, monkeypatch) -> None:  # type: ignore[no-untyped-def]

@@ -19,6 +19,16 @@ pytest.importorskip("matplotlib")
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 os.environ.setdefault("MPLBACKEND", "Agg")
 
+# El MainWindow **legacy** (7 pestañas con pyqtgraph) segfaultea al destruirse en el
+# teardown de Qt headless en Linux (bug conocido de PyQt/pyqtgraph offscreen), antes de que
+# pytest pueda reportar. El app legacy está congelado; el smoke de Fathom
+# (test_smoke_workspace) sí corre en CI. Se salta sólo en CI (SPMKIT_SKIP_LEGACY_GUI=1);
+# local corre normal.
+pytestmark = pytest.mark.skipif(
+    os.environ.get("SPMKIT_SKIP_LEGACY_GUI") == "1",
+    reason="MainWindow legacy: segfault de teardown de Qt en Linux headless; se corre local",
+)
+
 from spmkit.core.models import SPMChannel, SPMData  # noqa: E402
 from spmkit.gui.legacy import theme  # noqa: E402
 from spmkit.gui.legacy.main_window import MainWindow  # noqa: E402
