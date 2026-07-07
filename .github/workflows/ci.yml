@@ -59,4 +59,5 @@ jobs:
       - name: Run GUI tests (offscreen, aislados por archivo)
         env:
           QT_QPA_PLATFORM: offscreen
+          SPMKIT_SKIP_LEGACY_GUI: "1"  # smoke del MainWindow legacy segfaultea en teardown Linux
         run: uv run bash scripts/run_gui_tests.sh
