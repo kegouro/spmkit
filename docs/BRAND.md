@@ -6,7 +6,7 @@
 > **Fathom** — el producto que ve el usuario (reemplazo de Nanosurf ANA / JPK).
 > **spmkit** — el toolkit open-source debajo (`pip install spmkit`, `spmkit …`).
 
-La identidad del producto vive en una sola fuente: [`src/spmkit/gui/design/brand.py`](../src/spmkit/gui/design/brand.py).
+La identidad del producto vive en una sola fuente: [`src/spmkit/gui/design/brand.py`](https://github.com/kegouro/spmkit/blob/main/src/spmkit/gui/design/brand.py).
 Para renombrar el producto se cambia `PRODUCT_NAME` allí.
 
 ## El nombre
@@ -22,7 +22,7 @@ es **comprender a fondo**. Lema:
 
 Grafito de precisión + teal de señal, con un **oro cálido** de acento (guiño al oro
 NanoSurf y a la rama *retract* de las curvas). Mismos tokens que la UI
-([`design/tokens.py`](../src/spmkit/gui/design/tokens.py)).
+([`design/tokens.py`](https://github.com/kegouro/spmkit/blob/main/src/spmkit/gui/design/tokens.py)).
 
 | Rol | Hex | Token |
 |-----|-----|-------|
