@@ -157,3 +157,43 @@ def test_recupera_wlc_con_ruido() -> None:
     fit = chain.fit_wlc(x, f, model="bouchiat")
     assert abs(fit.contour_length - _L_TRUE) / _L_TRUE < 0.02
     assert abs(fit.persistence_length - _LP_TRUE) / _LP_TRUE < 0.05
+
+
+_B_TRUE = 0.8e-9  # longitud de Kuhn 0.8 nm (lp = b/2 = 0.4 nm, consistente con el WLC)
+
+
+def _fjc_curve(noise_frac: float = 0.0, seed: int = 0):
+    """(extension, force) de un FJC con L/b conocidos. u_max≈8 → régimen no lineal claro."""
+    from spmkit.core.analysis import chain
+
+    kt = chain._KB * 298.0
+    f_max = 8.0 * kt / _B_TRUE  # u_max = F_max·b/k_BT ≈ 8
+    f = np.linspace(0.02 * f_max, f_max, 120)
+    x = chain.fjc_extension(f, _L_TRUE, _B_TRUE)
+    if noise_frac > 0.0:
+        rng = np.random.default_rng(seed)
+        x = x + rng.normal(0.0, noise_frac * float(x.max()), x.shape)
+    return x, f
+
+
+def test_recupera_fjc_sin_ruido() -> None:
+    """FJC: sin ruido recupera contorno L y Kuhn b a <1% (ajuste separable exacto)."""
+    from spmkit.core.analysis import chain
+
+    x, f = _fjc_curve()
+    fit = chain.fit_fjc(x, f)
+    assert fit.model == "fjc"
+    assert abs(fit.contour_length - _L_TRUE) / _L_TRUE < 0.01
+    assert abs(fit.kuhn_length - _B_TRUE) / _B_TRUE < 0.01
+    assert fit.persistence_length == fit.kuhn_length / 2.0  # invariante lp = b/2
+    assert fit.r_squared > 0.999
+
+
+def test_recupera_fjc_con_ruido() -> None:
+    """FJC con 2% de ruido: L a <2%, b a <5% (bien condicionado como el WLC)."""
+    from spmkit.core.analysis import chain
+
+    x, f = _fjc_curve(noise_frac=0.02, seed=0)
+    fit = chain.fit_fjc(x, f)
+    assert abs(fit.contour_length - _L_TRUE) / _L_TRUE < 0.02
+    assert abs(fit.kuhn_length - _B_TRUE) / _B_TRUE < 0.05
