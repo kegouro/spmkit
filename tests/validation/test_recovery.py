@@ -1,0 +1,121 @@
+"""Gate de validación numérica: recuperar parámetros conocidos de datos sintéticos.
+
+Filosofía (revisión senior): antes de UI o features nuevas, el núcleo debe **recuperar los
+parámetros con los que se generó el dato**, con error acotado, incluso con ruido conocido.
+Si el ajuste no recupera E dentro de tolerancia, el código no pasa — no importa qué botón
+tenga. Este archivo es el primer ladrillo de ese gate (modelos que ya existen); se extenderá
+con Lp/Lc (WLC/FJC) cuando esos modelos entren.
+"""
+
+from __future__ import annotations
+
+import numpy as np
+import pytest
+
+from spmkit.core.analysis import forcecurve
+from spmkit.core.analysis.forcevolume_fast import elasticity_map
+from spmkit.core.models import ForceCurve, ForceSegment, ForceVolume
+
+_R = 10e-9  # radio de punta (m)
+_NU = 0.3  # Poisson
+
+
+def _synthetic_indentation(
+    young: float,
+    model: str = "sphere",
+    n: int = 400,
+    contact_sep: float = 3e-7,
+    noise_frac: float = 0.0,
+    seed: int = 0,
+    half_angle: float = np.deg2rad(20.0),
+    adhesion: float = 0.0,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Genera (separación, fuerza) con módulo conocido para un modelo de contacto.
+
+    Fuera de contacto: fuerza = 0 (línea base plana). En contacto: la ley del modelo.
+    ``noise_frac`` añade ruido gaussiano relativo a la fuerza máxima (ruido conocido).
+    """
+    sep = np.linspace(6e-7, 0.0, n)
+    delta = np.clip(contact_sep - sep, 0.0, None)
+    e_star = young / (1.0 - _NU**2)
+    if model in ("sphere", "paraboloid", "dmt"):
+        force = (4.0 / 3.0) * e_star * np.sqrt(_R) * delta**1.5
+    elif model == "cone":
+        force = (2.0 / np.pi) * e_star * np.tan(half_angle) * delta**2
+    else:  # pragma: no cover
+        raise ValueError(model)
+    if model == "dmt":
+        force = force - adhesion  # DMT: offset de adhesión constante
+    if noise_frac > 0.0:
+        rng = np.random.default_rng(seed)
+        force = force + rng.normal(0.0, noise_frac * float(force.max()), size=force.shape)
+    return sep, force
+
+
+@pytest.mark.parametrize("model", ["sphere", "cone"])
+def test_recupera_modulo_sin_ruido(model: str) -> None:
+    """Sin ruido, el ajuste debe recuperar E a <1% (es una regresión lineal exacta)."""
+    young = 1.0e6
+    sep, force = _synthetic_indentation(young, model=model)
+    fit = forcecurve.fit_force_curve(sep, force, model=model, tip_radius=_R, poisson=_NU)
+    rel_err = abs(fit.young_modulus - young) / young
+    assert rel_err < 0.01, f"{model}: E recuperado {fit.young_modulus:.3e} vs {young:.3e}"
+    assert fit.r_squared > 0.999
+
+
+@pytest.mark.parametrize("seed", [0, 3, 6])
+def test_recupera_modulo_con_ruido(seed: int) -> None:
+    """Con 1% de ruido conocido, E se recupera a <2% gracias al **ajuste conjunto** del
+    punto de contacto (Alpha #1). Con el umbral k·σ, el mismo dato sesga E ~+30%.
+    """
+    young = 5.0e5
+    sep, force = _synthetic_indentation(young, model="sphere", noise_frac=0.01, seed=seed)
+    fit = forcecurve.fit_force_curve(sep, force, model="sphere", tip_radius=_R, poisson=_NU)
+    assert abs(fit.young_modulus - young) / young < 0.02
+
+
+def test_ajuste_conjunto_vence_al_umbral_bajo_ruido() -> None:
+    """Regresión del fix: el contacto por ajuste conjunto debe sesgar mucho menos que el
+    umbral k·σ bajo ruido (protege el fix de Alpha #1 de futuras regresiones)."""
+    young = 5.0e5
+    sep, force = _synthetic_indentation(young, model="sphere", noise_frac=0.01, seed=1)
+    e_joint = forcecurve.fit_force_curve(
+        sep, force, model="sphere", tip_radius=_R, poisson=_NU, contact_method="joint"
+    ).young_modulus
+    e_thr = forcecurve.fit_force_curve(
+        sep, force, model="sphere", tip_radius=_R, poisson=_NU, contact_method="threshold"
+    ).young_modulus
+    err_joint = abs(e_joint - young) / young
+    err_thr = abs(e_thr - young) / young
+    assert err_joint < 0.02 and err_joint < err_thr / 5  # el conjunto es ≫ mejor
+
+
+# NOTA: recuperación DMT/JKR con adhesión requiere un sintético con **snap-in** realista
+# (la detección de contacto DMT usa el mínimo/snap-in). Mi sintético de baseline plana no lo
+# tiene, así que se difiere a la tanda que construya el generador de snap-in + JKR validado.
+
+
+def test_recupera_mapa_de_modulos() -> None:
+    """La ruta vectorizada (elasticity_map) recupera un gradiente de módulos conocidos."""
+    moduli = [3.0e5, 6.0e5, 1.2e6, 2.4e6]
+    curves = []
+    for e in moduli:
+        sep, force = _synthetic_indentation(e, model="sphere")
+        z = np.zeros_like(sep)
+        seg = ForceSegment(
+            segment_type="extend",
+            direction="approach",
+            raw_height=sep,
+            raw_deflection=z,
+            deflection=z,
+            force=force,
+            separation=sep,
+            state="force_n",
+        )
+        curves.append(ForceCurve(segments=(seg, seg)))
+    vol = ForceVolume.from_curves(tuple(curves), grid_shape=(1, 4), x_range=1e-6, y_range=1e-6)
+    result = elasticity_map(vol, tip_radius=_R, poisson=_NU, model="sphere")
+    assert result.n_ok == 4
+    recovered = np.asarray(result.maps["young_modulus"]).ravel()
+    for got, want in zip(recovered, moduli, strict=True):
+        assert abs(got - want) / want < 0.02, f"mapa: {got:.3e} vs {want:.3e}"

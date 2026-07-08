@@ -40,6 +40,56 @@ def _trapz(f: Any, x: Any) -> Any:
     return 0.5 * ((x[:, 1:] - x[:, :-1]) * (f[:, 1:] + f[:, :-1])).sum(axis=1)
 
 
+def _joint_contact_batch(
+    xr: Any, fc: Any, exponent: float, i_peak: Any, baseline_fraction: float, xp: Any
+) -> Any:
+    """Punto de contacto por **ajuste conjunto**, vectorizado sobre ``N`` curvas.
+
+    Espejo vectorizado de :func:`forcecurve._joint_contact_point`: para cada curva busca el
+    ``z_c`` que minimiza el residuo de ``F = A·δ^n`` (A cerrado por z_c) sobre la rama de
+    carga. Inmune al sesgo del umbral bajo ruido (ver `tests/validation/test_recovery.py`).
+    """
+    n, m = fc.shape
+    rows = xp.arange(n)
+    base_n = max(3, int(m * baseline_fraction))
+    base_x = xp.median(xr[:, :base_n], axis=1)
+    sense = xp.where(xr[rows, i_peak] >= base_x, 1.0, -1.0)
+    j = xp.arange(m)[None, :]
+    dom = (j <= i_peak[:, None]).astype(xp.float64)  # base + carga (dominio fijo)
+    big = float(xp.abs(xr).max()) + 1.0
+    lo = xp.where(dom > 0, xr, big).min(axis=1)
+    hi = xp.where(dom > 0, xr, -big).max(axis=1)
+
+    def ssr_at(zc: Any) -> Any:  # zc: (n,) → ssr (n,)
+        delta = xp.clip(sense[:, None] * (xr - zc[:, None]), 0.0, None) * dom
+        basis = delta**exponent
+        denom = (basis * basis).sum(axis=1)
+        a = xp.where(
+            denom > 0, (basis * fc * dom).sum(axis=1) / xp.where(denom > 0, denom, 1.0), 0.0
+        )
+        return ((fc - a[:, None] * basis) ** 2 * dom).sum(axis=1)
+
+    span = hi - lo
+    best_zc = lo.copy()
+    best_ssr = xp.full(n, xp.inf)
+    grid = xp.linspace(0.0, 1.0, 64)
+    for t in grid:  # grilla gruesa
+        zc = lo + span * float(t)
+        s = ssr_at(zc)
+        better = s < best_ssr
+        best_ssr, best_zc = xp.where(better, s, best_ssr), xp.where(better, zc, best_zc)
+    step = span / 64.0
+    fine = xp.linspace(-1.0, 1.0, 21)
+    for _ in range(3):  # refinamiento
+        for t in fine:
+            zc = best_zc + step * float(t)
+            s = ssr_at(zc)
+            better = s < best_ssr
+            best_ssr, best_zc = xp.where(better, s, best_ssr), xp.where(better, zc, best_zc)
+        step = step / 10.0
+    return best_zc
+
+
 def _fit_batch(
     x: Any,
     force: Any,
@@ -50,6 +100,7 @@ def _fit_batch(
     baseline_fraction: float,
     k_sigma: float,
     xp: Any,
+    contact_method: str = "joint",
 ) -> dict[str, Any]:
     """Ajuste batched de ``(N, M)`` curvas. Devuelve arreglos ``(N,)`` por propiedad."""
     n, m = force.shape
@@ -75,12 +126,23 @@ def _fit_batch(
 
     adhesion = xp.maximum(0.0, -fc.min(axis=1))
     peak = fc.max(axis=1)
+    sigma_base = fc[:, :n_base].std(axis=1)  # ruido de la línea base (gate de contacto)
 
     # --- punto de contacto ---
     rows = xp.arange(n)
+    i_peak = fc.argmax(axis=1)
+    j = xp.arange(m)[None, :]
     if dmt:
         i0 = fc.argmin(axis=1)
-    else:
+        x0 = xr[rows, i0]
+    elif contact_method == "joint":
+        # Ajuste conjunto (default): z_c continuo inmune al sesgo del umbral bajo ruido.
+        x0 = _joint_contact_batch(xr, fc, exponent, i_peak, baseline_fraction, xp)
+        base_x = xp.median(xr[:, : max(3, int(m * baseline_fraction))], axis=1)
+        sense = xp.where(xr[rows, i_peak] >= base_x, 1.0, -1.0)
+        on_load = (sense[:, None] * (xr - x0[:, None]) > 0) & (j <= i_peak[:, None])
+        i0 = xp.where(on_load.any(axis=1), on_load.argmax(axis=1), i_peak)
+    else:  # umbral k·σ (rápido; sesga ~+30% con ruido)
         sigma = fc[:, : max(3, int(m * baseline_fraction))].std(axis=1)
         thr = xp.maximum(k_sigma * sigma, 1e-6 * peak)
         above = fc > thr[:, None]
@@ -90,14 +152,11 @@ def _fit_batch(
             sustained.argmax(axis=1),
             xp.where(above.any(axis=1), above.argmax(axis=1), m - 1),
         )
-    i_peak = fc.argmax(axis=1)
+        x0 = xr[rows, i0]
     hi = xp.where(i_peak > i0 + 2, i_peak + 1, m)
-
-    x0 = xr[rows, i0]
     delta = xp.abs(xr - x0[:, None])
     f_fit = fc + (adhesion[:, None] if dmt else 0.0)
 
-    j = xp.arange(m)[None, :]
     window = (j >= i0[:, None]) & (j < hi[:, None]) & (delta > 0)
     w = window.astype(xp.float64)
     count = w.sum(axis=1)
@@ -122,8 +181,11 @@ def _fit_batch(
     max_force = xp.where(window, f_fit, -xp.inf).max(axis=1)
     max_indent = xp.where(window, delta, 0.0).max(axis=1)
 
-    # curvas inválidas (pocos puntos o no finitas) → NaN
-    bad = (count < 3) | ~xp.isfinite(force).all(axis=1)
+    # curvas inválidas → NaN: pocos puntos, no finitas, o **sin contacto sobre el ruido**
+    # (peak ≤ k·σ_base). El gate de contacto lo restaura tras pasar al ajuste conjunto:
+    # una curva plana no debe recuperar E≈0 como si fuera un ajuste válido.
+    no_contact = peak <= k_sigma * sigma_base
+    bad = (count < 3) | ~xp.isfinite(force).all(axis=1) | no_contact
     young = xp.where(bad, xp.nan, young)
 
     return {
@@ -176,6 +238,7 @@ def elasticity_map(
     baseline_fraction: float = 0.3,
     k_sigma: float = 5.0,
     backend: str = "cpu",
+    contact_method: str = "joint",
 ) -> VolumeResult:
     """Mapa de propiedades mecánicas de ``volume`` de forma vectorizada (CPU/GPU).
 
@@ -196,6 +259,7 @@ def elasticity_map(
         baseline_fraction,
         k_sigma,
         xp,
+        contact_method,
     )
     flat = {k: compute.to_numpy(v) for k, v in fitted.items()}
 
