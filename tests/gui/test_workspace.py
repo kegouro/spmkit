@@ -88,3 +88,24 @@ def test_command_palette_runs_selected(qtbot) -> None:  # type: ignore[no-untype
     palette._filter("mapa")
     palette._run_current()
     assert hits == ["mapa"]
+
+
+def test_add_toolbar_action_visible(qtbot) -> None:  # type: ignore[no-untyped-def]
+    ws = Workspace()
+    qtbot.addWidget(ws)
+    hits: list[int] = []
+    ws.add_toolbar_action("📂  Abrir…", lambda: hits.append(1))
+    labels = [a.text() for a in ws._persp_bar.actions() if a.text()]
+    assert "📂  Abrir…" in labels
+    assert labels.index("📂  Abrir…") < labels.index("Imagen")  # a la izquierda de perspectivas
+    next(a for a in ws._persp_bar.actions() if a.text() == "📂  Abrir…").trigger()
+    assert hits == [1]  # el botón dispara el callback
+
+
+def test_build_workspace_has_open_button(qtbot) -> None:  # type: ignore[no-untyped-def]
+    from spmkit.gui.app_workspace import build_workspace
+
+    ws = build_workspace()
+    qtbot.addWidget(ws)
+    labels = [a.text() for a in ws._persp_bar.actions() if a.text()]
+    assert any("Abrir" in t for t in labels) and any("Guardar" in t for t in labels)

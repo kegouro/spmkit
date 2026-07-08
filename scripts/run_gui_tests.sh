@@ -42,22 +42,39 @@ sys.exit(0 if tests > 0 and bad == 0 else 1)
 PY
 }
 
-# Devuelve 0 (ok) / 1 (fallo) / 2 (timeout) para un archivo.
-_run_one() {
-  local f="$1" xml code
-  xml="$(mktemp)"
+# Corre un archivo una vez. Devuelve: 0 ok · 2 timeout · 3 crash-signal sin XML válido · 1 fallo.
+_try() {
+  local f="$1" xml="$2" code
   $TIMEOUT_BIN "$PYTHON" -m pytest "$f" -o addopts="" --no-cov -q -p no:faulthandler \
     --junit-xml="$xml"
   code=$?
-  if [ "$code" -eq 0 ]; then rm -f "$xml"; return 0; fi
-  if [ "$code" -eq 124 ]; then rm -f "$xml"; return 2; fi  # timeout → cuelgue real
+  [ "$code" -eq 0 ] && return 0
+  [ "$code" -eq 124 ] && return 2  # timeout → cuelgue real
   if [ -s "$xml" ] && _xml_all_passed "$xml"; then
-    rm -f "$xml"
     echo "  (salida $code tras pasar — segfault de teardown de Qt; se acepta)"
     return 0
   fi
+  [ "$code" -gt 128 ] && return 3  # señal de crash (segfault/abort) sin XML → teardown flaky
+  return 1  # fallo real (exit 1) o XML con fallos/errores
+}
+
+# Devuelve 0 (ok) / 1 (fallo) / 2 (timeout). Reintenta 1× ante crash-signal sin XML: el
+# segfault de teardown de Qt en Linux es intermitente en archivos que arman muchos workspaces;
+# un crash determinista o un fallo real vuelve a fallar y no se enmascara.
+_run_one() {
+  local f="$1" xml rc
+  xml="$(mktemp)"
+  _try "$f" "$xml"
+  rc=$?
+  if [ "$rc" -eq 3 ]; then
+    echo "  (crash sin XML — reintento 1×)"
+    : >"$xml"
+    _try "$f" "$xml"
+    rc=$?
+    [ "$rc" -eq 3 ] && rc=1  # crashea de nuevo sin XML → fallo real
+  fi
   rm -f "$xml"
-  return 1
+  return "$rc"
 }
 
 failed=""
