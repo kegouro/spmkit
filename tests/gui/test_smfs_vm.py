@@ -102,3 +102,27 @@ def test_smfs_panel_cambia_modelo_actualiza_encabezado(qtbot) -> None:  # type: 
     panel._combo.setCurrentIndex(1)  # FJC
     assert svm.model == "fjc"
     assert panel._table.horizontalHeaderItem(2).text() == "b (nm)"  # Kuhn, no lp
+
+
+def test_smfs_vm_umbral_editable_recalcula(qtbot) -> None:  # type: ignore[no-untyped-def]
+    fvm = ForceViewModel()
+    svm = SmfsViewModel(fvm)
+    fvm.set_volume(_smfs_volume())
+    assert len(svm.result.events) == 3
+    changed: list = []
+    svm.paramsChanged.connect(changed.append)
+    svm.set_param("min_prominence_sigma", 1e9)  # nada supera esa prominencia
+    assert changed and changed[-1]["min_prominence_sigma"] == 1e9
+    assert svm.result is not None and len(svm.result.events) == 0  # el umbral editó el resultado
+
+
+def test_smfs_panel_spins_reflejan_y_editan_params(qtbot) -> None:  # type: ignore[no-untyped-def]
+    from spmkit.gui.panels.smfs_canvas import SmfsCanvasPanel
+
+    fvm = ForceViewModel()
+    svm = SmfsViewModel(fvm)
+    panel = SmfsCanvasPanel(svm)
+    qtbot.addWidget(panel)
+    assert panel._spins["min_r_squared"].value() == 0.95  # refleja el default del VM
+    panel._spins["min_r_squared"].setValue(0.80)
+    assert svm.params["min_r_squared"] == 0.80  # el control edita el VM
