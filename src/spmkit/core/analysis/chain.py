@@ -25,8 +25,12 @@ eventos multi-pico es una etapa aparte. Validado por recuperación de parámetro
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
+from typing import TYPE_CHECKING
 
 import numpy as np
+
+if TYPE_CHECKING:
+    from spmkit.core.models import ForceCurve
 
 #: Constante de Boltzmann (J/K).
 _KB = 1.380649e-23
@@ -414,3 +418,19 @@ def fit_chain_events(
         if fit.r_squared >= min_r_squared:
             accepted.append(EventFit(event=ev, fit=fit))
     return accepted
+
+
+def analyze_retract(curve: ForceCurve, model: str = "wlc", **kwargs: object) -> list[EventFit]:
+    """Corre el pipeline SMFS (:func:`fit_chain_events`) sobre la rama de retracción.
+
+    Adaptador de la capa de modelo: extrae ``(separación, fuerza)`` del segmento de retract de
+    una ``ForceCurve`` **ya calibrada** (con fuerza y separación calculadas) y delega en
+    :func:`fit_chain_events`. Es la costura única que CLI y GUI reutilizan. ``**kwargs`` pasa a
+    ``fit_chain_events`` (``min_r_squared``, ``correct_baseline``, umbrales…).
+    """
+    seg = curve.retract
+    if seg is None:
+        raise ValueError("la curva no tiene segmento de retracción")
+    sep = seg.require_separation()
+    force = seg.require_force()
+    return fit_chain_events(sep, force, model=model, **kwargs)  # type: ignore[arg-type]

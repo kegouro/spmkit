@@ -326,3 +326,46 @@ def test_pipeline_smfs_recupera_contornos_con_tilt() -> None:
     # el tilt (mayor que el pico) arruina detección/ajuste si no se corrige la base primero
     bad = chain.fit_chain_events(sep, f, model="wlc", correct_baseline=False)
     assert len(bad) < 3
+
+
+def test_analyze_retract_desde_forcecurve() -> None:
+    """El adaptador de modelo corre el pipeline sobre la rama de retract de una ForceCurve."""
+    from spmkit.core.analysis import chain
+    from spmkit.core.models import ForceCurve, ForceSegment
+
+    contours = [70e-9, 95e-9, 120e-9]
+    sep, f = _sawtooth_varying(contours, noise_frac=0.01, seed=0)
+    seg = ForceSegment(
+        segment_type="retract",
+        direction="retract",
+        raw_height=sep,
+        raw_deflection=np.zeros_like(sep),
+        force=f,
+        separation=sep,
+        state="force_n",
+    )
+    curve = ForceCurve(segments=(seg,))
+    results = chain.analyze_retract(curve, model="wlc")
+    assert len(results) == 3
+    got = sorted(r.fit.contour_length for r in results)
+    for recovered, want in zip(got, contours, strict=True):
+        assert abs(recovered - want) / want < 0.06
+
+
+def test_analyze_retract_sin_retract_da_error() -> None:
+    """Una curva sin segmento de retracción falla con un error controlado."""
+    from spmkit.core.analysis import chain
+    from spmkit.core.models import ForceCurve, ForceSegment
+
+    sep = np.linspace(6e-7, 0.0, 100)
+    seg = ForceSegment(
+        segment_type="extend",
+        direction="approach",
+        raw_height=sep,
+        raw_deflection=np.zeros_like(sep),
+        force=np.zeros_like(sep),
+        separation=sep,
+        state="force_n",
+    )
+    with pytest.raises(ValueError, match="retracci"):
+        chain.analyze_retract(ForceCurve(segments=(seg,)))
