@@ -57,6 +57,7 @@ nav:
   - Referencia técnica:
       - Arquitectura: ARCHITECTURE.md
       - Extender spmkit y Fathom: extending.md
+      - Plan de competencia (JPK/ANA): design/COMPETITION_ROADMAP.md
       - Validación científica: VALIDATION.md
       - Trazabilidad del pipeline: TRACEABILITY.md
       - Roadmap: ROADMAP.md
