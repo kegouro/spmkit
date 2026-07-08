@@ -221,3 +221,65 @@ def test_corrige_baseline_retract_recupera_plano_y_preserva_evento() -> None:
     assert float(np.std(corr[far])) < 0.05 * peak_clean  # solo ruido, sin tilt
     # el pico del evento se conserva (la recta restada es ~plana donde está el evento)
     assert abs(float(corr[evt].max()) - peak_clean) / peak_clean < 0.1
+
+
+# --------------------------------------------------------- detección de eventos multi-pico
+
+_SEG_LEN, _CONTOUR = 80e-9, 82e-9  # cada evento ocupa ~80 nm; contorno 82 nm (sube en todo)
+
+
+def _sawtooth(n_events: int = 4, noise_frac: float = 0.0, seed: int = 0):
+    """Retract sintético tipo *sawtooth*: N eventos WLC (sube → ruptura → 0) + cola libre."""
+    from spmkit.core.analysis import chain
+
+    seps, forces, peaks = [], [], []
+    for k in range(n_events):
+        start = k * _SEG_LEN
+        x = np.linspace(0.0, 0.9 * _CONTOUR, 100)  # extensión dentro del evento
+        seps.append(start + x)
+        forces.append(chain.wlc_force(x, _CONTOUR, _LP_TRUE))
+        peaks.append(start + float(x[-1]))  # separación de la ruptura (pico)
+    tail = np.linspace(seps[-1][-1], seps[-1][-1] + 160e-9, 200)  # cola libre para σ
+    seps.append(tail)
+    forces.append(np.zeros_like(tail))
+    sep = np.concatenate(seps)
+    f = np.concatenate(forces)
+    if noise_frac > 0.0:
+        rng = np.random.default_rng(seed)
+        f = f + rng.normal(0.0, noise_frac * float(f.max()), f.shape)
+    return sep, f, np.array(peaks)
+
+
+def test_detecta_eventos_multipico() -> None:
+    """Detecta los N eventos de un sawtooth ruidoso, cada pico cerca de la ruptura real."""
+    from spmkit.core.analysis import chain
+
+    sep, f, peaks_true = _sawtooth(n_events=4, noise_frac=0.01, seed=0)
+    events = chain.detect_events(sep, f)
+    assert len(events) == 4
+    got = np.array([e.separation for e in events])
+    assert np.all(np.abs(got - peaks_true) < 2e-9)  # pico bien localizado (<2 nm)
+    assert all(e.prominence > 0 for e in events)
+
+
+def test_ruido_puro_no_genera_eventos() -> None:
+    """Baseline puro con ruido: la detección por prominencia no inventa rupturas."""
+    from spmkit.core.analysis import chain
+
+    rng = np.random.default_rng(1)
+    sep = np.linspace(0.0, 500e-9, 400)
+    f = rng.normal(0.0, 1e-11, sep.shape)  # solo ruido gaussiano
+    assert chain.detect_events(sep, f) == []
+
+
+def test_evento_detectado_recupera_su_contorno() -> None:
+    """El tramo [start, peak] de un evento detectado, ajustado con WLC, recupera su contorno."""
+    from spmkit.core.analysis import chain
+
+    sep, f, _ = _sawtooth(n_events=3, noise_frac=0.0)
+    events = chain.detect_events(sep, f)
+    assert len(events) == 3
+    e = events[0]
+    x = sep[e.start_index : e.peak_index + 1] - sep[e.start_index]
+    fit = chain.fit_wlc(x, f[e.start_index : e.peak_index + 1])
+    assert abs(fit.contour_length - _CONTOUR) / _CONTOUR < 0.05

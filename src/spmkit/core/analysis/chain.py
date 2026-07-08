@@ -258,3 +258,91 @@ def fit_fjc(
         n_fit=int(x.size),
         kuhn_length=float(best_b),
     )
+
+
+# ------------------------------------------------------- detección de eventos (multi-pico)
+
+
+@dataclass(frozen=True)
+class StretchEvent:
+    """Un evento de estiramiento/ruptura en una rama de retracción.
+
+    El ``peak_index`` es el punto de ruptura (máximo antes de la caída brusca); la región
+    ``[start_index, peak_index]`` es el tramo de estiramiento ajustable con :func:`fit_wlc`/
+    :func:`fit_fjc` (desde la ruptura anterior, o el inicio, hasta este pico).
+    """
+
+    start_index: int
+    peak_index: int
+    separation: float  # separación en el pico (m)
+    force: float  # fuerza en el pico (N)
+    prominence: float  # altura sobre el valle previo (N)
+
+
+def detect_events(
+    separation: np.ndarray,
+    force: np.ndarray,
+    baseline_fraction: float = 0.3,
+    min_prominence_sigma: float = 5.0,
+    min_height_sigma: float = 5.0,
+) -> list[StretchEvent]:
+    """Detecta eventos de ruptura en un retract **corregido de línea base**.
+
+    Detección por **prominencia** (peakdet estilo Billauer), no por umbral sobre la fuerza
+    cruda: un pico solo cuenta si (1) destaca ≥ ``min_prominence_sigma · σ`` sobre su valle
+    adyacente **y** (2) se eleva ≥ ``min_height_sigma · σ`` sobre el baseline cero, con ``σ``
+    estimada del ruido de la cola libre (mayor separación). El criterio (1) ignora pendientes
+    suaves; el (2) descarta blips de ruido (el ruido puro apenas llega a ~3σ). Espera la curva
+    ordenada por **separación creciente** (forma natural del retract).
+
+    Devuelve los eventos en orden de separación; cada uno lleva su tramo ajustable
+    ``[start_index, peak_index]`` (desde la ruptura real anterior hasta el pico).
+    """
+    sep = np.asarray(separation, dtype=np.float64)
+    f = np.asarray(force, dtype=np.float64)
+    if sep.size < 5:
+        raise ValueError("se requieren ≥5 puntos para detectar eventos")
+    n_base = max(3, int(sep.size * baseline_fraction))
+    sigma = float(np.std(f[-n_base:]))  # ruido de la cola libre (gran separación)
+    if sigma <= 0.0:
+        sigma = float(np.std(f)) or 1.0  # datos sin ruido: usa la escala global
+    delta = min_prominence_sigma * sigma
+    height_floor = min_height_sigma * sigma
+
+    # peakdet: registra un máximo cuando la fuerza cae ≥ delta por debajo de él. Al registrar,
+    # ``mn`` es el valle que precede al pico → prominencia = mx − mn.
+    candidates: list[tuple[int, float, float]] = []  # (índice, prominencia, fuerza en el pico)
+    mn, mx = np.inf, -np.inf
+    mx_pos = 0
+    look_for_max = True
+    for i in range(f.size):
+        val = f[i]
+        if val > mx:
+            mx, mx_pos = val, i
+        if val < mn:
+            mn = val
+        if look_for_max:
+            if val < mx - delta:  # caída confirmada → ruptura en mx_pos
+                candidates.append((mx_pos, float(mx - mn), float(mx)))
+                mn = val
+                look_for_max = False
+        elif val > mn + delta:  # subió de nuevo → arranca otro evento
+            mx, mx_pos = val, i
+            look_for_max = True
+
+    events: list[StretchEvent] = []
+    prev = 0
+    for pos, prom, peak_f in candidates:
+        if peak_f < height_floor:  # blip de ruido: no define un evento ni el tramo siguiente
+            continue
+        events.append(
+            StretchEvent(
+                start_index=prev,
+                peak_index=int(pos),
+                separation=float(sep[pos]),
+                force=peak_f,
+                prominence=prom,
+            )
+        )
+        prev = int(pos)
+    return events
