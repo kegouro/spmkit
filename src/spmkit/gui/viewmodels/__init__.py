@@ -7,6 +7,7 @@ from spmkit.gui.viewmodels.grains_vm import GrainsViewModel
 from spmkit.gui.viewmodels.image_vm import ImageViewModel
 from spmkit.gui.viewmodels.map_vm import PROPERTIES, MapViewModel
 from spmkit.gui.viewmodels.simulator_vm import SimulatorViewModel
+from spmkit.gui.viewmodels.smfs_vm import SmfsResult, SmfsViewModel
 from spmkit.gui.viewmodels.spectral_vm import SpectralResult, SpectralViewModel
 from spmkit.gui.viewmodels.view3d_vm import View3DViewModel
 
@@ -23,4 +24,6 @@ __all__ = [
     "GrainsViewModel",
     "SpectralViewModel",
     "SpectralResult",
+    "SmfsViewModel",
+    "SmfsResult",
 ]
