@@ -63,21 +63,31 @@ def test_recupera_modulo_sin_ruido(model: str) -> None:
     assert fit.r_squared > 0.999
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason=(
-        "BUG conocido (Alpha #1): la detección de contacto por umbral k·σ sesga E ~+30% "
-        "bajo 1% de ruido gaussiano (sesgo sistemático, no scatter). Fix: contacto robusto "
-        "(ROV/ajuste conjunto del punto de contacto). El gate lo deja VISIBLE y rastreado; "
-        "cuando se arregle, strict=True hace fallar el xfail y se quita esta marca."
-    ),
-)
-def test_recupera_modulo_con_ruido() -> None:
-    """Con 1% de ruido conocido, E debería recuperarse a <5% (hoy NO — ver xfail)."""
+@pytest.mark.parametrize("seed", [0, 3, 6])
+def test_recupera_modulo_con_ruido(seed: int) -> None:
+    """Con 1% de ruido conocido, E se recupera a <2% gracias al **ajuste conjunto** del
+    punto de contacto (Alpha #1). Con el umbral k·σ, el mismo dato sesga E ~+30%.
+    """
     young = 5.0e5
-    sep, force = _synthetic_indentation(young, model="sphere", noise_frac=0.01, seed=3)
+    sep, force = _synthetic_indentation(young, model="sphere", noise_frac=0.01, seed=seed)
     fit = forcecurve.fit_force_curve(sep, force, model="sphere", tip_radius=_R, poisson=_NU)
-    assert abs(fit.young_modulus - young) / young < 0.05
+    assert abs(fit.young_modulus - young) / young < 0.02
+
+
+def test_ajuste_conjunto_vence_al_umbral_bajo_ruido() -> None:
+    """Regresión del fix: el contacto por ajuste conjunto debe sesgar mucho menos que el
+    umbral k·σ bajo ruido (protege el fix de Alpha #1 de futuras regresiones)."""
+    young = 5.0e5
+    sep, force = _synthetic_indentation(young, model="sphere", noise_frac=0.01, seed=1)
+    e_joint = forcecurve.fit_force_curve(
+        sep, force, model="sphere", tip_radius=_R, poisson=_NU, contact_method="joint"
+    ).young_modulus
+    e_thr = forcecurve.fit_force_curve(
+        sep, force, model="sphere", tip_radius=_R, poisson=_NU, contact_method="threshold"
+    ).young_modulus
+    err_joint = abs(e_joint - young) / young
+    err_thr = abs(e_thr - young) / young
+    assert err_joint < 0.02 and err_joint < err_thr / 5  # el conjunto es ≫ mejor
 
 
 # NOTA: recuperación DMT/JKR con adhesión requiere un sintético con **snap-in** realista

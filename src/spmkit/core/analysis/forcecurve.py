@@ -154,6 +154,49 @@ def find_contact(
     return float(x[_contact_index(f_corr, baseline_fraction, k_sigma)])
 
 
+def _joint_contact_point(
+    x: np.ndarray, f_corr: np.ndarray, exponent: float, baseline_fraction: float
+) -> tuple[float, float]:
+    """Punto de contacto por **ajuste conjunto** del modelo ``F = A·δ^n``.
+
+    Trata el punto de contacto ``z_c`` como parámetro del ajuste (no un umbral): busca el
+    ``z_c`` que minimiza el residuo sobre la rama de carga. Aprovecha que, fijado ``z_c``,
+    ``A`` es lineal → tiene solución cerrada, así el problema conjunto se reduce a una
+    búsqueda 1D robusta (mínimos cuadrados separables / *variable projection*). Inmune al
+    sesgo del umbral: el ruido de la línea base no arrastra el contacto porque el modelo es
+    plano-luego-potencia y penaliza meter baseline en la región de contacto.
+
+    Devuelve ``(z_c, sentido)`` donde ``sentido`` (±1) indica si el contacto está a mayor o
+    menor ``x`` (la rama de carga es ``sentido·(x − z_c) > 0``).
+    """
+    n = f_corr.size
+    i_peak = int(np.argmax(f_corr))
+    base_n = max(3, int(n * baseline_fraction))
+    base_x = float(np.median(x[:base_n]))
+    sense = 1.0 if float(x[i_peak]) >= base_x else -1.0
+    # Dominio fijo: de la base al pico (carga). El domino fijo es clave: mover z_c reparte el
+    # error entre "baseline plana" y "curva de contacto", no cambia el número de puntos.
+    xd = x[: i_peak + 1]
+    fd = f_corr[: i_peak + 1]
+
+    def ssr(zc: float) -> float:
+        delta = np.clip(sense * (xd - zc), 0.0, None)
+        basis = delta**exponent
+        denom = float(np.sum(basis * basis))
+        if denom <= 0.0:
+            return float(np.sum(fd * fd))
+        a = float(np.sum(basis * fd) / denom)
+        return float(np.sum((fd - a * basis) ** 2))
+
+    lo, hi = float(xd.min()), float(xd.max())
+    best = min(np.linspace(lo, hi, 64), key=ssr)
+    step = (hi - lo) / 64.0
+    for _ in range(3):  # refina alrededor del óptimo
+        best = min(np.linspace(best - step, best + step, 21), key=ssr)
+        step /= 10.0
+    return float(best), sense
+
+
 @dataclass(frozen=True)
 class ContactRegion:
     """Rama de **carga** de una curva de fuerza (del contacto al pico), ya extraída."""
@@ -173,12 +216,17 @@ def contact_indentation(
     baseline_fraction: float = 0.3,
     k_sigma: float = 5.0,
     fit_range: tuple[float, float] | None = None,
+    contact_method: str = "joint",
 ) -> ContactRegion:
     """Extrae ``(δ, fuerza)`` de la rama de carga con la lógica de contacto **validada**.
 
-    Orienta por la línea base, la corrige, detecta el contacto (snap-in para DMT) y toma
-    del contacto al pico. Es la MISMA extracción que usa :func:`fit_force_curve`; la
-    comparten Hertz/DMT y los modelos experimentales (JKR) para no re-derivarla.
+    Orienta por la línea base, la corrige, detecta el contacto y toma del contacto al pico.
+    Es la MISMA extracción que usa :func:`fit_force_curve`; la comparten Hertz/DMT y los
+    modelos experimentales (JKR).
+
+    ``contact_method``: ``"joint"`` (default) usa el **ajuste conjunto** del punto de contacto
+    (inmune al sesgo del ruido de baseline); ``"threshold"`` usa el umbral k·σ (más rápido,
+    sesga ~+30% con ruido). DMT siempre usa el snap-in (mínimo de fuerza).
     """
     x = np.asarray(x, dtype=np.float64)
     force = np.asarray(force, dtype=np.float64)
@@ -197,16 +245,29 @@ def contact_indentation(
     f_corr = force - baseline
     adhesion = float(max(0.0, -f_corr.min()))  # pull-off respecto a la base
 
+    # Gate de contacto: sin señal por encima del ruido de la base no hay contacto real; el
+    # ajuste conjunto "encajaría" A≈0 (E≈0) en una curva plana, que es peor que fallar.
+    sigma_base = float(np.std(f_corr[: max(3, int(f_corr.size * baseline_fraction))]))
+    if float(f_corr.max()) <= k_sigma * sigma_base:
+        raise ValueError("Sin contacto por encima del ruido de la línea base")
+
+    i_peak = int(np.argmax(f_corr))
     if model == "dmt":
         # DMT: el contacto es el snap-in (mínimo de fuerza / máxima adhesión), δ=0, F=−F_adh.
         i0 = int(np.argmin(f_corr))
-    else:
+        x0 = float(x[i0])
+    elif contact_method == "joint":
+        # Ajuste conjunto: z_c continuo que minimiza el residuo del modelo (no un umbral).
+        x0, sense = _joint_contact_point(x, f_corr, _MODELS.get(model, 1.5), baseline_fraction)
+        on_load = (sense * (x - x0) > 0) & (np.arange(x.size) <= i_peak)
+        idx = np.flatnonzero(on_load)
+        i0 = int(idx[0]) if idx.size else i_peak
+    else:  # threshold (k·σ)
         i0 = _contact_index(f_corr, baseline_fraction, k_sigma)
+        x0 = float(x[i0])
     # Ajustar solo la rama de CARGA: de contacto al máximo de fuerza (tras el pico es
     # turnaround/relajación y rompería el ajuste monótono).
-    i_peak = int(np.argmax(f_corr))
     hi = i_peak + 1 if i_peak > i0 + 2 else f_corr.size
-    x0 = float(x[i0])
     delta = np.abs(x[i0:hi] - x0)
     valid = delta > 0
     delta = delta[valid]
@@ -232,6 +293,7 @@ def fit_force_curve(
     baseline_fraction: float = 0.3,
     k_sigma: float = 5.0,
     fit_range: tuple[float, float] | None = None,
+    contact_method: str = "joint",
 ) -> ForceCurveFit:
     """Ajusta un modelo de contacto a una curva de fuerza (eje ``x`` = separación).
 
@@ -246,7 +308,9 @@ def fit_force_curve(
     if model not in _MODELS:
         raise ValueError(f"model debe ser uno de {sorted(_MODELS)}")
 
-    region = contact_indentation(x, force, model, baseline_fraction, k_sigma, fit_range)
+    region = contact_indentation(
+        x, force, model, baseline_fraction, k_sigma, fit_range, contact_method
+    )
     delta, f_fit = region.delta, region.force
     adhesion, x0 = region.adhesion, region.contact_point
     if model == "dmt":
