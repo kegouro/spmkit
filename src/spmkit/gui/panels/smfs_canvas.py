@@ -11,6 +11,7 @@ from __future__ import annotations
 import numpy as np
 from PyQt6.QtWidgets import (
     QComboBox,
+    QDoubleSpinBox,
     QHBoxLayout,
     QHeaderView,
     QLabel,
@@ -62,6 +63,19 @@ class SmfsCanvasPanel(Panel):
         crow.addWidget(self._readout, 1)
         lay.addWidget(controls)
 
+        # Umbrales del pipeline editables (nada hardcodeado): QC y detección.
+        params = QWidget()
+        prow = QHBoxLayout(params)
+        prow.setContentsMargins(0, 0, 0, 0)
+        p = self._vm.params
+        self._spins: dict[str, QDoubleSpinBox] = {}
+        prow.addWidget(self._spin("min_r_squared", "R² mínimo", 0.0, 1.0, 0.01, 2, p))
+        prow.addWidget(self._spin("min_prominence_sigma", "Prominencia (σ)", 1.0, 30.0, 0.5, 1, p))
+        prow.addWidget(self._spin("min_height_sigma", "Altura (σ)", 1.0, 30.0, 0.5, 1, p))
+        prow.addWidget(self._spin("baseline_fraction", "Cola base", 0.05, 0.6, 0.05, 2, p))
+        prow.addStretch(1)
+        lay.addWidget(params)
+
         self._plot = pg.PlotWidget()
         self._plot.setLabel("bottom", "Separación", units="nm")
         self._plot.setLabel("left", "Fuerza", units="nN")
@@ -75,6 +89,32 @@ class SmfsCanvasPanel(Panel):
         self._table.setMaximumHeight(180)
         lay.addWidget(self._table)
         return root
+
+    def _spin(
+        self,
+        key: str,
+        label: str,
+        lo: float,
+        hi: float,
+        step: float,
+        decimals: int,
+        params: dict[str, float],
+    ) -> QWidget:
+        """Control etiquetado (QDoubleSpinBox) cableado a ``vm.set_param(key, …)``."""
+        box = QWidget()
+        row = QHBoxLayout(box)
+        row.setContentsMargins(0, 0, 0, 0)
+        row.setSpacing(4)
+        row.addWidget(QLabel(label))
+        spin = QDoubleSpinBox()
+        spin.setRange(lo, hi)
+        spin.setSingleStep(step)
+        spin.setDecimals(decimals)
+        spin.setValue(params[key])
+        spin.valueChanged.connect(lambda v, k=key: self._vm.set_param(k, v))
+        self._spins[key] = spin
+        row.addWidget(spin)
+        return box
 
     def _on_result(self, result: SmfsResult | None) -> None:
         import pyqtgraph as pg

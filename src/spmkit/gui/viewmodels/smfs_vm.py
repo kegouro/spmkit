@@ -19,6 +19,14 @@ from spmkit.core.analysis import chain
 from spmkit.core.pipeline import Recipe, Step, run
 from spmkit.gui.viewmodels.force_vm import ForceViewModel
 
+#: Parámetros del pipeline SMFS expuestos en la UI (nada hardcodeado). Fuente única de defaults.
+DEFAULT_SMFS_PARAMS: dict[str, float] = {
+    "min_r_squared": 0.95,  # QC: descarta ajustes por debajo
+    "min_prominence_sigma": 5.0,  # detección: prominencia mínima sobre el valle (×σ)
+    "min_height_sigma": 5.0,  # detección: altura mínima sobre el baseline (×σ)
+    "baseline_fraction": 0.3,  # fracción de la cola libre para σ y corrección de base
+}
+
 
 @dataclass(frozen=True)
 class SmfsResult:
@@ -37,11 +45,13 @@ class SmfsViewModel(QObject):
     resultChanged = pyqtSignal(object)  # SmfsResult (o None al invalidar)
     statusChanged = pyqtSignal(str)
     modelChanged = pyqtSignal(str)  # "wlc" | "fjc"
+    paramsChanged = pyqtSignal(dict)  # umbrales editados en la UI
 
     def __init__(self, force_vm: ForceViewModel, parent: QObject | None = None) -> None:
         super().__init__(parent)
         self._force_vm = force_vm
         self._model = "wlc"
+        self._params: dict[str, float] = dict(DEFAULT_SMFS_PARAMS)
         self._result: SmfsResult | None = None
         force_vm.curveChanged.connect(lambda _i: self.compute())
         force_vm.volumeChanged.connect(lambda _n: self.compute())
@@ -54,12 +64,25 @@ class SmfsViewModel(QObject):
     def model(self) -> str:
         return self._model
 
+    @property
+    def params(self) -> dict[str, float]:
+        """Copia de los umbrales del pipeline (para poblar los controles de la UI)."""
+        return dict(self._params)
+
     def set_model(self, model: str) -> None:
         """Cambia el modelo de cadena (``"wlc"``/``"fjc"``) y recalcula."""
         if model not in ("wlc", "fjc") or model == self._model:
             return
         self._model = model
         self.modelChanged.emit(model)
+        self.compute()
+
+    def set_param(self, key: str, value: float) -> None:
+        """Actualiza un umbral del pipeline (R², sigmas, fracción) y recalcula."""
+        if key not in self._params or self._params[key] == value:
+            return
+        self._params[key] = float(value)
+        self.paramsChanged.emit(dict(self._params))
         self.compute()
 
     def compute(self) -> None:
@@ -79,9 +102,18 @@ class SmfsViewModel(QObject):
             force = np.asarray(retract.force, dtype=np.float64)
             order = np.argsort(sep)  # el pipeline espera separación creciente
             sep, force = sep[order], force[order]
-            corrected = chain.correct_retract_baseline(sep, force)
+            p = self._params
+            bf = p["baseline_fraction"]
+            corrected = chain.correct_retract_baseline(sep, force, baseline_fraction=bf)
             events = chain.fit_chain_events(
-                sep, corrected, model=self._model, correct_baseline=False
+                sep,
+                corrected,
+                model=self._model,
+                correct_baseline=False,
+                baseline_fraction=bf,
+                min_prominence_sigma=p["min_prominence_sigma"],
+                min_height_sigma=p["min_height_sigma"],
+                min_r_squared=p["min_r_squared"],
             )
         except Exception as exc:  # noqa: BLE001 - curva degenerada: se informa, no tumba la app
             self.statusChanged.emit(f"SMFS falló: {exc}")
