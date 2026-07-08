@@ -197,3 +197,27 @@ def test_recupera_fjc_con_ruido() -> None:
     fit = chain.fit_fjc(x, f)
     assert abs(fit.contour_length - _L_TRUE) / _L_TRUE < 0.02
     assert abs(fit.kuhn_length - _B_TRUE) / _B_TRUE < 0.05
+
+
+def test_corrige_baseline_retract_recupera_plano_y_preserva_evento() -> None:
+    """La corrección de retract debe quitar un artefacto lineal (offset+tilt) conocido:
+    la cola libre queda ~0 y la altura del evento se preserva (paso previo a los ajustes)."""
+    from spmkit.core.analysis import chain
+
+    sep = np.linspace(0.0, 600e-9, 400)
+    # Evento WLC entre 100–300 nm; base plana (0) antes y en la cola de gran separación.
+    evt = (sep >= 100e-9) & (sep <= 300e-9)
+    clean = np.zeros_like(sep)
+    clean[evt] = chain.wlc_force(sep[evt] - 100e-9, 220e-9, _LP_TRUE)
+    peak_clean = float(clean.max())
+
+    slope, offset = 3e-3, 8e-12  # deflexión virtual: N/m de tilt + offset del fotodetector
+    rng = np.random.default_rng(0)
+    raw = clean + slope * sep + offset + rng.normal(0.0, 0.01 * peak_clean, sep.shape)
+
+    corr = chain.correct_retract_baseline(sep, raw)
+    far = np.argsort(sep)[-120:]  # cola libre (gran separación)
+    assert abs(float(corr[far].mean())) < 0.05 * peak_clean  # base ~0
+    assert float(np.std(corr[far])) < 0.05 * peak_clean  # solo ruido, sin tilt
+    # el pico del evento se conserva (la recta restada es ~plana donde está el evento)
+    assert abs(float(corr[evt].max()) - peak_clean) / peak_clean < 0.1
