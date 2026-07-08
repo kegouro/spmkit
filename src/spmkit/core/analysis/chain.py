@@ -15,9 +15,11 @@ que multiplica es un factor **lineal** dada la longitud no lineal (``lp`` dado `
 WLC; ``L`` dado ``b`` en el FJC) → solución cerrada por mínimos cuadrados y búsqueda 1D
 robusta sobre el parámetro no lineal. numpy puro, sin solver.
 
-Nota de alcance: el ajuste asume la curva **ya corregida de línea base** en la rama de
-retracción (la corrección de drift/baseline de retract y la detección de eventos son etapas
-aparte). Validado por recuperación de parámetros conocidos (``tests/validation/test_recovery``).
+Nota de alcance: los ajustes de cadena asumen la curva **ya corregida de línea base** en la
+rama de retracción. Ese paso previo lo hace :func:`correct_retract_baseline` (quita offset +
+inclinación por deflexión virtual usando la cola libre a gran separación); la detección de
+eventos multi-pico es una etapa aparte. Validado por recuperación de parámetros conocidos
+(``tests/validation/test_recovery``).
 """
 
 from __future__ import annotations
@@ -32,6 +34,32 @@ _KB = 1.380649e-23
 #: Coeficientes de la corrección de Bouchiat et al. (1999), a₂…a₇. Reducen el error del WLC
 #: de Marko-Siggia (~10% cerca de la extensión total) a ~0.01%.
 _BOUCHIAT = (-0.5164228, -2.737418, 16.07497, -38.87607, 39.49944, -14.17718)
+
+
+def correct_retract_baseline(
+    separation: np.ndarray,
+    force: np.ndarray,
+    baseline_fraction: float = 0.3,
+) -> np.ndarray:
+    """Corrige offset + inclinación (deflexión virtual) de la rama de retracción.
+
+    En un retract, tras el despegue de la molécula la punta queda libre y la fuerza a **gran
+    separación** debe ser cero: esa cola es la línea base real. Un retract crudo trae un
+    artefacto **lineal** (offset del fotodetector + inclinación de la deflexión virtual). Se
+    ajusta una recta ``force ~ separation`` a la cola libre (la fracción de mayor separación)
+    y se resta de toda la curva → línea base plana ~0, preservando la altura de los eventos.
+
+    Paso previo obligatorio a :func:`fit_wlc`/:func:`fit_fjc` sobre datos reales. numpy puro.
+    """
+    sep = np.asarray(separation, dtype=np.float64)
+    f = np.asarray(force, dtype=np.float64)
+    if sep.size < 5:
+        raise ValueError("se requieren ≥5 puntos para corregir la línea base")
+    n_base = max(3, int(sep.size * baseline_fraction))
+    far = np.argsort(sep)[-n_base:]  # cola de mayor separación (punta despegada)
+    s = sep - sep.mean()  # centrar mejora el condicionamiento del polyfit
+    slope, offset = np.polyfit(s[far], f[far], 1)
+    return f - (slope * s + offset)
 
 
 @dataclass(frozen=True)
