@@ -283,3 +283,46 @@ def test_evento_detectado_recupera_su_contorno() -> None:
     x = sep[e.start_index : e.peak_index + 1] - sep[e.start_index]
     fit = chain.fit_wlc(x, f[e.start_index : e.peak_index + 1])
     assert abs(fit.contour_length - _CONTOUR) / _CONTOUR < 0.05
+
+
+def _sawtooth_varying(contours, noise_frac=0.0, tilt=0.0, offset=0.0, seed=0):
+    """Sawtooth con un contorno distinto por evento (+ tilt/offset de deflexión virtual)."""
+    from spmkit.core.analysis import chain
+
+    seps, forces = [], []
+    start = 0.0
+    for c in contours:
+        x = np.linspace(0.0, 0.9 * c, 130)
+        seps.append(start + x)
+        forces.append(chain.wlc_force(x, c, _LP_TRUE))
+        start = start + 0.9 * c + 12e-9  # gap tras la ruptura, antes del próximo evento
+    tail = np.linspace(start, start + 200e-9, 220)
+    seps.append(tail)
+    forces.append(np.zeros_like(tail))
+    sep = np.concatenate(seps)
+    f = np.concatenate(forces)
+    peak = float(f.max())
+    if noise_frac > 0.0 or tilt or offset:
+        rng = np.random.default_rng(seed)
+        f = f + tilt * sep + offset + rng.normal(0.0, noise_frac * peak, sep.shape)
+    return sep, f
+
+
+def test_pipeline_smfs_recupera_contornos_con_tilt() -> None:
+    """Pipeline completo (baseline → detectar → ajustar + QC): recupera el contorno de cada
+    evento de un sawtooth con tilt de deflexión virtual y ruido. Sin corregir baseline, falla."""
+    from spmkit.core.analysis import chain
+
+    contours = [70e-9, 95e-9, 120e-9]
+    sep, f = _sawtooth_varying(contours, noise_frac=0.01, tilt=2e-3, offset=6e-12, seed=0)
+
+    results = chain.fit_chain_events(sep, f, model="wlc")  # corrige baseline internamente
+    assert len(results) == 3
+    got = sorted(r.fit.contour_length for r in results)
+    for recovered, want in zip(got, contours, strict=True):
+        assert abs(recovered - want) / want < 0.06
+    assert all(r.fit.r_squared >= 0.95 for r in results)  # el QC se aplica
+
+    # el tilt (mayor que el pico) arruina detección/ajuste si no se corrige la base primero
+    bad = chain.fit_chain_events(sep, f, model="wlc", correct_baseline=False)
+    assert len(bad) < 3

@@ -331,13 +331,13 @@ def detect_events(
             look_for_max = True
 
     events: list[StretchEvent] = []
-    prev = 0
+    prev = -1  # índice de la ruptura anterior aceptada; el tramo empieza en prev+1
     for pos, prom, peak_f in candidates:
         if peak_f < height_floor:  # blip de ruido: no define un evento ni el tramo siguiente
             continue
         events.append(
             StretchEvent(
-                start_index=prev,
+                start_index=prev + 1,  # tras la ruptura anterior (no incluye su pico)
                 peak_index=int(pos),
                 separation=float(sep[pos]),
                 force=peak_f,
@@ -346,3 +346,71 @@ def detect_events(
         )
         prev = int(pos)
     return events
+
+
+# ---------------------------------------------------------- orquestador SMFS de extremo a extremo
+
+
+@dataclass(frozen=True)
+class EventFit:
+    """Un evento de ruptura junto al modelo de cadena ajustado a su tramo de estiramiento."""
+
+    event: StretchEvent
+    fit: ChainFit
+
+
+def fit_chain_events(
+    separation: np.ndarray,
+    force: np.ndarray,
+    model: str = "wlc",
+    temperature: float = 298.0,
+    baseline_fraction: float = 0.3,
+    min_prominence_sigma: float = 5.0,
+    min_height_sigma: float = 5.0,
+    min_r_squared: float = 0.95,
+    correct_baseline: bool = True,
+    min_points: int = 8,
+) -> list[EventFit]:
+    """Pipeline SMFS de extremo a extremo sobre una rama de retracción.
+
+    Encadena las etapas ya validadas: (1) :func:`correct_retract_baseline` (offset+tilt de
+    deflexión virtual), (2) :func:`detect_events` (rupturas por prominencia + piso de altura)
+    y (3) ajuste de cada tramo ``[start, peak]`` con ``model`` (``"wlc"`` o ``"fjc"``). Aplica
+    **control de calidad**: descarta los ajustes con ``r_squared < min_r_squared`` o con menos
+    de ``min_points`` puntos. Devuelve, en orden de separación, los eventos aceptados con su fit.
+
+    Cada modelo ajusta la extensión relativa al inicio de su tramo (``x = sep − sep[start]``).
+    """
+    if model not in ("wlc", "fjc"):
+        raise ValueError(f"model debe ser 'wlc' o 'fjc'; se recibió {model!r}")
+    sep = np.asarray(separation, dtype=np.float64)
+    f = np.asarray(force, dtype=np.float64)
+    if correct_baseline:
+        f = correct_retract_baseline(sep, f, baseline_fraction=baseline_fraction)
+
+    events = detect_events(
+        sep,
+        f,
+        baseline_fraction=baseline_fraction,
+        min_prominence_sigma=min_prominence_sigma,
+        min_height_sigma=min_height_sigma,
+    )
+
+    accepted: list[EventFit] = []
+    for ev in events:
+        sl = slice(ev.start_index, ev.peak_index + 1)
+        x = sep[sl] - sep[ev.start_index]  # extensión desde el inicio del tramo
+        fseg = f[sl]
+        if x.size < min_points:
+            continue
+        try:
+            fit = (
+                fit_wlc(x, fseg, temperature=temperature)
+                if model == "wlc"
+                else fit_fjc(x, fseg, temperature=temperature)
+            )
+        except ValueError:
+            continue  # tramo degenerado (sin fuerza positiva, etc.) → descartado por QC
+        if fit.r_squared >= min_r_squared:
+            accepted.append(EventFit(event=ev, fit=fit))
+    return accepted
