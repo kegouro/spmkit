@@ -119,3 +119,41 @@ def test_recupera_mapa_de_modulos() -> None:
     recovered = np.asarray(result.maps["young_modulus"]).ravel()
     for got, want in zip(recovered, moduli, strict=True):
         assert abs(got - want) / want < 0.02, f"mapa: {got:.3e} vs {want:.3e}"
+
+
+# --------------------------------------------------------------------- cadena (SMFS)
+
+_L_TRUE, _LP_TRUE = 100e-9, 0.4e-9  # contorno 100 nm, persistencia 0.4 nm (proteína)
+
+
+def _wlc_curve(model: str, noise_frac: float = 0.0, seed: int = 0):
+    from spmkit.core.analysis import chain
+
+    x = np.linspace(0.30 * _L_TRUE, 0.95 * _L_TRUE, 120)
+    f = chain.wlc_force(x, _L_TRUE, _LP_TRUE, model=model)
+    if noise_frac > 0.0:
+        rng = np.random.default_rng(seed)
+        f = f + rng.normal(0.0, noise_frac * float(f.max()), f.shape)
+    return x, f
+
+
+@pytest.mark.parametrize("model", ["marko_siggia", "bouchiat"])
+def test_recupera_wlc_sin_ruido(model: str) -> None:
+    """WLC: sin ruido recupera contorno L y persistencia lp a <1% (ajuste separable exacto)."""
+    from spmkit.core.analysis import chain
+
+    x, f = _wlc_curve(model)
+    fit = chain.fit_wlc(x, f, model=model)
+    assert abs(fit.contour_length - _L_TRUE) / _L_TRUE < 0.01
+    assert abs(fit.persistence_length - _LP_TRUE) / _LP_TRUE < 0.01
+    assert fit.r_squared > 0.999
+
+
+def test_recupera_wlc_con_ruido() -> None:
+    """WLC con 2% de ruido: L a <2%, lp a <5% (bien condicionado como el contacto)."""
+    from spmkit.core.analysis import chain
+
+    x, f = _wlc_curve("bouchiat", noise_frac=0.02, seed=0)
+    fit = chain.fit_wlc(x, f, model="bouchiat")
+    assert abs(fit.contour_length - _L_TRUE) / _L_TRUE < 0.02
+    assert abs(fit.persistence_length - _LP_TRUE) / _LP_TRUE < 0.05
