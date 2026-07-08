@@ -19,5 +19,14 @@ def test_report_generates(qtbot, tmp_path, synthetic_volume, monkeypatch) -> Non
     vm = ws.panel("force_canvas")._vm
     vm.set_volume(synthetic_volume(6))
     _generate_report(ws, vm)  # lanza el informe en un hilo (.html → sólo HTML)
-    qtbot.waitUntil(out.exists, timeout=15000)
+
+    def _report_written() -> bool:
+        # esperar el CONTENIDO, no solo que el archivo exista: el hilo lo crea vacío y
+        # luego escribe, así que ``out.exists`` puede dispararse antes del flush (flaky).
+        try:
+            return "espectroscopía de fuerza" in out.read_text(encoding="utf-8")
+        except OSError:
+            return False
+
+    qtbot.waitUntil(_report_written, timeout=15000)
     assert "espectroscopía de fuerza" in out.read_text(encoding="utf-8")
