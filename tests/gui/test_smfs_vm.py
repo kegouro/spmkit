@@ -75,3 +75,30 @@ def test_smfs_vm_sin_volumen_emite_none(qtbot) -> None:  # type: ignore[no-untyp
     svm = SmfsViewModel(fvm)
     svm.compute()
     assert svm.result is None
+
+
+def test_smfs_panel_dibuja_eventos_y_tabla(qtbot) -> None:  # type: ignore[no-untyped-def]
+    from spmkit.gui.panels.smfs_canvas import SmfsCanvasPanel
+
+    fvm = ForceViewModel()
+    svm = SmfsViewModel(fvm)
+    panel = SmfsCanvasPanel(svm)
+    qtbot.addWidget(panel)
+    assert not panel.errored
+    fvm.set_volume(_smfs_volume())
+    assert panel._table.rowCount() == 3  # una fila por evento
+    assert "3 eventos" in panel._readout.text()
+    assert len(panel._plot.listDataItems()) >= 4  # retract + 3 overlays
+
+
+def test_smfs_panel_cambia_modelo_actualiza_encabezado(qtbot) -> None:  # type: ignore[no-untyped-def]
+    from spmkit.gui.panels.smfs_canvas import SmfsCanvasPanel
+
+    fvm = ForceViewModel()
+    svm = SmfsViewModel(fvm)
+    panel = SmfsCanvasPanel(svm)
+    qtbot.addWidget(panel)
+    fvm.set_volume(_smfs_volume())
+    panel._combo.setCurrentIndex(1)  # FJC
+    assert svm.model == "fjc"
+    assert panel._table.horizontalHeaderItem(2).text() == "b (nm)"  # Kuhn, no lp

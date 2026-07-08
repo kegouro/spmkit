@@ -20,6 +20,7 @@ _ALL_PERSPECTIVES = {
     "grains",
     "spectral",
     "force",
+    "smfs",
     "map",
     "batch",
     "figure",

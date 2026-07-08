@@ -49,6 +49,15 @@ def _pipeline(ctx: ModuleContext):  # type: ignore[no-untyped-def]
     return PipelinePanel(ctx.force_vm)
 
 
+def _smfs(ctx: ModuleContext):  # type: ignore[no-untyped-def]
+    from spmkit.gui.panels.smfs_canvas import SmfsCanvasPanel
+    from spmkit.gui.viewmodels import SmfsViewModel
+
+    vm = SmfsViewModel(ctx.force_vm)
+    ctx.store["smfs_vm"] = vm
+    return SmfsCanvasPanel(vm)
+
+
 def _map_canvas(ctx: ModuleContext):  # type: ignore[no-untyped-def]
     from spmkit.gui.panels.map_canvas import MapCanvasPanel
 
@@ -124,6 +133,9 @@ def _simulator(ctx: ModuleContext):  # type: ignore[no-untyped-def]
 def _wire_force(ws, ctx: ModuleContext) -> None:  # type: ignore[no-untyped-def]
     ctx.map_vm.taskStarted.connect(ws.bind_task)
     ctx.batch_vm.taskStarted.connect(ws.bind_task)
+    smfs_vm = ctx.store.get("smfs_vm")
+    if smfs_vm is not None:  # la perspectiva SMFS puede no estar montada
+        smfs_vm.statusChanged.connect(ws.show_status)
 
 
 def _wire_image(ws, ctx: ModuleContext) -> None:  # type: ignore[no-untyped-def]
@@ -164,6 +176,7 @@ _FORCE = ModuleSpec(
     panels=(
         PanelSpec("force_canvas", "Curva de fuerza", _force_canvas),
         PanelSpec("pipeline", "Pipeline", _pipeline, area="bottom"),
+        PanelSpec("smfs_canvas", "SMFS", _smfs),
         PanelSpec("map_canvas", "Mapa", _map_canvas),
         PanelSpec("histogram", "Histograma", _histogram, area="right"),
         PanelSpec("batch_table", "Batch", _batch_table),
@@ -172,6 +185,7 @@ _FORCE = ModuleSpec(
         PerspectiveSpec(
             "force", "Curva de fuerza", ("navigator", "force_canvas", "inspector", "pipeline")
         ),
+        PerspectiveSpec("smfs", "SMFS", ("navigator", "smfs_canvas", "inspector")),
         PerspectiveSpec("map", "Mapa", ("navigator", "map_canvas", "inspector", "histogram")),
         PerspectiveSpec("batch", "Batch", ("navigator", "batch_table", "log")),
     ),
