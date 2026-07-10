@@ -190,6 +190,25 @@ class ForceViewModel(QObject):
         self._fit_timer.stop()
         self._run_fit()
 
+    def estimate_invols(self) -> float | None:
+        """InVOLS (m/V) de la curva activa por :func:`calibration.deflection_sensitivity`.
+
+        Usa la deflexión cruda (V) y la altura del segmento de aproximación (o el primero).
+        Devuelve ``None`` si no hay curva o el cálculo falla (curva ya calibrada, etc.).
+        """
+        if self._volume is None:
+            return None
+        from spmkit.core.analysis import calibration
+
+        curve = self._curve(self._index)
+        seg = curve.extend or (curve.segments[0] if curve.segments else None)
+        if seg is None:
+            return None
+        try:
+            return calibration.deflection_sensitivity(seg.raw_deflection, seg.raw_height)
+        except Exception:  # noqa: BLE001 - datos degenerados: sin estimación
+            return None
+
     # ---- internos ----
     def _curve(self, index: int) -> Any:
         if index in self._curve_cache:
