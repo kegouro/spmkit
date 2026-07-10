@@ -27,6 +27,7 @@ class GrainsViewModel(QObject):
         self._result: Any = None
         self._min_size = 4
         self._relative_height = 0.5
+        self._threshold: float | None = None  # umbral absoluto; None = automático (relativo)
         image_vm.channelChanged.connect(lambda _n: self._invalidate())
 
     # ---- estado ----
@@ -52,6 +53,14 @@ class GrainsViewModel(QObject):
     def set_relative_height(self, value: float) -> None:
         self._relative_height = float(value)
 
+    @property
+    def threshold(self) -> float | None:
+        return self._threshold
+
+    def set_threshold(self, value: float | None) -> None:
+        """Umbral absoluto de altura (unidades del canal); ``None`` = automático (relativo)."""
+        self._threshold = None if value is None else float(value)
+
     # ---- cálculo ----
     def detect(self) -> None:
         """Detecta granos con los parámetros actuales; emite ``resultChanged``."""
@@ -63,7 +72,10 @@ class GrainsViewModel(QObject):
             from spmkit.core.analysis import grains
 
             self._result = grains.detect(
-                ch, min_size=self._min_size, relative_height=self._relative_height
+                ch,
+                threshold=self._threshold,
+                min_size=self._min_size,
+                relative_height=self._relative_height,
             )
         except ImportError:
             self.statusChanged.emit("la detección de granos requiere scipy (extra 'grains')")
