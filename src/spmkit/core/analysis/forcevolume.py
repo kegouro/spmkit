@@ -33,6 +33,18 @@ DEFAULT_KEYS = (
     "max_indentation",
 )
 
+#: Unidad física (SI) de cada propiedad mapeable — fuente única para exportar con fidelidad.
+PROPERTY_UNITS: dict[str, str] = {
+    "young_modulus": "Pa",
+    "young_modulus_std": "Pa",
+    "adhesion": "N",
+    "dissipation": "J",
+    "r_squared": "",
+    "contact_point": "m",
+    "max_force": "N",
+    "max_indentation": "m",
+}
+
 ProgressCallback = Callable[[float, int], None]
 
 
