@@ -106,6 +106,15 @@ def _spectral(ctx: ModuleContext):  # type: ignore[no-untyped-def]
     return SpectralCanvasPanel(vm)
 
 
+def _resonance(ctx: ModuleContext):  # type: ignore[no-untyped-def]
+    from spmkit.gui.panels.resonance_canvas import ResonanceCanvasPanel
+    from spmkit.gui.viewmodels import ResonanceViewModel
+
+    vm = ResonanceViewModel(ctx.image_vm)
+    ctx.store["resonance_vm"] = vm
+    return ResonanceCanvasPanel(vm)
+
+
 def _figure(ctx: ModuleContext):  # type: ignore[no-untyped-def]
     from spmkit.gui.panels.figure_panel import FigurePanel
     from spmkit.gui.viewmodels import FigureViewModel
@@ -141,6 +150,9 @@ def _wire_force(ws, ctx: ModuleContext) -> None:  # type: ignore[no-untyped-def]
 def _wire_image(ws, ctx: ModuleContext) -> None:  # type: ignore[no-untyped-def]
     ctx.store["grains_vm"].statusChanged.connect(ws.show_status)
     ctx.store["spectral_vm"].statusChanged.connect(ws.show_status)
+    resonance_vm = ctx.store.get("resonance_vm")
+    if resonance_vm is not None:
+        resonance_vm.statusChanged.connect(ws.show_status)
 
 
 # ------------------------------------------------------------------------ módulos
@@ -162,11 +174,13 @@ _IMAGE = ModuleSpec(
         PanelSpec("image_analysis", "Análisis", _image_analysis, area="right"),
         PanelSpec("grains_canvas", "Granos", _grains),
         PanelSpec("spectral_canvas", "Espectral", _spectral),
+        PanelSpec("resonance_canvas", "Sintonía térmica", _resonance),
     ),
     perspectives=(
         PerspectiveSpec("image", "Imagen", ("navigator", "image_canvas", "image_analysis")),
         PerspectiveSpec("grains", "Granos", ("navigator", "grains_canvas")),
         PerspectiveSpec("spectral", "Espectral", ("navigator", "spectral_canvas")),
+        PerspectiveSpec("resonance", "Sintonía térmica", ("navigator", "resonance_canvas")),
     ),
     wire=_wire_image,
 )

@@ -6,6 +6,7 @@ from spmkit.gui.viewmodels.force_vm import DEFAULT_RECIPE, ForceViewModel
 from spmkit.gui.viewmodels.grains_vm import GrainsViewModel
 from spmkit.gui.viewmodels.image_vm import ImageViewModel
 from spmkit.gui.viewmodels.map_vm import PROPERTIES, MapViewModel
+from spmkit.gui.viewmodels.resonance_vm import ResonanceResult, ResonanceViewModel
 from spmkit.gui.viewmodels.simulator_vm import SimulatorViewModel
 from spmkit.gui.viewmodels.smfs_vm import SmfsResult, SmfsViewModel
 from spmkit.gui.viewmodels.spectral_vm import SpectralResult, SpectralViewModel
@@ -26,4 +27,6 @@ __all__ = [
     "SpectralResult",
     "SmfsViewModel",
     "SmfsResult",
+    "ResonanceViewModel",
+    "ResonanceResult",
 ]
