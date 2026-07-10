@@ -51,6 +51,26 @@ def test_spectral_panel_plots(qtbot) -> None:  # type: ignore[no-untyped-def]
     assert "D =" in panel._readout.text()
 
 
+def test_grains_vm_threshold_state() -> None:
+    vm = GrainsViewModel(ImageViewModel())
+    assert vm.threshold is None  # automático (relativo) por defecto
+    vm.set_threshold(5e-9)
+    assert vm.threshold == 5e-9
+    vm.set_threshold(None)
+    assert vm.threshold is None
+
+
+def test_grains_panel_auto_toggle(qtbot) -> None:  # type: ignore[no-untyped-def]
+    vm = GrainsViewModel(ImageViewModel())
+    panel = GrainsCanvasPanel(vm)
+    qtbot.addWidget(panel)
+    assert not panel._abs.isEnabled()  # Auto → umbral absoluto deshabilitado
+    panel._abs.setValue(12.0)  # nm
+    panel._auto.setChecked(False)
+    assert panel._abs.isEnabled() and not panel._rel.isEnabled()
+    assert vm.threshold is not None and abs(vm.threshold - 12e-9) < 1e-15  # nm → m
+
+
 @pytest.mark.skipif(not _HAS_SCIPY, reason="grains requiere scipy (extra 'grains')")
 def test_grains_vm_detects() -> None:
     image_vm = ImageViewModel()

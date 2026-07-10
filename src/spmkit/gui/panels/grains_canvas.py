@@ -11,6 +11,7 @@ from typing import Any
 
 import numpy as np
 from PyQt6.QtWidgets import (
+    QCheckBox,
     QDoubleSpinBox,
     QHBoxLayout,
     QLabel,
@@ -85,6 +86,21 @@ class GrainsCanvasPanel(Panel):
         self._rel.setSingleStep(0.05)
         self._rel.setValue(self._vm.relative_height)
         self._rel.valueChanged.connect(self._vm.set_relative_height)
+
+        # Umbral automático (relativo) o absoluto en nm.
+        self._auto = QCheckBox("Auto")
+        self._auto.setChecked(True)
+        self._auto.setToolTip(
+            "Umbral automático (fracción de altura). Desmárcalo para uno absoluto."
+        )
+        self._auto.toggled.connect(self._on_auto_toggled)
+        self._abs = QDoubleSpinBox()
+        self._abs.setRange(0.0, 1_000_000.0)
+        self._abs.setDecimals(2)
+        self._abs.setSuffix(" nm")
+        self._abs.setEnabled(False)
+        self._abs.valueChanged.connect(self._push_threshold)
+
         detect = QPushButton("Detectar")
         detect.setProperty("primary", True)
         detect.clicked.connect(self._vm.detect)
@@ -94,6 +110,9 @@ class GrainsCanvasPanel(Panel):
         bar.addWidget(self._min_size)
         bar.addWidget(QLabel("Altura rel.:"))
         bar.addWidget(self._rel)
+        bar.addWidget(self._auto)
+        bar.addWidget(QLabel("Umbral:"))
+        bar.addWidget(self._abs)
         bar.addWidget(detect)
         bar.addStretch(1)
         bar.addWidget(self._stats)
@@ -107,6 +126,15 @@ class GrainsCanvasPanel(Panel):
         self._view.getView().addItem(self._overlay)
         lay.addWidget(self._view, 1)
         return root
+
+    def _on_auto_toggled(self, auto: bool) -> None:
+        self._abs.setEnabled(not auto)
+        self._rel.setEnabled(auto)
+        self._vm.set_threshold(None if auto else self._abs.value() * 1e-9)
+
+    def _push_threshold(self, _value: float) -> None:
+        if not self._auto.isChecked():
+            self._vm.set_threshold(self._abs.value() * 1e-9)  # nm → m
 
     # ---- reacciones ----
     def _on_result(self, result: Any) -> None:
