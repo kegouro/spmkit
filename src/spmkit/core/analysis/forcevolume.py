@@ -38,6 +38,7 @@ PROPERTY_UNITS: dict[str, str] = {
     "young_modulus": "Pa",
     "young_modulus_std": "Pa",
     "adhesion": "N",
+    "work_of_adhesion": "J/m²",
     "dissipation": "J",
     "r_squared": "",
     "contact_point": "m",

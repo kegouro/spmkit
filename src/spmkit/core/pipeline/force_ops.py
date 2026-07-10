@@ -156,6 +156,27 @@ def fit_elasticity(
     if seg is None:
         raise ValueError("fit_elasticity: la curva no tiene segmentos")
     force = seg.require_force()
+
+    if model == "jkr":  # modelo adhesivo: ruta propia (experimental), contacto en el snap-in
+        from spmkit.core.analysis import experimental
+
+        jkr = experimental.fit_jkr_curve(_axis(seg), force, tip_radius, poisson, k_sigma=k_sigma)
+        ctx["young_modulus"] = jkr.young_modulus
+        ctx["young_modulus_std"] = float("nan")
+        ctx["work_of_adhesion"] = jkr.work_of_adhesion
+        ctx["adhesion"] = jkr.adhesion
+        ctx["contact_point"] = jkr.contact_point
+        ctx["max_force"] = jkr.max_force
+        ctx["max_indentation"] = jkr.max_indentation
+        ctx["r_squared"] = jkr.r_squared
+        ctx["fit"] = jkr
+        retract = curve.retract
+        if retract is not None and retract.force is not None:
+            ctx["dissipation"] = forcecurve.dissipation_energy(
+                _axis(seg), force, _axis(retract), retract.force
+            )
+        return curve
+
     extra: dict[str, Any] = {"contact_method": contact_method, "k_sigma": k_sigma}
     if half_angle is not None:
         extra["half_angle"] = half_angle

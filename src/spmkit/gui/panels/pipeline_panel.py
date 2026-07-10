@@ -32,6 +32,7 @@ _MODELS: tuple[tuple[str, str], ...] = (
     ("paraboloid", "Paraboloide"),
     ("cone", "Sneddon cónico"),
     ("dmt", "DMT (adhesivo)"),
+    ("jkr", "JKR (adhesivo)"),
 )
 
 #: Métodos de detección del punto de contacto: valor interno → etiqueta visible.

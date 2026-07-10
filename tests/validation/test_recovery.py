@@ -130,6 +130,50 @@ def test_jkr_limite_hertz() -> None:
     assert fit.work_of_adhesion < 1e-3  # sin adhesión → w ≈ 0
 
 
+def _jkr_curve() -> tuple[np.ndarray, np.ndarray]:
+    """Curva JKR fuerza-vs-separación: baseline plano + contacto adhesivo (E*/w conocidos)."""
+    from spmkit.core.analysis import experimental
+
+    e_star = 1.0e6 / (1.0 - _NU**2)
+    contact = 2e-7
+    sep = np.linspace(5e-7, 0.0, 400)
+    delta = np.clip(contact - sep, 0.0, None)
+    force = np.where(delta > 0, experimental.jkr_forward(delta, e_star, 0.02, _R), 0.0)
+    return sep, force
+
+
+def test_recupera_jkr_curva_completa() -> None:
+    """`fit_jkr_curve` localiza el contacto (snap-in) y recupera E* de una curva completa."""
+    from spmkit.core.analysis import experimental
+
+    sep, force = _jkr_curve()
+    fit = experimental.fit_jkr_curve(sep, force, tip_radius=_R, poisson=_NU)
+    assert abs(fit.young_modulus - 1.0e6) / 1.0e6 < 0.02  # E recuperado a <2%
+    assert abs(fit.contact_point - 2e-7) < 5e-9  # contacto bien localizado
+    assert fit.r_squared > 0.99
+
+
+def test_pipeline_jkr_extremo_a_extremo() -> None:
+    """El pipeline con model='jkr' rutea a la vía JKR y escribe módulo + trabajo de adhesión."""
+    from spmkit.core.pipeline import Recipe, Step, run
+
+    sep, force = _jkr_curve()
+    seg = ForceSegment(
+        segment_type="extend",
+        direction="approach",
+        raw_height=sep,
+        raw_deflection=np.zeros_like(sep),
+        force=force,
+        separation=sep,
+        state="force_n",
+    )
+    recipe = Recipe(steps=(Step(op="fit_elasticity", params={"model": "jkr", "tip_radius": _R}),))
+    _, ctx = run(recipe, ForceCurve(segments=(seg,)))
+    assert abs(ctx["young_modulus"] - 1.0e6) / 1.0e6 < 0.02
+    assert ctx["work_of_adhesion"] > 0  # JKR recupera adhesión
+    assert ctx["r_squared"] > 0.99
+
+
 def test_recupera_mapa_de_modulos() -> None:
     """La ruta vectorizada (elasticity_map) recupera un gradiente de módulos conocidos."""
     moduli = [3.0e5, 6.0e5, 1.2e6, 2.4e6]

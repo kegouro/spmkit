@@ -88,6 +88,15 @@ def test_contact_method_and_ksigma_reach_recipe(qtbot, synthetic_volume) -> None
     assert fit.params["k_sigma"] == 7.0
 
 
+def test_jkr_model_selectable_in_pipeline(qtbot, synthetic_volume) -> None:  # type: ignore[no-untyped-def]  # noqa: E501
+    vm = ForceViewModel()
+    panel = PipelinePanel(vm)
+    qtbot.addWidget(panel)
+    assert panel._model.findData("jkr") >= 0  # JKR (adhesivo) disponible en el combo
+    panel._model.setCurrentIndex(panel._model.findData("jkr"))
+    assert vm.recipe.steps[-1].params["model"] == "jkr"  # llega a la receta
+
+
 def test_mc_uncertainty_enables_and_computes(qtbot, synthetic_volume) -> None:  # type: ignore[no-untyped-def]  # noqa: E501
     vm = ForceViewModel()
     vm.set_volume(synthetic_volume(1))
