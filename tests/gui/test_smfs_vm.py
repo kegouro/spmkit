@@ -126,3 +126,30 @@ def test_smfs_panel_spins_reflejan_y_editan_params(qtbot) -> None:  # type: igno
     assert panel._spins["min_r_squared"].value() == 0.95  # refleja el default del VM
     panel._spins["min_r_squared"].setValue(0.80)
     assert svm.params["min_r_squared"] == 0.80  # el control edita el VM
+
+
+def test_smfs_vm_wlc_variant_y_temperatura(qtbot) -> None:  # type: ignore[no-untyped-def]
+    fvm = ForceViewModel()
+    svm = SmfsViewModel(fvm)
+    fvm.set_volume(_smfs_volume())
+    assert svm.wlc_model == "bouchiat"
+    seen: list = []
+    svm.wlcModelChanged.connect(seen.append)
+    svm.set_wlc_model("marko_siggia")
+    assert svm.wlc_model == "marko_siggia" and seen == ["marko_siggia"]
+    assert svm.result is not None and len(svm.result.events) == 3  # sigue detectando
+    svm.set_param("temperature", 310.0)  # 37 °C
+    assert svm.params["temperature"] == 310.0 and svm.result is not None
+
+
+def test_smfs_panel_wlc_combo_solo_para_wlc(qtbot) -> None:  # type: ignore[no-untyped-def]
+    from spmkit.gui.panels.smfs_canvas import SmfsCanvasPanel
+
+    fvm = ForceViewModel()
+    svm = SmfsViewModel(fvm)
+    panel = SmfsCanvasPanel(svm)
+    qtbot.addWidget(panel)
+    assert panel._wlc_combo.isEnabled()  # WLC por defecto
+    assert abs(panel._temp.value() - 24.85) < 0.1  # 298 K → 24.85 °C
+    panel._combo.setCurrentIndex(1)  # FJC
+    assert not panel._wlc_combo.isEnabled()  # la variante no aplica al FJC

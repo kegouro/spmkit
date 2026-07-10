@@ -52,12 +52,20 @@ class SmfsCanvasPanel(Panel):
         crow.setContentsMargins(0, 0, 0, 0)
         crow.addWidget(QLabel("Modelo de cadena:"))
         self._combo = QComboBox()
-        self._combo.addItem("WLC (Marko-Siggia)", "wlc")
+        self._combo.addItem("WLC", "wlc")
         self._combo.addItem("FJC (Langevin)", "fjc")
-        self._combo.currentIndexChanged.connect(
-            lambda _i: self._vm.set_model(self._combo.currentData())
-        )
+        self._combo.currentIndexChanged.connect(self._on_model_changed)
         crow.addWidget(self._combo)
+
+        self._wlc_combo = QComboBox()
+        self._wlc_combo.addItem("Bouchiat", "bouchiat")
+        self._wlc_combo.addItem("Marko-Siggia", "marko_siggia")
+        self._wlc_combo.setToolTip("Variante del WLC (Bouchiat es más preciso cerca de L)")
+        self._wlc_combo.currentIndexChanged.connect(
+            lambda _i: self._vm.set_wlc_model(self._wlc_combo.currentData())
+        )
+        crow.addWidget(self._wlc_combo)
+
         self._readout = QLabel("<i>Sin eventos (carga una curva de fuerza)</i>")
         self._readout.setProperty("role", "readout")
         crow.addWidget(self._readout, 1)
@@ -73,8 +81,23 @@ class SmfsCanvasPanel(Panel):
         prow.addWidget(self._spin("min_prominence_sigma", "Prominencia (σ)", 1.0, 30.0, 0.5, 1, p))
         prow.addWidget(self._spin("min_height_sigma", "Altura (σ)", 1.0, 30.0, 0.5, 1, p))
         prow.addWidget(self._spin("baseline_fraction", "Cola base", 0.05, 0.6, 0.05, 2, p))
+
+        temp_box = QWidget()
+        trow = QHBoxLayout(temp_box)
+        trow.setContentsMargins(0, 0, 0, 0)
+        trow.setSpacing(4)
+        trow.addWidget(QLabel("Temp (°C)"))
+        self._temp = QDoubleSpinBox()
+        self._temp.setRange(-50.0, 200.0)
+        self._temp.setDecimals(1)
+        self._temp.setValue(p["temperature"] - 273.15)  # K → °C
+        self._temp.valueChanged.connect(lambda c: self._vm.set_param("temperature", c + 273.15))
+        trow.addWidget(self._temp)
+        prow.addWidget(temp_box)
+
         prow.addStretch(1)
         lay.addWidget(params)
+        self._update_wlc_enabled()
 
         self._plot = pg.PlotWidget()
         self._plot.setLabel("bottom", "Separación", units="nm")
@@ -89,6 +112,14 @@ class SmfsCanvasPanel(Panel):
         self._table.setMaximumHeight(180)
         lay.addWidget(self._table)
         return root
+
+    def _on_model_changed(self, _idx: int) -> None:
+        self._vm.set_model(self._combo.currentData())
+        self._update_wlc_enabled()
+
+    def _update_wlc_enabled(self) -> None:
+        """La variante WLC solo aplica al modelo WLC."""
+        self._wlc_combo.setEnabled(self._combo.currentData() == "wlc")
 
     def _spin(
         self,
