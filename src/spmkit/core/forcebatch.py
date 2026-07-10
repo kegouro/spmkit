@@ -9,6 +9,7 @@ Exporta a CSV y —si hay pandas— a ``DataFrame``.
 from __future__ import annotations
 
 import csv
+import math
 from collections.abc import Callable
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
@@ -22,6 +23,14 @@ from spmkit.core.pipeline import Recipe
 
 #: Extensiones de curvas de fuerza soportadas por el batch.
 FORCE_EXTENSIONS = (".jpk-force", ".nid")
+
+#: Unidad física de cada columna numérica del resumen (para encabezados trazables).
+_ROW_UNITS: dict[str, str] = {
+    "young_modulus_median": "Pa",
+    "young_modulus_std": "Pa",
+    "adhesion_median": "N",
+    "dissipation_median": "J",
+}
 
 
 def load_force(path: str | Path) -> ForceVolume:
@@ -72,14 +81,28 @@ class ForceBatchResult:
         return sum(1 for r in self.rows if r.error)
 
     def to_csv(self, path: str | Path) -> None:
-        """Escribe la tabla resumen a CSV (una fila por archivo)."""
+        """Escribe la tabla resumen a CSV científico (una fila por archivo).
+
+        Lleva una cabecera de metadatos (``#``: archivos, OK/fallidos), **unidades** en los
+        encabezados numéricos y **celdas vacías** en vez de ``NaN`` (una propiedad sin datos
+        —p. ej. disipación sin retracción— no ensucia el archivo).
+        """
         path = Path(path)
         fields = list(ForceBatchRow(source="").to_dict().keys())
         with path.open("w", newline="", encoding="utf-8") as fh:
-            writer = csv.DictWriter(fh, fieldnames=fields)
-            writer.writeheader()
+            fh.write("# spmkit — resumen de lote de curvas/mapas de fuerza\n")
+            fh.write(f"# archivos: {len(self.rows)}  ·  OK: {self.n_ok}")
+            fh.write(f"  ·  fallidos: {self.n_failed}\n#\n")
+            writer = csv.writer(fh)
+            writer.writerow([f"{f} [{_ROW_UNITS[f]}]" if f in _ROW_UNITS else f for f in fields])
             for row in self.rows:
-                writer.writerow(row.to_dict())
+                d = row.to_dict()
+                writer.writerow(
+                    [
+                        "" if isinstance(d[f], float) and not math.isfinite(d[f]) else d[f]
+                        for f in fields
+                    ]
+                )
 
     def to_dataframe(self) -> Any:
         """Devuelve un ``pandas.DataFrame`` (requiere el extra ``pandas``)."""
