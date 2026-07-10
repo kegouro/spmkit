@@ -139,6 +139,7 @@ def fit_elasticity(
     invols_rel_err: float = 0.05,
     k_rel_err: float = 0.05,
     mc_samples: int = 200,
+    mc_seed: int = 0,
 ) -> ForceCurve:
     """Ajusta un modelo de contacto al segmento de aproximación.
 
@@ -172,6 +173,7 @@ def fit_elasticity(
             invols_rel_err=invols_rel_err,
             k_rel_err=k_rel_err,
             n_samples=mc_samples,
+            seed=mc_seed,
             model=model,
             tip_radius=tip_radius,
             poisson=poisson,

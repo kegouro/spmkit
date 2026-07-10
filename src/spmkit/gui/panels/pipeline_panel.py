@@ -133,6 +133,12 @@ class PipelinePanel(Panel):
         self._mc_n.setValue(200)
         self._mc_n.valueChanged.connect(self._apply)
         mc_form.addRow("Muestras MC", self._mc_n)
+        self._mc_seed = QSpinBox()
+        self._mc_seed.setRange(0, 999999)
+        self._mc_seed.setValue(0)
+        self._mc_seed.setToolTip("Semilla del Monte Carlo (reproducibilidad)")
+        self._mc_seed.valueChanged.connect(self._apply)
+        mc_form.addRow("Semilla MC", self._mc_seed)
         outer.addLayout(mc_form)
         outer.addStretch(1)
 
@@ -165,7 +171,7 @@ class PipelinePanel(Panel):
         self._apply()
 
     def _on_mc_toggled(self, checked: bool) -> None:
-        for w in (self._invols_err, self._k_err, self._mc_n):
+        for w in (self._invols_err, self._k_err, self._mc_n, self._mc_seed):
             w.setEnabled(checked)
         self._apply()
 
@@ -198,4 +204,5 @@ class PipelinePanel(Panel):
             invols_rel_err=self._invols_err.value(),
             k_rel_err=self._k_err.value(),
             mc_samples=int(self._mc_n.value()),
+            mc_seed=int(self._mc_seed.value()),
         )

@@ -97,8 +97,10 @@ def test_mc_uncertainty_enables_and_computes(qtbot, synthetic_volume) -> None:  
     panel._mc.setChecked(True)
     panel._mc_n.setValue(30)  # pocas muestras: rápido
     assert panel._invols_err.isEnabled()
+    panel._mc_seed.setValue(42)
     fit = vm.recipe.steps[-1]
     assert fit.params["mc"] is True and fit.params["mc_samples"] == 30
+    assert fit.params["mc_seed"] == 42  # semilla reproducible en la receta
     ctx: dict = {}
     vm.resultsChanged.connect(ctx.update)
     vm.run_fit_now()

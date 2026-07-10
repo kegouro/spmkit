@@ -37,6 +37,7 @@ DEFAULT_PARAMS: dict[str, Any] = {
     "invols_rel_err": 0.05,  # error relativo de InVOLS para el MC
     "k_rel_err": 0.05,  # error relativo de k para el MC
     "mc_samples": 200,  # muestras del Monte Carlo
+    "mc_seed": 0,  # semilla del Monte Carlo (reproducibilidad)
 }
 
 
@@ -59,6 +60,7 @@ def build_recipe(params: dict[str, Any]) -> Recipe:
         fit["invols_rel_err"] = params.get("invols_rel_err", 0.05)
         fit["k_rel_err"] = params.get("k_rel_err", 0.05)
         fit["mc_samples"] = int(params.get("mc_samples", 200))
+        fit["mc_seed"] = int(params.get("mc_seed", 0))
     if params["model"] == "cone" and params.get("half_angle") is not None:
         fit["half_angle"] = params["half_angle"]
     fmin, fmax = params.get("fit_min"), params.get("fit_max")
