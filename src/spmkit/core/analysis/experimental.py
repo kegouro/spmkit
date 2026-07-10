@@ -176,6 +176,58 @@ def fit_jkr(
     )
 
 
+@dataclass(frozen=True)
+class JKRCurveFit:
+    """Ajuste JKR sobre una curva completa (eje = separación): módulo + adhesión + contacto."""
+
+    young_modulus: float  # E (Pa)
+    reduced_modulus: float  # E* (Pa)
+    work_of_adhesion: float  # w (J/m²)
+    adhesion: float  # fuerza de pull-off (N)
+    contact_point: float  # x0 (m)
+    max_force: float  # N
+    max_indentation: float  # m
+    r_squared: float
+    rmse: float
+    n_fit: int
+
+
+def fit_jkr_curve(
+    x: np.ndarray,
+    force: np.ndarray,
+    tip_radius: float,
+    poisson: float = 0.3,
+    baseline_fraction: float = 0.3,
+    k_sigma: float = 5.0,
+) -> JKRCurveFit:
+    """Ajusta JKR a una curva de fuerza (⚠️ experimental) desde el eje de separación.
+
+    Reutiliza la maquinaria de contacto de ``forcecurve`` (orientación + línea base +
+    contacto en el **snap-in** = mínimo de fuerza, como el DMT) para extraer ``(δ, F)`` de la
+    rama de carga, y ajusta :func:`fit_jkr`. Devuelve módulo, trabajo de adhesión, la fuerza
+    de pull-off y el punto de contacto. Requiere indentación con **régimen repulsivo claro**
+    (JKR superficial es mal condicionado).
+    """
+    from spmkit.core.analysis.forcecurve import contact_indentation
+
+    region = contact_indentation(
+        x, force, model="dmt", baseline_fraction=baseline_fraction, k_sigma=k_sigma
+    )
+    fit = fit_jkr(region.delta, region.force, tip_radius, poisson)
+    return JKRCurveFit(
+        young_modulus=fit.young_modulus,
+        reduced_modulus=fit.reduced_modulus,
+        work_of_adhesion=fit.work_of_adhesion,
+        adhesion=region.adhesion,
+        contact_point=region.contact_point,
+        max_force=float(region.force.max()),
+        max_indentation=float(region.delta.max()),
+        r_squared=fit.r_squared,
+        rmse=fit.rmse,
+        n_fit=fit.n_fit,
+    )
+
+
 # ------------------------------------------------------------------- viscoelástico
 
 
