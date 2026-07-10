@@ -14,6 +14,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 [![Style: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Typed: mypy](https://img.shields.io/badge/typed-mypy%20strict-blue.svg)](https://mypy-lang.org/)
+[![DOI](https://zenodo.org/badge/1270254374.svg)](https://zenodo.org/badge/latestdoi/1270254374)
 
 [Español](README.md) · **English**
 
@@ -37,6 +38,8 @@
 - [Quick start](#quick-start)
 - [Tutorials](#tutorials)
 - [Command-line reference](#command-line-reference)
+- [Keyboard shortcuts](#keyboard-shortcuts)
+- [Where each function lives](#where-each-function-lives)
 - [Architecture](#architecture)
 - [Supported formats](#supported-formats)
 - [Extensibility](#extensibility)
@@ -295,6 +298,55 @@ spmkit --help
 | `convert` | Transcribes between formats (e.g. `.nid` → `.gwy`). |
 | `verify` | Byte-level traceability check of a `.nid`. |
 | `workspace` / `gui` | Opens Fathom. |
+
+---
+
+## Keyboard shortcuts
+
+Every action is in the **command palette** (`Ctrl/⌘ + K`, fuzzy search). The most-used shortcuts:
+
+| Action | Windows / Linux | macOS |
+|--------|-----------------|-------|
+| Command palette | `Ctrl + K` | `⌘ K` |
+| Open curve or image | `Ctrl + O` | `⌘ O` |
+| Save project | `Ctrl + S` | `⌘ S` |
+| Compute property map | `Ctrl + M` | `⌘ M` |
+| Export results (JSON) | `Ctrl + E` | `⌘ E` |
+| Generate report (HTML/PDF) | `Ctrl + Shift + R` | `⌘ ⇧ R` |
+| Copy results | `Ctrl + Shift + C` | `⌘ ⇧ C` |
+| Pin current curve | `Ctrl + P` | `⌘ P` |
+| Previous / next curve | `Ctrl + ←` / `Ctrl + →` | `⌘ ←` / `⌘ →` |
+| First / last curve | `Ctrl + Home` / `Ctrl + End` | `⌘ Home` / `⌘ End` |
+| Toggle light/dark theme | `Ctrl + Shift + L` | `⌘ ⇧ L` |
+| Customize appearance | `Ctrl + Shift + A` | `⌘ ⇧ A` |
+
+> On macOS, Qt maps `Ctrl` to `⌘` automatically; shortcuts are declared once in [`gui/app_workspace.py`](src/spmkit/gui/app_workspace.py) and [`gui/shell/workspace.py`](src/spmkit/gui/shell/workspace.py).
+
+---
+
+## Where each function lives
+
+Every core analysis has a visible control in a perspective. This map connects the **function**, its **UI location**, and the **`core` module** where it lives (to find it in the repository):
+
+| Function | Perspective · control | Core module |
+|----------|-----------------------|-------------|
+| Leveling (plane/polynomial/rows) | Image · *Leveling* dropdown | [`core/analysis/leveling.py`](src/spmkit/core/analysis/leveling.py) |
+| ISO 25178 roughness | Image · *Analysis* panel | [`core/analysis/roughness.py`](src/spmkit/core/analysis/roughness.py) |
+| Line profile | Image · ROI on the canvas | [`core/analysis/profiles.py`](src/spmkit/core/analysis/profiles.py) |
+| KPFM / CPD | Image · V-unit channel + tip Φ | [`core/analysis/kpfm.py`](src/spmkit/core/analysis/kpfm.py) |
+| Grain detection | Grains · threshold | [`core/analysis/grains.py`](src/spmkit/core/analysis/grains.py) |
+| Radial PSD / fractal / correlation | Spectral · q range | [`core/analysis/spectral.py`](src/spmkit/core/analysis/spectral.py) |
+| Contact fit (Hertz…JKR) | Force curve · *Pipeline* panel | [`core/analysis/forcecurve.py`](src/spmkit/core/analysis/forcecurve.py) |
+| Adhesive JKR | Force curve · JKR model | [`core/analysis/experimental.py`](src/spmkit/core/analysis/experimental.py) |
+| SMFS (WLC / FJC) | SMFS · model selector + thresholds | [`core/analysis/chain.py`](src/spmkit/core/analysis/chain.py) |
+| Modulus map (CPU/GPU) | Map · *Compute map* | [`core/analysis/forcevolume_fast.py`](src/spmkit/core/analysis/forcevolume_fast.py) |
+| Thermal tuning (f₀ / Q) | Thermal tuning · range + *Compute k* | [`core/analysis/resonance.py`](src/spmkit/core/analysis/resonance.py) |
+| Calibration (InVOLS, thermal k) | Thermal tuning / Pipeline · *Compute* | [`core/analysis/calibration.py`](src/spmkit/core/analysis/calibration.py) |
+| Evaporation series (Δm, d² law) | Evaporation · *Open series* | [`core/analysis/resonance.py`](src/spmkit/core/analysis/resonance.py) |
+| Cantilever simulator | Simulator | [`core/analysis/simulation.py`](src/spmkit/core/analysis/simulation.py) |
+| Publication figure | Figure · panel form | [`core/viz/figure.py`](src/spmkit/core/viz/figure.py) |
+| Scientific export (CSV) | *Export…* in every perspective | [`core/export/writers.py`](src/spmkit/core/export/writers.py) |
+| Folder batch (curves / maps) | Batch · *Open folder* | [`core/forcebatch.py`](src/spmkit/core/forcebatch.py) |
 
 ---
 

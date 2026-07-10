@@ -14,6 +14,7 @@
 [![Licencia: MIT](https://img.shields.io/badge/licencia-MIT-yellow.svg)](LICENSE)
 [![Estilo: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Tipado: mypy](https://img.shields.io/badge/tipado-mypy%20estricto-blue.svg)](https://mypy-lang.org/)
+[![DOI](https://zenodo.org/badge/1270254374.svg)](https://zenodo.org/badge/latestdoi/1270254374)
 
 **Español** · [English](README.en.md)
 
@@ -37,6 +38,8 @@
 - [Inicio rápido](#inicio-rápido)
 - [Tutoriales](#tutoriales)
 - [Referencia de la línea de comandos](#referencia-de-la-línea-de-comandos)
+- [Atajos de teclado](#atajos-de-teclado)
+- [Dónde está cada función](#dónde-está-cada-función)
 - [Arquitectura](#arquitectura)
 - [Formatos soportados](#formatos-soportados)
 - [Extensibilidad](#extensibilidad)
@@ -295,6 +298,55 @@ spmkit --help
 | `convert` | Transcribe entre formatos (p. ej. `.nid` → `.gwy`). |
 | `verify` | Verificación de trazabilidad byte a byte de un `.nid`. |
 | `workspace` / `gui` | Abre Fathom. |
+
+---
+
+## Atajos de teclado
+
+Toda acción está en la **paleta de comandos** (`Ctrl/⌘ + K`, búsqueda difusa). Los atajos más usados:
+
+| Acción | Windows / Linux | macOS |
+|--------|-----------------|-------|
+| Paleta de comandos | `Ctrl + K` | `⌘ K` |
+| Abrir curva o imagen | `Ctrl + O` | `⌘ O` |
+| Guardar proyecto | `Ctrl + S` | `⌘ S` |
+| Calcular mapa de propiedades | `Ctrl + M` | `⌘ M` |
+| Exportar resultados (JSON) | `Ctrl + E` | `⌘ E` |
+| Generar informe (HTML/PDF) | `Ctrl + Shift + R` | `⌘ ⇧ R` |
+| Copiar resultados | `Ctrl + Shift + C` | `⌘ ⇧ C` |
+| Fijar curva actual | `Ctrl + P` | `⌘ P` |
+| Curva anterior / siguiente | `Ctrl + ←` / `Ctrl + →` | `⌘ ←` / `⌘ →` |
+| Primera / última curva | `Ctrl + Home` / `Ctrl + End` | `⌘ Home` / `⌘ End` |
+| Alternar tema claro/oscuro | `Ctrl + Shift + L` | `⌘ ⇧ L` |
+| Personalizar apariencia | `Ctrl + Shift + A` | `⌘ ⇧ A` |
+
+> En macOS, Qt mapea `Ctrl` a `⌘` automáticamente; los atajos se declaran una sola vez en [`gui/app_workspace.py`](src/spmkit/gui/app_workspace.py) y [`gui/shell/workspace.py`](src/spmkit/gui/shell/workspace.py).
+
+---
+
+## Dónde está cada función
+
+Cada análisis del núcleo tiene un control visible en una perspectiva. Este mapa conecta la **función**, su **ubicación en la UI** y el **módulo del `core`** donde vive (para buscarlo en el repositorio):
+
+| Función | Perspectiva · control | Módulo del núcleo |
+|---------|-----------------------|-------------------|
+| Nivelado (plano/polinomio/filas) | Imagen · dropdown *Nivelado* | [`core/analysis/leveling.py`](src/spmkit/core/analysis/leveling.py) |
+| Rugosidad ISO 25178 | Imagen · panel *Análisis* | [`core/analysis/roughness.py`](src/spmkit/core/analysis/roughness.py) |
+| Perfil de línea | Imagen · ROI en el lienzo | [`core/analysis/profiles.py`](src/spmkit/core/analysis/profiles.py) |
+| KPFM / CPD | Imagen · canal en V + Φ de la punta | [`core/analysis/kpfm.py`](src/spmkit/core/analysis/kpfm.py) |
+| Detección de granos | Granos · umbral | [`core/analysis/grains.py`](src/spmkit/core/analysis/grains.py) |
+| PSD radial / fractal / correlación | Espectral · rango q | [`core/analysis/spectral.py`](src/spmkit/core/analysis/spectral.py) |
+| Ajuste de contacto (Hertz…JKR) | Curva de fuerza · panel *Pipeline* | [`core/analysis/forcecurve.py`](src/spmkit/core/analysis/forcecurve.py) |
+| JKR adhesivo | Curva de fuerza · modelo JKR | [`core/analysis/experimental.py`](src/spmkit/core/analysis/experimental.py) |
+| SMFS (WLC / FJC) | SMFS · selector de modelo + umbrales | [`core/analysis/chain.py`](src/spmkit/core/analysis/chain.py) |
+| Mapa de módulo (CPU/GPU) | Mapa · *Calcular mapa* | [`core/analysis/forcevolume_fast.py`](src/spmkit/core/analysis/forcevolume_fast.py) |
+| Sintonía térmica (f₀ / Q) | Sintonía térmica · rango + *Calcular k* | [`core/analysis/resonance.py`](src/spmkit/core/analysis/resonance.py) |
+| Calibración (InVOLS, k térmico) | Sintonía térmica / Pipeline · *Calcular* | [`core/analysis/calibration.py`](src/spmkit/core/analysis/calibration.py) |
+| Serie de evaporación (Δm, ley d²) | Evaporación · *Abrir serie* | [`core/analysis/resonance.py`](src/spmkit/core/analysis/resonance.py) |
+| Simulador del cantiléver | Simulador | [`core/analysis/simulation.py`](src/spmkit/core/analysis/simulation.py) |
+| Figura de publicación | Figura · formulario del panel | [`core/viz/figure.py`](src/spmkit/core/viz/figure.py) |
+| Exportación científica (CSV) | *Exportar…* en cada perspectiva | [`core/export/writers.py`](src/spmkit/core/export/writers.py) |
+| Lote de carpetas (curvas / mapas) | Batch · *Abrir carpeta* | [`core/forcebatch.py`](src/spmkit/core/forcebatch.py) |
 
 ---
 
