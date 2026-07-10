@@ -137,8 +137,15 @@ class GrainsCanvasPanel(Panel):
             self._vm.set_threshold(self._abs.value() * 1e-9)  # nm → m
 
     # ---- reacciones ----
+    def refresh(self) -> None:
+        """Reencuadra al activarse la perspectiva (evita el mal encuadre si dibujó oculto)."""
+        if self._view.image is not None:
+            self._view.getView().autoRange(padding=0.02)
+
     def _on_result(self, result: Any) -> None:
         import contextlib
+
+        from spmkit.gui.panels._viewport import fit_image_view
 
         ch = self._vm.base_channel()
         if ch is not None:
@@ -147,7 +154,7 @@ class GrainsCanvasPanel(Panel):
                 from spmkit.gui.design.pg_colormaps import pyqtgraph_cmap
 
                 self._view.setColorMap(pyqtgraph_cmap("gold"))
-            self._view.getView().autoRange(padding=0.02)
+            fit_image_view(self._view.getView(), ch.data)
         self._draw_overlay(result)
         self._stats.setText(_stats_line(result))
 
