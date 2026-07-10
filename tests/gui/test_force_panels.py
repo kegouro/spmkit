@@ -85,11 +85,36 @@ def test_inspector_shows_modulus(qtbot, synthetic_volume) -> None:  # type: igno
 
 
 def test_navigator_lists_and_steps(qtbot, synthetic_volume) -> None:  # type: ignore[no-untyped-def]
+    from spmkit.gui.viewmodels import ImageViewModel
+
     vm = ForceViewModel()
-    panel = NavigatorPanel(vm)
+    panel = NavigatorPanel(vm, ImageViewModel())
     qtbot.addWidget(panel)
     vm.set_volume(synthetic_volume(4))
     assert panel._list.count() == 4
     panel._step(1)
     assert vm.index == 1
     assert panel._list.currentRow() == 1
+
+
+def test_navigator_dual_hub_lists_image_channels(qtbot) -> None:  # type: ignore[no-untyped-def]
+    import numpy as np
+
+    from spmkit.core.models import SPMChannel, SPMData
+    from spmkit.gui.viewmodels import ImageViewModel
+
+    image_vm = ImageViewModel()
+    panel = NavigatorPanel(ForceViewModel(), image_vm)
+    qtbot.addWidget(panel)
+    z = np.zeros((8, 8))
+    image_vm.set_data(
+        SPMData(
+            channels=(
+                SPMChannel(name="Z", data=z, unit="m", x_range=1e-6, y_range=1e-6),
+                SPMChannel(name="Phase", data=z, unit="deg", x_range=1e-6, y_range=1e-6),
+            )
+        )
+    )
+    assert panel._list.count() == 2  # sin curvas de fuerza → lista canales de imagen
+    panel._step(1)  # avanza de canal
+    assert image_vm.channel == "Phase"
