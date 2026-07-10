@@ -79,13 +79,25 @@ def jkr_forward(
     """
     delta = np.asarray(delta, dtype=np.float64)
     d_max = float(np.max(delta)) if delta.size else 0.0
-    # Rango de a que cubre las indentaciones medidas (a_Hertz ≈ √(Rδ)); margen ×1.6.
+
+    def _curve(a_max: float) -> tuple[np.ndarray, np.ndarray]:
+        a = np.linspace(a_max * 1e-4, a_max, 2048)
+        d = a**2 / tip_radius - np.sqrt(2.0 * np.pi * work_of_adhesion * a / e_star)
+        f = 4.0 * e_star * a**3 / (3.0 * tip_radius) - np.sqrt(
+            8.0 * np.pi * work_of_adhesion * e_star * a**3
+        )
+        return d, f
+
+    # El término adhesivo baja δ(a): con adhesión hay que crecer `a` para alcanzar δ_max, o la
+    # rama se queda en el régimen atractivo y F sale toda negativa (bug histórico). Se crece
+    # a_max hasta cubrir δ_max manteniendo densidad razonable de la grilla.
     a_max = 1.6 * np.sqrt(tip_radius * max(d_max, 1e-30))
-    a = np.linspace(a_max * 1e-4, a_max, 2048)
-    d_of_a = a**2 / tip_radius - np.sqrt(2.0 * np.pi * work_of_adhesion * a / e_star)
-    f_of_a = 4.0 * e_star * a**3 / (3.0 * tip_radius) - np.sqrt(
-        8.0 * np.pi * work_of_adhesion * e_star * a**3
-    )
+    d_of_a, f_of_a = _curve(a_max)
+    for _ in range(12):
+        if float(d_of_a.max()) >= d_max:
+            break
+        a_max *= 1.5
+        d_of_a, f_of_a = _curve(a_max)
     # Rama de carga: desde el mínimo de δ (pull-off) hacia arriba, δ es monótona creciente.
     start = int(np.argmin(d_of_a))
     d_branch = d_of_a[start:]

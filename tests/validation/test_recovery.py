@@ -90,9 +90,44 @@ def test_ajuste_conjunto_vence_al_umbral_bajo_ruido() -> None:
     assert err_joint < 0.02 and err_joint < err_thr / 5  # el conjunto es ≫ mejor
 
 
-# NOTA: recuperación DMT/JKR con adhesión requiere un sintético con **snap-in** realista
+# NOTA: recuperación DMT con adhesión requiere un sintético con **snap-in** realista
 # (la detección de contacto DMT usa el mínimo/snap-in). Mi sintético de baseline plana no lo
-# tiene, así que se difiere a la tanda que construya el generador de snap-in + JKR validado.
+# tiene, así que se difiere a la tanda que construya el generador de snap-in.
+
+
+@pytest.mark.parametrize("noise_frac", [0.0, 0.01])
+def test_recupera_jkr(noise_frac: float) -> None:
+    """JKR: dada una indentación con régimen repulsivo claro, recupera E* (<1%) y w (<10%).
+
+    Valida el fix del ``a_max`` de ``jkr_forward`` (con adhesión hay que crecer el radio de
+    contacto para alcanzar δ_max, o la rama se queda atractiva y el ajuste falla). ``delta``
+    debe ser suficientemente profundo (JKR sin señal repulsiva es mal condicionado).
+    """
+    from spmkit.core.analysis import experimental
+
+    e_star_true = 1.0e6 / (1.0 - _NU**2)
+    w_true = 0.02  # J/m²
+    delta = np.linspace(0.0, 200e-9, 300)
+    force = experimental.jkr_forward(delta, e_star_true, w_true, _R)
+    if noise_frac > 0.0:
+        rng = np.random.default_rng(0)
+        force = force + rng.normal(0.0, noise_frac * float(np.abs(force).max()), force.shape)
+    fit = experimental.fit_jkr(delta, force, tip_radius=_R, poisson=_NU)
+    assert abs(fit.reduced_modulus - e_star_true) / e_star_true < 0.01
+    assert abs(fit.work_of_adhesion - w_true) / w_true < 0.1
+    assert fit.r_squared > 0.99
+
+
+def test_jkr_limite_hertz() -> None:
+    """Con ``w = 0`` el JKR reduce exactamente a Hertz: w recuperado ≈ 0, E* correcto."""
+    from spmkit.core.analysis import experimental
+
+    e_star_true = 1.0e6 / (1.0 - _NU**2)
+    delta = np.linspace(0.0, 200e-9, 300)
+    force = experimental.jkr_forward(delta, e_star_true, 0.0, _R)
+    fit = experimental.fit_jkr(delta, force, tip_radius=_R, poisson=_NU)
+    assert abs(fit.reduced_modulus - e_star_true) / e_star_true < 0.01
+    assert fit.work_of_adhesion < 1e-3  # sin adhesión → w ≈ 0
 
 
 def test_recupera_mapa_de_modulos() -> None:
