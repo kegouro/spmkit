@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from typing import Any
 
+import numpy as np
 from PyQt6.QtWidgets import (
     QDoubleSpinBox,
     QFileDialog,
@@ -23,6 +24,22 @@ from PyQt6.QtWidgets import (
 from spmkit.core.analysis.profiles import Profile
 from spmkit.gui.panels.base import Panel
 from spmkit.gui.viewmodels import ImageViewModel
+
+
+def _length_scale(magnitude: float) -> tuple[float, str]:
+    """Factor y unidad legible para una longitud en metros (nm/µm/mm/m, determinista).
+
+    Reemplaza el auto-prefijo SI de pyqtgraph, que sobre valores grandes mostraba unidades
+    absurdas (p. ej. ``km`` en un perfil). El resultado es explícito y verificable.
+    """
+    m = abs(magnitude)
+    if m < 1e-6:
+        return 1e9, "nm"
+    if m < 1e-3:
+        return 1e6, "µm"
+    if m < 1.0:
+        return 1e3, "mm"
+    return 1.0, "m"
 
 
 def _analysis_html(rough: Any, cpd: Any) -> str:
@@ -80,7 +97,11 @@ class ImageAnalysisPanel(Panel):
 
         lay.addWidget(QLabel("Perfil de línea (arrastra los extremos sobre la imagen)"))
         self._plot = pg.PlotWidget()
-        self._plot.setLabel("bottom", "Distancia", units="m")
+        # Unidades deterministas: escalamos nosotros (nm/µm/mm) y desactivamos el auto-prefijo SI
+        # de pyqtgraph (que mostraba 'km' sobre valores grandes).
+        self._plot.getAxis("bottom").enableAutoSIPrefix(False)
+        self._plot.getAxis("left").enableAutoSIPrefix(False)
+        self._plot.setLabel("bottom", "Distancia", units="nm")
         self._plot.setLabel("left", "Altura")
         lay.addWidget(self._plot, 1)
 
@@ -99,8 +120,14 @@ class ImageAnalysisPanel(Panel):
         self._plot.clear()
         if prof is None:
             return
-        self._plot.plot(prof.distance, prof.height, pen=pg.mkPen("#ffb454", width=2))
-        self._plot.setLabel("left", "Altura", units=prof.unit)
+        dist = np.asarray(prof.distance, dtype=float)
+        height = np.asarray(prof.height, dtype=float)
+        dscale, dunit = _length_scale(float(dist.max()) if dist.size else 0.0)
+        # Altura: si el canal está en m (topografía) la mostramos en nm; si no, tal cual.
+        hscale, hunit = (1e9, "nm") if prof.unit == "m" else (1.0, prof.unit)
+        self._plot.plot(dist * dscale, height * hscale, pen=pg.mkPen("#ffb454", width=2))
+        self._plot.setLabel("bottom", "Distancia", units=dunit)
+        self._plot.setLabel("left", "Altura", units=hunit)
 
     def _refresh_readout(self) -> None:
         self._readout.setText(_analysis_html(self._vm.roughness(), self._vm.kpfm()))

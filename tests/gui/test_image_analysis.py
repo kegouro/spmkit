@@ -69,6 +69,16 @@ def test_image_analysis_panel_plots_profile(qtbot) -> None:  # type: ignore[no-u
     assert "KPFM" in panel._readout.text()  # readout muestra CPD para canal V
 
 
+def test_profile_axis_uses_sensible_distance_units(qtbot) -> None:  # type: ignore[no-untyped-def]
+    vm = ImageViewModel()
+    panel = ImageAnalysisPanel(vm)
+    qtbot.addWidget(panel)
+    vm.set_data(_height_data())  # escaneo de 1 µm
+    vm.profile((5, 5), (50, 50))  # traza un perfil → _on_profile fija la unidad
+    unit = panel._plot.getAxis("bottom").labelUnits
+    assert unit in ("nm", "µm")  # nunca 'km' para un escaneo de µm
+
+
 def test_vm_tip_work_function_computes_phi_sample() -> None:
     vm = ImageViewModel()
     vm.set_data(_potential_data())
