@@ -219,6 +219,8 @@ def _stack(
             ret_x.append(display_axis(retract.separation, retract.raw_height))
         else:
             have_ret = False
+    if not ext_f:
+        raise ValueError("Force-volume vacío: no hay curvas para analizar")
     m = ext_f[0].size
     if any(a.size != m for a in ext_f):
         raise ValueError("La ruta rápida requiere curvas del mismo largo; usa el pipeline.")

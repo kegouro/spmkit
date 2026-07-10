@@ -86,3 +86,56 @@ def test_report_sin_ajustes_validos_da_valueerror(tmp_path) -> None:  # type: ig
 
     with pytest.raises(ValueError, match="NaN|graficabl"):
         build_force_report(_flat_volume(), tmp_path / "rep", formats=("html",))
+
+
+# ---------------------------------------------------------- archivos corruptos/vacíos
+
+
+def _write_nid(path, header: str, raw: bytes = b"") -> None:
+    path.write_bytes(header.encode("latin-1") + b"#!" + raw)
+
+
+def test_nid_canal_sin_points_da_valueerror(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    """Un .nid truncado (canal sin Points/Lines) → ValueError claro, no KeyError."""
+    from spmkit.core.io.nid import load_nid
+
+    header = (
+        "[DataSet]\r\nGroupCount=1\r\nGr0-Count=1\r\nGr0-Ch0=DataSet-0:0\r\n\r\n"
+        "[DataSet-0:0]\r\nLines=8\r\nDim2Name=Z-Axis\r\n"  # falta Points
+    )
+    p = tmp_path / "bad.nid"
+    _write_nid(p, header)
+    with pytest.raises(ValueError, match="corrupto"):
+        load_nid(p)
+
+
+def test_nid_sin_canales_da_valueerror(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    """Un .nid sin canales (GroupCount=0) → ValueError, no SPMData vacío silencioso."""
+    from spmkit.core.io.nid import load_nid
+
+    p = tmp_path / "empty.nid"
+    _write_nid(p, "[DataSet]\r\nGroupCount=0\r\n")
+    with pytest.raises(ValueError, match="sin canales"):
+        load_nid(p)
+
+
+def test_jpk_force_corrupto_da_valueerror(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    """Un .jpk-force con segmento pero sin sus canales → ValueError, no KeyError."""
+    import zipfile
+
+    from spmkit.core.io.jpk import load_jpk_force
+
+    p = tmp_path / "bad.jpk-force"
+    with zipfile.ZipFile(p, "w") as zf:
+        zf.writestr("segments/0/segment-header.properties", "")  # sin channels/*.dat
+    with pytest.raises(ValueError, match="corrupto|incompleto"):
+        load_jpk_force(p)
+
+
+def test_volume_vacio_da_valueerror() -> None:
+    """Analizar un force-volume sin curvas → ValueError, no IndexError."""
+    from spmkit.core.analysis.forcevolume_fast import elasticity_map
+
+    vol = ForceVolume.from_curves((), grid_shape=(1, 0), x_range=1e-6, y_range=1e-6)
+    with pytest.raises(ValueError):
+        elasticity_map(vol)

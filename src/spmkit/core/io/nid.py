@@ -140,8 +140,16 @@ def load_nid(path: str | Path) -> SPMData:
         sec = sections.get(sec_name)
         if sec is None:
             continue
-        points = int(sec["Points"])
-        lines = int(sec["Lines"])
+        if "Points" not in sec or "Lines" not in sec:
+            raise ValueError(
+                f"Archivo .nid corrupto: el canal {sec_name!r} no declara Points/Lines: {path}"
+            )
+        points, lines = int(sec["Points"]), int(sec["Lines"])
+        if points <= 0 or lines <= 0:
+            raise ValueError(
+                f"Archivo .nid corrupto: canal {sec_name!r} con dimensiones inválidas "
+                f"({points}×{lines}): {path}"
+            )
         dt = _dtype(sec)
         bits = int(sec.get("SaveBits", "32"))
         signed = sec.get("SaveSign", "Signed").lower() == "signed"
@@ -175,6 +183,9 @@ def load_nid(path: str | Path) -> SPMData:
                 metadata=dict(sec),
             )
         )
+
+    if not channels:
+        raise ValueError(f"Archivo .nid sin canales legibles (¿corrupto o vacío?): {path}")
 
     metadata = {
         "format": "nid",
