@@ -56,6 +56,19 @@ def test_smoothing_adds_step_to_recipe(qtbot, synthetic_volume) -> None:  # type
     assert "smooth" not in [s.op for s in vm.recipe.steps]
 
 
+def test_contact_method_and_ksigma_reach_recipe(qtbot, synthetic_volume) -> None:  # type: ignore[no-untyped-def]  # noqa: E501
+    vm = ForceViewModel()
+    panel = PipelinePanel(vm)
+    qtbot.addWidget(panel)
+    fit = vm.recipe.steps[-1]
+    assert fit.params["contact_method"] == "joint"  # default robusto
+    panel._contact.setCurrentIndex(panel._contact.findData("threshold"))
+    panel._ksigma.setValue(7.0)
+    fit = vm.recipe.steps[-1]
+    assert fit.params["contact_method"] == "threshold"  # el combo edita la receta
+    assert fit.params["k_sigma"] == 7.0
+
+
 def test_cone_fit_runs_end_to_end(qtbot, synthetic_volume) -> None:  # type: ignore[no-untyped-def]
     vm = ForceViewModel()
     vm.set_volume(synthetic_volume(1))

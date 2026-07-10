@@ -31,6 +31,8 @@ DEFAULT_PARAMS: dict[str, Any] = {
     "smooth_window": 0,  # ventana Savitzky-Golay (0/<3 = sin suavizado)
     "fit_min": None,  # m; ventana de ajuste manual (con fit_max)
     "fit_max": None,
+    "contact_method": "joint",  # detección de contacto: "joint" (robusto) | "threshold"
+    "k_sigma": 5.0,  # umbral de ruido (×σ) de la detección de contacto
 }
 
 
@@ -45,6 +47,8 @@ def build_recipe(params: dict[str, Any]) -> Recipe:
         "model": params["model"],
         "tip_radius": params["tip_radius"],
         "poisson": params["poisson"],
+        "contact_method": params.get("contact_method", "joint"),
+        "k_sigma": params.get("k_sigma", 5.0),
     }
     if params["model"] == "cone" and params.get("half_angle") is not None:
         fit["half_angle"] = params["half_angle"]
