@@ -119,7 +119,23 @@ class View3DPanel(Panel):
         ch = self._vm.current_channel()
         if ch is None:
             return
+        if not ch.is_spatial or min(ch.shape) < 2:
+            # Un canal espectral/1D o degenerado no es una superficie: el hillshade
+            # (np.gradient) y plot_surface fallarían. Se avisa en vez de romper el panel.
+            self._show_message(
+                "Este canal no es una superficie 2D de topografía\n"
+                "(espectro/línea o demasiado pequeño).\n\n"
+                "La Vista 3D necesita una imagen; usa Espectral o Sintonía térmica."
+            )
+            return
         self._draw(ch, self._vm.z_exag, self._vm.cmap, self._vm.hillshade)
+
+    def _show_message(self, text: str) -> None:
+        self._figure.clear()
+        ax = self._figure.add_subplot(111)
+        ax.axis("off")
+        ax.text(0.5, 0.5, text, ha="center", va="center", fontsize=11, color="#94a3b8")
+        self._canvas.draw()
 
     def _draw(self, ch: SPMChannel, z_exag: int, cmap_name: str, hillshade: bool) -> None:
         rows, cols = ch.data.shape

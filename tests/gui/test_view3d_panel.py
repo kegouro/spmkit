@@ -46,3 +46,29 @@ def test_view3d_panel_zlabel_is_physical(qtbot) -> None:  # type: ignore[no-unty
     assert not panel.errored
     image_vm.set_data(_data())
     assert panel._figure.axes[0].get_zlabel() == "Z (nm)"  # físico, no "Z (m)"
+
+
+def test_view3d_panel_no_rompe_con_canal_espectral(qtbot) -> None:  # type: ignore[no-untyped-def]
+    """Un canal espectral/1D (el que rompía np.gradient del hillshade) debe avisar, no fallar."""
+    image_vm = ImageViewModel()
+    vm = View3DViewModel(image_vm)
+    panel = View3DPanel(vm)
+    qtbot.addWidget(panel)
+    spec = SPMData(
+        channels=(
+            SPMChannel(
+                name="ASD",
+                data=np.zeros((1, 256)),  # 1×N: np.gradient/plot_surface fallarían
+                unit="m/√Hz",
+                x_range=1e4,
+                y_range=1.0,
+                metadata={"Dim1Name": "SpecPoint"},
+            ),
+        )
+    )
+    image_vm.set_data(spec)
+    assert not panel.errored  # NO Error Card: se maneja con gracia
+    # muestra un mensaje 2D (no un eje 3D que habría crasheado)
+    ax = panel._figure.axes[0]
+    assert ax.name != "3d"
+    assert any("superficie" in t.get_text().lower() for t in ax.texts)
