@@ -10,7 +10,14 @@ from __future__ import annotations
 import contextlib
 
 import numpy as np
-from PyQt6.QtWidgets import QComboBox, QHBoxLayout, QLabel, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import (
+    QComboBox,
+    QHBoxLayout,
+    QLabel,
+    QSpinBox,
+    QVBoxLayout,
+    QWidget,
+)
 
 from spmkit.core.analysis.roughness import RoughnessResult
 from spmkit.core.models import SPMChannel
@@ -63,9 +70,24 @@ class ImageCanvasPanel(Panel):
         self._level = QComboBox()
         for value, label in _LEVELING:
             self._level.addItem(label, value)
-        self._level.currentIndexChanged.connect(
-            lambda _i: self._vm.set_leveling(self._level.currentData())
+        self._level.currentIndexChanged.connect(self._on_leveling_changed)
+
+        # Grado del polinomio (solo con Nivelado=Polinomio) y estadístico de fila (=Filas).
+        self._order = QSpinBox()
+        self._order.setRange(1, 5)
+        self._order.setValue(self._vm.poly_order)
+        self._order.setPrefix("grado ")
+        self._order.setToolTip("Grado del nivelado polinómico")
+        self._order.valueChanged.connect(self._vm.set_poly_order)
+
+        self._rowstat = QComboBox()
+        self._rowstat.addItem("Mediana", "median")
+        self._rowstat.addItem("Media", "mean")
+        self._rowstat.setToolTip("Estadístico del alineado por filas")
+        self._rowstat.currentIndexChanged.connect(
+            lambda _i: self._vm.set_row_stat(self._rowstat.currentData())
         )
+
         self._cmap = QComboBox()
         self._cmap.addItems(_COLORMAPS)
         self._cmap.currentTextChanged.connect(self._apply_colormap)
@@ -75,11 +97,14 @@ class ImageCanvasPanel(Panel):
         bar.addWidget(self._channel)
         bar.addWidget(QLabel("Nivelado:"))
         bar.addWidget(self._level)
+        bar.addWidget(self._order)
+        bar.addWidget(self._rowstat)
         bar.addWidget(QLabel("Colormap:"))
         bar.addWidget(self._cmap)
         bar.addStretch(1)
         bar.addWidget(self._rough)
         lay.addLayout(bar)
+        self._update_level_controls()
 
         self._image = pg.ImageView()
         self._image.ui.roiBtn.hide()
@@ -91,6 +116,16 @@ class ImageCanvasPanel(Panel):
         self._image.addItem(self._roi)
         lay.addWidget(self._image, 1)
         return root
+
+    def _on_leveling_changed(self, _idx: int) -> None:
+        self._vm.set_leveling(self._level.currentData())
+        self._update_level_controls()
+
+    def _update_level_controls(self) -> None:
+        """Muestra el grado solo con Polinomio y el estadístico solo con Filas."""
+        mode = self._level.currentData()
+        self._order.setVisible(mode == "poly")
+        self._rowstat.setVisible(mode == "rows")
 
     # ---- colormap (concern de vista, como en map_canvas) ----
     def _apply_colormap(self, name: str = "") -> None:
