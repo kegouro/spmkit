@@ -94,6 +94,15 @@ class ForceCanvasPanel(Panel):
         self._resid.showGrid(x=True, y=True, alpha=0.12)
         self._resid.setLabel("left", "resid", units="nN")
         self._resid.setXLink(self._plot)
+        # Los datos ya vienen escalados a nN/nm; sin esto pyqtgraph re-aplica su prefijo SI y
+        # muestra unidades absurdas (p. ej. "knN" para fuerzas de µN, "knm" para µm).
+        for _ax in (
+            self._plot.getAxis("left"),
+            self._plot.getAxis("bottom"),
+            self._resid.getAxis("left"),
+            self._resid.getAxis("bottom"),
+        ):
+            _ax.enableAutoSIPrefix(False)
 
         self._extend_item = self._plot.plot(
             [], [], pen=pg.mkPen(tokens.TRACES["extend"], width=1.6), name="approach"

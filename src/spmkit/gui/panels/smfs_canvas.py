@@ -104,6 +104,9 @@ class SmfsCanvasPanel(Panel):
         self._plot = pg.PlotWidget()
         self._plot.setLabel("bottom", "Separación", units="nm")
         self._plot.setLabel("left", "Fuerza", units="nN")
+        # Datos ya escalados a nm/nN → sin re-prefijo SI de pyqtgraph (evita "knm"/"knN").
+        self._plot.getAxis("bottom").enableAutoSIPrefix(False)
+        self._plot.getAxis("left").enableAutoSIPrefix(False)
         self._plot.showGrid(x=True, y=True, alpha=0.3)
         lay.addWidget(self._plot, 1)
 
@@ -128,6 +131,7 @@ class SmfsCanvasPanel(Panel):
         self._hist = pg.PlotWidget()
         self._hist.setLabel("bottom", "Contorno", units="nm")
         self._hist.setLabel("left", "Eventos")
+        self._hist.getAxis("bottom").enableAutoSIPrefix(False)  # contorno ya en nm
         self._hist.setMaximumHeight(160)
         lay.addWidget(self._hist)
         return root

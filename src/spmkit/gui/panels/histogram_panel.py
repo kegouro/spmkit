@@ -50,8 +50,16 @@ class HistogramPanel(Panel):
         self._plot = pg.PlotWidget()
         self._plot.showGrid(x=True, y=True, alpha=0.15)
         self._plot.setLabel("left", "cuentas")
+        # Los bordes ya vienen escalados a la unidad de PROPERTIES (kPa, nN…) → sin re-prefijo
+        # SI de pyqtgraph (evita "MkPa" para módulos de GPa).
+        self._plot.getAxis("bottom").enableAutoSIPrefix(False)
         self._bars = self._plot.plot(
-            [], [], stepMode=True, fillLevel=0, brush=(45, 212, 191, 90), pen=pg.mkPen("#2DD4BF")
+            [],
+            [],
+            stepMode="center",
+            fillLevel=0,
+            brush=(45, 212, 191, 90),
+            pen=pg.mkPen("#2DD4BF"),
         )
         lay.addWidget(self._plot, 1)
         return root

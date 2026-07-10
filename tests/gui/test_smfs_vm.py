@@ -155,6 +155,19 @@ def test_smfs_panel_wlc_combo_solo_para_wlc(qtbot) -> None:  # type: ignore[no-u
     assert not panel._wlc_combo.isEnabled()  # la variante no aplica al FJC
 
 
+def test_smfs_panel_axes_no_si_reprefix(qtbot) -> None:  # type: ignore[no-untyped-def]
+    from spmkit.gui.panels.smfs_canvas import SmfsCanvasPanel
+
+    fvm = ForceViewModel()
+    svm = SmfsViewModel(fvm)
+    panel = SmfsCanvasPanel(svm)
+    qtbot.addWidget(panel)
+    # Separación/fuerza/contorno ya en nm/nN → sin re-prefijo SI de pyqtgraph.
+    assert panel._plot.getAxis("left").autoSIPrefix is False
+    assert panel._plot.getAxis("bottom").autoSIPrefix is False
+    assert panel._hist.getAxis("bottom").autoSIPrefix is False
+
+
 def test_smfs_vm_aggregate_contours(qtbot) -> None:  # type: ignore[no-untyped-def]
     fvm = ForceViewModel()
     svm = SmfsViewModel(fvm)

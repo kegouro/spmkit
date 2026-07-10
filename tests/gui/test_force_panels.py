@@ -84,6 +84,16 @@ def test_inspector_shows_modulus(qtbot, synthetic_volume) -> None:  # type: igno
     assert panel._values["max_indentation"].text() != "—"
 
 
+def test_force_canvas_axes_no_si_reprefix(qtbot, synthetic_volume) -> None:  # type: ignore[no-untyped-def]  # noqa: E501
+    vm = ForceViewModel()
+    panel = ForceCanvasPanel(vm)
+    qtbot.addWidget(panel)
+    # Fuerza/indentación ya vienen en nN/nm: pyqtgraph NO debe re-prefijar (nada de "knN"/"knm").
+    assert panel._plot.getAxis("left").autoSIPrefix is False
+    assert panel._plot.getAxis("bottom").autoSIPrefix is False
+    assert panel._resid.getAxis("left").autoSIPrefix is False
+
+
 def test_navigator_lists_and_steps(qtbot, synthetic_volume) -> None:  # type: ignore[no-untyped-def]
     from spmkit.gui.viewmodels import ImageViewModel
 
