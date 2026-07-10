@@ -15,13 +15,25 @@ from spmkit.core.plugins.contracts import DatasetInfo, Kind
 from spmkit.core.plugins.registry import reader_for, supported_extensions
 
 
+def _reader_for(path: str | Path) -> Any:
+    """Lector por extensión y, si ninguna coincide, **por contenido** (p. ej. JPK-TIFF)."""
+    reader = reader_for(path)
+    if reader is not None:
+        return reader
+    from spmkit.core.io.jpk_tiff import JpkTiffReader, looks_like_jpk_tiff
+
+    if looks_like_jpk_tiff(path):
+        return JpkTiffReader()
+    return None
+
+
 def inspect_any(path: str | Path) -> DatasetInfo:
     """Metadatos de ``path`` sin cargar los datos pesados.
 
     Raises:
         ValueError: si ninguna extensión registrada maneja el archivo.
     """
-    reader = reader_for(path)
+    reader = _reader_for(path)
     if reader is None:
         raise ValueError(
             f"Formato no soportado: {Path(path).suffix!r}. "
@@ -47,6 +59,6 @@ def load_any(path: str | Path, kind: Kind | None = None) -> tuple[Any, Kind]:
         raise ValueError(
             f"{Path(path).name} no contiene datos de tipo {chosen!r}; tiene {info.kinds}."
         )
-    reader = reader_for(path)
+    reader = _reader_for(path)
     assert reader is not None  # inspect_any ya lo garantizó
     return reader.load(path, chosen), chosen
