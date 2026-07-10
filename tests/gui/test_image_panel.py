@@ -95,6 +95,19 @@ def test_image_canvas_hydrates_already_loaded_data(qtbot) -> None:  # type: igno
     assert panel._rough.text() != "—"
 
 
+def test_fit_image_view_bounds_pan(qtbot) -> None:  # type: ignore[no-untyped-def]
+    import pyqtgraph as pg
+
+    from spmkit.gui.panels._viewport import fit_image_view
+
+    vb = pg.ViewBox()
+    fit_image_view(vb, np.zeros((10, 20)))  # rows=10, cols=20
+    xlim = vb.state["limits"]["xLimits"]
+    ylim = vb.state["limits"]["yLimits"]
+    assert xlim[0] <= 0 and xlim[1] >= 20  # acota el pan al extent en X (columnas)
+    assert ylim[0] <= 0 and ylim[1] >= 10  # y en Y (filas) → sin desplazamiento infinito
+
+
 def test_image_canvas_refresh_and_center(qtbot) -> None:  # type: ignore[no-untyped-def]
     vm = ImageViewModel()
     panel = ImageCanvasPanel(vm)

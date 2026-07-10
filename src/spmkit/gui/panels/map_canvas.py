@@ -169,7 +169,14 @@ class MapCanvasPanel(Panel):
         self._redraw()
         self._move_target(self._force_vm.index)
 
+    def refresh(self) -> None:
+        """Reencuadra al activarse la perspectiva (evita el mal encuadre si dibujó oculto)."""
+        if self._image.image is not None:
+            self._image.getView().autoRange(padding=0.02)
+
     def _redraw(self) -> None:
+        from spmkit.gui.panels._viewport import fit_image_view
+
         result = self._vm.result
         if result is None:
             return
@@ -178,7 +185,7 @@ class MapCanvasPanel(Panel):
             return
         scale = PROPERTIES.get(key, (key, 1.0, ""))[1]
         self._image.setImage(np.asarray(result.maps[key]) * scale, autoRange=True)
-        self._image.getView().autoRange(padding=0.02)
+        fit_image_view(self._image.getView(), result.maps[key])
         # Refleja la propiedad activa en el selector sin re-disparar la señal.
         idx = self._selector.findData(key)
         if idx >= 0 and idx != self._selector.currentIndex():

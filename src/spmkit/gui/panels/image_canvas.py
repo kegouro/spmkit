@@ -22,6 +22,7 @@ from PyQt6.QtWidgets import (
 
 from spmkit.core.analysis.roughness import RoughnessResult
 from spmkit.core.models import SPMChannel
+from spmkit.gui.panels._viewport import fit_image_view
 from spmkit.gui.panels.base import Panel
 from spmkit.gui.viewmodels import ImageViewModel
 
@@ -176,20 +177,8 @@ class ImageCanvasPanel(Panel):
         self._image.getView().autoRange(padding=0.02)
 
     def _draw(self, channel: SPMChannel) -> None:
-        data = np.asarray(channel.data)
-        rows, cols = (data.shape[0], 1) if data.ndim == 1 else data.shape[:2]
-        self._image.setImage(data, autoRange=True)
-        view = self._image.getView()
-        # Acota el pan/zoom al extent de la imagen (± margen): sin esto se desplaza al infinito.
-        view.setLimits(
-            xMin=-0.1 * cols,
-            xMax=1.1 * cols,
-            yMin=-0.1 * rows,
-            yMax=1.1 * rows,
-            maxXRange=1.4 * cols,
-            maxYRange=1.4 * rows,
-        )
-        view.autoRange(padding=0.02)
+        self._image.setImage(np.asarray(channel.data), autoRange=True)
+        fit_image_view(self._image.getView(), channel.data)
 
     def _update_profile(self) -> None:
         """Mapea el ROI a coordenadas de píxel y pide el perfil al VM."""
