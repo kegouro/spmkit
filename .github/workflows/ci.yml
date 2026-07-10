@@ -37,7 +37,7 @@ jobs:
       - name: Create venv (Python ${{ matrix.python-version }})
         run: uv venv --python ${{ matrix.python-version }}
       - name: Install package + test deps
-        run: uv pip install -e ".[dev,hdf5,gwy,report,grains]"
+        run: uv pip install -e ".[dev,hdf5,gwy,report,grains,jpk]"
       - name: Run tests (core + ciencia; los de GUI se omiten sin Qt)
         run: uv run pytest
 
@@ -55,7 +55,7 @@ jobs:
       - name: Create venv
         run: uv venv --python 3.12
       - name: Install package + GUI + test deps
-        run: uv pip install -e ".[dev,gui,test-gui,grains,report,hdf5,gwy]"
+        run: uv pip install -e ".[dev,gui,test-gui,grains,report,hdf5,gwy,jpk]"
       - name: Run GUI tests (offscreen, aislados por archivo)
         env:
           QT_QPA_PLATFORM: offscreen
