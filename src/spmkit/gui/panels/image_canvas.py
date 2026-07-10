@@ -157,6 +157,13 @@ class ImageCanvasPanel(Panel):
             self._channel.setCurrentText(name)
             self._channel.blockSignals(False)
         ch = self._vm.current_channel()
+        if ch is not None and not ch.is_spatial:
+            # Canal espectral/1D (frecuencia, tiempo): las métricas de imagen (rugosidad,
+            # perfil en distancia) NO aplican y darían unidades absurdas. Se muestra el canal
+            # pero se avisa y se omiten; el análisis va en Espectral/Sintonía térmica.
+            self._draw(ch)
+            self._rough.setText("⚠ Canal espectral/1D — usa Espectral o Sintonía térmica")
+            return
         if ch is not None:
             self._draw(ch)
             self._update_profile()  # re-traza el perfil sobre el canal nuevo

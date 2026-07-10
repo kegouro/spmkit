@@ -47,6 +47,27 @@ def test_image_panel_draws(qtbot) -> None:  # type: ignore[no-untyped-def]
     assert panel._rough.text() != "—"
 
 
+def test_image_panel_warns_on_spectral_channel(qtbot) -> None:  # type: ignore[no-untyped-def]
+    vm = ImageViewModel()
+    panel = ImageCanvasPanel(vm)
+    qtbot.addWidget(panel)
+    # canal espectral (1×N, Dim1Name no-Y) cargado en el hub de imagen
+    spec = SPMData(
+        channels=(
+            SPMChannel(
+                name="ASD",
+                data=np.zeros((1, 256)),
+                unit="m/√Hz",
+                x_range=1e4,
+                y_range=1.0,
+                metadata={"Dim1Name": "SpecPoint"},
+            ),
+        )
+    )
+    vm.set_data(spec)
+    assert "espectral" in panel._rough.text().lower()  # avisa en vez de métricas absurdas
+
+
 def test_image_vm_poly_order_and_row_stat_recompute() -> None:
     vm = ImageViewModel()
     vm.set_data(_synthetic_data())

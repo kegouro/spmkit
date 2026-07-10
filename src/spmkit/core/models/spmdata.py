@@ -55,6 +55,22 @@ class SPMChannel:
         """Tamaño de píxel en Y (metros/píxel)."""
         return self.y_range / self.data.shape[0]
 
+    @property
+    def is_spatial(self) -> bool:
+        """``True`` si es una **imagen 2D de topografía**; ``False`` para espectros/líneas 1D.
+
+        Distingue una imagen (donde las métricas de rugosidad, perfil y colormap tienen
+        sentido y los ejes son distancias) de un canal espectroscópico/1D (frecuencia, tiempo)
+        que NanoSurf guarda como un canal degenerado. Señal autoritativa en ``.nid``:
+        ``Dim1Name`` empieza con ``"Y"`` en imágenes; si falta (p. ej. ``.gwy``) se usa la
+        forma (una línea 1×N o N×1 no es una imagen).
+        """
+        rows, cols = self.shape
+        if rows < 2 or cols < 2:
+            return False
+        dim1 = str(self.metadata.get("Dim1Name", ""))
+        return dim1.startswith("Y") if dim1 else True
+
     def with_data(self, data: np.ndarray) -> SPMChannel:
         """Devuelve una copia del canal con nuevos datos (mismo eje/unidad)."""
         return SPMChannel(
