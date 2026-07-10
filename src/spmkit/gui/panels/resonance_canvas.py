@@ -12,6 +12,7 @@ from PyQt6.QtWidgets import (
     QDoubleSpinBox,
     QHBoxLayout,
     QLabel,
+    QPushButton,
     QVBoxLayout,
     QWidget,
 )
@@ -69,6 +70,31 @@ class ResonanceCanvasPanel(Panel):
         frow.addStretch(1)
         lay.addLayout(frow)
 
+        # Constante de resorte por ruido térmico (equipartición) sobre el rango activo.
+        krow = QHBoxLayout()
+        krow.addWidget(QLabel("Temp (°C):"))
+        self._temp = QDoubleSpinBox()
+        self._temp.setRange(-50.0, 200.0)
+        self._temp.setDecimals(1)
+        self._temp.setValue(20.0)
+        krow.addWidget(self._temp)
+        krow.addWidget(QLabel("χ:"))
+        self._chi = QDoubleSpinBox()
+        self._chi.setRange(0.1, 1.0)
+        self._chi.setDecimals(3)
+        self._chi.setSingleStep(0.01)
+        self._chi.setValue(0.817)  # Butt & Jaschke, 1er modo, palanca óptica
+        self._chi.setToolTip("Factor de forma de modo (0.817 para el 1er modo, óptica)")
+        krow.addWidget(self._chi)
+        calc_k = QPushButton("Calcular k (térmico)")
+        calc_k.clicked.connect(self._calc_k)
+        krow.addWidget(calc_k)
+        self._k_readout = QLabel("")
+        self._k_readout.setProperty("role", "readout")
+        krow.addWidget(self._k_readout)
+        krow.addStretch(1)
+        lay.addLayout(krow)
+
         self._plot = pg.PlotWidget()
         self._plot.setLabel("bottom", "Frecuencia", units="Hz")
         self._plot.setLabel("left", "PSD", units="m/√Hz")
@@ -91,6 +117,10 @@ class ResonanceCanvasPanel(Panel):
         fmin = (self._fmin.value() / _KHZ) or None
         fmax = (self._fmax.value() / _KHZ) or None
         self._vm.set_range(fmin, fmax)
+
+    def _calc_k(self) -> None:
+        k = self._vm.spring_constant_thermal(self._temp.value(), self._chi.value())
+        self._k_readout.setText(f"k = {k:.3g} N/m" if k is not None else "—")
 
     def _on_result(self, result: ResonanceResult | None) -> None:
         import pyqtgraph as pg

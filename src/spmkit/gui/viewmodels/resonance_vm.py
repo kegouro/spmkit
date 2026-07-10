@@ -81,6 +81,38 @@ class ResonanceViewModel(QObject):
             )
         )
 
+    def spring_constant_thermal(
+        self, temperature_c: float = 20.0, correction_factor: float = 0.817
+    ) -> float | None:
+        """Constante de resorte ``k`` (N/m) por el método de ruido térmico (equipartición).
+
+        Integra ``⟨x²⟩ = ∫ ASD² df`` sobre el rango activo (o todo el espectro) y aplica
+        :func:`calibration.spring_constant_thermal`. Devuelve ``None`` si no hay espectro.
+        Requiere que la ASD esté calibrada en m/√Hz (como en un ``.nid`` de sintonía real).
+        """
+        if self._result is None:
+            return None
+        from spmkit.core.analysis import calibration
+
+        freq = np.asarray(self._result.frequency)
+        psd = np.asarray(self._result.psd)
+        mask = np.ones(freq.size, dtype=bool)
+        if self._f_min is not None:
+            mask &= freq >= self._f_min
+        if self._f_max is not None:
+            mask &= freq <= self._f_max
+        if int(mask.sum()) < 2:
+            return None
+        variance = float(np.trapezoid(psd[mask] ** 2, freq[mask]))  # ⟨x²⟩ (m²)
+        try:
+            return calibration.spring_constant_thermal(
+                variance,
+                temperature=temperature_c + 273.15,
+                correction_factor=correction_factor,
+            )
+        except ValueError:
+            return None
+
     def _emit(self, result: ResonanceResult | None) -> None:
         self._result = result
         self.resultChanged.emit(result)
