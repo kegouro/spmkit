@@ -101,6 +101,38 @@ class SmfsViewModel(QObject):
         self.paramsChanged.emit(dict(self._params))
         self.compute()
 
+    def _analyze(self, curve: object) -> tuple[np.ndarray, np.ndarray, list[chain.EventFit]]:
+        """Corre baseline → detección → ajuste sobre el retract de una ``ForceCurve`` cruda.
+
+        Calibra (no-op si ya trae fuerza), ordena por separación, corrige base y ajusta con los
+        parámetros actuales. Devuelve ``(sep, corrected, events)``; lanza ``ValueError`` si no hay
+        retract calibrado.
+        """
+        calibrated = run(_calibrate_recipe(self._force_vm.params), curve)[0]
+        retract = calibrated.retract
+        if retract is None or retract.force is None or retract.separation is None:
+            raise ValueError("la curva no tiene retracción calibrada")
+        sep = np.asarray(retract.separation, dtype=np.float64)
+        force = np.asarray(retract.force, dtype=np.float64)
+        order = np.argsort(sep)  # el pipeline espera separación creciente
+        sep, force = sep[order], force[order]
+        p = self._params
+        bf = p["baseline_fraction"]
+        corrected = chain.correct_retract_baseline(sep, force, baseline_fraction=bf)
+        events = chain.fit_chain_events(
+            sep,
+            corrected,
+            model=self._model,
+            correct_baseline=False,
+            baseline_fraction=bf,
+            min_prominence_sigma=p["min_prominence_sigma"],
+            min_height_sigma=p["min_height_sigma"],
+            min_r_squared=p["min_r_squared"],
+            temperature=p["temperature"],
+            wlc_model=self._wlc_model,
+        )
+        return sep, corrected, events
+
     def compute(self) -> None:
         """Corre el pipeline SMFS sobre el retract de la curva activa; emite ``resultChanged``."""
         vm = self._force_vm
@@ -108,31 +140,7 @@ class SmfsViewModel(QObject):
             self._emit(None)
             return
         try:
-            calibrated = run(_calibrate_recipe(vm.params), vm.current_curve())[0]
-            retract = calibrated.retract
-            if retract is None or retract.force is None or retract.separation is None:
-                self.statusChanged.emit("SMFS: la curva no tiene retracción calibrada")
-                self._emit(None)
-                return
-            sep = np.asarray(retract.separation, dtype=np.float64)
-            force = np.asarray(retract.force, dtype=np.float64)
-            order = np.argsort(sep)  # el pipeline espera separación creciente
-            sep, force = sep[order], force[order]
-            p = self._params
-            bf = p["baseline_fraction"]
-            corrected = chain.correct_retract_baseline(sep, force, baseline_fraction=bf)
-            events = chain.fit_chain_events(
-                sep,
-                corrected,
-                model=self._model,
-                correct_baseline=False,
-                baseline_fraction=bf,
-                min_prominence_sigma=p["min_prominence_sigma"],
-                min_height_sigma=p["min_height_sigma"],
-                min_r_squared=p["min_r_squared"],
-                temperature=p["temperature"],
-                wlc_model=self._wlc_model,
-            )
+            sep, corrected, events = self._analyze(vm.current_curve())
         except Exception as exc:  # noqa: BLE001 - curva degenerada: se informa, no tumba la app
             self.statusChanged.emit(f"SMFS falló: {exc}")
             self._emit(None)
@@ -140,6 +148,52 @@ class SmfsViewModel(QObject):
         overlays = [self._overlay(sep, corrected, ef) for ef in events]
         self.statusChanged.emit(f"{len(events)} evento(s) — modelo {self._model.upper()}")
         self._emit(SmfsResult(sep, corrected, events, overlays, self._model))
+
+    def aggregate_contours(self) -> np.ndarray:
+        """Longitudes de contorno (m) de **todos** los eventos aceptados de **todo** el volumen.
+
+        Corre el pipeline SMFS por cada curva del force-volume (población para el histograma).
+        Las curvas sin retract o degeneradas se saltan.
+        """
+        vm = self._force_vm
+        if vm.volume is None:
+            return np.empty(0, dtype=np.float64)
+        contours: list[float] = []
+        for i in range(vm.n_curves):
+            try:
+                _, _, events = self._analyze(vm.volume.curve(i))
+            except Exception:  # noqa: BLE001 - curva sin retract/degenerada: se salta
+                continue
+            contours.extend(ef.fit.contour_length for ef in events)
+        return np.asarray(contours, dtype=np.float64)
+
+    def export_events_csv(self, path: str) -> int:
+        """Exporta los eventos de la curva activa a CSV (FAIR). Devuelve el nº de filas escritas."""
+        result = self._result
+        if result is None or not result.events:
+            return 0
+        import csv
+
+        second = "kuhn_length_m" if self._model == "fjc" else "persistence_length_m"
+        with open(path, "w", newline="", encoding="utf-8") as fh:
+            writer = csv.writer(fh)
+            writer.writerow(
+                ["evento", "separacion_m", "fuerza_N", "contorno_m", second, "r_squared"]
+            )
+            for i, ef in enumerate(result.events, start=1):
+                fit = ef.fit
+                second_val = fit.kuhn_length if self._model == "fjc" else fit.persistence_length
+                writer.writerow(
+                    [
+                        i,
+                        ef.event.separation,
+                        ef.event.force,
+                        fit.contour_length,
+                        second_val,
+                        fit.r_squared,
+                    ]
+                )
+        return len(result.events)
 
     def _overlay(
         self, sep: np.ndarray, force: np.ndarray, ef: chain.EventFit
