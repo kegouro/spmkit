@@ -135,6 +135,10 @@ def fit_elasticity(
     fit_range: tuple[float, float] | None = None,
     contact_method: str = "joint",
     k_sigma: float = 5.0,
+    mc: bool = False,
+    invols_rel_err: float = 0.05,
+    k_rel_err: float = 0.05,
+    mc_samples: int = 200,
 ) -> ForceCurve:
     """Ajusta un modelo de contacto al segmento de aproximación.
 
@@ -144,6 +148,8 @@ def fit_elasticity(
     ``cone``; ``None`` usa el valor por defecto del core. ``fit_range`` (min, max en m)
     restringe el ajuste a una ventana manual del eje. ``contact_method`` (``"joint"`` /
     ``"threshold"``) elige la detección de contacto; ``k_sigma`` es su umbral de ruido.
+    Con ``mc=True`` propaga la incertidumbre de InVOLS/k por Monte Carlo (``mc_samples``
+    muestras) y escribe ``ctx["young_modulus_std"]`` (Pa).
     """
     seg = _primary_segment(curve)
     if seg is None:
@@ -159,6 +165,18 @@ def fit_elasticity(
     )
     ctx["young_modulus"] = fit.young_modulus
     ctx["young_modulus_std"] = fit.young_modulus_std
+    if mc:
+        _, ctx["young_modulus_std"] = forcecurve.fit_force_curve_mc(
+            _axis(seg),
+            force,
+            invols_rel_err=invols_rel_err,
+            k_rel_err=k_rel_err,
+            n_samples=mc_samples,
+            model=model,
+            tip_radius=tip_radius,
+            poisson=poisson,
+            **extra,
+        )
     ctx["r_squared"] = fit.r_squared
     ctx["contact_point"] = fit.contact_point
     ctx["adhesion"] = fit.adhesion

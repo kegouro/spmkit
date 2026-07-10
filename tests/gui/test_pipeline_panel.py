@@ -69,6 +69,23 @@ def test_contact_method_and_ksigma_reach_recipe(qtbot, synthetic_volume) -> None
     assert fit.params["k_sigma"] == 7.0
 
 
+def test_mc_uncertainty_enables_and_computes(qtbot, synthetic_volume) -> None:  # type: ignore[no-untyped-def]  # noqa: E501
+    vm = ForceViewModel()
+    vm.set_volume(synthetic_volume(1))
+    panel = PipelinePanel(vm)
+    qtbot.addWidget(panel)
+    assert not panel._invols_err.isEnabled()  # controles MC deshabilitados sin activar
+    panel._mc.setChecked(True)
+    panel._mc_n.setValue(30)  # pocas muestras: rápido
+    assert panel._invols_err.isEnabled()
+    fit = vm.recipe.steps[-1]
+    assert fit.params["mc"] is True and fit.params["mc_samples"] == 30
+    ctx: dict = {}
+    vm.resultsChanged.connect(ctx.update)
+    vm.run_fit_now()
+    assert ctx.get("young_modulus_std", 0) > 0  # el MC produce una incertidumbre > 0
+
+
 def test_cone_fit_runs_end_to_end(qtbot, synthetic_volume) -> None:  # type: ignore[no-untyped-def]
     vm = ForceViewModel()
     vm.set_volume(synthetic_volume(1))
