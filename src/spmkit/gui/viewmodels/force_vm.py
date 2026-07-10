@@ -33,6 +33,10 @@ DEFAULT_PARAMS: dict[str, Any] = {
     "fit_max": None,
     "contact_method": "joint",  # detección de contacto: "joint" (robusto) | "threshold"
     "k_sigma": 5.0,  # umbral de ruido (×σ) de la detección de contacto
+    "mc": False,  # incertidumbre Monte Carlo del módulo (propaga InVOLS/k)
+    "invols_rel_err": 0.05,  # error relativo de InVOLS para el MC
+    "k_rel_err": 0.05,  # error relativo de k para el MC
+    "mc_samples": 200,  # muestras del Monte Carlo
 }
 
 
@@ -50,6 +54,11 @@ def build_recipe(params: dict[str, Any]) -> Recipe:
         "contact_method": params.get("contact_method", "joint"),
         "k_sigma": params.get("k_sigma", 5.0),
     }
+    if params.get("mc"):
+        fit["mc"] = True
+        fit["invols_rel_err"] = params.get("invols_rel_err", 0.05)
+        fit["k_rel_err"] = params.get("k_rel_err", 0.05)
+        fit["mc_samples"] = int(params.get("mc_samples", 200))
     if params["model"] == "cone" and params.get("half_angle") is not None:
         fit["half_angle"] = params["half_angle"]
     fmin, fmax = params.get("fit_min"), params.get("fit_max")

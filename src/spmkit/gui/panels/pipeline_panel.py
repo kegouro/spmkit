@@ -11,10 +11,12 @@ from __future__ import annotations
 import math
 
 from PyQt6.QtWidgets import (
+    QCheckBox,
     QComboBox,
     QDoubleSpinBox,
     QFormLayout,
     QLabel,
+    QSpinBox,
     QVBoxLayout,
     QWidget,
 )
@@ -104,9 +106,28 @@ class PipelinePanel(Panel):
         self._k = self._spin(0.0, 1000.0, 0.0, " N/m", 3)
         cal_form.addRow("k resorte", self._k)
         outer.addLayout(cal_form)
+
+        self._mc = QCheckBox("Incertidumbre Monte Carlo (± módulo)")
+        self._mc.setToolTip("Propaga los errores relativos de InVOLS y k al módulo de Young.")
+        self._mc.toggled.connect(self._on_mc_toggled)
+        outer.addWidget(self._mc)
+
+        mc_form = QFormLayout()
+        mc_form.setHorizontalSpacing(16)
+        self._invols_err = self._spin(0.0, 0.5, 0.05, "", 3, step=0.01)
+        mc_form.addRow("Error rel. InVOLS", self._invols_err)
+        self._k_err = self._spin(0.0, 0.5, 0.05, "", 3, step=0.01)
+        mc_form.addRow("Error rel. k", self._k_err)
+        self._mc_n = QSpinBox()
+        self._mc_n.setRange(10, 2000)
+        self._mc_n.setValue(200)
+        self._mc_n.valueChanged.connect(self._apply)
+        mc_form.addRow("Muestras MC", self._mc_n)
+        outer.addLayout(mc_form)
         outer.addStretch(1)
 
         self._update_enabled()
+        self._on_mc_toggled(False)
         return root
 
     def _spin(
@@ -133,6 +154,11 @@ class PipelinePanel(Panel):
         self._update_enabled()
         self._apply()
 
+    def _on_mc_toggled(self, checked: bool) -> None:
+        for w in (self._invols_err, self._k_err, self._mc_n):
+            w.setEnabled(checked)
+        self._apply()
+
     def _update_enabled(self) -> None:
         is_cone = self._model.currentData() == "cone"
         self._angle.setEnabled(is_cone)
@@ -152,4 +178,8 @@ class PipelinePanel(Panel):
             smooth_window=int(self._smooth.value()),
             contact_method=self._contact.currentData(),
             k_sigma=self._ksigma.value(),
+            mc=self._mc.isChecked(),
+            invols_rel_err=self._invols_err.value(),
+            k_rel_err=self._k_err.value(),
+            mc_samples=int(self._mc_n.value()),
         )
