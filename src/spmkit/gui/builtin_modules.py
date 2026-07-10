@@ -115,6 +115,15 @@ def _resonance(ctx: ModuleContext):  # type: ignore[no-untyped-def]
     return ResonanceCanvasPanel(vm)
 
 
+def _evaporation(ctx: ModuleContext):  # type: ignore[no-untyped-def]
+    from spmkit.gui.panels.evaporation_canvas import EvaporationCanvasPanel
+    from spmkit.gui.viewmodels import EvaporationViewModel
+
+    vm = EvaporationViewModel()  # autocontenido: el panel elige la carpeta
+    ctx.store["evaporation_vm"] = vm
+    return EvaporationCanvasPanel(vm)
+
+
 def _figure(ctx: ModuleContext):  # type: ignore[no-untyped-def]
     from spmkit.gui.panels.figure_panel import FigurePanel
     from spmkit.gui.viewmodels import FigureViewModel
@@ -153,6 +162,9 @@ def _wire_image(ws, ctx: ModuleContext) -> None:  # type: ignore[no-untyped-def]
     resonance_vm = ctx.store.get("resonance_vm")
     if resonance_vm is not None:
         resonance_vm.statusChanged.connect(ws.show_status)
+    evaporation_vm = ctx.store.get("evaporation_vm")
+    if evaporation_vm is not None:
+        evaporation_vm.statusChanged.connect(ws.show_status)
 
 
 # ------------------------------------------------------------------------ módulos
@@ -175,12 +187,14 @@ _IMAGE = ModuleSpec(
         PanelSpec("grains_canvas", "Granos", _grains),
         PanelSpec("spectral_canvas", "Espectral", _spectral),
         PanelSpec("resonance_canvas", "Sintonía térmica", _resonance),
+        PanelSpec("evaporation_canvas", "Evaporación", _evaporation),
     ),
     perspectives=(
         PerspectiveSpec("image", "Imagen", ("navigator", "image_canvas", "image_analysis")),
         PerspectiveSpec("grains", "Granos", ("navigator", "grains_canvas")),
         PerspectiveSpec("spectral", "Espectral", ("navigator", "spectral_canvas")),
         PerspectiveSpec("resonance", "Sintonía térmica", ("navigator", "resonance_canvas")),
+        PerspectiveSpec("evaporation", "Evaporación", ("evaporation_canvas",)),
     ),
     wire=_wire_image,
 )

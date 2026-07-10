@@ -20,6 +20,7 @@ _ALL_PERSPECTIVES = {
     "grains",
     "spectral",
     "resonance",
+    "evaporation",
     "force",
     "smfs",
     "map",
