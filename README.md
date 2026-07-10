@@ -1,166 +1,232 @@
 <div align="center">
 
-<img src="docs/images/brand/banner.png" alt="SPM-Kit Banner" width="100%">
+<img src="docs/images/brand/banner.png" alt="SPM-Kit" width="100%">
 
-# SPM-Kit: Core SDK para Microscopía de Sonda de Barrido
+# SPM-Kit · Fathom
 
-### Motor Numérico y Framework de Extensibilidad Abierta
+### El motor numérico abierto y el *workspace* interactivo para Microscopía de Sonda de Barrido
 
 [![CI](https://github.com/kegouro/spmkit/actions/workflows/ci.yml/badge.svg)](https://github.com/kegouro/spmkit/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-515%20passing-brightgreen.svg)](https://github.com/kegouro/spmkit/actions/workflows/ci.yml)
-[![Coverage](https://img.shields.io/badge/coverage-73%25-green.svg)](#validación-científica-y-cobertura)
-[![PyPI](https://img.shields.io/pypi/v/spmkit.svg?color=2dd4bf)](https://pypi.org/project/spmkit/)
+[![Tests](https://img.shields.io/badge/tests-519%20passing-brightgreen.svg)](https://github.com/kegouro/spmkit/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.11%20|%203.12-blue.svg)](https://pypi.org/project/spmkit/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
-**[Documentación Oficial](https://kegouro.github.io/spmkit/)** · [Fathom Workspace](#fathom-entorno-de-análisis-avanzado) · [Arquitectura](#arquitectura-del-software) · [Validación](#validación-científica-y-cobertura)
+**🇪🇸 Español** · [🇬🇧 English](README.en.md)
 
-<br>
+**[📖 Documentación](https://kegouro.github.io/spmkit/)** · [✨ Características](#-características) · [🚀 Instalación](#-instalación) · [🧩 Desarrollar tu propio módulo](#-desarrollar-en-fathom-extensibilidad) · [🏗️ Arquitectura](#️-arquitectura)
+
 </div>
-
-**SPM-Kit** es un marco de trabajo (*toolkit*) riguroso y de código abierto desarrollado en el **SPM Lab** de la Universidad Técnica Federico Santa María (UTFSM). Proporciona la infraestructura algorítmica y matemática necesaria para la decodificación, análisis espectral, nivelación y extracción de propiedades nanomecánicas a partir de datos de microscopía de sonda de barrido (AFM, KPFM).
 
 ---
 
-## Fathom: Entorno de Análisis Avanzado
+## 🔬 Qué es
 
-<div align="center">
-<img src="docs/images/brand/fathom_banner.svg" alt="Fathom Workspace Banner" width="100%">
-<br>
+**SPM-Kit** es un *toolkit* riguroso y de código abierto (MIT) para decodificar, analizar y visualizar datos de microscopía de sonda de barrido —**AFM, KPFM y espectroscopía de fuerza**— desarrollado en el **SPM Lab** de la Universidad Técnica Federico Santa María (UTFSM).
 
+Se organiza en dos capas:
 
-Mientras que `spmkit` actúa como la capa computacional subyacente, **Fathom** es el espacio de trabajo (*workspace*) interactivo insignia construido sobre su API. Fathom ha sido diseñado arquitectónicamente para sustituir herramientas propietarias de alto costo (como Nanosurf ANA y JPK Data Processing) en ecosistemas de investigación intensiva.
-
-Para instanciar el entorno Fathom:
+| Capa | Rol |
+|------|-----|
+| 🧮 **`spmkit.core`** | El **motor numérico** puro (sin interfaz): lectores de formato, análisis validado, exportación. Instalable solo, ideal para *scripts*, HPC y *pipelines* reproducibles. |
+| 🖥️ **Fathom** | El **workspace interactivo** construido sobre ese motor, diseñado para **sustituir herramientas propietarias** (Nanosurf ANA, JPK Data Processing) en investigación. |
 
 ```bash
-spmkit workspace [archivo_opcional]
+spmkit workspace [archivo]     # abre Fathom
 ```
 
-### Capacidades Funcionales de Fathom
-
-- **Pipeline de Ajuste Nanomecánico en Tiempo Real:** Ajuste algorítmico continuo para curvas de fuerza con modelos de contacto (Hertz, paraboloide, Sneddon cónico, DMT y **JKR adhesivo**) — módulo de Young con **incertidumbre por Monte Carlo**, radio de punta, corrección de Poisson, **método de detección de contacto** (ajuste conjunto robusto vs umbral), calibración (InVOLS y constante de resorte por ruido térmico) y ventanas de ajuste manual. Cada modelo entra al repositorio **solo si recupera parámetros conocidos** de datos sintéticos con ruido dentro de tolerancia (*gate* de recuperación numérica en `tests/validation`); la relajación viscoelástica SLS permanece marcada como experimental.
-- **Espectroscopía de Fuerza de Molécula Única (SMFS):** detección de eventos de ruptura por **prominencia** (sin *thresholding* ingenuo) y ajuste de cadena polimérica por evento — **WLC** (Marko-Siggia + Bouchiat) y **FJC** (Langevin) — con control de calidad (R²) sobre la rama de retracción corregida de línea base, más histograma de longitud de contorno de población.
-- **Exportación con Fidelidad Científica:** los mapas de fuerza, curvas individuales y lotes se exportan a CSV trazable con **cabecera de metadatos** (parámetros de análisis), **unidades físicas en cada columna** y estadística robusta por propiedad — sin volcados de `NaN` (las columnas sin datos se omiten con nota, los puntos fallidos quedan vacíos).
-- **Topología de Mapeo de Volúmenes de Fuerza (*Force-Volume*):** Extracción de propiedades locales mapeadas a coordenadas espaciales, implementando *linked brushing* interactivo entre espectros y topografía.
-- **Sistema Modular por Perspectivas:** Superando las interfaces monolíticas, Fathom emplea una estructura de vistas modulares (Perspectivas) que segrega lógicamente las áreas de trabajo: **Imagen** (topografía, perfiles de línea, rugosidad ISO 25178 y KPFM/CPD por sonda Kelvin), **Granos** (detección de partículas), **Espectral** (PSD radial, dimensión fractal), **Curva de Fuerza**, **Mapa** de force-volume, **SMFS** (eventos + cadena WLC/FJC), **Sintonía térmica** (f₀/Q/k por ruido térmico), **Batch**, **Figura**, **Vista 3D** y **Simulador**. Todo parámetro de análisis (umbrales, modelos, unidades) es **editable en la interfaz** — nada hardcodeado.
-- **Framework de Extensibilidad Abierta:** nuevos **formatos**, **análisis** y **perspectivas** se registran por *entry-points* (`spmkit.plugins.v1`, `spmkit.gui.modules`) **sin tocar el núcleo** — la base para que `spmkit` sea un host multi-física y Fathom una de sus extensiones. Añadir un módulo es declarar un `ModuleSpec` (ver la [guía de extensión](https://kegouro.github.io/spmkit/extending/)).
-- **Personalización Visual:** temas con presets (Grafito, Papel, NanoSurf oro, Nord, Dracula, Solarized, Gruvbox), color de acento y escala tipográfica con **vista previa en vivo**, persistentes entre sesiones.
-- **Motor de Renderizado Dinámico:** Renderizado tridimensional interactivo con modelos de iluminación (*hillshade*) y exageración Z visual.
-
 <div align="center">
-<img src="docs/images/screenshot_viewer.png" alt="Fathom Interfaz Principal" width="100%">
-<sub>Interfaz del Workspace Fathom (Renderizado con perfiles bilineales).</sub>
+<img src="docs/images/screenshot_viewer.png" alt="Interfaz de Fathom" width="100%">
+<sub>Fathom — análisis por <b>perspectivas</b>: cambias de tarea, no de pestaña.</sub>
 </div>
 
 ---
 
-## Arquitectura del Software
+## ✨ Características
 
-El ecosistema adopta un paradigma estricto de separación de capas (Arquitectura Hexagonal/Clean Architecture), asegurando que el análisis matemático permanezca agnóstico respecto a la interfaz de usuario.
+- 🧪 **Nanomecánica en tiempo real** — ajuste de contacto (Hertz, paraboloide, Sneddon cónico, DMT y **JKR adhesivo**) con módulo de Young, **incertidumbre por Monte Carlo**, detección de contacto robusta (ajuste conjunto), calibración (InVOLS y *k* por ruido térmico) y ventanas de ajuste manual.
+- 🧬 **SMFS (molécula única)** — detección de eventos de ruptura por **prominencia** y ajuste de cadena polimérica por evento: **WLC** (Marko-Siggia/Bouchiat) y **FJC** (Langevin), con control de calidad e histograma de contorno de población.
+- 🗺️ **Mapas de force-volume** — propiedades locales mapeadas a coordenadas espaciales, con *linked brushing* interactivo entre espectros y topografía, y motor vectorizado CPU/GPU.
+- 📐 **Metrología de imagen** — rugosidad ISO 25178, perfiles de línea interactivos, KPFM/CPD por sonda Kelvin, detección de granos, análisis espectral (PSD radial, dimensión fractal).
+- 📤 **Exportación con fidelidad científica** — CSV trazable con metadatos, **unidades físicas en cada columna** y estadística por propiedad; sin volcados de `NaN`.
+- 🎛️ **Nada hardcodeado** — cada umbral, modelo y unidad es **editable en la interfaz**.
+- 🧩 **Extensibilidad abierta** — formatos, análisis y perspectivas nuevos se registran por *entry-points* **sin tocar el núcleo** (ver [abajo](#-desarrollar-en-fathom-extensibilidad)).
+- 🎨 **Personalización visual** — temas con presets (Grafito, Papel, NanoSurf oro, Nord, Dracula, Solarized, Gruvbox), acento y tipografía, con vista previa en vivo.
+
+---
+
+## 🖼️ Perspectivas
+
+| Perspectiva | Para qué sirve |
+|-------------|----------------|
+| **Imagen** | Topografía: nivelado (plano/polinomio/filas), colormap, perfil de línea, rugosidad ISO 25178 y KPFM. |
+| **Granos** | Detección de partículas con estadística (conteo, diámetro, cobertura, densidad). |
+| **Espectral** | PSD radial, dimensión fractal y longitud de correlación. |
+| **Curva de fuerza** | Ajuste de contacto (Hertz…JKR) con incertidumbre, residuos y exportación científica. |
+| **SMFS** | Eventos de ruptura + ajuste de cadena WLC/FJC por evento, con QC e histograma. |
+| **Sintonía térmica** | Resonancia por ruido térmico → **f₀, Q, k** por equipartición. |
+| **Mapa** | Mapas de propiedades de un force-volume + histograma + exportación. |
+| **Batch** | Procesa carpetas de curvas **y mapas** de fuerza → tabla resumen científica. |
+| **Figura** | Editor WYSIWYG de figuras de publicación (anotaciones, barra de escala, colorbar). |
+| **Vista 3D** | Superficie con iluminación (*hillshade*) y exageración Z visual. |
+| **Simulador** | Gemelo digital educativo del cantiléver (espectro de ruido térmico). |
+
+---
+
+## 🚀 Instalación
+
+```bash
+pip install spmkit              # solo el motor numérico (servidores/HPC)
+pip install "spmkit[gui]"       # + Fathom (workstations)
+pip install "spmkit[all]"       # + HDF5, reportes, granos (SciPy)
+```
+
+## ⚡ Inicio rápido
+
+**Como biblioteca de Python:**
+
+```python
+from spmkit import load
+from spmkit.core.analysis import roughness, leveling
+
+data = load("scan.nid")                 # → SPMData (canales en unidades físicas)
+ch = leveling.plane_fit(data["Z-Axis"]) # corrige inclinación
+print(roughness.statistics(ch))         # Sa, Sq, Sz… (ISO 25178)
+```
+
+**Como GUI:**
+
+```bash
+spmkit workspace scan.nid
+```
+
+**Desde la línea de comandos:**
+
+```bash
+spmkit info scan.nid                     # metadatos del instrumento
+spmkit roughness scan.nid -c Z-Axis      # parámetros ISO 25178
+spmkit convert scan.nid scan.gwy         # transcribe a Gwyddion
+spmkit fbatch /datos -o resultados.csv   # lote de curvas de fuerza
+```
+
+---
+
+## 🧩 Desarrollar en Fathom (extensibilidad)
+
+Fathom está diseñado para que **añadir capacidades sea un trámite corto**, sin tocar el núcleo. Hay tres puntos de extensión, cada uno por *entry-points* declarados en tu propio paquete. Guía completa: **[docs/extending.md](https://kegouro.github.io/spmkit/extending/)**.
+
+### 1. Un formato de archivo nuevo
+
+Crea un lector que devuelva un `SPMData` y regístralo:
+
+```python
+# mi_plugin/lector.py
+from spmkit.core.models import SPMData, SPMChannel
+
+class MiLector:
+    extensions = (".miext",)
+    def inspect(self, path): ...          # capacidades (imagen/fuerza) — barato
+    def load(self, path, kind=None):      # → SPMData / ForceVolume
+        ...
+        return SPMData(channels=(SPMChannel(name="Z", data=z, unit="m",
+                                            x_range=1e-6, y_range=1e-6),))
+```
+
+```toml
+# pyproject.toml de tu plugin
+[project.entry-points."spmkit.plugins.v1"]
+mi_formato = "mi_plugin.lector:MiLector"
+```
+
+### 2. Un análisis nuevo
+
+Va en `core/analysis/` (Python puro, **sin UI**) y devuelve un dataclass inmutable. Si es un modelo físico, **entra con su test de recuperación** (ver [Validación](#-validación-científica)).
+
+### 3. Una perspectiva nueva (una vista completa en Fathom)
+
+Declara un `ModuleSpec` — un ViewModel (estado observable) + un panel (Qt) + su registro. **Añadir una perspectiva = añadir un `ModuleSpec`:**
+
+```python
+from spmkit.gui.extensions import ModuleSpec, PanelSpec, PerspectiveSpec
+
+MI_MODULO = ModuleSpec(
+    name="mi_modulo",
+    panels=(PanelSpec("mi_panel", "Mi análisis", _fabrica_del_panel),),
+    perspectives=(PerspectiveSpec("mi", "Mi análisis", ("navigator", "mi_panel")),),
+)
+```
+
+```toml
+[project.entry-points."spmkit.gui.modules"]
+mi_modulo = "mi_plugin.gui:MI_MODULO"
+```
+
+Al instalar tu plugin, la perspectiva aparece en la barra de Fathom **sin modificar spmkit**. Este es el mecanismo que convierte a `spmkit` en un *host* multi-física y a Fathom en una de sus extensiones.
+
+---
+
+## 🏗️ Arquitectura
+
+Tres capas estrictamente separadas: **`core/` es Python puro sin imports de UI**; `cli/` y `gui/` solo orquestan/presentan e importan la API pública de `core`. Esta regla la **hace cumplir un test** (`tests/test_architecture.py`).
 
 ```mermaid
 graph TD
-    subgraph SPM-Kit Core [spmkit.core]
-        IO[Módulo de Entrada/Salida]
-        ANALYSIS[Algoritmos de Análisis]
-        MODELS[Modelos de Datos Estandarizados]
-        
-        IO --> MODELS
-        ANALYSIS --> MODELS
+    subgraph Presentación
+        CLI[cli · línea de comandos]
+        GUI[gui · Fathom / PyQt6]
     end
-
-    subgraph Presentación [spmkit.gui / spmkit.cli]
-        CLI[Interfaz de Línea de Comandos]
-        FATHOM[Fathom Workspace]
-        
-        CLI -.-> ANALYSIS
-        FATHOM -.-> ANALYSIS
-        FATHOM -.-> IO
+    subgraph Núcleo [spmkit.core · Python puro]
+        IO[io · lectores de formato]
+        ANALYSIS[analysis · algoritmos validados]
+        MODELS[models · SPMData / ForceVolume]
+        EXPORT[export · CSV/JSON/HDF5]
     end
-
-    EXT1[(Archivos .nid)] --> IO
-    EXT2[(Archivos .gwy)] --> IO
-    EXT3[(Archivos .jpk-force)] --> IO
-```
-
-- **Directorio Core:** El motor numérico se encuentra aislado en `[src/spmkit/core](./src/spmkit/core)`. Ninguna dependencia gráfica interactúa con esta capa, lo que permite su despliegue en clústeres de computación de alto rendimiento (*HPC*).
-- **Directorio de Presentación:** La lógica de interacción, gestión de estado (*ViewModels*) y vistas de PyQt6 residen en `[src/spmkit/gui](./src/spmkit/gui)`.
-
----
-
-## Ecosistema y Formatos de Archivo
-
-El módulo de entrada y salida garantiza interoperabilidad de ciclo completo (*round-trip*) con las plataformas estandarizadas de la industria.
-
-| Extensión | Formato Origen | Estado de Soporte |
-|-----------|----------------|-------------------|
-| `.nid` | NanoSurf Clásico | Validación Categórica (Lectura) |
-| `.gwy` | Gwyddion | Lectura y Escritura Nativa |
-| `.nhf` | NanoSurf HDF5 | Soporte Experimental |
-| `.jpk-force` | JPK Instruments | Integración en Fathom |
-
----
-
-## Validación Científica y Cobertura
-
-La rigurosidad es el pilar de SPM-Kit. El decodificador de matrices binarias para archivos `.nid` ha sido sujeto a validaciones algorítmicas de control cruzado contra *Gwyddion*.
-
-La matriz de pruebas demuestra una **correlación de precisión de máquina (1.000000)** en la conversión a unidades métricas físicas. Los informes de prueba y auditoría numérica pueden consultarse íntegramente en `[docs/VALIDATION.md](./docs/VALIDATION.md)` y en el subdirectorio de pruebas `[tests/validation/](./tests/validation)`.
-
-Más allá del *round-trip* de formatos, cada modelo físico se somete a un **gate de recuperación numérica**: se generan datos sintéticos con parámetros conocidos y ruido controlado, y el ajuste debe recuperarlos dentro de tolerancia o no entra al repositorio (módulo de Young a <2% incluso con ruido gracias al ajuste conjunto del contacto; contorno/persistencia de WLC/FJC y E\*/adhesión de JKR igualmente validados).
-
-Actualmente, el repositorio ejecuta una suite integral automatizada por GitHub Actions que valida **348 pruebas de núcleo y validación**, más una suite de **167 pruebas de GUI** (offscreen), en entornos estandarizados de Python 3.11 y 3.12.
-
----
-
-## Guía de Despliegue e Instalación
-
-El empaquetado de SPM-Kit es modular. Los investigadores pueden optar por instalar únicamente el motor de cálculo, o el ecosistema gráfico completo.
-
-```bash
-# Instalación del motor matemático (Recomendado para servidores/HPC)
-pip install spmkit
-
-# Instalación integral incluyendo Fathom Workspace (Recomendado para workstations)
-pip install "spmkit[gui]"
-
-# Instalación completa con todas las dependencias cruzadas (HDF5, Reportes, SciPy Grains)
-pip install "spmkit[all]"
-```
-
-### Operaciones por Línea de Comandos
-
-La interfaz de comandos proporciona tuberías (*pipelines*) de análisis directo sin sobrecarga gráfica:
-
-```bash
-spmkit info scan.nid                     # Extracción de metadatos instrumentales
-spmkit roughness scan.nid -c Z-Axis      # Determinación de parámetros ISO 25178
-spmkit convert scan.nid scan.gwy         # Transcripción a ecosistema Gwyddion
-spmkit fbatch /datos -o resultados.csv   # Procesamiento distribuido de múltiples curvas
+    CLI --> ANALYSIS
+    GUI --> ANALYSIS
+    IO --> MODELS
+    ANALYSIS --> MODELS
+    ANALYSIS --> EXPORT
 ```
 
 ---
 
-## Contribución Académica
+## 📂 Formatos
 
-Las aportaciones al código fuente son bienvenidas y sujetas a estrictas políticas de revisión. El análisis numérico reside exclusivamente en `src/spmkit/core/`. Se exige el cumplimiento integral de métricas estáticas mediante `mypy`, formateo determinista con `black` y cumplimiento de linters mediante `ruff`.
+| Extensión | Origen | Soporte |
+|-----------|--------|---------|
+| `.nid` | NanoSurf clásico | Lectura validada a precisión de máquina vs Gwyddion |
+| `.gwy` | Gwyddion | Lectura y escritura nativa |
+| `.nhf` | NanoSurf HDF5 | Experimental |
+| `.jpk-force` / `.jpk-qi` | JPK Instruments | Curvas y mapas de fuerza (extra `afm`) |
 
-Referirse a `[CONTRIBUTING.md](./CONTRIBUTING.md)` para las pautas formales.
+---
 
-### Referencia Citacional
+## 🔬 Validación científica
 
-En el caso de utilizar SPM-Kit o Fathom para la obtención de resultados en publicaciones académicas, solicitamos citar el proyecto de acuerdo a los estándares definidos en `[CITATION.cff](./CITATION.cff)`.
+La rigurosidad es el pilar del proyecto. Además del *round-trip* de formatos (correlación de **precisión de máquina** contra Gwyddion), **cada modelo físico pasa un *gate* de recuperación numérica**: se generan datos sintéticos con parámetros conocidos y ruido controlado, y el ajuste debe recuperarlos dentro de tolerancia o **no entra al repositorio**.
+
+- Módulo de Young a **<2 %** incluso con ruido (gracias al ajuste conjunto del contacto).
+- Contorno/persistencia de **WLC/FJC**, E\*/adhesión de **JKR** y τ de la relajación **SLS** igualmente validados.
+
+CI ejecuta **351 pruebas de núcleo/validación** + **168 de GUI** (offscreen) en Python 3.11 y 3.12. Ver [`docs/VALIDATION.md`](./docs/VALIDATION.md) y [`tests/validation/`](./tests/validation).
+
+---
+
+## 🤝 Contribuir
+
+El análisis numérico reside exclusivamente en `src/spmkit/core/`. Se exige `mypy` (estricto en `core`), `black` y `ruff`. `make check` es exactamente lo que corre CI. Ver [`CONTRIBUTING.md`](./CONTRIBUTING.md).
+
+## 📖 Citar
+
+Si usas SPM-Kit o Fathom en una publicación, cítalo según [`CITATION.cff`](./CITATION.cff).
 
 <br>
-
 <div align="center">
 
 [![DOI](https://zenodo.org/badge/1270254374.svg)](https://zenodo.org/badge/latestdoi/1270254374)
 
-<sub>Proyecto auspiciado y estructurado bajo el <b><a href="https://kegouro.github.io">Pharos Project</a></b> — Desarrollando infraestructura científica sin barreras computacionales.</sub>
+<sub>Estructurado bajo el <b><a href="https://kegouro.github.io">Pharos Project</a></b> — infraestructura científica sin barreras computacionales.</sub>
 <br>
-<sub>José Labarca Baeza · Prof. Tomás Corrales | Licencia MIT © 2026</sub>
+<sub>José Labarca Baeza · Prof. Tomás Corrales · UTFSM | Licencia MIT © 2026</sub>
 
 </div>
