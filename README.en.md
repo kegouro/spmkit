@@ -1,123 +1,378 @@
 <div align="center">
 
-<img src="docs/images/brand/banner.png" alt="SPM-Kit" width="100%">
+<img src="docs/images/brand/banner.png" alt="SPM-Kit · Fathom" width="100%">
 
 # SPM-Kit · Fathom
 
-### The open numerical engine and interactive workspace for Scanning Probe Microscopy
+**Open numerical engine and interactive workspace for Scanning Probe Microscopy (SPM)**
+
+*Nanomechanics, single-molecule force spectroscopy, image metrology, and resonance mass sensing — with physics validated by numerical recovery.*
 
 [![CI](https://github.com/kegouro/spmkit/actions/workflows/ci.yml/badge.svg)](https://github.com/kegouro/spmkit/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-519%20passing-brightgreen.svg)](https://github.com/kegouro/spmkit/actions/workflows/ci.yml)
-[![Python](https://img.shields.io/badge/python-3.11%20|%203.12-blue.svg)](https://pypi.org/project/spmkit/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Tests](https://img.shields.io/badge/tests-460%2B-brightgreen.svg)](https://github.com/kegouro/spmkit/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12-blue.svg)](https://pypi.org/project/spmkit/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
+[![Style: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Typed: mypy](https://img.shields.io/badge/typed-mypy%20strict-blue.svg)](https://mypy-lang.org/)
 
-[🇪🇸 Español](README.md) · **🇬🇧 English**
+[Español](README.md) · **English**
 
-**[📖 Documentation](https://kegouro.github.io/spmkit/)** · [✨ Features](#-features) · [🚀 Install](#-installation) · [🧩 Build your own module](#-developing-in-fathom-extensibility) · [🏗️ Architecture](#️-architecture)
+[Overview](#overview) · [Features](#features) · [Perspectives](#perspective-gallery) · [Install](#installation) · [Tutorials](#tutorials) · [Architecture](#architecture) · [Extend](#extensibility) · [Validation](#scientific-validation)
+
+<img src="docs/images/fathom_tour.gif" alt="Tour of Fathom's perspectives" width="90%">
+
+<sub>Fathom analyzes by <b>perspectives</b>: you switch tasks, not tabs. All data shown here is <b>synthetic and reproducible</b> (<a href="scripts/gen_docs_media.py"><code>scripts/gen_docs_media.py</code></a>).</sub>
 
 </div>
 
 ---
 
-## 🔬 What it is
+<details>
+<summary><b>Table of contents</b></summary>
 
-**SPM-Kit** is a rigorous, open-source (MIT) toolkit to decode, analyze and visualize scanning-probe-microscopy data —**AFM, KPFM and force spectroscopy**— developed at the **SPM Lab** of Universidad Técnica Federico Santa María (UTFSM).
+- [Overview](#overview)
+- [Features](#features)
+- [Perspective gallery](#perspective-gallery)
+- [Installation](#installation)
+- [Quick start](#quick-start)
+- [Tutorials](#tutorials)
+- [Command-line reference](#command-line-reference)
+- [Architecture](#architecture)
+- [Supported formats](#supported-formats)
+- [Extensibility](#extensibility)
+- [Scientific validation](#scientific-validation)
+- [Development and quality](#development-and-quality)
+- [Reproduce the media](#reproduce-this-readmes-media)
+- [Cite](#cite)
 
-It is organized in two layers:
+</details>
 
-| Layer | Role |
-|-------|------|
-| 🧮 **`spmkit.core`** | The pure **numerical engine** (no UI): format readers, validated analysis, export. Installable on its own — ideal for scripts, HPC and reproducible pipelines. |
-| 🖥️ **Fathom** | The **interactive workspace** built on that engine, designed to **replace proprietary tools** (Nanosurf ANA, JPK Data Processing) in research. |
+---
+
+## Overview
+
+**SPM-Kit** is a rigorous, open-source (MIT) toolkit to decode, analyze, and visualize scanning-probe-microscopy data —**AFM, KPFM, and force spectroscopy**— developed at the **SPM Lab** of Universidad Técnica Federico Santa María (UTFSM). It starts from a simple premise: scientific analysis must be **traceable, reproducible, and honest**, free of proprietary software and black boxes.
+
+It is organized in two layers with a strict boundary between them:
+
+| Layer | Role | Install |
+|-------|------|---------|
+| **`spmkit.core`** | The pure **numerical engine**, no GUI: format readers, validated analysis, export. Python + NumPy; heavy dependencies optional. | `pip install spmkit` |
+| **Fathom** | The interactive **workspace** (PyQt6) built on that engine, meant to **replace** proprietary tools such as Nanosurf ANA and JPK Data Processing in day-to-day research. | `pip install "spmkit[gui]"` |
+
+That separation is not cosmetic: **`core/` imports no GUI layer**, and an architecture test enforces it. All analysis is scriptable, runs headless on a server or cluster, and the GUI is a transparent control panel onto the same code.
 
 ```bash
-spmkit workspace [file]     # launch Fathom
+spmkit workspace scan.nid     # open Fathom on a file
 ```
 
-<div align="center">
-<img src="docs/images/screenshot_viewer.png" alt="Fathom interface" width="100%">
-<sub>Fathom — analysis by <b>perspectives</b>: you switch task, not tab.</sub>
-</div>
+---
+
+## Features
+
+**Quantitative nanomechanics**
+- Contact fitting: **spherical Hertz**, **paraboloid**, **conical Sneddon**, **DMT**, and **adhesive JKR**.
+- Contact detection by **joint fitting** (variable projection), immune to the baseline-noise bias that plagues naive k·σ thresholds.
+- **Monte Carlo uncertainty** propagated from calibration (InVOLS, spring constant).
+- Cantilever calibration: InVOLS and **k by the thermal-noise method** (equipartition).
+- JPK-style manual fit windows, with live region selection.
+
+**Single-molecule force spectroscopy (SMFS)**
+- Rupture-event detection by **prominence** with a k·σ height floor over the baseline (kills noise blips).
+- Per-event polymer-chain fitting: **WLC** (Marko-Siggia / Bouchiat) and **FJC** (Langevin).
+- Quality control (drops low-R² fits) and a **population contour-length histogram**.
+
+**Force-volume maps**
+- Maps local properties (modulus, adhesion, dissipation) to spatial coordinates.
+- **Vectorized CPU/GPU** engine (NumPy / CuPy) mirroring exactly the closed form of the scalar fit.
+- Interactive *linked brushing* between the map, the histogram, and the single curve.
+
+**Resonance and mass sensing**
+- **Thermal tuning**: simple-harmonic-oscillator (SHO) fit to the thermal-noise spectrum → **f₀, Q, k**.
+- **Evaporation series**: tracks the resonance shift f(t) → added mass Δm(t), evaporation rate, and the **d² law** fit.
+
+**Image metrology**
+- **ISO 25178** roughness (Sa, Sq, Sz…), interactive line profiles, leveling (plane / polynomial / row-wise).
+- **KPFM / CPD** with sample work function, grain detection, spectral analysis (radial PSD, fractal dimension, correlation length).
+
+**Engineering and trust**
+- **Nothing hardcoded**: every threshold, model, unit, and parameter is **editable in the interface**.
+- **Scientific-fidelity export**: traceable CSV with metadata, a **physical unit per column**, and per-property statistics; never dumps `NaN`.
+- **Entry-point extensibility**: new formats, analyses, and perspectives register **without touching the core**.
+- **Visual customization**: preset themes (Graphite, Paper, NanoSurf gold, Nord, Dracula, Solarized, Gruvbox), accent, and typography, with live preview.
 
 ---
 
-## ✨ Features
+## Perspective gallery
 
-- 🧪 **Real-time nanomechanics** — contact fitting (Hertz, paraboloid, conical Sneddon, DMT and **adhesive JKR**) with Young's modulus, **Monte-Carlo uncertainty**, robust contact detection (joint fit), calibration (InVOLS and spring constant *k* from thermal noise) and manual fit windows.
-- 🧬 **SMFS (single-molecule)** — rupture-event detection by **prominence** and per-event polymer-chain fitting: **WLC** (Marko-Siggia/Bouchiat) and **FJC** (Langevin), with quality control and a population contour-length histogram.
-- 🗺️ **Force-volume maps** — local properties mapped to spatial coordinates, interactive *linked brushing* between spectra and topography, and a vectorized CPU/GPU engine.
-- 📐 **Image metrology** — ISO 25178 roughness, interactive line profiles, KPFM/CPD (Kelvin probe), grain detection, spectral analysis (radial PSD, fractal dimension).
-- 📤 **Scientific-grade export** — traceable CSV with metadata, **physical units on every column** and per-property statistics; no `NaN` dumps.
-- 🎛️ **Nothing hardcoded** — every threshold, model and unit is **editable in the UI**.
-- 🧩 **Open extensibility** — new formats, analyses and perspectives register via *entry-points* **without touching the core** (see [below](#-developing-in-fathom-extensibility)).
-- 🎨 **Visual customization** — themes with presets (Graphite, Paper, NanoSurf gold, Nord, Dracula, Solarized, Gruvbox), accent and typography, with live preview.
+Fathom exposes **twelve perspectives**. Each is a complete view —panels, controls, and canvases— focused on one task. You switch from the top bar or the command palette (`Ctrl+K`).
 
----
+<table>
+<tr>
+<td width="50%"><img src="docs/images/fathom_force.png" alt="Force curve"></td>
+<td width="50%"><img src="docs/images/fathom_map.png" alt="Force-volume map"></td>
+</tr>
+<tr>
+<td align="center"><b>Force curve</b> — contact fit with modulus, uncertainty, residuals, and scientific export.</td>
+<td align="center"><b>Map</b> — force-volume modulus map with a population histogram and a perceptual colormap.</td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/images/fathom_resonance.png" alt="Thermal tuning"></td>
+<td width="50%"><img src="docs/images/fathom_evaporation.png" alt="Evaporation"></td>
+</tr>
+<tr>
+<td align="center"><b>Thermal tuning</b> — SHO fit of the thermal noise → f₀, Q, and k.</td>
+<td align="center"><b>Evaporation</b> — mass sensing by frequency shift: f(t), Δm(t), and the d² law.</td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/images/fathom_image.png" alt="Image"></td>
+<td width="50%"><img src="docs/images/fathom_grains.png" alt="Grains"></td>
+</tr>
+<tr>
+<td align="center"><b>Image</b> — topography: leveling, line profile, ISO 25178 roughness, and KPFM.</td>
+<td align="center"><b>Grains</b> — particle detection with statistics (count, diameter, coverage).</td>
+</tr>
+</table>
 
-## 🖼️ Perspectives
+<details>
+<summary><b>All twelve perspectives, in a table</b></summary>
 
 | Perspective | What it does |
 |-------------|--------------|
-| **Image** | Topography: leveling (plane/polynomial/rows), colormap, line profile, ISO 25178 roughness and KPFM. |
+| **Image** | Topography: leveling (plane/polynomial/rows), colormap, line profile, ISO 25178 roughness, and KPFM. |
 | **Grains** | Particle detection with statistics (count, diameter, coverage, density). |
-| **Spectral** | Radial PSD, fractal dimension and correlation length. |
-| **Force curve** | Contact fitting (Hertz…JKR) with uncertainty, residuals and scientific export. |
-| **SMFS** | Rupture events + per-event WLC/FJC chain fitting, with QC and histogram. |
-| **Thermal tuning** | Thermal-noise resonance → **f₀, Q, k** by equipartition. |
+| **Spectral** | Radial PSD, fractal dimension, and correlation length. |
+| **Thermal tuning** | Thermal-noise resonance → f₀, Q, k by SHO fit and equipartition. |
+| **Evaporation** | Mass-sensing time series: f(t) → Δm, evaporation rate, d² law. |
+| **Force curve** | Contact fit (Hertz…JKR) with uncertainty, residuals, and export. |
+| **SMFS** | Rupture events + per-event WLC/FJC chain fit, with QC and a histogram. |
 | **Map** | Force-volume property maps + histogram + export. |
-| **Batch** | Processes folders of force curves **and maps** → scientific summary table. |
+| **Batch** | Processes folders of force curves **and** maps → scientific summary table. |
 | **Figure** | WYSIWYG publication-figure editor (annotations, scale bar, colorbar). |
-| **3D view** | Surface with *hillshade* lighting and visual Z exaggeration. |
-| **Simulator** | Educational cantilever digital twin (thermal-noise spectrum). |
+| **3D view** | Surface with hillshade lighting and visual Z exaggeration. |
+| **Simulator** | Educational digital twin of the cantilever (thermal-noise spectrum). |
+
+</details>
 
 ---
 
-## 🚀 Installation
+## Installation
 
 ```bash
-pip install spmkit              # numerical engine only (servers/HPC)
+pip install spmkit              # numerical engine only (servers / HPC)
 pip install "spmkit[gui]"       # + Fathom (workstations)
-pip install "spmkit[all]"       # + HDF5, reports, grains (SciPy)
+pip install "spmkit[all]"       # everything: GUI, HDF5, reports, grains, extra formats
 ```
 
-## ⚡ Quick start
+Heavy dependencies are **optional extras**, keeping the base engine light:
 
-**As a Python library:**
+| Extra | Enables |
+|-------|---------|
+| `gui` | Fathom (PyQt6, pyqtgraph, matplotlib). |
+| `afm` | Long-tail readers via `afmformats` (JPK QI, `.ibw`, HDF5, NT-MDT…). |
+| `jpk` | JPK force curves in TIFF format (`tifffile`). |
+| `grains` | Grain detection and SHO fits (`scipy`). |
+| `hdf5` | HDF5 read/write (`h5py`). |
+| `gwy` | Gwyddion interoperability (`.gwy`). |
+| `report` | HTML/PDF reports (`jinja2` + `viz`). |
+| `viz` | Publication figures (`matplotlib`, `cmcrameri`, scalebars). |
+
+---
+
+## Quick start
+
+**As a Python library**
 
 ```python
 from spmkit import load
 from spmkit.core.analysis import roughness, leveling
 
-data = load("scan.nid")                 # → SPMData (channels in physical units)
-ch = leveling.plane_fit(data["Z-Axis"]) # remove tilt
-print(roughness.statistics(ch))         # Sa, Sq, Sz… (ISO 25178)
+data = load("scan.nid")                   # → SPMData (channels in physical units)
+ch = leveling.plane_fit(data["Z-Axis"])   # corrects tilt
+print(roughness.statistics(ch))           # Sa, Sq, Sz… (ISO 25178)
 ```
 
-**As a GUI:**
+```python
+from spmkit.core.io import load_any
+from spmkit.core.analysis import forcecurve
+
+vol, _ = load_any("indent.jpk-force")     # → calibrated ForceVolume
+seg = vol.curve(0).extend                  # approach segment
+x = forcecurve.display_axis(seg.separation, seg.raw_height)
+fit = forcecurve.fit_force_curve(x, seg.force, model="dmt")
+print(fit.young_modulus, fit.r_squared)   # Young's modulus and goodness of fit
+```
+
+**As a desktop application**
 
 ```bash
-spmkit workspace scan.nid
+spmkit workspace scan.nid     # opens Fathom on the given file
 ```
 
-**From the command line:**
+**From the command line**
 
 ```bash
 spmkit info scan.nid                     # instrument metadata
-spmkit roughness scan.nid -c Z-Axis      # ISO 25178 parameters
+spmkit nanomech indent.jpk-force         # contact fit of one curve
+spmkit forcemap volume.jpk-qi -o map     # modulus map of a force-volume
+spmkit evaporation ./thermal_series/     # mass sensing by evaporation
 spmkit convert scan.nid scan.gwy         # transcribe to Gwyddion
-spmkit fbatch /data -o results.csv       # batch of force curves
 ```
 
 ---
 
-## 🧩 Developing in Fathom (extensibility)
+## Tutorials
 
-Fathom is designed so that **adding capabilities is a short chore**, without touching the core. There are three extension points, each via *entry-points* declared in your own package. Full guide: **[docs/extending.md](https://kegouro.github.io/spmkit/extending/)**.
+<details>
+<summary><b>1. Analyze a force curve (Young's modulus)</b></summary>
+
+1. `spmkit workspace indent.jpk-force` (or **Open…** in Fathom). The file routes to the **Force curve** perspective.
+2. In the **Pipeline** panel (bottom) pick the contact **model** (spherical Hertz, DMT, JKR…), the **tip radius**, and the **contact** method (Joint or threshold).
+3. The **Inspector** (right) shows Young's modulus, R², contact point, adhesion, and ± uncertainty (Monte Carlo).
+4. To restrict the fit, enable **Region** and drag the window over the loading branch.
+5. **Export curve…** produces a CSV with the fit, units, and the separation/force table.
+
+Equivalent to: `spmkit nanomech indent.jpk-force --model dmt`.
+</details>
+
+<details>
+<summary><b>2. Modulus map of a force-volume</b></summary>
+
+1. Open a force-volume (`.jpk-qi`, spectroscopy `.nid`). Switch to the **Map** perspective.
+2. Pick the **property** (Young's modulus, adhesion, dissipation…), the **engine** (fast CPU / pipeline), and the **colormap**.
+3. **Compute map** fits the thousands of curves at once (vectorized). The **histogram** summarizes the population (median ± deviation).
+4. Selecting a map pixel shows its single curve in the Inspector (*linked brushing*).
+5. **Export data…** dumps the map per point with units and recipe metadata.
+
+Equivalent to: `spmkit forcemap volume.jpk-qi -o map`.
+</details>
+
+<details>
+<summary><b>3. Spring constant by thermal noise (Thermal tuning)</b></summary>
+
+1. Open a thermal-tuning spectrum (`.nid`). Switch to **Thermal tuning**.
+2. The **SHO** fit recovers **f₀** and **Q** from the thermal peak; the instrument usually ships its own values for comparison.
+3. Bound the **frequency range** around the peak if neighboring modes are present.
+4. **Compute k (thermal)** integrates ⟨x²⟩ = ∫ ASD² df over the range and applies equipartition with the editable mode-shape factor χ.
+
+> Validated against a real instrument: f₀ recovered to 0.01 %, Q to 4 %, k to ~2 %.
+</details>
+
+<details>
+<summary><b>4. Mass sensing by evaporation (time series)</b></summary>
+
+1. Switch to the **Evaporation** perspective and click **Open series…**; choose a folder of thermal-tuning spectra (one per instant).
+2. Fathom tracks the resonance f(t) and derives the **added mass** Δm(t) (top f, bottom Δm).
+3. Adjust the **load position x/L** (from micrographs) and the **spring constant k**; everything recomputes live.
+4. The readout reports Δm₀, k, bare f₀, r₀, τ, and the R² of the **d² law** (diffusion-limited evaporation).
+5. **Export CSV…** for downstream analysis.
+
+Equivalent to: `spmkit evaporation ./thermal_series/ -o evaporation.csv`.
+</details>
+
+---
+
+## Command-line reference
+
+```bash
+spmkit --help
+```
+
+| Command | What it does |
+|---------|--------------|
+| `info` | File metadata and channel inventory. |
+| `analyze` | Image analysis (roughness, KPFM…) of a channel. |
+| `nanomech` | Contact fit of one force curve. |
+| `forcecurve` | Loads and describes a calibrated force curve. |
+| `forcemap` | Property map of a force-volume. |
+| `forcereport` | HTML/PDF report of a force-volume. |
+| `forceexport` | Exports force curves/maps with scientific fidelity. |
+| `fbatch` | Batch of force curves in a folder → CSV. |
+| `batch` | Batch of images in a folder → CSV. |
+| `jkr` | Adhesive JKR fit (experimental, validated by recovery). |
+| `evaporation` | Evaporation series: f(t) → mass and rate. |
+| `figure` | Publication figure of a channel (PNG/SVG/PDF). |
+| `convert` | Transcribes between formats (e.g. `.nid` → `.gwy`). |
+| `verify` | Byte-level traceability check of a `.nid`. |
+| `workspace` / `gui` | Opens Fathom. |
+
+---
+
+## Architecture
+
+Three strictly separated layers. **`core/` is pure Python with no GUI imports**; `cli/` and `gui/` only orchestrate and present, importing the public `core` API. A test (`tests/test_architecture.py`) **enforces** this rule.
+
+```mermaid
+graph TD
+    subgraph P["Presentation"]
+        CLI["cli · command line"]
+        GUI["gui · Fathom / PyQt6"]
+    end
+    subgraph N["spmkit.core · pure Python"]
+        IO["io · format readers"]
+        ANALYSIS["analysis · validated algorithms"]
+        MODELS["models · SPMData / ForceVolume"]
+        EXPORT["export · CSV / JSON / HDF5"]
+    end
+    CLI --> ANALYSIS
+    GUI --> ANALYSIS
+    IO --> MODELS
+    ANALYSIS --> MODELS
+    ANALYSIS --> EXPORT
+```
+
+**Data flow** — from an instrument file to a traceable result:
+
+```mermaid
+flowchart LR
+    F["file .nid/.jpk/.gwy"] --> L["load_any · inspect and load"]
+    L --> M["SPMData / ForceVolume<br/>(physical units)"]
+    M --> A["analysis · immutable result dataclass"]
+    A --> V["viz · publication figure"]
+    A --> X["export · CSV with units"]
+```
+
+**Force-curve pipeline** — the closed form shared by the scalar fit and the vectorized map:
+
+```mermaid
+flowchart LR
+    R["raw force"] --> B["orient + baseline correction"]
+    B --> C["contact gate (k·σ)"]
+    C --> D["contact point by joint fit"]
+    D --> E["fit F = A·δⁿ"]
+    E --> Y["Young's modulus + R² + uncertainty"]
+```
+
+**Data model** ([`core/models`](src/spmkit/core/models)):
+
+- **`SPMChannel`** — a 2D channel in physical units: `.data`, `.unit`, `.x_range`/`.y_range` (meters), `.direction`, `.metadata`.
+- **`SPMData`** — a collection of channels; access by name `data["Height"]`.
+- **`ForceVolume`** / **`ForceCurve`** / **`ForceSegment`** — the force-spectroscopy hierarchy, calibratable and picklable.
+
+**GUI module registry** (MVVM) — a perspective is a `ModuleSpec` (observable ViewModel + Qt panel) discovered by entry points; see [Extensibility](#extensibility).
+
+---
+
+## Supported formats
+
+| Extension | Origin | Support |
+|-----------|--------|---------|
+| `.nid` | Classic NanoSurf | Read validated to **machine precision** against Gwyddion; image and spectroscopy. |
+| `.gwy` | Gwyddion | Native read and write. |
+| `.nhf` | NanoSurf HDF5 | Read (experimental). |
+| `.jpk-force` / `.jpk-qi` | JPK Instruments | Force curves and maps (extra `afm`). |
+| JPK-TIFF | JPK (TIFF export) | Force curves detected **by content** (extra `jpk`). |
+| `.ibw`, HDF5, NT-MDT… | Various | Long tail via `afmformats` (extra `afm`). |
+
+> Instrument data is never versioned: `reference/` is in `.gitignore`. Every figure in this documentation is generated from **synthetic data**.
+
+---
+
+## Extensibility
+
+Fathom is designed so that **adding capabilities is a short errand**, without touching the core. Three extension points, each via entry points in your own package. Full guide: **[docs/extending.md](https://kegouro.github.io/spmkit/extending/)**.
 
 ### 1. A new file format
-
-Write a reader that returns an `SPMData` and register it:
 
 ```python
 # my_plugin/reader.py
@@ -125,9 +380,8 @@ from spmkit.core.models import SPMData, SPMChannel
 
 class MyReader:
     extensions = (".myext",)
-    def inspect(self, path): ...          # capabilities (image/force) — cheap
-    def load(self, path, kind=None):      # → SPMData / ForceVolume
-        ...
+    def inspect(self, path): ...            # capabilities (image/force) — cheap
+    def load(self, path, kind=None):        # → SPMData / ForceVolume
         return SPMData(channels=(SPMChannel(name="Z", data=z, unit="m",
                                             x_range=1e-6, y_range=1e-6),))
 ```
@@ -140,11 +394,11 @@ my_format = "my_plugin.reader:MyReader"
 
 ### 2. A new analysis
 
-Goes in `core/analysis/` (pure Python, **no UI**) and returns an immutable dataclass. If it's a physical model, it **enters with its recovery test** (see [Validation](#-scientific-validation)).
+Goes in `core/analysis/` (pure Python, **no UI**) and returns an immutable dataclass. If it is a physical model, **it enters with its recovery test** (see [Validation](#scientific-validation)).
 
-### 3. A new perspective (a full view in Fathom)
+### 3. A new perspective
 
-Declare a `ModuleSpec` — a ViewModel (observable state) + a panel (Qt) + its registration. **Adding a perspective = adding a `ModuleSpec`:**
+**Adding a perspective = adding a `ModuleSpec`:**
 
 ```python
 from spmkit.gui.extensions import ModuleSpec, PanelSpec, PerspectiveSpec
@@ -161,64 +415,51 @@ MY_MODULE = ModuleSpec(
 my_module = "my_plugin.gui:MY_MODULE"
 ```
 
-When your plugin is installed, the perspective appears in Fathom's bar **without modifying spmkit**. This is the mechanism that makes `spmkit` a multi-physics *host* and Fathom one of its extensions.
+When your plugin is installed, the perspective shows up in Fathom's bar **without modifying spmkit**. This is the mechanism that makes `spmkit` a multi-physics *host* and Fathom one of its extensions.
 
 ---
 
-## 🏗️ Architecture
+## Scientific validation
 
-Three strictly separated layers: **`core/` is pure Python with no UI imports**; `cli/` and `gui/` only orchestrate/present and import `core`'s public API. This rule is **enforced by a test** (`tests/test_architecture.py`).
+Rigor is the backbone of the project. Every physical model passes a **numerical recovery gate**: synthetic data is generated with known parameters and controlled noise, and the fit must recover them within tolerance **or it does not enter the repository** ([`tests/validation/test_recovery.py`](tests/validation/test_recovery.py)).
 
-```mermaid
-graph TD
-    subgraph Presentation
-        CLI[cli · command line]
-        GUI[gui · Fathom / PyQt6]
-    end
-    subgraph Core [spmkit.core · pure Python]
-        IO[io · format readers]
-        ANALYSIS[analysis · validated algorithms]
-        MODELS[models · SPMData / ForceVolume]
-        EXPORT[export · CSV/JSON/HDF5]
-    end
-    CLI --> ANALYSIS
-    GUI --> ANALYSIS
-    IO --> MODELS
-    ANALYSIS --> MODELS
-    ANALYSIS --> EXPORT
+| Model / analysis | Recovers | Tolerance |
+|------------------|----------|-----------|
+| Contact (Hertz / DMT) | Young's modulus | < 2 % at 1 % noise |
+| WLC / FJC | Contour length, persistence / Kuhn | < 1 % |
+| Adhesive JKR | E\*, work of adhesion | < 2 % (E\*), Hertz limit w = 0 |
+| SLS relaxation | Characteristic time τ | < 4 % |
+| Thermal tuning (SHO) | f₀, Q | 0.01 % / 4 % vs a real instrument |
+
+Beyond the format round-trip (**machine-precision** correlation against Gwyddion), the `.nid` reader includes **byte-level traceability** (`spmkit verify`). Continuous integration runs **over 460 tests** of core, validation, and GUI (the latter offscreen) on Python 3.11 and 3.12.
+
+---
+
+## Development and quality
+
+```bash
+make dev        # editable install with dev + gui + hdf5 extras and pre-commit hooks
+make check      # lint + types + tests — exactly what CI runs
+make gui        # launch Fathom
+```
+
+- **Types**: `mypy` strict on `core` (`disallow_untyped_defs`). **Style**: `black` and `ruff` at 100 columns.
+- **Tests**: `tests/core/` (unit), `tests/validation/` (scientific traceability), `tests/gui/` (offscreen, need the `gui` + `test-gui` extras).
+- **Convention**: all numerical analysis lives in `src/spmkit/core/`; `cli/` and `gui/` only invoke it. See [`CLAUDE.md`](CLAUDE.md) and [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
+### Reproduce this README's media
+
+Every screenshot and the GIF are regenerated from synthetic data, with no instrument file:
+
+```bash
+QT_QPA_PLATFORM=offscreen python scripts/gen_docs_media.py
 ```
 
 ---
 
-## 📂 Formats
+## Cite
 
-| Extension | Source | Support |
-|-----------|--------|---------|
-| `.nid` | NanoSurf classic | Machine-precision read, validated vs Gwyddion |
-| `.gwy` | Gwyddion | Native read and write |
-| `.nhf` | NanoSurf HDF5 | Experimental |
-| `.jpk-force` / `.jpk-qi` | JPK Instruments | Force curves and maps (extra `afm`) |
-
----
-
-## 🔬 Scientific validation
-
-Rigor is the project's cornerstone. Beyond format round-trip (**machine-precision** correlation against Gwyddion), **every physical model passes a numerical recovery gate**: synthetic data with known parameters and controlled noise is generated, and the fit must recover them within tolerance or **it does not enter the repository**.
-
-- Young's modulus within **<2%** even with noise (thanks to joint contact fitting).
-- **WLC/FJC** contour/persistence, **JKR** E\*/adhesion and **SLS** relaxation τ likewise validated.
-
-CI runs **351 core/validation tests** + **168 GUI tests** (offscreen) on Python 3.11 and 3.12. See [`docs/VALIDATION.md`](./docs/VALIDATION.md) and [`tests/validation/`](./tests/validation).
-
----
-
-## 🤝 Contributing
-
-Numerical analysis lives exclusively in `src/spmkit/core/`. `mypy` (strict on `core`), `black` and `ruff` are required. `make check` is exactly what CI runs. See [`CONTRIBUTING.md`](./CONTRIBUTING.md).
-
-## 📖 Citation
-
-If you use SPM-Kit or Fathom in a publication, please cite it per [`CITATION.cff`](./CITATION.cff).
+If you use SPM-Kit or Fathom in a publication, cite it per [`CITATION.cff`](CITATION.cff).
 
 <br>
 <div align="center">
@@ -227,6 +468,6 @@ If you use SPM-Kit or Fathom in a publication, please cite it per [`CITATION.cff
 
 <sub>Structured under the <b><a href="https://kegouro.github.io">Pharos Project</a></b> — scientific infrastructure without computational barriers.</sub>
 <br>
-<sub>José Labarca Baeza · Prof. Tomás Corrales · UTFSM | MIT License © 2026</sub>
+<sub>José Labarca Baeza · Prof. Tomás Corrales · SPM Lab, UTFSM · MIT License © 2026</sub>
 
 </div>
