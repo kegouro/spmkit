@@ -49,8 +49,16 @@ def to_csv(result: Any, path: str | Path) -> Path:
     """Escribe un resultado a CSV.
 
     * Para :class:`Profile`: dos columnas ``distance,height``.
+    * Para :class:`VolumeResult` (mapa de fuerza): informe científico
+      (cabecera de metadatos + estadística por propiedad + tabla por punto con unidades),
+      vía :func:`export_volume`.
     * Para dataclasses escalares (rugosidad, CPD): formato ``key,value``.
     """
+    from spmkit.core.analysis.forcevolume import VolumeResult
+
+    if isinstance(result, VolumeResult):
+        return export_volume(result, path)
+
     path = Path(path)
     with path.open("w", newline="", encoding="utf-8") as fh:
         writer = _csv.writer(fh)
@@ -64,6 +72,75 @@ def to_csv(result: Any, path: str | Path) -> Path:
                 writer.writerow([key, value])
         else:
             raise TypeError(f"No sé exportar a CSV: {type(result).__name__}")
+    return path
+
+
+def export_volume(
+    result: Any,
+    path: str | Path,
+    source: str = "",
+    extra_meta: dict[str, Any] | None = None,
+) -> Path:
+    """Exporta un ``VolumeResult`` (mapa de fuerza) a un CSV científico y trazable.
+
+    El archivo lleva tres bloques: (1) cabecera de metadatos comentada (``#``) con fuente,
+    grilla, curvas OK/fallidas y los parámetros de análisis en ``extra_meta``; (2) estadística
+    robusta por propiedad **con su unidad**; (3) tabla de **una fila por punto** de la grilla
+    con cada propiedad y su unidad en el encabezado. Las propiedades **sin ningún dato válido**
+    (p. ej. disipación sin rama de retracción) se **omiten** con una nota, en vez de volcar
+    columnas de NaN. Un punto cuyo ajuste falló deja la celda **vacía** (no ``NaN``).
+    """
+    from spmkit.core.analysis.forcevolume import PROPERTY_UNITS
+
+    path = Path(path)
+    rows_n, cols_n = result.grid_shape
+    present = [k for k in result.maps if bool(np.isfinite(result.maps[k]).any())]
+    omitted = [k for k in result.maps if k not in present]
+
+    def _col(key: str) -> str:
+        unit = PROPERTY_UNITS.get(key, "")
+        return f"{key} [{unit}]" if unit else key
+
+    with path.open("w", newline="", encoding="utf-8") as fh:
+        fh.write("# spmkit — exportación de mapa de fuerza (force-volume)\n")
+        if source:
+            fh.write(f"# fuente: {source}\n")
+        fh.write(
+            f"# grilla: {rows_n} x {cols_n}  ·  curvas OK: {result.n_ok}  ·  "
+            f"fallidas: {result.n_failed}\n"
+        )
+        for key, value in (extra_meta or {}).items():
+            fh.write(f"# {key}: {value}\n")
+        if omitted:
+            fh.write(f"# propiedades sin datos (omitidas): {', '.join(omitted)}\n")
+
+        writer = _csv.writer(fh)
+        fh.write("#\n# --- estadística por propiedad ---\n")
+        writer.writerow(["propiedad", "unidad", "mediana", "media", "std", "min", "max", "n"])
+        for key in present:
+            s = result.stats(key)
+            writer.writerow(
+                [
+                    key,
+                    PROPERTY_UNITS.get(key, ""),
+                    s["median"],
+                    s["mean"],
+                    s["std"],
+                    s["min"],
+                    s["max"],
+                    s["n"],
+                ]
+            )
+
+        fh.write("#\n# --- datos por punto ---\n")
+        writer.writerow(["row", "col", *[_col(k) for k in present]])
+        for r in range(rows_n):
+            for c in range(cols_n):
+                cells: list[Any] = [r, c]
+                for key in present:
+                    v = float(result.maps[key][r, c])
+                    cells.append("" if not np.isfinite(v) else v)
+                writer.writerow(cells)
     return path
 
 
