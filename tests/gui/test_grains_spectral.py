@@ -51,6 +51,32 @@ def test_spectral_panel_plots(qtbot) -> None:  # type: ignore[no-untyped-def]
     assert "D =" in panel._readout.text()
 
 
+def test_spectral_panel_hidrata_resultado_existente(qtbot) -> None:  # type: ignore[no-untyped-def]
+    image_vm = ImageViewModel()
+    vm = SpectralViewModel(image_vm)
+    image_vm.set_data(_rough_surface())  # resultado calculado ANTES de construir el panel
+    assert vm.result is not None
+    panel = SpectralCanvasPanel(vm)  # construido con datos ya presentes
+    qtbot.addWidget(panel)
+    assert panel._plot.listDataItems()  # hidrató el estado actual (no vacío)
+    panel.refresh()  # re-hidrata al activarse la perspectiva, sin romper
+    assert panel._plot.listDataItems()
+
+
+def test_grains_stats_diametro_siempre_nm() -> None:
+    from types import SimpleNamespace
+
+    from spmkit.gui.panels.grains_canvas import _stats_line
+
+    # canal KPFM (unit_length='V'): el diámetro sigue siendo espacial → nm, no V
+    result = SimpleNamespace(
+        n_grains=3, mean_diameter=50e-9, coverage=0.1, density=5.0, unit_length="V"
+    )
+    line = _stats_line(result)
+    assert "50 nm" in line  # diámetro en nm aunque el canal sea de potencial
+    assert " V " not in line and "V ·" not in line  # nunca etiqueta el diámetro en V
+
+
 def test_spectral_vm_q_range_recomputes() -> None:
     image_vm = ImageViewModel()
     vm = SpectralViewModel(image_vm)

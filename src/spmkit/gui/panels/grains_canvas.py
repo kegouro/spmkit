@@ -49,9 +49,10 @@ def _stats_line(result: Any) -> str:
         return "— (ajusta parámetros y pulsa Detectar)"
     if result.n_grains == 0:
         return "0 granos"
-    scale, unit = (1e9, "nm") if result.unit_length == "m" else (1.0, result.unit_length)
+    # El diámetro equivalente es SIEMPRE espacial (sale del área en m²), independiente de la
+    # unidad de valor del canal (p. ej. V en KPFM) → se muestra en nm.
     return (
-        f"{result.n_grains} granos · Ø {result.mean_diameter * scale:.3g} {unit} · "
+        f"{result.n_grains} granos · Ø {result.mean_diameter * 1e9:.3g} nm · "
         f"cobertura {result.coverage * 100:.1f}% · {result.density:.3g}/µm²"
     )
 

@@ -47,6 +47,11 @@ class SpectralCanvasPanel(Panel):
         self._vm = vm
         super().__init__(parent)
         vm.resultChanged.connect(self._on_result)
+        self._on_result(vm.result)  # hidrata el estado actual (si ya hay datos cargados)
+
+    def refresh(self) -> None:
+        """Re-hidrata al activarse la perspectiva (el shell llama refresh_safe)."""
+        self._on_result(self._vm.result)
 
     def build(self) -> QWidget:
         import pyqtgraph as pg
