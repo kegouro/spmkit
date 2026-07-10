@@ -30,6 +30,8 @@ class ImageViewModel(QObject):
         self._data: SPMData | None = None
         self._channel = ""
         self._leveling = "plane"
+        self._poly_order = 2  # grado del nivelado polinómico
+        self._row_stat = "median"  # estadístico del alineado por filas
         self._last_profile: Profile | None = None
 
     @property
@@ -75,6 +77,28 @@ class ImageViewModel(QObject):
             self._leveling = mode
             self.channelChanged.emit(self._channel)  # re-render con el nivelado nuevo
 
+    @property
+    def poly_order(self) -> int:
+        return self._poly_order
+
+    @property
+    def row_stat(self) -> str:
+        return self._row_stat
+
+    def set_poly_order(self, order: int) -> None:
+        """Grado del nivelado polinómico (re-renderiza si está activo)."""
+        if order != self._poly_order and order >= 1:
+            self._poly_order = int(order)
+            if self._leveling == "poly":
+                self.channelChanged.emit(self._channel)
+
+    def set_row_stat(self, stat: str) -> None:
+        """Estadístico del alineado por filas (``"median"``/``"mean"``)."""
+        if stat != self._row_stat and stat in ("median", "mean"):
+            self._row_stat = stat
+            if self._leveling == "rows":
+                self.channelChanged.emit(self._channel)
+
     def current_channel(self) -> SPMChannel | None:
         """Canal activo con el nivelado aplicado (o crudo si el nivelado falla)."""
         if self._data is None or not self._channel:
@@ -84,9 +108,9 @@ class ImageViewModel(QObject):
             if self._leveling == "plane":
                 return leveling.plane_fit(ch)
             if self._leveling == "poly":
-                return leveling.polynomial(ch, order=2)
+                return leveling.polynomial(ch, order=self._poly_order)
             if self._leveling == "rows":
-                return leveling.align_rows(ch)
+                return leveling.align_rows(ch, method=self._row_stat)
         except Exception:  # noqa: BLE001 - nivelado opcional; si falla, se muestra crudo
             return ch
         return ch

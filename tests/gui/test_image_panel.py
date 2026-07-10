@@ -47,6 +47,33 @@ def test_image_panel_draws(qtbot) -> None:  # type: ignore[no-untyped-def]
     assert panel._rough.text() != "—"
 
 
+def test_image_vm_poly_order_and_row_stat_recompute() -> None:
+    vm = ImageViewModel()
+    vm.set_data(_synthetic_data())
+    vm.set_leveling("poly")
+    seen: list = []
+    vm.channelChanged.connect(seen.append)
+    vm.set_poly_order(4)
+    assert vm.poly_order == 4 and seen  # re-render con el grado nuevo
+    vm.set_leveling("rows")
+    vm.set_row_stat("mean")
+    assert vm.row_stat == "mean"
+    assert vm.current_channel() is not None  # el alineado por filas corre con el estadístico
+
+
+def test_image_panel_level_controls_visibility(qtbot) -> None:  # type: ignore[no-untyped-def]
+    vm = ImageViewModel()
+    panel = ImageCanvasPanel(vm)
+    qtbot.addWidget(panel)
+    vm.set_data(_synthetic_data())
+    panel._level.setCurrentIndex(panel._level.findData("poly"))
+    assert not panel._order.isHidden() and panel._rowstat.isHidden()
+    panel._order.setValue(3)
+    assert vm.poly_order == 3  # el spin edita el VM
+    panel._level.setCurrentIndex(panel._level.findData("rows"))
+    assert not panel._rowstat.isHidden() and panel._order.isHidden()
+
+
 @pytest.mark.skipif(_SAMPLE is None, reason="sin .nid de imagen de prueba (gitignored)")
 def test_image_panel_opens_real_nid(qtbot) -> None:  # type: ignore[no-untyped-def]
     from spmkit.core.io import load as load_image
