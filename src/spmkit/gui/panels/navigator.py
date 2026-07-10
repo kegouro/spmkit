@@ -79,8 +79,8 @@ class NavigatorPanel(Panel):
             current, count = self._vm.index, f"{self._vm.n_curves} curvas"
         elif self._image_vm.names:
             self._mode = "image"
-            items = [f"Canal · {n}" for n in self._image_vm.names]
-            current, count = self._image_index(), f"{len(items)} canales"
+            items = [f"Canal · {lbl}" for lbl in self._image_vm.labels()]
+            current, count = self._image_vm.current_index, f"{len(items)} canales"
         else:
             self._mode = "force"
             items, current, count = [], 0, "sin datos"
@@ -94,9 +94,7 @@ class NavigatorPanel(Panel):
         self._count.setText(count)
 
     def _image_index(self) -> int:
-        names = self._image_vm.names
-        ch = self._image_vm.channel
-        return names.index(ch) if ch in names else 0
+        return self._image_vm.current_index
 
     def _position_label(self, index: int) -> str:
         """Etiqueta ‹x, y› en µm si la curva trae posición (force-map); si no, vacío."""
@@ -120,9 +118,7 @@ class NavigatorPanel(Panel):
         if row < 0:
             return
         if self._mode == "image":
-            names = self._image_vm.names
-            if 0 <= row < len(names):
-                self._image_vm.set_channel(names[row])
+            self._image_vm.set_channel_index(row)  # por posición: distingue duplicados
         else:
             self._vm.set_curve(row)
 

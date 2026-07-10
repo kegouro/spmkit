@@ -25,7 +25,7 @@ class View3DViewModel(QObject):
     def __init__(self, image_vm: ImageViewModel, parent: QObject | None = None) -> None:
         super().__init__(parent)
         self._image_vm = image_vm
-        self._channel = ""
+        self._index = 0  # canal activo por posición (distingue nombres duplicados)
         self._cmap = "gold"
         self._z_exag = 50
         self._hillshade = True
@@ -36,9 +36,18 @@ class View3DViewModel(QObject):
     def names(self) -> list[str]:
         return self._image_vm.names
 
+    def labels(self) -> list[str]:
+        """Etiquetas desambiguadas de los canales, para el selector."""
+        return self._image_vm.labels()
+
     @property
     def channel(self) -> str:
-        return self._channel
+        ch = self._image_vm.raw_channel_at(self._index)
+        return ch.name if ch is not None else ""
+
+    @property
+    def index(self) -> int:
+        return self._index
 
     @property
     def cmap(self) -> str:
@@ -53,14 +62,22 @@ class View3DViewModel(QObject):
         return self._hillshade
 
     def current_channel(self) -> SPMChannel | None:
-        """Canal crudo activo desde el hub de imagen (o ``None``)."""
-        return self._image_vm.raw_channel(self._channel)
+        """Canal crudo activo (por posición) desde el hub de imagen (o ``None``)."""
+        return self._image_vm.raw_channel_at(self._index)
 
     # ---- mutaciones ----
-    def set_channel(self, name: str) -> None:
-        if name and name != self._channel:
-            self._channel = name
+    def set_index(self, index: int) -> None:
+        """Selecciona el canal por **posición** (fuente única de identidad)."""
+        if index >= 0 and index != self._index:
+            self._index = index
             self.changed.emit()
+
+    def set_channel(self, name: str) -> None:
+        """Compatibilidad: selecciona por nombre (primer match)."""
+        for i, n in enumerate(self._image_vm.names):
+            if n == name:
+                self.set_index(i)
+                return
 
     def set_cmap(self, name: str) -> None:
         if name and name != self._cmap:
@@ -79,7 +96,6 @@ class View3DViewModel(QObject):
 
     def _on_data(self, names: list) -> None:
         # Prefiere un canal de altura ("Z-Axis") si existe; si no, el primero.
-        preferred = next((str(n) for n in names if "Z-Axis" in str(n)), None)
-        self._channel = preferred or (str(names[0]) if names else "")
+        self._index = next((i for i, n in enumerate(names) if "Z-Axis" in str(n)), 0)
         self.dataChanged.emit(list(names))
         self.changed.emit()
