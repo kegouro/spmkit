@@ -20,7 +20,7 @@ from spmkit.gui.extensions import ModuleContext, ModuleSpec, PanelSpec, Perspect
 def _navigator(ctx: ModuleContext):  # type: ignore[no-untyped-def]
     from spmkit.gui.panels.navigator import NavigatorPanel
 
-    return NavigatorPanel(ctx.force_vm)
+    return NavigatorPanel(ctx.force_vm, ctx.image_vm)
 
 
 def _inspector(ctx: ModuleContext):  # type: ignore[no-untyped-def]

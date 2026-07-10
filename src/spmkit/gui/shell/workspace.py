@@ -280,7 +280,12 @@ class Workspace(QMainWindow):
             if central is not None:
                 central.refresh_safe()
         for panel_key, dock in self._docks.items():
-            dock.setVisible(panel_key in persp.panels)
+            visible = panel_key in persp.panels
+            dock.setVisible(visible)
+            if visible:  # re-sincroniza el dock con el estado actual del VM (evita "olvidar"
+                panel = self._panels.get(panel_key)  # datos ya cargados al cambiar de perspectiva)
+                if panel is not None:
+                    panel.refresh_safe()
         for panel_key, action in self._persp_actions.items():
             action.setChecked(panel_key == key)
         self._active = key
