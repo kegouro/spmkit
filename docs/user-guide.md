@@ -50,17 +50,32 @@ altura relativa y pulsa **Detectar**. Requiere el extra `grains`.
 correlación. Se recalcula al cambiar de canal.
 
 ### Curva de fuerza
-La joya: navega curva a curva, ve el ajuste de contacto (Hertz / paraboloide / cono / DMT),
-módulo ± incertidumbre, R², adhesión y disipación. El **pipeline** (calibración, contacto,
-región de ajuste) es una receta reproducible.
+La joya: navega curva a curva, ve el ajuste de contacto (Hertz / paraboloide / cono / DMT /
+**JKR adhesivo**), módulo ± incertidumbre (**Monte Carlo** opcional), R², adhesión y disipación.
+El **pipeline** (calibración, método de contacto *conjunto/umbral*, región de ajuste) es una
+receta reproducible; todos los umbrales son editables. Botón **Exportar curva…** → CSV
+científico (ajuste con unidades + datos separación/fuerza).
+
+### SMFS (espectroscopía de molécula única)
+Sobre la rama de **retracción**: detecta los eventos de ruptura por **prominencia** (no un
+umbral ingenuo) y ajusta una **cadena polimérica** por evento — **WLC** (Marko-Siggia/Bouchiat)
+o **FJC** (Langevin) — recuperando la longitud de contorno y de persistencia/Kuhn, con control
+de calidad por R². Umbrales (R², prominencia, altura, temperatura, variante WLC) editables;
+**histograma de contorno** de población y **exportar eventos** a CSV.
+
+### Sintonía térmica
+Ajusta el espectro de ruido térmico (SHO) para extraer **f₀, Q** y la constante de resorte
+**k** por equipartición desde un canal espectral cargado.
 
 ### Mapa
 Corre el pipeline por cada curva de un force-volume y arma **mapas de propiedades** (módulo,
 adhesión, contacto…) + histograma. Rápido (vectorizado, CPU/GPU) con *fallback* al pipeline
-para curvas de largo variable (QI).
+para curvas de largo variable (QI). Botón **Exportar datos…** → CSV científico (metadatos +
+estadística por propiedad + tabla por punto, con unidades y sin volcados de NaN).
 
 ### Batch
-Procesa carpetas de curvas y arma una tabla resumen.
+Procesa carpetas de curvas **y mapas** de fuerza y arma una tabla resumen científica (unidades
+en los encabezados, celdas vacías en vez de NaN).
 
 ### Figura
 Editor WYSIWYG de figuras de publicación: canal + colormap + título/ejes + barra de escala +
