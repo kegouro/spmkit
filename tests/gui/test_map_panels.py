@@ -61,6 +61,29 @@ def test_map_canvas_click_selects_curve(qtbot, synthetic_volume) -> None:  # typ
     assert fvm.index == 3
 
 
+def test_map_export_button_writes_scientific_csv(qtbot, synthetic_volume, tmp_path, monkeypatch) -> None:  # type: ignore[no-untyped-def]  # noqa: E501
+    from PyQt6.QtWidgets import QFileDialog
+
+    fvm = ForceViewModel()
+    mvm = MapViewModel(fvm)
+    panel = MapCanvasPanel(mvm, fvm)
+    qtbot.addWidget(panel)
+    assert not panel._export_btn.isEnabled()  # deshabilitado sin mapa
+    fvm.set_volume(synthetic_volume(6))
+    mvm.compute_now()
+    assert panel._export_btn.isEnabled()  # se habilita al haber mapa
+
+    out = tmp_path / "mapa.csv"
+    monkeypatch.setattr(
+        QFileDialog, "getSaveFileName", staticmethod(lambda *a, **k: (str(out), ""))
+    )
+    panel._export()
+    text = out.read_text(encoding="utf-8")
+    assert "force-volume" in text and "modelo: sphere" in text  # metadata de la receta
+    assert "young_modulus [Pa]" in text  # tabla con unidades
+    assert "nan" not in text.lower()  # sin NaN literal
+
+
 def test_histogram_updates_with_map(qtbot, synthetic_volume) -> None:  # type: ignore[no-untyped-def]
     fvm = ForceViewModel()
     mvm = MapViewModel(fvm)

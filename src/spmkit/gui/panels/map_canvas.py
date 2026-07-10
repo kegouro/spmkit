@@ -80,6 +80,10 @@ class MapCanvasPanel(Panel):
         self._compute_btn = QPushButton("Calcular mapa")
         self._compute_btn.setProperty("primary", "true")
         self._compute_btn.clicked.connect(lambda: self._vm.compute(self._engine.currentData()))
+        self._export_btn = QPushButton("Exportar datos…")
+        self._export_btn.setToolTip("CSV científico: metadatos + estadística + tabla por punto")
+        self._export_btn.setEnabled(False)
+        self._export_btn.clicked.connect(self._export)
         self._info = QToolButton()
         self._info.setText("ⓘ")
         self._info.setToolTip("¿CPU o GPU? — diferencias")
@@ -98,6 +102,7 @@ class MapCanvasPanel(Panel):
         bar.addWidget(QLabel("Color:"))
         bar.addWidget(self._cmap)
         bar.addWidget(self._compute_btn)
+        bar.addWidget(self._export_btn)
         bar.addStretch(1)
         bar.addWidget(self._status)
 
@@ -159,6 +164,7 @@ class MapCanvasPanel(Panel):
         self._compute_btn.setText("Calculando…" if computing else "Calcular mapa")
 
     def _on_map_ready(self, result: VolumeResult | None) -> None:
+        self._export_btn.setEnabled(result is not None)
         if result is None:
             self._image.clear()
             self._target.setVisible(False)
@@ -167,6 +173,31 @@ class MapCanvasPanel(Panel):
         self._grid = result.grid_shape
         self._status.setText(f"{result.n_ok} ok · {result.n_failed} fallidas")
         self._redraw()
+
+    def _export(self) -> None:
+        """Exporta el mapa a un CSV científico con los parámetros de la receta como metadata."""
+        from PyQt6.QtWidgets import QFileDialog
+
+        from spmkit.core.export import export_volume
+
+        result = self._vm.result
+        if result is None:
+            return
+        path, _ = QFileDialog.getSaveFileName(self, "Exportar mapa", "mapa.csv", "CSV (*.csv)")
+        if not path:
+            return
+        p = self._force_vm.params
+        meta = {
+            "modelo": p.get("model", ""),
+            "radio_punta_nm": (p.get("tip_radius") or 0.0) * 1e9,
+            "poisson": p.get("poisson", ""),
+            "metodo_contacto": p.get("contact_method", ""),
+        }
+        try:
+            export_volume(result, path, extra_meta=meta)
+            self._status.setText("datos exportados")
+        except Exception as exc:  # noqa: BLE001 - se informa, no tumba
+            self._status.setText(f"export falló: {exc}")
         self._move_target(self._force_vm.index)
 
     def refresh(self) -> None:
