@@ -51,6 +51,26 @@ def test_spectral_panel_plots(qtbot) -> None:  # type: ignore[no-untyped-def]
     assert "D =" in panel._readout.text()
 
 
+def test_spectral_vm_q_range_recomputes() -> None:
+    image_vm = ImageViewModel()
+    vm = SpectralViewModel(image_vm)
+    image_vm.set_data(_rough_surface())
+    assert vm.result is not None
+    vm.set_q_range(1e6, 5e7)
+    assert vm.q_range == (1e6, 5e7)
+    assert vm.result is not None  # recalcula con el rango restringido
+
+
+def test_spectral_panel_q_controls(qtbot) -> None:  # type: ignore[no-untyped-def]
+    image_vm = ImageViewModel()
+    vm = SpectralViewModel(image_vm)
+    panel = SpectralCanvasPanel(vm)
+    qtbot.addWidget(panel)
+    image_vm.set_data(_rough_surface())
+    panel._qmin.setValue(2.0)  # 1/µm
+    assert vm.q_range[0] is not None and abs(vm.q_range[0] - 2e6) < 1.0  # 1/µm → 1/m
+
+
 def test_grains_vm_threshold_state() -> None:
     vm = GrainsViewModel(ImageViewModel())
     assert vm.threshold is None  # automático (relativo) por defecto

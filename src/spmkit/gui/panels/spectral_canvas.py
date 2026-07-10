@@ -8,10 +8,18 @@ la dimensión fractal, la pendiente β y la longitud de correlación. Reacciona 
 from __future__ import annotations
 
 import numpy as np
-from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import (
+    QDoubleSpinBox,
+    QHBoxLayout,
+    QLabel,
+    QVBoxLayout,
+    QWidget,
+)
 
 from spmkit.gui.panels.base import Panel
 from spmkit.gui.viewmodels.spectral_vm import SpectralResult, SpectralViewModel
+
+_INV_UM = 1e6  # 1/m → 1/µm (unidad amigable para los controles de q)
 
 
 def _readout_html(result: SpectralResult | None) -> str:
@@ -52,6 +60,17 @@ class SpectralCanvasPanel(Panel):
         self._readout.setWordWrap(True)
         lay.addWidget(self._readout)
 
+        # Rango de ajuste fractal (q en 1/µm; 0 = automático).
+        qrow = QHBoxLayout()
+        qrow.addWidget(QLabel("Ajuste fractal — q min (1/µm):"))
+        self._qmin = self._q_spin()
+        qrow.addWidget(self._qmin)
+        qrow.addWidget(QLabel("q max (1/µm):"))
+        self._qmax = self._q_spin()
+        qrow.addWidget(self._qmax)
+        qrow.addStretch(1)
+        lay.addLayout(qrow)
+
         self._plot = pg.PlotWidget()
         self._plot.setLogMode(x=True, y=True)  # PSD en ley de potencia → recta en log-log
         self._plot.setLabel("bottom", "q (1/m)")
@@ -59,6 +78,19 @@ class SpectralCanvasPanel(Panel):
         self._plot.showGrid(x=True, y=True, alpha=0.3)
         lay.addWidget(self._plot, 1)
         return root
+
+    def _q_spin(self) -> QDoubleSpinBox:
+        box = QDoubleSpinBox()
+        box.setRange(0.0, 100000.0)
+        box.setDecimals(2)
+        box.setToolTip("Frecuencia del ajuste fractal en 1/µm (0 = automático)")
+        box.valueChanged.connect(self._push_q_range)
+        return box
+
+    def _push_q_range(self, _value: float = 0.0) -> None:
+        qmin = (self._qmin.value() * _INV_UM) or None
+        qmax = (self._qmax.value() * _INV_UM) or None
+        self._vm.set_q_range(qmin, qmax)
 
     def _on_result(self, result: SpectralResult | None) -> None:
         import pyqtgraph as pg
