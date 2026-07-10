@@ -107,6 +107,15 @@ def _segment_kind(props: dict[str, str], index: int) -> tuple[SegmentType, str]:
 def load_jpk_force(path: str | Path) -> ForceCurve:
     """Lee un ``.jpk-force`` y devuelve un :class:`ForceCurve` calibrado."""
     path = Path(path)
+    try:
+        return _load_jpk_force(path)
+    except zipfile.BadZipFile as exc:
+        raise ValueError(f"Archivo .jpk-force no es un ZIP válido (¿corrupto?): {path}") from exc
+    except KeyError as exc:
+        raise ValueError(f"Archivo .jpk-force corrupto o incompleto (falta {exc}): {path}") from exc
+
+
+def _load_jpk_force(path: Path) -> ForceCurve:
     with zipfile.ZipFile(path) as zf:
         seg_ids = sorted({int(m.group(1)) for name in zf.namelist() if (m := _SEG_RE.search(name))})
         if not seg_ids:
