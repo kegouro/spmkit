@@ -12,9 +12,11 @@ import numpy as np
 from PyQt6.QtWidgets import (
     QComboBox,
     QDoubleSpinBox,
+    QFileDialog,
     QHBoxLayout,
     QHeaderView,
     QLabel,
+    QPushButton,
     QTableWidget,
     QTableWidgetItem,
     QVBoxLayout,
@@ -111,7 +113,43 @@ class SmfsCanvasPanel(Panel):
         self._table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self._table.setMaximumHeight(180)
         lay.addWidget(self._table)
+
+        # Acciones de población: agregar contornos de todo el volumen + exportar (FAIR).
+        actions = QHBoxLayout()
+        hist_btn = QPushButton("Histograma de contornos (volumen)")
+        hist_btn.clicked.connect(self._show_histogram)
+        actions.addWidget(hist_btn)
+        export_btn = QPushButton("Exportar eventos (CSV)…")
+        export_btn.clicked.connect(self._export_csv)
+        actions.addWidget(export_btn)
+        actions.addStretch(1)
+        lay.addLayout(actions)
+
+        self._hist = pg.PlotWidget()
+        self._hist.setLabel("bottom", "Contorno", units="nm")
+        self._hist.setLabel("left", "Eventos")
+        self._hist.setMaximumHeight(160)
+        lay.addWidget(self._hist)
         return root
+
+    def _show_histogram(self) -> None:
+        self._hist.clear()
+        contours = self._vm.aggregate_contours() * _NM  # m → nm
+        if contours.size == 0:
+            return
+        bins = min(30, max(5, contours.size // 3))
+        counts, edges = np.histogram(contours, bins=bins)
+        self._hist.plot(
+            edges, counts, stepMode="center", fillLevel=0, brush=tokens.TRACES["fit"] + "60"
+        )
+
+    def _export_csv(self) -> None:
+        path, _ = QFileDialog.getSaveFileName(
+            self, "Exportar eventos SMFS", "eventos.csv", "CSV (*.csv)"
+        )
+        if path:
+            n = self._vm.export_events_csv(path)
+            self._readout.setText(f"<b>{n} evento(s) exportado(s)</b> a CSV")
 
     def _on_model_changed(self, _idx: int) -> None:
         self._vm.set_model(self._combo.currentData())

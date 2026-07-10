@@ -153,3 +153,44 @@ def test_smfs_panel_wlc_combo_solo_para_wlc(qtbot) -> None:  # type: ignore[no-u
     assert abs(panel._temp.value() - 24.85) < 0.1  # 298 K → 24.85 °C
     panel._combo.setCurrentIndex(1)  # FJC
     assert not panel._wlc_combo.isEnabled()  # la variante no aplica al FJC
+
+
+def test_smfs_vm_aggregate_contours(qtbot) -> None:  # type: ignore[no-untyped-def]
+    fvm = ForceViewModel()
+    svm = SmfsViewModel(fvm)
+    fvm.set_volume(_smfs_volume(n=4))  # 4 curvas × 3 eventos
+    contours = svm.aggregate_contours()
+    assert contours.size == 12  # población de todo el volumen
+    for want in (70e-9, 95e-9, 120e-9):  # los 3 contornos conocidos aparecen
+        assert bool(np.any(np.abs(contours - want) / want < 0.06))
+
+
+def test_smfs_vm_export_csv(qtbot, tmp_path) -> None:  # type: ignore[no-untyped-def]
+    fvm = ForceViewModel()
+    svm = SmfsViewModel(fvm)
+    fvm.set_volume(_smfs_volume())
+    out = tmp_path / "ev.csv"
+    n = svm.export_events_csv(str(out))
+    assert n == 3
+    text = out.read_text(encoding="utf-8")
+    assert "contorno_m" in text and text.count("\n") >= 4  # cabecera + 3 filas
+
+
+def test_smfs_panel_histogram_and_export(qtbot, tmp_path, monkeypatch) -> None:  # type: ignore[no-untyped-def]  # noqa: E501
+    from PyQt6.QtWidgets import QFileDialog
+
+    from spmkit.gui.panels.smfs_canvas import SmfsCanvasPanel
+
+    fvm = ForceViewModel()
+    svm = SmfsViewModel(fvm)
+    panel = SmfsCanvasPanel(svm)
+    qtbot.addWidget(panel)
+    fvm.set_volume(_smfs_volume(n=4))
+    panel._show_histogram()
+    assert panel._hist.listDataItems()  # histograma poblado con la población
+    out = tmp_path / "ev.csv"
+    monkeypatch.setattr(
+        QFileDialog, "getSaveFileName", staticmethod(lambda *a, **k: (str(out), ""))
+    )
+    panel._export_csv()
+    assert out.exists() and "exportado" in panel._readout.text()
