@@ -63,7 +63,9 @@ class ResonanceViewModel(QObject):
             return
         try:
             spectrum = resonance.extract_thermal(data)
-            peak = resonance.find_resonance(
+            # fit_sho (ajuste SHO) recupera Q con fidelidad; cae a find_resonance
+            # solo si falta scipy o el ajuste no converge.
+            peak = resonance.fit_sho(
                 spectrum.frequency, spectrum.psd, f_min=self._f_min, f_max=self._f_max
             )
         except Exception as exc:  # noqa: BLE001 - no todo .nid es de sintonía térmica

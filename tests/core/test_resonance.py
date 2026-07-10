@@ -122,20 +122,28 @@ def test_fit_d2_law_linear() -> None:
 
 
 def test_fit_sho_recovers_f0() -> None:
-    """fit_sho recupera f0 dentro del 0.5 % en un espectro SHO sintético."""
+    """fit_sho recupera f0, Q y amplitud de pico en un espectro SHO sintético.
+
+    La ASD es de magnitud minúscula (~1e-12 m/√Hz, como una ASD real calibrada):
+    guarda contra la regresión de escala que hacía a ``curve_fit`` "converger" en
+    la adivinanza inicial (Q y amplitud basura). Ruido en cuadratura, como el modelo.
+    """
     pytest.importorskip("scipy")
 
     f0_true = 75_000.0  # Hz
     Q_true = 120.0
     A_true = 5e-12
+    noise_floor = 1e-13
 
     f = np.linspace(60e3, 90e3, 2000)
-    noise_floor = 1e-13
     denom = (f**2 - f0_true**2) ** 2 + (f0_true * f / Q_true) ** 2
-    psd = np.sqrt(A_true**2 * f0_true**4 / denom) + noise_floor
+    psd = np.sqrt(A_true**2 * f0_true**4 / denom + noise_floor**2)  # potencia en cuadratura
 
     rng = np.random.default_rng(42)
     psd += rng.normal(0, noise_floor * 0.05, psd.size)
 
     peak = resonance.fit_sho(f, psd)
-    assert peak.f0 == pytest.approx(f0_true, rel=5e-3)  # dentro del 0.5 %
+    assert peak.f0 == pytest.approx(f0_true, rel=5e-3)  # f0 dentro del 0.5 %
+    assert peak.q_factor == pytest.approx(Q_true, rel=0.1)  # Q dentro del 10 %
+    # amplitude = ASD en resonancia = A·Q (semántica de find_resonance).
+    assert peak.amplitude == pytest.approx(A_true * Q_true, rel=0.1)

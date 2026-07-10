@@ -31,6 +31,15 @@ def test_peak_matches_instrument() -> None:
     assert peak.f0 == pytest.approx(s.f0, rel=0.01)
 
 
+def test_fit_sho_matches_instrument() -> None:
+    # El ajuste SHO debe recuperar f0 y Q del propio instrumento (verdad de terreno).
+    pytest.importorskip("scipy")
+    s = resonance.extract_thermal(load(_FILES[0]))
+    fit = resonance.fit_sho(s.frequency, s.psd, f_min=50e3, f_max=99e3)
+    assert fit.f0 == pytest.approx(s.f0, rel=5e-3)  # f0 dentro del 0.5 %
+    assert fit.q_factor == pytest.approx(s.q_factor, rel=0.15)  # Q dentro del 15 %
+
+
 def test_evaporation_series_physics() -> None:
     ev = resonance.load_evaporation_series(_FILES)
     assert len(ev.time) == len(_FILES)

@@ -300,13 +300,17 @@ def fit_sho(
 ) -> ResonancePeak:
     """Ajusta el modelo SHO/Lorentziano al pico térmico.
 
-    Modelo de densidad espectral de amplitud de un oscilador armónico térmico::
+    Modelo de densidad espectral de amplitud de un oscilador armónico térmico,
+    donde la señal y el piso de ruido suman en **potencia** (cuadratura)::
 
-        ASD(f) = sqrt( A² · f0⁴ / ((f² - f0²)² + (f0·f/Q)²) ) + noise_floor
+        ASD(f) = sqrt( A² · f0⁴ / ((f² - f0²)² + (f0·f/Q)²)  +  ruido² )
 
-    Usa ``scipy.optimize.curve_fit`` para ajustar los parámetros
-    ``(A, f0, Q, noise_floor)``.  Si scipy no está disponible o el ajuste
-    falla, cae al detector de pico crudo :func:`find_resonance`.
+    Usa ``scipy.optimize.curve_fit``.  Como la ASD calibrada es de magnitud
+    minúscula (~1e-12 m/√Hz), normaliza frecuencia y amplitud a O(1) antes de
+    ajustar (si no, ``curve_fit`` creería haber convergido en la adivinanza
+    inicial por sus tolerancias absolutas) y desescala el resultado.  Si scipy
+    no está disponible o el ajuste falla, cae al detector de pico crudo
+    :func:`find_resonance`.
 
     Args:
         frequency: Array de frecuencias (Hz).
@@ -315,7 +319,9 @@ def fit_sho(
         f_max: Límite superior del rango de ajuste (Hz).
 
     Returns:
-        :class:`ResonancePeak` con f0 más preciso que el pico crudo.
+        :class:`ResonancePeak` con f0 y Q más precisos que el pico crudo;
+        ``amplitude`` es la ASD en resonancia (misma semántica que
+        :func:`find_resonance`).
     """
     frequency = np.asarray(frequency, dtype=np.float64)
     psd = np.asarray(psd, dtype=np.float64)
@@ -329,32 +335,38 @@ def fit_sho(
     if fr.size < 5:
         return find_resonance(frequency, psd, f_min, f_max)
 
-    def _model(f: np.ndarray, A: float, f0: float, Q: float, noise: float) -> np.ndarray:
-        denom = (f**2 - f0**2) ** 2 + (f0 * f / Q) ** 2
-        return np.sqrt(np.maximum(A**2 * f0**4 / denom, 0.0)) + noise
-
-    peak_idx = int(np.argmax(pr))
-    f0_guess = float(fr[peak_idx])
-    A_guess = float(pr[peak_idx])
-    noise_guess = float(np.median(pr))
-    p0 = [A_guess, f0_guess, 100.0, noise_guess]
-    lower = [0.0, fr[0], 1.0, 0.0]
-    upper = [A_guess * 100, fr[-1], 10_000.0, A_guess]
-
     try:
         from scipy.optimize import curve_fit  # noqa: PLC0415
-    except ImportError as exc:
-        raise ImportError(
-            "scipy es necesario para fit_sho. Instala con: pip install 'spmkit[grains]'"
-        ) from exc
+    except ImportError:  # sin scipy → pico crudo (como documenta el docstring)
+        return find_resonance(frequency, psd, f_min, f_max)
+
+    # Normaliza a O(1): frecuencia en unidades del pico, amplitud en unidades del máximo.
+    peak_idx = int(np.argmax(pr))
+    f_scale = float(fr[peak_idx]) or 1.0
+    y_scale = float(pr[peak_idx]) or 1.0
+    xf = fr / f_scale
+    y = pr / y_scale
+
+    def _model(f: np.ndarray, amp: float, f0: float, q: float, noise: float) -> np.ndarray:
+        denom = (f**2 - f0**2) ** 2 + (f0 * f / q) ** 2
+        return np.sqrt(np.maximum(amp**2 * f0**4 / denom + noise**2, 0.0))
+
+    q_guess = 100.0
+    # En unidades normalizadas el pico ≈ amp·q = 1  →  amp ≈ 1/q.
+    p0 = [1.0 / q_guess, 1.0, q_guess, float(np.median(y))]
+    lower = [0.0, float(xf[0]), 1.0, 0.0]
+    upper = [10.0, float(xf[-1]), 10_000.0, 1.0]
 
     try:
-        popt, _ = curve_fit(_model, fr, pr, p0=p0, bounds=(lower, upper), maxfev=10_000)
-        A_fit, f0_fit, Q_fit, _ = popt
-        fwhm_fit = f0_fit / Q_fit
-        return ResonancePeak(f0=f0_fit, q_factor=Q_fit, amplitude=A_fit, fwhm=fwhm_fit)
-    except Exception:  # noqa: BLE001
+        popt, _ = curve_fit(_model, xf, y, p0=p0, bounds=(lower, upper), maxfev=20_000)
+    except Exception:  # noqa: BLE001 - ajuste no convergente → pico crudo
         return find_resonance(frequency, psd, f_min, f_max)
+
+    amp_fit, f0n, q_fit, _ = popt
+    f0 = float(f0n * f_scale)
+    q = float(q_fit)
+    peak_amp = float(amp_fit * q * y_scale)  # ASD en resonancia (amp·Q en unidades físicas)
+    return ResonancePeak(f0=f0, q_factor=q, amplitude=peak_amp, fwhm=f0 / q if q > 0 else 0.0)
 
 
 def droplet_radius(added_mass: np.ndarray | float, density: float = 1000.0) -> np.ndarray | float:
