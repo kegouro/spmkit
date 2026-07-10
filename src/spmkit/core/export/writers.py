@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import csv as _csv
 import json as _json
+import math
 from dataclasses import asdict, is_dataclass
 from pathlib import Path
 from typing import Any
@@ -18,6 +19,17 @@ import numpy as np
 
 from spmkit.core.analysis.profiles import Profile
 from spmkit.core.models import SPMData
+
+#: Propiedades escalares de ajuste que exporta una curva individual (en orden), con unidad.
+_CURVE_FIT_KEYS = (
+    "young_modulus",
+    "young_modulus_std",
+    "contact_point",
+    "adhesion",
+    "max_force",
+    "max_indentation",
+    "r_squared",
+)
 
 
 def _to_serializable(obj: Any) -> Any:
@@ -141,6 +153,54 @@ def export_volume(
                     v = float(result.maps[key][r, c])
                     cells.append("" if not np.isfinite(v) else v)
                 writer.writerow(cells)
+    return path
+
+
+def export_curve(
+    curve: Any,
+    results: dict[str, Any] | None = None,
+    path: str | Path = "curva.csv",
+    source: str = "",
+    extra_meta: dict[str, Any] | None = None,
+) -> Path:
+    """Exporta una curva de fuerza calibrada a un CSV científico y trazable.
+
+    Escribe una cabecera de metadatos (fuente + parámetros de análisis), el **ajuste** con
+    sus unidades (módulo, punto de contacto, adhesión, R²…) y la tabla de datos
+    ``separation [m], force [N]`` del segmento de aproximación. Los valores de ajuste no
+    finitos se omiten (no se vuelca ``NaN``).
+    """
+    from spmkit.core.analysis.forcevolume import PROPERTY_UNITS
+
+    path = Path(path)
+    results = results or {}
+    seg = curve.extend or (curve.segments[0] if curve.segments else None)
+    if seg is None or seg.force is None:
+        raise ValueError("la curva no tiene un segmento con fuerza para exportar")
+    axis = seg.separation if seg.separation is not None else seg.raw_height
+    sep = np.asarray(axis, dtype=np.float64)
+    force = np.asarray(seg.force, dtype=np.float64)
+
+    with path.open("w", newline="", encoding="utf-8") as fh:
+        fh.write("# spmkit — exportación de curva de fuerza\n")
+        if source:
+            fh.write(f"# fuente: {source}\n")
+        for key, value in (extra_meta or {}).items():
+            fh.write(f"# {key}: {value}\n")
+
+        writer = _csv.writer(fh)
+        fh.write("#\n# --- ajuste ---\n")
+        writer.writerow(["parámetro", "unidad", "valor"])
+        for key in _CURVE_FIT_KEYS:
+            value = results.get(key)
+            if value is None or (isinstance(value, float) and not math.isfinite(value)):
+                continue
+            writer.writerow([key, PROPERTY_UNITS.get(key, ""), value])
+
+        fh.write("#\n# --- datos ---\n")
+        writer.writerow(["separation [m]", "force [N]"])
+        for s, f in zip(sep, force, strict=True):
+            writer.writerow([float(s), float(f)])
     return path
 
 

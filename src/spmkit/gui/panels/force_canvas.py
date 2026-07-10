@@ -17,6 +17,7 @@ from PyQt6.QtWidgets import (
     QComboBox,
     QHBoxLayout,
     QLabel,
+    QPushButton,
     QSlider,
     QVBoxLayout,
     QWidget,
@@ -148,10 +149,16 @@ class ForceCanvasPanel(Panel):
         self._scrubber.valueChanged.connect(self._vm.set_curve)
         self._counter = QLabel("—")
         self._counter.setProperty("role", "readout")
+        self._export_btn = QPushButton("Exportar curva…")
+        self._export_btn.setToolTip(
+            "CSV científico: ajuste (con unidades) + datos separación/fuerza"
+        )
+        self._export_btn.clicked.connect(self._export)
         crow.addWidget(self._axis_mode)
         crow.addWidget(self._region_check)
         crow.addWidget(self._scrubber, 1)
         crow.addWidget(self._counter)
+        crow.addWidget(self._export_btn)
 
         lay.addWidget(glw, 1)
         lay.addWidget(controls)
@@ -160,6 +167,31 @@ class ForceCanvasPanel(Panel):
         self._sync_scrubber_range()
         self._on_curve_changed(self._vm.index)
         return root
+
+    def _export(self) -> None:
+        """Exporta la curva calibrada activa a un CSV científico (ajuste + datos)."""
+        from PyQt6.QtWidgets import QFileDialog
+
+        from spmkit.core.export import export_curve
+
+        curve = self._vm.result_curve()
+        if curve is None:
+            self._counter.setText("aún sin ajuste — espera")
+            return
+        path, _ = QFileDialog.getSaveFileName(self, "Exportar curva", "curva.csv", "CSV (*.csv)")
+        if not path:
+            return
+        p = self._vm.params
+        meta = {
+            "modelo": p.get("model", ""),
+            "radio_punta_nm": (p.get("tip_radius") or 0.0) * 1e9,
+            "poisson": p.get("poisson", ""),
+        }
+        try:
+            export_curve(curve, self._vm.current_results(), path, extra_meta=meta)
+            self._counter.setText("curva exportada")
+        except Exception as exc:  # noqa: BLE001 - se informa, no tumba
+            self._counter.setText(f"export falló: {exc}")
 
     # ---- reacciones a la VM ----
     def _on_curve_changed(self, index: int) -> None:
