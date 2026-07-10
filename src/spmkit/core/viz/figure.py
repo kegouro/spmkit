@@ -119,6 +119,12 @@ def render_channel(channel: SPMChannel, spec: FigureSpec | None = None, fig: Any
         else:
             fig.clear()
             ax = fig.add_subplot(111)
+        if not channel.is_spatial:
+            # Canal 1D/espectral (1×N o N×1): línea, no imagen. Evita el imshow degenerado
+            # (extent con alto 0 → transformación singular) y da un espectro publicable.
+            _render_spectrum(ax, channel, spec)
+            fig.tight_layout()
+            return fig
         extent = (0.0, channel.x_range * 1e6, 0.0, channel.y_range * 1e6)  # µm
         im = ax.imshow(
             channel.data,
@@ -144,6 +150,26 @@ def render_channel(channel: SPMChannel, spec: FigureSpec | None = None, fig: Any
             render_annotation(ax, ann)
         fig.tight_layout()
     return fig
+
+
+def _render_spectrum(ax: Any, channel: SPMChannel, spec: FigureSpec) -> None:
+    """Dibuja un canal 1D/espectral como línea: eje X = Dim0 (frecuencia) o índice."""
+    import numpy as np
+
+    y = np.asarray(channel.data, dtype=np.float64).ravel()
+    x0 = float(channel.metadata.get("Dim0Min", 0.0))
+    xr = float(channel.metadata.get("Dim0Range", 0.0))
+    x = x0 + np.linspace(0.0, xr, y.size) if xr > 0 else np.arange(y.size, dtype=np.float64)
+    ax.plot(x, y, color=colormaps.get_cmap(spec.colormap)(0.65), lw=1.2)
+    ax.set_title(spec.title, fontsize=spec.title_fontsize)
+    xname = str(channel.metadata.get("Dim0Name", "") or spec.xlabel or "Índice")
+    xunit = str(channel.metadata.get("Dim0Unit", ""))
+    ax.set_xlabel(f"{xname} ({xunit})" if xunit else xname, fontsize=spec.label_fontsize)
+    yname = f"{channel.name} ({channel.unit})" if channel.unit else channel.name
+    ax.set_ylabel(yname, fontsize=spec.label_fontsize)
+    ax.grid(True, alpha=0.3)
+    for ann in spec.annotations:
+        render_annotation(ax, ann)
 
 
 def save_figure(channel: SPMChannel, spec: FigureSpec, path: str | Path) -> Path:
