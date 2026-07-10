@@ -66,6 +66,33 @@ def test_resonance_vm_non_thermal_data_emits_none() -> None:
     assert vm.result is None or vm.result.peak is not None
 
 
+def test_resonance_vm_spring_constant_thermal() -> None:
+    from spmkit.core.analysis import calibration
+
+    image_vm = ImageViewModel()
+    vm = ResonanceViewModel(image_vm)
+    image_vm.set_data(_thermal_data())
+    r = vm.result
+    assert r is not None
+    variance = float(np.trapezoid(np.asarray(r.psd) ** 2, np.asarray(r.frequency)))
+    expected = calibration.spring_constant_thermal(
+        variance, temperature=20.0 + 273.15, correction_factor=0.817
+    )
+    got = vm.spring_constant_thermal(20.0, 0.817)
+    assert got is not None and abs(got - expected) / expected < 1e-9  # integra ⟨x²⟩ y aplica k
+    assert got > 0
+
+
+def test_resonance_panel_calc_k(qtbot) -> None:  # type: ignore[no-untyped-def]
+    image_vm = ImageViewModel()
+    vm = ResonanceViewModel(image_vm)
+    panel = ResonanceCanvasPanel(vm)
+    qtbot.addWidget(panel)
+    image_vm.set_data(_thermal_data())
+    panel._calc_k()  # botón "Calcular k (térmico)"
+    assert "k =" in panel._k_readout.text()
+
+
 def test_resonance_panel_plots(qtbot) -> None:  # type: ignore[no-untyped-def]
     image_vm = ImageViewModel()
     vm = ResonanceViewModel(image_vm)
