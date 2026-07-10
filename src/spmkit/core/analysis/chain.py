@@ -374,6 +374,7 @@ def fit_chain_events(
     min_r_squared: float = 0.95,
     correct_baseline: bool = True,
     min_points: int = 8,
+    wlc_model: str = "bouchiat",
 ) -> list[EventFit]:
     """Pipeline SMFS de extremo a extremo sobre una rama de retracción.
 
@@ -382,6 +383,7 @@ def fit_chain_events(
     y (3) ajuste de cada tramo ``[start, peak]`` con ``model`` (``"wlc"`` o ``"fjc"``). Aplica
     **control de calidad**: descarta los ajustes con ``r_squared < min_r_squared`` o con menos
     de ``min_points`` puntos. Devuelve, en orden de separación, los eventos aceptados con su fit.
+    ``wlc_model`` (``"bouchiat"``/``"marko_siggia"``) elige la variante del WLC.
 
     Cada modelo ajusta la extensión relativa al inicio de su tramo (``x = sep − sep[start]``).
     """
@@ -409,7 +411,7 @@ def fit_chain_events(
             continue
         try:
             fit = (
-                fit_wlc(x, fseg, temperature=temperature)
+                fit_wlc(x, fseg, model=wlc_model, temperature=temperature)
                 if model == "wlc"
                 else fit_fjc(x, fseg, temperature=temperature)
             )

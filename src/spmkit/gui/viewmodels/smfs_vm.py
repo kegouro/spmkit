@@ -25,6 +25,7 @@ DEFAULT_SMFS_PARAMS: dict[str, float] = {
     "min_prominence_sigma": 5.0,  # detección: prominencia mínima sobre el valle (×σ)
     "min_height_sigma": 5.0,  # detección: altura mínima sobre el baseline (×σ)
     "baseline_fraction": 0.3,  # fracción de la cola libre para σ y corrección de base
+    "temperature": 298.0,  # K; modelos entrópicos WLC/FJC
 }
 
 
@@ -46,11 +47,13 @@ class SmfsViewModel(QObject):
     statusChanged = pyqtSignal(str)
     modelChanged = pyqtSignal(str)  # "wlc" | "fjc"
     paramsChanged = pyqtSignal(dict)  # umbrales editados en la UI
+    wlcModelChanged = pyqtSignal(str)  # "bouchiat" | "marko_siggia"
 
     def __init__(self, force_vm: ForceViewModel, parent: QObject | None = None) -> None:
         super().__init__(parent)
         self._force_vm = force_vm
         self._model = "wlc"
+        self._wlc_model = "bouchiat"  # variante del WLC
         self._params: dict[str, float] = dict(DEFAULT_SMFS_PARAMS)
         self._result: SmfsResult | None = None
         force_vm.curveChanged.connect(lambda _i: self.compute())
@@ -63,6 +66,19 @@ class SmfsViewModel(QObject):
     @property
     def model(self) -> str:
         return self._model
+
+    @property
+    def wlc_model(self) -> str:
+        return self._wlc_model
+
+    def set_wlc_model(self, variant: str) -> None:
+        """Variante del WLC (``"bouchiat"``/``"marko_siggia"``); recalcula si el modelo es WLC."""
+        if variant not in ("bouchiat", "marko_siggia") or variant == self._wlc_model:
+            return
+        self._wlc_model = variant
+        self.wlcModelChanged.emit(variant)
+        if self._model == "wlc":
+            self.compute()
 
     @property
     def params(self) -> dict[str, float]:
@@ -114,6 +130,8 @@ class SmfsViewModel(QObject):
                 min_prominence_sigma=p["min_prominence_sigma"],
                 min_height_sigma=p["min_height_sigma"],
                 min_r_squared=p["min_r_squared"],
+                temperature=p["temperature"],
+                wlc_model=self._wlc_model,
             )
         except Exception as exc:  # noqa: BLE001 - curva degenerada: se informa, no tumba la app
             self.statusChanged.emit(f"SMFS falló: {exc}")
