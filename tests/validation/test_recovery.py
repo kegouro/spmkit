@@ -130,6 +130,36 @@ def test_jkr_limite_hertz() -> None:
     assert fit.work_of_adhesion < 1e-3  # sin adhesión → w ≈ 0
 
 
+@pytest.mark.parametrize("noise_frac", [0.0, 0.01])
+def test_recupera_relajacion_sls(noise_frac: float) -> None:
+    """SLS: recupera τ (<5%) y el ratio de relajación de ``F=F∞+(F0−F∞)e^{−t/τ}``.
+
+    El **núcleo** de la relajación viscoelástica está validado (matemática sana); su exposición
+    en UI sigue bloqueada porque los loaders no producen un segmento de pausa con eje de tiempo.
+    """
+    from spmkit.core.analysis import experimental
+
+    tau_true, f0, f_inf = 0.05, 5e-9, 2e-9
+    t = np.linspace(0.0, 0.3, 200)
+    force = f_inf + (f0 - f_inf) * np.exp(-t / tau_true)
+    if noise_frac > 0.0:
+        rng = np.random.default_rng(0)
+        force = force + rng.normal(0.0, noise_frac * float(np.abs(force).max()), force.shape)
+    fit = experimental.fit_relaxation(t, force)
+    assert abs(fit.tau - tau_true) / tau_true < 0.05
+    assert abs(fit.relaxation_ratio - (f0 - f_inf) / f0) < 0.02
+    assert fit.r_squared > 0.99
+
+
+def test_relajacion_limite_elastico() -> None:
+    """Sin relajación (fuerza constante) el ratio de relajación debe ser ≈ 0."""
+    from spmkit.core.analysis import experimental
+
+    t = np.linspace(0.0, 0.3, 200)
+    fit = experimental.fit_relaxation(t, np.full_like(t, 3e-9))
+    assert abs(fit.relaxation_ratio) < 1e-6
+
+
 def _jkr_curve() -> tuple[np.ndarray, np.ndarray]:
     """Curva JKR fuerza-vs-separación: baseline plano + contacto adhesivo (E*/w conocidos)."""
     from spmkit.core.analysis import experimental
