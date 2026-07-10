@@ -15,7 +15,9 @@ from PyQt6.QtWidgets import (
     QComboBox,
     QDoubleSpinBox,
     QFormLayout,
+    QHBoxLayout,
     QLabel,
+    QPushButton,
     QSpinBox,
     QVBoxLayout,
     QWidget,
@@ -102,7 +104,15 @@ class PipelinePanel(Panel):
         cal_form = QFormLayout()
         cal_form.setHorizontalSpacing(16)
         self._invols = self._spin(0.0, 100000.0, 0.0, " nm/V", 2)
-        cal_form.addRow("InVOLS", self._invols)
+        invols_row = QWidget()
+        ir = QHBoxLayout(invols_row)
+        ir.setContentsMargins(0, 0, 0, 0)
+        ir.addWidget(self._invols, 1)
+        calc = QPushButton("Calcular")
+        calc.setToolTip("Estima el InVOLS de la zona de contacto de la curva activa.")
+        calc.clicked.connect(self._calc_invols)
+        ir.addWidget(calc)
+        cal_form.addRow("InVOLS", invols_row)
         self._k = self._spin(0.0, 1000.0, 0.0, " N/m", 3)
         cal_form.addRow("k resorte", self._k)
         outer.addLayout(cal_form)
@@ -158,6 +168,12 @@ class PipelinePanel(Panel):
         for w in (self._invols_err, self._k_err, self._mc_n):
             w.setEnabled(checked)
         self._apply()
+
+    def _calc_invols(self) -> None:
+        """Estima el InVOLS de la curva activa y lo escribe en el control (m/V → nm/V)."""
+        invols = self._vm.estimate_invols()
+        if invols is not None:
+            self._invols.setValue(invols * 1e9)  # el valueChanged dispara el re-ajuste
 
     def _update_enabled(self) -> None:
         is_cone = self._model.currentData() == "cone"
