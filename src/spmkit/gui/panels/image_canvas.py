@@ -71,7 +71,7 @@ class ImageCanvasPanel(Panel):
 
         bar = QHBoxLayout()
         self._channel = QComboBox()
-        self._channel.currentTextChanged.connect(self._vm.set_channel)
+        self._channel.currentIndexChanged.connect(self._vm.set_channel_index)
         self._level = QComboBox()
         for value, label in _LEVELING:
             self._level.addItem(label, value)
@@ -148,13 +148,14 @@ class ImageCanvasPanel(Panel):
     def _on_data(self, names: list) -> None:
         self._channel.blockSignals(True)
         self._channel.clear()
-        self._channel.addItems([str(n) for n in names])
+        self._channel.addItems(self._vm.labels())  # etiquetas desambiguadas, no nombres crudos
+        self._channel.setCurrentIndex(self._vm.current_index)
         self._channel.blockSignals(False)
 
-    def _on_channel(self, name: str) -> None:
-        if name and name != self._channel.currentText():
+    def _on_channel(self, _name: str) -> None:
+        if self._channel.currentIndex() != self._vm.current_index:
             self._channel.blockSignals(True)
-            self._channel.setCurrentText(name)
+            self._channel.setCurrentIndex(self._vm.current_index)  # por posición
             self._channel.blockSignals(False)
         ch = self._vm.current_channel()
         if ch is not None and not ch.is_spatial:

@@ -18,6 +18,27 @@ from spmkit.core.analysis.profiles import line as profile_line
 from spmkit.core.models import SPMChannel, SPMData
 
 
+def channel_labels(data: SPMData | None) -> list[str]:
+    """Etiquetas **únicas** por canal, para los selectores de la GUI.
+
+    Los ``.nid`` de NanoSurf traen canales con el mismo ``Dim2Name`` (p. ej. ``Z-Axis``
+    forward + backward, o ``Amplitude Spectral Density`` de los frames FFT/Fit). Como la
+    GUI selecciona por posición, aquí desambiguamos el nombre con el frame/dirección **solo
+    cuando colisiona**, para que el usuario distinga —y pueda abrir— cada canal.
+    """
+    if data is None:
+        return []
+    names = [c.name for c in data.channels]
+    labels: list[str] = []
+    for i, c in enumerate(data.channels):
+        if names.count(c.name) > 1:
+            tag = c.group or c.direction or str(i)
+            labels.append(f"{c.name} · {tag}")
+        else:
+            labels.append(c.name)
+    return labels
+
+
 class ImageViewModel(QObject):
     """Estado observable de la perspectiva de imagen."""
 
@@ -28,7 +49,7 @@ class ImageViewModel(QObject):
     def __init__(self, parent: QObject | None = None) -> None:
         super().__init__(parent)
         self._data: SPMData | None = None
-        self._channel = ""
+        self._channel_index = 0  # identidad del canal activo (por posición, no por nombre)
         self._leveling = "plane"
         self._poly_order = 2  # grado del nivelado polinómico
         self._row_stat = "median"  # estadístico del alineado por filas
@@ -44,8 +65,12 @@ class ImageViewModel(QObject):
     def names(self) -> list[str]:
         return list(self._data.names) if self._data is not None else []
 
+    def labels(self) -> list[str]:
+        """Etiquetas **desambiguadas** para los selectores (ver :func:`channel_labels`)."""
+        return channel_labels(self._data)
+
     def raw_channel(self, name: str) -> SPMChannel | None:
-        """Canal **crudo** por nombre (sin nivelar), para figura/3D. ``None`` si no existe."""
+        """Canal **crudo** por nombre (sin nivelar); primer match. Ver :meth:`raw_channel_at`."""
         if self._data is None or not name:
             return None
         try:
@@ -53,9 +78,21 @@ class ImageViewModel(QObject):
         except KeyError:
             return None
 
+    def raw_channel_at(self, index: int) -> SPMChannel | None:
+        """Canal **crudo** por posición (sin nivelar), para figura/3D. Distingue duplicados."""
+        if self._data is None or not (0 <= index < len(self._data.channels)):
+            return None
+        return self._data.channels[index]
+
     @property
     def channel(self) -> str:
-        return self._channel
+        """Nombre del canal activo (por posición). Cadena vacía si no hay datos."""
+        ch = self.raw_channel_at(self._channel_index)
+        return ch.name if ch is not None else ""
+
+    @property
+    def current_index(self) -> int:
+        return self._channel_index
 
     @property
     def leveling(self) -> str:
@@ -63,20 +100,31 @@ class ImageViewModel(QObject):
 
     def set_data(self, data: SPMData) -> None:
         self._data = data
-        names = list(data.names)
-        self._channel = names[0] if names else ""
-        self.dataChanged.emit(names)
-        self.channelChanged.emit(self._channel)
+        self._channel_index = 0
+        self.dataChanged.emit(list(data.names))
+        self.channelChanged.emit(self.channel)
+
+    def set_channel_index(self, index: int) -> None:
+        """Selecciona el canal activo por **posición** (fuente única de identidad)."""
+        if self._data is None or not (0 <= index < len(self._data.channels)):
+            return
+        if index != self._channel_index:
+            self._channel_index = index
+            self.channelChanged.emit(self.channel)
 
     def set_channel(self, name: str) -> None:
-        if name and name != self._channel:
-            self._channel = name
-            self.channelChanged.emit(name)
+        """Selecciona por nombre (primer match). Compat; prefiere :meth:`set_channel_index`."""
+        if self._data is None or not name:
+            return
+        for i, c in enumerate(self._data.channels):
+            if c.name == name:
+                self.set_channel_index(i)
+                return
 
     def set_leveling(self, mode: str) -> None:
         if mode != self._leveling:
             self._leveling = mode
-            self.channelChanged.emit(self._channel)  # re-render con el nivelado nuevo
+            self.channelChanged.emit(self.channel)  # re-render con el nivelado nuevo
 
     @property
     def poly_order(self) -> int:
@@ -91,14 +139,14 @@ class ImageViewModel(QObject):
         if order != self._poly_order and order >= 1:
             self._poly_order = int(order)
             if self._leveling == "poly":
-                self.channelChanged.emit(self._channel)
+                self.channelChanged.emit(self.channel)
 
     def set_row_stat(self, stat: str) -> None:
         """Estadístico del alineado por filas (``"median"``/``"mean"``)."""
         if stat != self._row_stat and stat in ("median", "mean"):
             self._row_stat = stat
             if self._leveling == "rows":
-                self.channelChanged.emit(self._channel)
+                self.channelChanged.emit(self.channel)
 
     @property
     def tip_work_function(self) -> float | None:
@@ -109,13 +157,13 @@ class ImageViewModel(QObject):
         value = None if not ev else float(ev)
         if value != self._tip_work_function:
             self._tip_work_function = value
-            self.channelChanged.emit(self._channel)  # re-analiza KPFM
+            self.channelChanged.emit(self.channel)  # re-analiza KPFM
 
     def current_channel(self) -> SPMChannel | None:
-        """Canal activo con el nivelado aplicado (o crudo si el nivelado falla)."""
-        if self._data is None or not self._channel:
+        """Canal activo (por posición) con el nivelado aplicado (o crudo si falla)."""
+        ch = self.raw_channel_at(self._channel_index)
+        if ch is None:
             return None
-        ch = self._data[self._channel]
         try:
             if self._leveling == "plane":
                 return leveling.plane_fit(ch)

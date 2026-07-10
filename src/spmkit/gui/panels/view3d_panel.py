@@ -67,7 +67,7 @@ class View3DPanel(Panel):
         form.addRow(title)
 
         self._channel = QComboBox()
-        self._channel.currentTextChanged.connect(self._vm.set_channel)
+        self._channel.currentIndexChanged.connect(self._vm.set_index)
         form.addRow("Canal:", self._channel)
 
         self._cmap = QComboBox()
@@ -107,8 +107,8 @@ class View3DPanel(Panel):
     def _on_data(self, names: list) -> None:
         self._channel.blockSignals(True)
         self._channel.clear()
-        self._channel.addItems([str(n) for n in names])
-        self._channel.setCurrentText(self._vm.channel)
+        self._channel.addItems(self._vm.labels())  # etiquetas desambiguadas
+        self._channel.setCurrentIndex(self._vm.index)
         self._channel.blockSignals(False)
 
     def _on_z(self, value: int) -> None:
