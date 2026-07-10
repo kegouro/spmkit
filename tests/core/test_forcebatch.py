@@ -81,8 +81,8 @@ def test_process_folder_and_csv(tmp_path: Path) -> None:
 
     out = tmp_path / "resumen.csv"
     result.to_csv(out)
-    lines = out.read_text(encoding="utf-8").strip().splitlines()
-    assert len(lines) == 4  # cabecera + 3 filas
+    lines = [ln for ln in out.read_text(encoding="utf-8").splitlines() if not ln.startswith("#")]
+    assert len(lines) == 4  # encabezado + 3 filas (sin contar los comentarios de metadatos)
     assert "young_modulus_median" in lines[0]
 
 
@@ -97,3 +97,30 @@ def test_process_real_nid_folder() -> None:
     result = process_force_folder(_SAMPLE_DIR, _RECIPE)
     # al menos algún .nid de nanomecánica debe procesarse con curvas
     assert any(r.n_curves > 0 for r in result.rows)
+
+
+def test_batch_csv_cientifico(tmp_path) -> None:
+    """El resumen del batch lleva metadatos, unidades y celdas vacías (no NaN)."""
+    from spmkit.core.forcebatch import ForceBatchRow
+
+    result = ForceBatchResult(
+        rows=[
+            ForceBatchRow(
+                source="a.jpk-force",
+                n_curves=1,
+                n_ok=1,
+                young_modulus_median=1.5e6,
+                adhesion_median=2e-9,
+                # dissipation_median queda en NaN (sin retract)
+            ),
+            ForceBatchRow(source="b.jpk-force", error="curva inválida"),
+        ]
+    )
+    out = tmp_path / "lote.csv"
+    result.to_csv(out)
+    text = out.read_text(encoding="utf-8")
+    assert "lote de curvas/mapas" in text  # cabecera de metadatos
+    assert "archivos: 2" in text and "OK: 1" in text and "fallidos: 1" in text
+    assert "young_modulus_median [Pa]" in text  # unidad en el encabezado
+    assert "dissipation_median [J]" in text
+    assert "nan" not in text.lower()  # NaN → celda vacía, sin literal
