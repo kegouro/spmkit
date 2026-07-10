@@ -14,6 +14,7 @@ from PyQt6.QtWidgets import (
     QComboBox,
     QHBoxLayout,
     QLabel,
+    QPushButton,
     QSpinBox,
     QVBoxLayout,
     QWidget,
@@ -53,6 +54,9 @@ class ImageCanvasPanel(Panel):
         super().__init__(parent)
         vm.dataChanged.connect(self._on_data)
         vm.channelChanged.connect(self._on_channel)
+        if vm.data is not None:  # hidratar datos ya cargados (evita perderlos al cambiar de vista)
+            self._on_data(vm.names)
+            self._on_channel(vm.channel)
 
     def build(self) -> QWidget:
         import pyqtgraph as pg
@@ -91,6 +95,9 @@ class ImageCanvasPanel(Panel):
         self._cmap = QComboBox()
         self._cmap.addItems(_COLORMAPS)
         self._cmap.currentTextChanged.connect(self._apply_colormap)
+        self._center = QPushButton("Centrar")
+        self._center.setToolTip("Reencuadra la vista sobre la imagen (reset del zoom/pan)")
+        self._center.clicked.connect(self._center_view)
         self._rough = QLabel("—")
         self._rough.setProperty("role", "readout")
         bar.addWidget(QLabel("Canal:"))
@@ -101,6 +108,7 @@ class ImageCanvasPanel(Panel):
         bar.addWidget(self._rowstat)
         bar.addWidget(QLabel("Colormap:"))
         bar.addWidget(self._cmap)
+        bar.addWidget(self._center)
         bar.addStretch(1)
         bar.addWidget(self._rough)
         lay.addLayout(bar)
@@ -153,9 +161,35 @@ class ImageCanvasPanel(Panel):
             self._update_profile()  # re-traza el perfil sobre el canal nuevo
         self._rough.setText(_roughness_line(self._vm.roughness()))
 
-    def _draw(self, channel: SPMChannel) -> None:
-        self._image.setImage(np.asarray(channel.data), autoRange=True)
+    def refresh(self) -> None:
+        """Reencuadra al activarse la perspectiva (el shell llama refresh_safe).
+
+        Si ``autoRange`` corrió con el panel oculto (viewport de tamaño 0), la imagen queda
+        mal encuadrada; re-dibujar al hacerse visible lo corrige.
+        """
+        ch = self._vm.current_channel()
+        if ch is not None:
+            self._draw(ch)
+
+    def _center_view(self) -> None:
+        """Botón «Centrar»: reencuadra la vista sobre la imagen (reset de zoom/pan)."""
         self._image.getView().autoRange(padding=0.02)
+
+    def _draw(self, channel: SPMChannel) -> None:
+        data = np.asarray(channel.data)
+        rows, cols = (data.shape[0], 1) if data.ndim == 1 else data.shape[:2]
+        self._image.setImage(data, autoRange=True)
+        view = self._image.getView()
+        # Acota el pan/zoom al extent de la imagen (± margen): sin esto se desplaza al infinito.
+        view.setLimits(
+            xMin=-0.1 * cols,
+            xMax=1.1 * cols,
+            yMin=-0.1 * rows,
+            yMax=1.1 * rows,
+            maxXRange=1.4 * cols,
+            maxYRange=1.4 * rows,
+        )
+        view.autoRange(padding=0.02)
 
     def _update_profile(self) -> None:
         """Mapea el ROI a coordenadas de píxel y pide el perfil al VM."""

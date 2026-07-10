@@ -74,6 +74,37 @@ def test_image_panel_level_controls_visibility(qtbot) -> None:  # type: ignore[n
     assert not panel._rowstat.isHidden() and panel._order.isHidden()
 
 
+def test_length_scale_picks_sensible_units() -> None:
+    from spmkit.gui.panels.image_analysis import _length_scale
+
+    assert _length_scale(5e-7)[1] == "nm"  # 500 nm
+    assert _length_scale(1e-5)[1] == "µm"  # 10 µm
+    assert _length_scale(2e-3)[1] == "mm"  # 2 mm
+    assert _length_scale(50.0)[1] == "m"  # nunca 'km' (auto-prefijo SI desactivado)
+
+
+def test_image_canvas_hydrates_already_loaded_data(qtbot) -> None:  # type: ignore[no-untyped-def]
+    # Persistencia: construir el panel DESPUÉS de cargar datos no los pierde (bug "olvida al
+    # cambiar de pestaña" — los paneles hidratan el estado actual del VM).
+    vm = ImageViewModel()
+    vm.set_data(_synthetic_data())
+    panel = ImageCanvasPanel(vm)
+    qtbot.addWidget(panel)
+    assert panel._channel.count() == 1  # hidrató el canal ya cargado
+    assert panel._image.image is not None  # y lo dibujó
+    assert panel._rough.text() != "—"
+
+
+def test_image_canvas_refresh_and_center(qtbot) -> None:  # type: ignore[no-untyped-def]
+    vm = ImageViewModel()
+    panel = ImageCanvasPanel(vm)
+    qtbot.addWidget(panel)
+    vm.set_data(_synthetic_data())
+    panel.refresh()  # reencuadra al activar la perspectiva (shell → refresh_safe)
+    panel._center_view()  # botón «Centrar»
+    assert not panel.errored
+
+
 @pytest.mark.skipif(_SAMPLE is None, reason="sin .nid de imagen de prueba (gitignored)")
 def test_image_panel_opens_real_nid(qtbot) -> None:  # type: ignore[no-untyped-def]
     from spmkit.core.io import load as load_image
