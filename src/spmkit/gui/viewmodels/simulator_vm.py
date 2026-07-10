@@ -18,6 +18,8 @@ DEFAULT_PARAMS: dict[str, float] = {
     "spring_constant": 1.0,
     "added_mass": 1e-12,
     "temperature": 293.15,
+    "f_max": 0.0,  # Hz; 0 = automático (2·f₀)
+    "n": 2000.0,  # puntos del eje de frecuencia
 }
 
 
@@ -56,6 +58,8 @@ class SimulatorViewModel(QObject):
                 spring_constant=p["spring_constant"],
                 added_mass=p["added_mass"],
                 temperature=p["temperature"],
+                n=int(p["n"]),
+                f_max=p["f_max"] or None,  # 0 → automático (2·f₀)
             )
         except ValueError:
             self._result = None

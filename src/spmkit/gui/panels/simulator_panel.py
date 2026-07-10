@@ -70,6 +70,10 @@ class SimulatorPanel(Panel):
             form, "Temperatura:", -50.0, 200.0, " °C", 1, p["temperature"] - 273.15
         )
         self.temp.valueChanged.connect(lambda v: self._vm.set_param("temperature", v + 273.15))
+        self.fmax = self._spin(form, "f máx (0=auto):", 0.0, 5000.0, " kHz", 1, p["f_max"] / 1e3)
+        self.fmax.valueChanged.connect(lambda v: self._vm.set_param("f_max", v * 1e3))
+        self.npts = self._spin(form, "Puntos:", 128.0, 20000.0, "", 0, p["n"])
+        self.npts.valueChanged.connect(lambda v: self._vm.set_param("n", v))
         lay.addLayout(form)
 
         self.readout = QLabel()
