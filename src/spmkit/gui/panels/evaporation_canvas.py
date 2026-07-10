@@ -30,6 +30,12 @@ _UM = 1e6  # m → µm
 _EMPTY = "<i>Sin serie (abre una carpeta de espectros de sintonía térmica .nid)</i>"
 
 
+def _no_si_prefix(plot: object) -> None:
+    """Desactiva el auto-prefijo SI de pyqtgraph: los datos ya vienen escalados (h/kHz/ng)."""
+    for side in ("left", "bottom"):
+        plot.getAxis(side).enableAutoSIPrefix(False)  # type: ignore[attr-defined]
+
+
 def _readout_html(result: EvaporationResult | None) -> str:
     if result is None:
         return _EMPTY
@@ -110,6 +116,7 @@ class EvaporationCanvasPanel(Panel):
         self._plot_f.setLabel("bottom", "Tiempo (h)")
         self._plot_f.setLabel("left", "f (kHz)")
         self._plot_f.showGrid(x=True, y=True, alpha=0.3)
+        _no_si_prefix(self._plot_f)
         lay.addWidget(self._plot_f, 1)
 
         self._plot_m = pg.PlotWidget()
@@ -117,6 +124,7 @@ class EvaporationCanvasPanel(Panel):
         self._plot_m.setLabel("left", "Δm (ng)")
         self._plot_m.showGrid(x=True, y=True, alpha=0.3)
         self._plot_m.setXLink(self._plot_f)
+        _no_si_prefix(self._plot_m)
         lay.addWidget(self._plot_m, 1)
         return root
 
