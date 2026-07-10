@@ -128,3 +128,23 @@ def test_navigator_dual_hub_lists_image_channels(qtbot) -> None:  # type: ignore
     assert panel._list.count() == 2  # sin curvas de fuerza → lista canales de imagen
     panel._step(1)  # avanza de canal
     assert image_vm.channel == "Phase"
+
+
+def test_canvas_export_curve(qtbot, synthetic_volume, tmp_path, monkeypatch) -> None:  # type: ignore[no-untyped-def]  # noqa: E501
+    from PyQt6.QtWidgets import QFileDialog
+
+    vm = ForceViewModel()
+    panel = ForceCanvasPanel(vm)
+    qtbot.addWidget(panel)
+    vm.set_volume(synthetic_volume(1))
+    vm.run_fit_now()  # produce la curva calibrada + ajuste
+    out = tmp_path / "curva.csv"
+    monkeypatch.setattr(
+        QFileDialog, "getSaveFileName", staticmethod(lambda *a, **k: (str(out), ""))
+    )
+    panel._export()
+    text = out.read_text(encoding="utf-8")
+    assert "curva de fuerza" in text and "modelo:" in text  # metadata de la receta
+    assert "young_modulus,Pa," in text  # ajuste con unidad
+    assert "separation [m],force [N]" in text  # tabla de datos
+    assert "nan" not in text.lower()
