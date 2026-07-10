@@ -10,6 +10,7 @@ from __future__ import annotations
 from typing import Any
 
 from PyQt6.QtWidgets import (
+    QDoubleSpinBox,
     QFileDialog,
     QHBoxLayout,
     QLabel,
@@ -37,6 +38,8 @@ def _analysis_html(rough: Any, cpd: Any) -> str:
             "<b>KPFM (CPD)</b>",
             f"media = {cpd.mean:.4g} V · contraste = {cpd.contrast:.4g} V",
         ]
+        if cpd.work_function is not None:
+            lines.append(f"Φ muestra = {cpd.work_function:.4g} {cpd.work_function_unit}")
     return "<br>".join(lines)
 
 
@@ -62,6 +65,18 @@ class ImageAnalysisPanel(Panel):
         self._readout.setProperty("role", "readout")
         self._readout.setWordWrap(True)
         lay.addWidget(self._readout)
+
+        wf_row = QHBoxLayout()
+        wf_row.addWidget(QLabel("Φ punta (eV):"))
+        self._wf = QDoubleSpinBox()
+        self._wf.setRange(0.0, 10.0)
+        self._wf.setDecimals(3)
+        self._wf.setSingleStep(0.1)
+        self._wf.setToolTip("Función de trabajo de la punta (eV). 0 = no calcular Φ de la muestra.")
+        self._wf.valueChanged.connect(lambda v: self._vm.set_tip_work_function(v or None))
+        wf_row.addWidget(self._wf)
+        wf_row.addStretch(1)
+        lay.addLayout(wf_row)
 
         lay.addWidget(QLabel("Perfil de línea (arrastra los extremos sobre la imagen)"))
         self._plot = pg.PlotWidget()

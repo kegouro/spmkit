@@ -67,3 +67,22 @@ def test_image_analysis_panel_plots_profile(qtbot) -> None:  # type: ignore[no-u
     assert panel._plot.listDataItems()  # hay una curva de perfil
     vm.set_data(_potential_data())
     assert "KPFM" in panel._readout.text()  # readout muestra CPD para canal V
+
+
+def test_vm_tip_work_function_computes_phi_sample() -> None:
+    vm = ImageViewModel()
+    vm.set_data(_potential_data())
+    assert vm.kpfm().work_function is None  # sin Φ de la punta
+    vm.set_tip_work_function(4.5)
+    assert vm.tip_work_function == 4.5
+    assert vm.kpfm().work_function is not None  # Φ de la muestra calculada
+
+
+def test_image_analysis_panel_work_function_control(qtbot) -> None:  # type: ignore[no-untyped-def]
+    vm = ImageViewModel()
+    panel = ImageAnalysisPanel(vm)
+    qtbot.addWidget(panel)
+    vm.set_data(_potential_data())
+    panel._wf.setValue(4.5)  # el control empuja Φ punta al VM
+    assert vm.tip_work_function == 4.5
+    assert "Φ muestra" in panel._readout.text()  # el readout muestra la Φ de la muestra

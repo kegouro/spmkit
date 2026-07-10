@@ -32,6 +32,7 @@ class ImageViewModel(QObject):
         self._leveling = "plane"
         self._poly_order = 2  # grado del nivelado polinómico
         self._row_stat = "median"  # estadístico del alineado por filas
+        self._tip_work_function: float | None = None  # eV; para phi de la muestra (KPFM)
         self._last_profile: Profile | None = None
 
     @property
@@ -99,6 +100,17 @@ class ImageViewModel(QObject):
             if self._leveling == "rows":
                 self.channelChanged.emit(self._channel)
 
+    @property
+    def tip_work_function(self) -> float | None:
+        return self._tip_work_function
+
+    def set_tip_work_function(self, ev: float | None) -> None:
+        """Función de trabajo de la punta (eV); ``None``/0 = no calcular la de la muestra."""
+        value = None if not ev else float(ev)
+        if value != self._tip_work_function:
+            self._tip_work_function = value
+            self.channelChanged.emit(self._channel)  # re-analiza KPFM
+
     def current_channel(self) -> SPMChannel | None:
         """Canal activo con el nivelado aplicado (o crudo si el nivelado falla)."""
         if self._data is None or not self._channel:
@@ -126,12 +138,16 @@ class ImageViewModel(QObject):
             return None
 
     def kpfm(self) -> Any:
-        """CPD/KPFM del canal nivelado si es de potencial (unidad ``V``); si no, ``None``."""
+        """CPD/KPFM del canal nivelado si es de potencial (unidad ``V``); si no, ``None``.
+
+        Si se fijó :meth:`set_tip_work_function`, también calcula la función de trabajo de
+        la muestra (``phi_sample = phi_tip − V_CPD``).
+        """
         ch = self.current_channel()
         if ch is None or ch.unit.upper() != "V":
             return None
         try:
-            return kpfm.statistics(ch)
+            return kpfm.statistics(ch, tip_work_function=self._tip_work_function)
         except Exception:  # noqa: BLE001 - análisis opcional
             return None
 
