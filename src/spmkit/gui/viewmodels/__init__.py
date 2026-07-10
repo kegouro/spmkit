@@ -1,6 +1,7 @@
 """ViewModels (MVVM): estado observable entre el ``core`` puro y los paneles Qt."""
 
 from spmkit.gui.viewmodels.batch_vm import BatchViewModel
+from spmkit.gui.viewmodels.evaporation_vm import EvaporationResult, EvaporationViewModel
 from spmkit.gui.viewmodels.figure_vm import FigureViewModel
 from spmkit.gui.viewmodels.force_vm import DEFAULT_RECIPE, ForceViewModel
 from spmkit.gui.viewmodels.grains_vm import GrainsViewModel
@@ -29,4 +30,6 @@ __all__ = [
     "SmfsResult",
     "ResonanceViewModel",
     "ResonanceResult",
+    "EvaporationViewModel",
+    "EvaporationResult",
 ]
