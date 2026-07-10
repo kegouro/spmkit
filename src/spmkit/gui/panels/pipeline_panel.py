@@ -30,6 +30,12 @@ _MODELS: tuple[tuple[str, str], ...] = (
     ("dmt", "DMT (adhesivo)"),
 )
 
+#: Métodos de detección del punto de contacto: valor interno → etiqueta visible.
+_CONTACT_METHODS: tuple[tuple[str, str], ...] = (
+    ("joint", "Conjunto (robusto)"),
+    ("threshold", "Umbral k·σ"),
+)
+
 
 class PipelinePanel(Panel):
     """Panel-dock con los controles del pipeline de ajuste (edición en vivo)."""
@@ -71,6 +77,20 @@ class PipelinePanel(Panel):
         self._smooth = self._spin(0.0, 99.0, 0.0, " pts", 0, step=2.0)
         self._smooth.setToolTip("Suavizado Savitzky-Golay antes del ajuste (0 = ninguno)")
         form.addRow("Suavizado", self._smooth)
+
+        self._contact = QComboBox()
+        for value, label in _CONTACT_METHODS:
+            self._contact.addItem(label, value)
+        self._contact.setToolTip(
+            "Detección del punto de contacto. 'Conjunto' es inmune al sesgo de módulo (~+30%)\n"
+            "que el umbral introduce bajo ruido."
+        )
+        self._contact.currentIndexChanged.connect(self._apply)
+        form.addRow("Contacto", self._contact)
+
+        self._ksigma = self._spin(1.0, 15.0, 5.0, " σ", 1, step=0.5)
+        self._ksigma.setToolTip("Umbral de ruido de la detección de contacto (múltiplos de σ)")
+        form.addRow("k·σ (umbral)", self._ksigma)
 
         cal = QLabel("Calibración (0 = usar metadatos del archivo)")
         cal.setProperty("role", "muted")
@@ -130,4 +150,6 @@ class PipelinePanel(Panel):
             invols=(self._invols.value() * 1e-9) or None,
             spring_constant=self._k.value() or None,
             smooth_window=int(self._smooth.value()),
+            contact_method=self._contact.currentData(),
+            k_sigma=self._ksigma.value(),
         )
