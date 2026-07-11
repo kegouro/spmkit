@@ -24,6 +24,12 @@ def _reader_for(path: str | Path) -> Any:
 
     if looks_like_jpk_tiff(path):
         return JpkTiffReader()
+    # Bruker sin extensión .spm (archivos numerados .001/.002…): detección por contenido.
+    from spmkit.core.io.bruker_spm import looks_like_bruker_spm
+    from spmkit.core.io.readers import BrukerSpmReader
+
+    if looks_like_bruker_spm(path):
+        return BrukerSpmReader()
     return None
 
 

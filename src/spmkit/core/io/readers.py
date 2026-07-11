@@ -100,6 +100,18 @@ class GwyReader(_ImageReader):
         return load_gwy
 
 
+class BrukerSpmReader(_ImageReader):
+    """Bruker/Nanoscope ``.spm`` (imagen) — **EXPERIMENTAL**, escalado sin validar."""
+
+    extensions: tuple[str, ...] = (".spm",)
+    format = "bruker-spm"
+
+    def _loader(self) -> Any:
+        from spmkit.core.io.bruker_spm import load_bruker_spm
+
+        return load_bruker_spm
+
+
 class JpkForceReader:
     """JPK/Bruker ``.jpk-force`` — curva de fuerza (envuelta en un volumen 1×1)."""
 
@@ -115,4 +127,10 @@ class JpkForceReader:
 
 
 #: Lectores del dominio AFM que el registry carga por defecto.
-BUILTIN_READERS: tuple[Reader, ...] = (NidReader(), NhfReader(), GwyReader(), JpkForceReader())
+BUILTIN_READERS: tuple[Reader, ...] = (
+    NidReader(),
+    NhfReader(),
+    GwyReader(),
+    BrukerSpmReader(),
+    JpkForceReader(),
+)

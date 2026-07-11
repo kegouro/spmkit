@@ -412,6 +412,7 @@ flowchart LR
 | `.nid` | NanoSurf clásico | Lectura validada a **precisión de máquina** contra Gwyddion; imagen y espectroscopía. |
 | `.gwy` | Gwyddion | Lectura y escritura nativa. |
 | `.nhf` | NanoSurf HDF5 | Lectura (experimental). |
+| `.spm` / `.00N` | Bruker / Nanoscope | Imagen — **experimental**, escalado sin validar; reimplementado citando [AFMReader](https://github.com/AFM-SPM/AFMReader) y [TopoStats](https://github.com/AFM-SPM/TopoStats). |
 | `.jpk-force` / `.jpk-qi` | JPK Instruments | Curvas y mapas de fuerza (extra `afm`). |
 | JPK-TIFF | JPK (exportación TIFF) | Curvas de fuerza detectadas **por contenido** (extra `jpk`). |
 | `.ibw`, HDF5, NT-MDT… | Varios | Cola larga vía `afmformats` (extra `afm`). |
