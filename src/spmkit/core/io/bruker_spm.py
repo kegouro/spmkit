@@ -78,15 +78,22 @@ def _parse_header(blob: bytes) -> list[tuple[str, dict[str, str]]]:
 
 
 def _scan_size(sections: list[tuple[str, dict[str, str]]]) -> tuple[float, float]:
-    """Extensión XY del escaneo en metros (de ``\\Scan Size``), o ``(0, 0)`` si no está."""
+    """Extensión (X, Y) del escaneo en metros (de ``\\Scan Size``), o ``(0, 0)`` si no está.
+
+    Nanoscope da ``Scan Size: X Y unit`` (o ``X unit`` si es cuadrado). Se leen **ambas**
+    dimensiones: un escaneo no cuadrado tiene X ≠ Y.
+    """
     for _name, keys in sections:
         raw = keys.get("Scan Size") or keys.get("Scan size")
-        if raw:
-            parts = raw.split()
-            if len(parts) >= 3:
-                val, unit = float(parts[0]), parts[-1]
-                m = val * _UNIT_TO_M.get(unit, 1.0)
-                return m, m
+        if not raw:
+            continue
+        parts = raw.split()
+        nums = [float(x) for x in re.findall(r"[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?", raw)]
+        factor = _UNIT_TO_M.get(parts[-1], 1.0) if parts else 1.0
+        if len(nums) >= 2:
+            return nums[0] * factor, nums[1] * factor  # X, Y (puede ser no cuadrado)
+        if nums:
+            return nums[0] * factor, nums[0] * factor
     return 0.0, 0.0
 
 
@@ -143,7 +150,7 @@ def load_bruker_spm(path: str | Path) -> SPMData:
         raw = np.frombuffer(blob, dtype=dt, count=count, offset=offset).reshape(lines, samps)
 
         # Nombre del canal y escalado (hard × sens). Sin escala confiable → crudo.
-        label = keys.get("@2:Image Data") or keys.get("Image Data") or name
+        label = _by_suffix(keys, "Image Data") or name
         cname = _channel_name(label)
         scale, unit = _channel_scale(keys, sections)
         data = raw.astype(np.float64) * scale
@@ -170,8 +177,13 @@ def load_bruker_spm(path: str | Path) -> SPMData:
     )
 
 
+def _by_suffix(keys: dict[str, str], suffix: str) -> str | None:
+    """Valor de la primera clave que termina en ``suffix`` (prefijo ``@N:`` variable)."""
+    return next((v for k, v in keys.items() if k.endswith(suffix)), None)
+
+
 def _channel_name(label: str) -> str:
-    """Nombre legible del canal de ``\\@2:Image Data: S [Height] "Height"``."""
+    """Nombre legible del canal de ``\\@N:Image Data: S [Height] "Height"``."""
     m = re.search(r'"([^"]+)"', label) or re.search(r"\[([^\]]+)\]", label)
     return m.group(1) if m else label.strip() or "Data"
 
@@ -180,7 +192,7 @@ def _channel_scale(
     keys: dict[str, str], sections: list[tuple[str, dict[str, str]]]
 ) -> tuple[float, str]:
     """``(factor, unidad)`` para convertir el crudo a físico. ``(1.0, "")`` si no se resuelve."""
-    zscale = keys.get("@2:Z scale") or keys.get("Z scale")
+    zscale = _by_suffix(keys, "Z scale")
     if not zscale:
         return 1.0, ""
     m = _ZSCALE_RE.search(zscale)
