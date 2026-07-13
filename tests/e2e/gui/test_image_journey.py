@@ -4,10 +4,15 @@ import csv
 from pathlib import Path
 
 import numpy as np
-from PyQt6.QtCore import QCoreApplication, QEvent, Qt
-from PyQt6.QtWidgets import QFileDialog, QPushButton
+import pytest
 
-from spmkit.gui.app_workspace import build_workspace
+pytest.importorskip("PyQt6")
+pytest.importorskip("pytestqt")
+
+from PyQt6.QtCore import QCoreApplication, QEvent, Qt  # noqa: E402
+from PyQt6.QtWidgets import QFileDialog, QPushButton  # noqa: E402
+
+from spmkit.gui.app_workspace import build_workspace  # noqa: E402
 
 
 def test_corrupt_gwy_via_open_action_keeps_gui_alive(
