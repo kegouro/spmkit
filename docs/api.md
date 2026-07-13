@@ -6,7 +6,11 @@ spmkit expone una API pública limpia en `spmkit.core`. La CLI y la GUI solo orq
 
 ```bash
 pip install spmkit
+pip install "spmkit[gwy,hdf5]"
 ```
+
+La instalación base cubre `.nid`. Los ejemplos `.gwy` requieren el extra `gwy`; el extra
+`hdf5` habilita el lector experimental `.nhf` y la exportación HDF5.
 
 ---
 
@@ -301,9 +305,11 @@ Además de `gold`, hay colormaps de matplotlib y Crameri cuando están instalado
 ## Exportación — `spmkit.core.export`
 
 ```python
+from spmkit.core.analysis import roughness
 from spmkit.core.export import to_csv, to_json, to_hdf5
 
 # Exportar resultados de rugosidad
+roughness_result = roughness.statistics(flat)
 to_csv(roughness_result, "roughness.csv")
 to_json(roughness_result, "roughness.json")
 

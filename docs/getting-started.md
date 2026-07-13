@@ -147,7 +147,7 @@ print(f"Función de trabajo = {cpd.work_function} {cpd.work_function_unit}")
 ```
 
 El core conserva los canales raw: la nivelación devuelve un `SPMChannel` nuevo y no modifica
-`raw`. Los datos y rangos espaciales del core están en unidades SI.
+`raw`. Los datos están en la unidad física indicada; los rangos espaciales están en metros.
 
 La convención implementada es `phi_sample = phi_tip - mean(CPD)` al expresar la función de
 trabajo en eV y el CPD en V. Si omites `tip_work_function`, `work_function` queda en `None`:

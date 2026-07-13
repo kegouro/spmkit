@@ -19,8 +19,8 @@ run("scan.gwy")
 ```
 
 !!! note "Requisito"
-    Instala el extra `gui`: `pip install "spmkit[gui]"`. Para detección de granos añade
-    `grains` (scipy): `pip install "spmkit[gui,grains]"`.
+    Para abrir el ejemplo `.gwy`, instala `pip install "spmkit[gui,gwy]"`. El lector `.nhf`
+    experimental requiere además `hdf5`; para detección de granos añade `grains` (scipy).
 
 ## Abrir datos
 
