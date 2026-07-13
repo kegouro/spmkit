@@ -2,9 +2,31 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 
 from spmkit.core.project import OpenFile, ProjectState, load_project, save_project
+
+
+def test_roundtrip_con_hash_sha256(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    contenido = b"spmkit-project-hash\x00\xff"
+    archivo = tmp_path / "datos.bin"
+    archivo.write_bytes(contenido)
+    esperado = hashlib.sha256(contenido).hexdigest()
+    state = ProjectState(
+        files=[OpenFile.from_path(archivo, "force")],
+        perspective="map",
+    )
+
+    path = save_project(state, tmp_path / "sesion.spmproj")
+
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    assert raw["files"] == [
+        {"path": str(archivo), "kind": "force", "sha256": esperado}
+    ]
+    loaded = load_project(path)
+    assert loaded.files == [OpenFile(str(archivo), "force", esperado)]
+    assert loaded.perspective == "map"
 
 
 def test_roundtrip(tmp_path) -> None:  # type: ignore[no-untyped-def]

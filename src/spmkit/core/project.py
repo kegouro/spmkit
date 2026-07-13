@@ -10,6 +10,7 @@ Puro: no sabe de UI. La GUI arma el :class:`ProjectState` y lo consume.
 
 from __future__ import annotations
 
+import hashlib
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -25,6 +26,16 @@ class OpenFile:
 
     path: str
     kind: str  # "image" | "force"
+    sha256: str | None = None
+
+    @classmethod
+    def from_path(cls, path: str | Path, kind: str) -> OpenFile:
+        ruta = Path(path)
+        resumen = hashlib.sha256()
+        with ruta.open("rb") as flujo:
+            for bloque in iter(lambda: flujo.read(1024 * 1024), b""):
+                resumen.update(bloque)
+        return cls(path=str(ruta), kind=kind, sha256=resumen.hexdigest())
 
 
 @dataclass
@@ -40,7 +51,9 @@ class ProjectState:
         return {
             "version": self.version,
             "perspective": self.perspective,
-            "files": [{"path": f.path, "kind": f.kind} for f in self.files],
+            "files": [
+                {"path": f.path, "kind": f.kind, "sha256": f.sha256} for f in self.files
+            ],
             "params": self.params,
         }
 
@@ -56,7 +69,11 @@ def load_project(path: str | Path) -> ProjectState:
     """Lee un ``.spmproj``, tolerante a campos faltantes/desconocidos."""
     raw = json.loads(Path(path).read_text(encoding="utf-8"))
     files = [
-        OpenFile(path=str(f["path"]), kind=str(f.get("kind", "force")))
+        OpenFile(
+            path=str(f["path"]),
+            kind=str(f.get("kind", "force")),
+            sha256=str(f["sha256"]) if f.get("sha256") is not None else None,
+        )
         for f in raw.get("files", [])
         if isinstance(f, dict) and f.get("path")
     ]

@@ -175,7 +175,7 @@ def _save_project(ws: Workspace, vm: ForceViewModel, session: dict[str, Any]) ->
     )
     if not path:
         return
-    files = [OpenFile(session["path"], session["kind"])] if session.get("path") else []
+    files = [OpenFile.from_path(session["path"], session["kind"])] if session.get("path") else []
     state = ProjectState(files=files, params=vm.params, perspective=ws.active_perspective)
     save_project(state, path)
     _remember_dir(path)
