@@ -14,7 +14,7 @@ from rich.console import Console
 from rich.table import Table
 
 from spmkit import __version__, load
-from spmkit.core.analysis import kpfm, leveling, roughness, spectral
+from spmkit.core.analysis import kpfm, leveling, profiles, roughness, spectral
 from spmkit.core.export import to_csv, to_json
 from spmkit.core.models import SPMChannel, SPMData
 from spmkit.core.verify import trace_nid
@@ -118,6 +118,33 @@ def roughness_cmd(
         else:
             table.add_row(key, str(value))
     console.print(table)
+
+
+@app.command(help="Extrae un perfil de línea entre coordenadas de píxel.")
+def profile(
+    file: Path = typer.Argument(..., exists=True, help="Archivo .nid, .nhf o .gwy"),
+    channel: str = typer.Option("Z-Axis", "--channel", "-c", help="Canal a analizar"),
+    direction: str | None = typer.Option(None, "--direction", help="Dirección del canal"),
+    group: str | None = typer.Option(None, "--group", help="Grupo del canal"),
+    x0: float = typer.Option(0.0, "--x0", help="Coordenada X inicial en píxeles"),
+    y0: float = typer.Option(0.0, "--y0", help="Coordenada Y inicial en píxeles"),
+    x1: float = typer.Option(..., "--x1", help="Coordenada X final en píxeles"),
+    y1: float = typer.Option(..., "--y1", help="Coordenada Y final en píxeles"),
+    n: int | None = typer.Option(None, "--n", help="Número de muestras"),
+    level: _Level = typer.Option(_Level.PLANE, "--level", "-l", help="Nivelación"),
+    output: Path = typer.Option(Path("profile.csv"), "--output", "-o", help="CSV de salida"),
+) -> None:
+    data = load(file)
+    ch = _apply_level(
+        _select_channel(data, channel, direction=direction, group=group),
+        level,
+    )
+    try:
+        result = profiles.line(ch, (x0, y0), (x1, y1), n=n)
+    except ValueError as exc:
+        raise typer.BadParameter(str(exc)) from exc
+    to_csv(result, output)
+    console.print(f"[green]✓[/] Perfil → {output}")
 
 
 @app.command(name="psd")
@@ -380,7 +407,7 @@ def figure(
     direction: str | None = typer.Option(None, "--direction", help="Dirección del canal"),
     group: str | None = typer.Option(None, "--group", help="Grupo del canal"),
     output: Path = typer.Option(Path("figure.png"), "--output", "-o", help="png|svg|pdf"),
-    colormap: str = typer.Option("batlow", "--colormap"),
+    colormap: str = typer.Option("gold", "--colormap"),
     title: str = typer.Option("", "--title"),
 ) -> None:
     """Exporta una figura de publicación (con scale bar y colormap científico)."""
