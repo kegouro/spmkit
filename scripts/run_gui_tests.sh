@@ -78,7 +78,7 @@ _run_one() {
 }
 
 failed=""
-for f in tests/gui/test_*.py; do
+for f in tests/gui/test_*.py tests/e2e/gui/test_*.py; do
   echo "▶ $f"
   _run_one "$f"
   case $? in
