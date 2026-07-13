@@ -6,6 +6,7 @@ import math
 from pathlib import Path
 
 import pytest
+from click import unstyle
 from typer.testing import CliRunner
 
 from spmkit import load
@@ -13,6 +14,10 @@ from spmkit.cli.app import app
 from spmkit.core.analysis import kpfm, leveling, roughness
 
 runner = CliRunner()
+
+
+def _compact_output(output: str) -> str:
+    return "".join(unstyle(output).replace("│", " ").split())
 
 
 def _csv_scalars(path: Path) -> dict[str, str]:
@@ -23,11 +28,12 @@ def _csv_scalars(path: Path) -> dict[str, str]:
 def test_real_gwy_cli_info_selection_and_analysis(real_gwy_path: Path, tmp_path: Path) -> None:
     info_result = runner.invoke(app, ["info", str(real_gwy_path)], terminal_width=200)
     assert info_result.exit_code == 0, info_result.output
-    assert "formato gwy" in info_result.output
-    assert "Grupo" in info_result.output
-    assert "Z-Axis forward" in info_result.output
-    assert "Z-Axis backward" in info_result.output
-    assert "CPD forward" in info_result.output
+    info_output = _compact_output(info_result.output)
+    assert "formatogwy" in info_output
+    assert "Grupo" in info_output
+    assert "Z-Axisforward" in info_output
+    assert "Z-Axisbackward" in info_output
+    assert "CPDforward" in info_output
 
     roughness_result = runner.invoke(
         app,
@@ -37,7 +43,7 @@ def test_real_gwy_cli_info_selection_and_analysis(real_gwy_path: Path, tmp_path:
 
     ambiguous_result = runner.invoke(app, ["roughness", str(real_gwy_path)])
     assert ambiguous_result.exit_code == 2
-    normalized_error = " ".join(ambiguous_result.output.replace("│", " ").split())
+    normalized_error = _compact_output(ambiguous_result.output)
     assert "ambigua" in normalized_error.casefold()
     assert "--direction/--group" in normalized_error
 
@@ -80,9 +86,10 @@ def test_real_gwy_cli_info_selection_and_analysis(real_gwy_path: Path, tmp_path:
 def test_real_gwy_cli_profile_and_default_figure(real_gwy_path: Path, tmp_path: Path) -> None:
     profile_help = runner.invoke(app, ["profile", "--help"])
     assert profile_help.exit_code == 0, profile_help.output
-    assert "coordenadas de píxel" in profile_help.output
-    assert "--x1" in profile_help.output and "required" in profile_help.output
-    assert "--y1" in profile_help.output and "required" in profile_help.output
+    profile_output = _compact_output(profile_help.output)
+    assert "coordenadasdepíxel" in profile_output
+    assert "--x1" in profile_output and "required" in profile_output
+    assert "--y1" in profile_output and "required" in profile_output
 
     profile_path = tmp_path / "profile.csv"
     profile_result = runner.invoke(
@@ -131,7 +138,7 @@ def test_real_gwy_cli_profile_and_default_figure(real_gwy_path: Path, tmp_path: 
         ],
     )
     assert invalid_profile.exit_code == 2
-    assert "fuera de los límites" in invalid_profile.output
+    assert "fueradeloslímites" in _compact_output(invalid_profile.output)
 
     figure_help = runner.invoke(app, ["figure", "--help"])
     assert figure_help.exit_code == 0, figure_help.output
