@@ -6,6 +6,7 @@ resultados. No contiene lógica de análisis.
 
 from __future__ import annotations
 
+from enum import StrEnum
 from pathlib import Path
 
 import typer
@@ -15,6 +16,7 @@ from rich.table import Table
 from spmkit import __version__, load
 from spmkit.core.analysis import kpfm, leveling, roughness, spectral
 from spmkit.core.export import to_csv, to_json
+from spmkit.core.models import SPMChannel, SPMData
 from spmkit.core.verify import trace_nid
 
 app = typer.Typer(
@@ -24,6 +26,31 @@ app = typer.Typer(
     add_completion=False,
 )
 console = Console()
+
+
+class _Level(StrEnum):
+    PLANE = "plane"
+    POLY = "poly"
+    ROWS = "rows"
+    NONE = "none"
+
+
+def _select_channel(
+    data: SPMData,
+    name: str,
+    *,
+    direction: str | None = None,
+    group: str | None = None,
+    option_prefix: str = "",
+) -> SPMChannel:
+    try:
+        return data.select(name, direction=direction, group=group)
+    except (KeyError, ValueError) as exc:
+        detail = str(exc.args[0]) if exc.args else str(exc)
+        raise typer.BadParameter(
+            f"{detail} Revise --{option_prefix}channel y use "
+            f"--{option_prefix}direction/--{option_prefix}group para precisar la selección."
+        ) from exc
 
 
 def _version_callback(value: bool) -> None:
@@ -47,12 +74,13 @@ def main(
 
 
 @app.command()
-def info(file: Path = typer.Argument(..., exists=True, help="Archivo .nid o .nhf")) -> None:
+def info(file: Path = typer.Argument(..., exists=True, help="Archivo .nid, .nhf o .gwy")) -> None:
     """Muestra metadatos y canales del archivo."""
     data = load(file)
     table = Table(title=f"{file.name}  ·  formato {data.metadata.get('format', '?')}")
     table.add_column("Canal", style="cyan")
     table.add_column("Dirección")
+    table.add_column("Grupo")
     table.add_column("Forma")
     table.add_column("Unidad")
     table.add_column("Tamaño X·Y", justify="right")
@@ -60,6 +88,7 @@ def info(file: Path = typer.Argument(..., exists=True, help="Archivo .nid o .nhf
         table.add_row(
             ch.name,
             ch.direction,
+            ch.group,
             f"{ch.shape[0]}×{ch.shape[1]}",
             ch.unit,
             f"{ch.x_range * 1e6:.2f}×{ch.y_range * 1e6:.2f} µm",
@@ -69,13 +98,15 @@ def info(file: Path = typer.Argument(..., exists=True, help="Archivo .nid o .nhf
 
 @app.command(name="roughness")
 def roughness_cmd(
-    file: Path = typer.Argument(..., exists=True, help="Archivo .nid o .nhf"),
+    file: Path = typer.Argument(..., exists=True, help="Archivo .nid, .nhf o .gwy"),
     channel: str = typer.Option("Z-Axis", "--channel", "-c", help="Canal a analizar"),
-    level: str = typer.Option("plane", "--level", "-l", help="Nivelación: plane|poly|none"),
+    direction: str | None = typer.Option(None, "--direction", help="Dirección del canal"),
+    group: str | None = typer.Option(None, "--group", help="Grupo del canal"),
+    level: _Level = typer.Option(_Level.PLANE, "--level", "-l", help="Nivelación"),
 ) -> None:
     """Calcula parámetros de rugosidad (ISO 25178) de un canal."""
     data = load(file)
-    ch = data[channel]
+    ch = _select_channel(data, channel, direction=direction, group=group)
     ch = _apply_level(ch, level)
     result = roughness.statistics(ch)
     table = Table(title=f"Rugosidad · {channel} ({result.unit})")
@@ -91,12 +122,14 @@ def roughness_cmd(
 
 @app.command(name="psd")
 def psd_cmd(
-    file: Path = typer.Argument(..., exists=True, help="Archivo .nid o .nhf"),
+    file: Path = typer.Argument(..., exists=True, help="Archivo .nid, .nhf o .gwy"),
     channel: str = typer.Option("Z-Axis", "--channel", "-c", help="Canal a analizar"),
+    direction: str | None = typer.Option(None, "--direction", help="Dirección del canal"),
+    group: str | None = typer.Option(None, "--group", help="Grupo del canal"),
 ) -> None:
     """Análisis espectral: dimensión fractal, Hurst y longitud de correlación."""
     data = load(file)
-    ch = data[channel]
+    ch = _select_channel(data, channel, direction=direction, group=group)
     ch = leveling.plane_fit(ch)
     frac = spectral.fractal_dimension(ch)
     corr = spectral.correlation_length(ch)
@@ -113,11 +146,15 @@ def psd_cmd(
 
 @app.command()
 def analyze(
-    file: Path = typer.Argument(..., exists=True, help="Archivo .nid o .nhf"),
+    file: Path = typer.Argument(..., exists=True, help="Archivo .nid, .nhf o .gwy"),
     output: Path = typer.Option(Path("./results"), "--output", "-o", help="Carpeta de salida"),
     channel: str = typer.Option("Z-Axis", "--channel", "-c"),
+    direction: str | None = typer.Option(None, "--direction", help="Dirección del canal"),
+    group: str | None = typer.Option(None, "--group", help="Grupo del canal"),
     cpd_channel: str = typer.Option("CPD", "--cpd-channel"),
-    level: str = typer.Option("plane", "--level", "-l"),
+    cpd_direction: str | None = typer.Option(None, "--cpd-direction", help="Dirección de CPD"),
+    cpd_group: str | None = typer.Option(None, "--cpd-group", help="Grupo de CPD"),
+    level: _Level = typer.Option(_Level.PLANE, "--level", "-l"),
     tip_work_function: float | None = typer.Option(
         None, "--tip-wf", help="Función de trabajo de la punta (eV) para KPFM"
     ),
@@ -127,14 +164,24 @@ def analyze(
     output.mkdir(parents=True, exist_ok=True)
     stem = file.stem
 
-    ch = _apply_level(data[channel], level)
+    ch = _apply_level(
+        _select_channel(data, channel, direction=direction, group=group),
+        level,
+    )
     rough = roughness.statistics(ch)
     to_csv(rough, output / f"{stem}_roughness.csv")
     to_json(rough, output / f"{stem}_roughness.json")
     console.print(f"[green]✓[/] Rugosidad → {output / (stem + '_roughness.csv')}")
 
     if cpd_channel in data.names:
-        cpd = kpfm.statistics(data[cpd_channel], tip_work_function=tip_work_function)
+        cpd_ch = _select_channel(
+            data,
+            cpd_channel,
+            direction=cpd_direction,
+            group=cpd_group,
+            option_prefix="cpd-",
+        )
+        cpd = kpfm.statistics(cpd_ch, tip_work_function=tip_work_function)
         to_csv(cpd, output / f"{stem}_kpfm.csv")
         to_json(cpd, output / f"{stem}_kpfm.json")
         console.print(f"[green]✓[/] KPFM → {output / (stem + '_kpfm.csv')}")
@@ -328,8 +375,10 @@ def evaporation(
 
 @app.command()
 def figure(
-    file: Path = typer.Argument(..., exists=True, help="Archivo .nid/.nhf/.gwy"),
+    file: Path = typer.Argument(..., exists=True, help="Archivo .nid, .nhf o .gwy"),
     channel: str = typer.Option("Z-Axis", "--channel", "-c"),
+    direction: str | None = typer.Option(None, "--direction", help="Dirección del canal"),
+    group: str | None = typer.Option(None, "--group", help="Grupo del canal"),
     output: Path = typer.Option(Path("figure.png"), "--output", "-o", help="png|svg|pdf"),
     colormap: str = typer.Option("batlow", "--colormap"),
     title: str = typer.Option("", "--title"),
@@ -338,7 +387,7 @@ def figure(
     from spmkit.core.viz import FigureSpec, save_figure
 
     data = load(file)
-    ch = data[channel]
+    ch = _select_channel(data, channel, direction=direction, group=group)
     spec = FigureSpec(
         title=title or ch.name, colormap=colormap, colorbar_label=f"{ch.name} ({ch.unit})"
     )
@@ -448,14 +497,16 @@ def workspace(
     raise typer.Exit(code=run(str(file) if file else None))
 
 
-def _apply_level(ch, level: str):  # type: ignore[no-untyped-def]
-    if level == "plane":
+def _apply_level(ch: SPMChannel, level: _Level) -> SPMChannel:
+    if level is _Level.PLANE:
         return leveling.plane_fit(ch)
-    if level == "poly":
+    if level is _Level.POLY:
         return leveling.polynomial(ch, order=2)
-    if level == "none":
+    if level is _Level.ROWS:
+        return leveling.align_rows(ch, method="median")
+    if level is _Level.NONE:
         return ch
-    raise typer.BadParameter("level debe ser plane|poly|none")
+    raise AssertionError(f"Nivelado no soportado: {level}")
 
 
 def _force_recipe(model: str, tip_radius: float, recipe_path: Path | None = None):  # type: ignore[no-untyped-def]
