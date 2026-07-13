@@ -22,6 +22,17 @@ def test_plane_fit_preserves_metadata(tilted_surface: SPMChannel) -> None:
     assert leveled.shape == tilted_surface.shape
 
 
+def test_plane_fit_does_not_mutate_or_share_input_data(tilted_surface: SPMChannel) -> None:
+    original_data = tilted_surface.data.copy()
+
+    leveled = leveling.plane_fit(tilted_surface)
+
+    assert np.array_equal(tilted_surface.data, original_data)
+    assert isinstance(leveled, SPMChannel)
+    assert leveled is not tilted_surface
+    assert not np.shares_memory(leveled.data, tilted_surface.data)
+
+
 def test_polynomial_flattens_curvature() -> None:
     rows = cols = 32
     yy, xx = np.mgrid[0:rows, 0:cols]
