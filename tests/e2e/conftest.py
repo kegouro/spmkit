@@ -9,10 +9,6 @@ from spmkit.core.io import save_gwy
 from spmkit.core.models import SPMChannel, SPMData
 
 
-def pytest_configure(config: pytest.Config) -> None:
-    config.option.importmode = "importlib"
-
-
 @pytest.fixture
 def real_gwy_path(tmp_path: Path) -> Path:
     pytest.importorskip("gwyfile")

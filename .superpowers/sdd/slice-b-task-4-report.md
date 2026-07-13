@@ -38,3 +38,11 @@ No se encontraron concerns dentro del alcance. Dos gates globales ajenos al camb
 registrados: `make check` se detiene por el stub `types-PyYAML` ausente en el venv, y la suite GUI
 completa produce un segfault preexistente en `tests/gui/test_map_vm.py:76`, también con Qt
 offscreen. Los gates focales solicitados están verdes.
+
+## Corrección de revisión
+
+Se detectó que `tests/e2e/conftest.py` cambiaba globalmente el modo de importación de Pytest para
+evitar la colisión entre los dos módulos `test_image_journey.py`. Se eliminó por completo ese hook
+y se dieron identidades de paquete explícitas a `tests/e2e/library` y `tests/e2e/cli` mediante sus
+respectivos `__init__.py`. Los dos journeys pasan juntos y la colección combinada de `tests/core`
+y `tests/e2e` termina correctamente sin alterar la configuración global de Pytest.
