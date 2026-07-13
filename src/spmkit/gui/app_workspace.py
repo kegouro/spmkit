@@ -175,11 +175,24 @@ def _save_project(ws: Workspace, vm: ForceViewModel, session: dict[str, Any]) ->
     )
     if not path:
         return
-    files = [OpenFile(session["path"], session["kind"])] if session.get("path") else []
+    without_hash = False
+    files = []
+    if session.get("path"):
+        try:
+            files = [OpenFile.from_path(session["path"], session["kind"])]
+        except OSError:
+            files = [OpenFile(path=str(session["path"]), kind=session["kind"], sha256=None)]
+            without_hash = True
     state = ProjectState(files=files, params=vm.params, perspective=ws.active_perspective)
     save_project(state, path)
     _remember_dir(path)
-    ws.show_status(f"proyecto guardado: {Path(path).name}")
+    if without_hash:
+        ws.show_status(
+            f"proyecto guardado sin hash: {Path(path).name}; "
+            "restaura el archivo de origen y vuelve a guardar"
+        )
+    else:
+        ws.show_status(f"proyecto guardado: {Path(path).name}")
 
 
 def _open_project(
@@ -256,7 +269,7 @@ def _suggested(name: str) -> str:
 
 def _scalar_results(ctx: dict) -> dict:
     """Filtra el contexto a valores serializables (descarta el objeto de ajuste)."""
-    return {k: v for k, v in ctx.items() if isinstance(v, (int, float, str, bool)) or v is None}
+    return {k: v for k, v in ctx.items() if isinstance(v, int | float | str | bool) or v is None}
 
 
 def _results_tsv(ctx: dict) -> str:

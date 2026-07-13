@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 from pathlib import Path
 
 import pytest
@@ -17,6 +18,49 @@ def _force_sample() -> Path | None:
     if not _SAMPLES.exists():
         return None
     return next(iter(_SAMPLES.glob("*.jpk-force")), None)
+
+
+def test_spmproj_save_incluye_hash_sin_cargar_datos(qtbot, tmp_path, monkeypatch) -> None:  # type: ignore[no-untyped-def]
+    contenido = b"sesion-gui-spmkit"
+    archivo = tmp_path / "sesion.bin"
+    archivo.write_bytes(contenido)
+    proj = tmp_path / "sesion.spmproj"
+    ws = build_workspace()
+    qtbot.addWidget(ws)
+    vm = ws.panel("force_canvas")._vm
+    session = {"path": str(archivo), "kind": "force"}
+    monkeypatch.setattr(
+        QFileDialog, "getSaveFileName", staticmethod(lambda *a, **k: (str(proj), ""))
+    )
+
+    _save_project(ws, vm, session)
+
+    state = load_project(proj)
+    assert state.files[0].sha256 == hashlib.sha256(contenido).hexdigest()
+
+
+def test_spmproj_save_sin_origen_conserva_archivo_sin_hash(
+    qtbot, tmp_path, monkeypatch
+) -> None:  # type: ignore[no-untyped-def]
+    origen = tmp_path / "origen_ausente.jpk-force"
+    proj = tmp_path / "sesion_sin_origen.spmproj"
+    ws = build_workspace()
+    qtbot.addWidget(ws)
+    vm = ws.panel("force_canvas")._vm
+    session = {"path": str(origen), "kind": "force"}
+    statuses: list[str] = []
+    monkeypatch.setattr(ws, "show_status", statuses.append)
+    monkeypatch.setattr(
+        QFileDialog, "getSaveFileName", staticmethod(lambda *a, **k: (str(proj), ""))
+    )
+
+    _save_project(ws, vm, session)
+
+    state = load_project(proj)
+    assert state.files[0].path == str(origen)
+    assert state.files[0].kind == "force"
+    assert state.files[0].sha256 is None
+    assert "sin hash" in statuses[-1].lower()
 
 
 def test_spmproj_save_and_open(qtbot, tmp_path, monkeypatch) -> None:  # type: ignore[no-untyped-def]

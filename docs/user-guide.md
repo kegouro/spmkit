@@ -7,25 +7,26 @@ muestra sólo los paneles que necesita. Una **paleta de comandos** (⌘K) da acc
 ## Abrir la GUI
 
 ```bash
-spmkit gui           # Fathom (por defecto)
-spmkit gui --legacy  # la app clásica de 7 pestañas (conservada como fallback)
+spmkit gui             # abre Fathom
+spmkit gui scan.gwy    # abre Fathom e intenta cargar el archivo
 ```
 
 O desde Python:
 
 ```python
 from spmkit.gui.app import run
-run()
+run("scan.gwy")
 ```
 
 !!! note "Requisito"
-    Instala el extra `gui`: `pip install "spmkit[gui]"`. Para detección de granos añade
-    `grains` (scipy): `pip install "spmkit[gui,grains]"`.
+    Para abrir el ejemplo `.gwy`, instala `pip install "spmkit[gui,gwy]"`. El lector `.nhf`
+    experimental requiere además `hdf5`; para detección de granos añade `grains` (scipy).
 
 ## Abrir datos
 
 - **Arrastra y suelta** un archivo sobre la ventana, o `Ctrl+O`.
-- Fathom **inspecciona** el archivo y lo rutea solo: imágenes (`.nid`, `.nhf`, `.gwy`) van a
+- Fathom **inspecciona** el archivo y lo rutea solo: imágenes (`.nid`, `.gwy` y `.nhf`
+  experimental) van a
   las perspectivas de imagen; curvas/force-volume (`.jpk-force`, `.nid` de espectroscopía,
   y con el extra `afm`: QI/force-map de JPK, `.ibw`, HDF5…) van a las de fuerza. Si un
   archivo trae imagen **y** curvas, pregunta cómo abrirlo.
@@ -35,10 +36,18 @@ run()
 ## Perspectivas
 
 ### Imagen
-Visor de canales: elige canal, **nivela** (plano / polinomio / por filas), **colormap**, y
-traza un **perfil de línea** arrastrando el ROI sobre la imagen. El panel *Análisis* grafica
-el perfil y muestra rugosidad (Sa/Sq/Sz/Ssk/Sku) y **KPFM/CPD** para canales de potencial;
-exporta el perfil a CSV.
+El selector muestra una etiqueta distinta para cada canal duplicado, usando su grupo o
+dirección, para que puedas distinguir los barridos forward y backward. La identidad del
+canal raw se conserva por posición; los controles **Plano**, **Polinomio**, **Filas** y
+**Sin nivelar** producen la vista de trabajo sin modificar los datos raw cargados.
+
+Elige el colormap y traza un **perfil de línea** arrastrando los extremos del ROI sobre la
+imagen. El panel *Análisis* grafica el perfil, muestra `Sa`, `Sq`, `Sz`, `Ssk` y `Sku`, y el
+botón **Exportar perfil (CSV)…** guarda `distance[m]` y `height[unidad del canal]`.
+
+Al seleccionar un canal de potencial en voltios, el panel muestra la media y el contraste
+CPD. La función de trabajo de la muestra solo aparece después de introducir explícitamente
+**Φ punta (eV)**; con el valor en cero, Fathom no calcula ni inventa esa magnitud.
 
 ### Granos
 Detección de partículas sobre la topografía nivelada: **overlay** coloreado + estadística

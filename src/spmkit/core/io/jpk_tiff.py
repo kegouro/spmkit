@@ -38,7 +38,13 @@ def looks_like_jpk_tiff(path: str | Path) -> bool:
         import tifffile
 
         with tifffile.TiffFile(path) as tf:
-            return _JPK_TAG in {t.code for t in tf.pages[0].tags}
+            page_or_frame = tf.pages[0]
+            page = (
+                page_or_frame.aspage()
+                if isinstance(page_or_frame, tifffile.TiffFrame)
+                else page_or_frame
+            )
+            return _JPK_TAG in {t.code for t in page.tags}
     except Exception:  # noqa: BLE001 - cualquier fallo = no es un JPK-TIFF legible
         return False
 
@@ -68,7 +74,12 @@ def _read_pages(path: str | Path) -> list[dict[str, Any]]:
 
     pages: list[dict[str, Any]] = []
     with tifffile.TiffFile(path) as tf:
-        for page in tf.pages:
+        for page_or_frame in tf.pages:
+            page = (
+                page_or_frame.aspage()
+                if isinstance(page_or_frame, tifffile.TiffFrame)
+                else page_or_frame
+            )
             tags = {t.code: t.value for t in page.tags}
             name = str(tags.get(_CHANNEL_NAME_TAG, ""))
             slots = _slots(tags)

@@ -5,9 +5,9 @@ El formato ``.nhf`` es un contenedor HDF5. Esta implementación recorre el
 tomando unidades/escala de los atributos cuando están disponibles.
 
 .. note::
-   Implementación inicial best-effort. Requiere validación contra archivos
-   ``.nhf`` reales del lab. Necesita el extra ``hdf5`` (``pip install
-   spmkit[hdf5]``).
+   Implementación experimental con contrato sintético reproducible, aún no
+   validada contra un instrumento u oráculo externo. Necesita el extra
+   ``hdf5`` (``pip install spmkit[hdf5]``).
 """
 
 from __future__ import annotations
@@ -43,29 +43,34 @@ def load_nhf(path: str | Path) -> SPMData:
     path = Path(path)
     channels: list[SPMChannel] = []
 
-    with h5py.File(path, "r") as f:
+    try:
+        with h5py.File(path, "r") as f:
 
-        def visit(name: str, obj: Any) -> None:
-            if not isinstance(obj, h5py.Dataset):
-                return
-            if obj.ndim != 2:
-                return
-            data = np.asarray(obj[()], dtype=np.float64)
-            channels.append(
-                SPMChannel(
-                    name=_attr(obj, "name", "Name", default=name.split("/")[-1]),
-                    data=data,
-                    unit=_attr(obj, "unit", "Unit", "base_unit", default=""),
-                    x_range=float(_attr(obj, "x_range", "image_size_x", default=0.0)),
-                    y_range=float(_attr(obj, "y_range", "image_size_y", default=0.0)),
-                    direction=_attr(obj, "direction", default="forward"),
-                    group=name.rsplit("/", 1)[0],
-                    metadata={k: _attr(obj, k) for k in obj.attrs},
+            def visit(name: str, obj: Any) -> None:
+                if not isinstance(obj, h5py.Dataset):
+                    return
+                if obj.ndim != 2:
+                    return
+                data = np.asarray(obj[()], dtype=np.float64)
+                channels.append(
+                    SPMChannel(
+                        name=_attr(obj, "name", "Name", default=name.split("/")[-1]),
+                        data=data,
+                        unit=_attr(obj, "unit", "Unit", "base_unit", default=""),
+                        x_range=float(_attr(obj, "x_range", "image_size_x", default=0.0)),
+                        y_range=float(_attr(obj, "y_range", "image_size_y", default=0.0)),
+                        direction=_attr(obj, "direction", default="forward"),
+                        group=name.rsplit("/", 1)[0],
+                        metadata={k: _attr(obj, k) for k in obj.attrs},
+                    )
                 )
-            )
 
-        f.visititems(visit)
-        root_meta = {k: _attr(f, k) for k in f.attrs}
+            f.visititems(visit)
+            root_meta = {k: _attr(f, k) for k in f.attrs}
+    except OSError as exc:
+        raise ValueError(
+            f"No se pudo abrir o leer el .nhf; puede ser inválido, corrupto o inaccesible: {path}"
+        ) from exc
 
     if not channels:
         raise ValueError(f"No se encontraron canales 2D en el .nhf: {path}")

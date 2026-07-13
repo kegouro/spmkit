@@ -6,7 +6,11 @@ spmkit expone una API pública limpia en `spmkit.core`. La CLI y la GUI solo orq
 
 ```bash
 pip install spmkit
+pip install "spmkit[gwy,hdf5]"
 ```
+
+La instalación base cubre `.nid`. Los ejemplos `.gwy` requieren el extra `gwy`; el extra
+`hdf5` habilita el lector experimental `.nhf` y la exportación HDF5.
 
 ---
 
@@ -18,7 +22,7 @@ Punto de entrada principal. Detecta el formato automáticamente.
 from spmkit import load
 
 data = load("scan.nid")    # NanoSurf clásico
-data = load("scan.nhf")    # NanoSurf HDF5
+data = load("scan.nhf")    # NanoSurf HDF5 (lector experimental)
 data = load("scan.gwy")    # Gwyddion
 ```
 
@@ -30,16 +34,24 @@ El objeto devuelto por `load()`.
 # Ver canales disponibles
 print(data.names)          # ['Z-Axis', 'CPD', 'Phase', ...]
 
-# Acceder a un canal (devuelve SPMChannel)
-ch = data["Z-Axis"]
+# Selección estricta: debe quedar exactamente una coincidencia
+ch = data.select("Z-Axis", direction="forward")
+ch = data.select("Z-Axis", direction="forward", group="Topography forward")
 
-# Acceder con dirección explícita
-ch = data["Z-Axis", "forward"]
-ch = data["Z-Axis", "backward"]
+# Compatibilidad: acceso no estricto por nombre
+ch = data.get("Z-Axis")
+ch = data["Z-Axis"]
 
 # Metadatos del barrido
 print(data.metadata)       # dict con parámetros del instrumento
 ```
+
+`select(name, direction=..., group=...)` lanza `KeyError` si no encuentra coincidencias y
+`ValueError` si encuentra más de una. Es la opción recomendada cuando hay nombres duplicados.
+
+`get(name, direction="forward")` conserva el acceso histórico: busca esa dirección y, si no
+existe, devuelve la primera coincidencia por nombre. `data[name]` equivale a `get(name)`;
+ninguna de estas dos formas detecta ambigüedad.
 
 ### `SPMChannel`
 
@@ -55,6 +67,8 @@ ch.y_range     # float, rango vertical en metros
 ch.shape       # tuple (rows, cols)
 ch.name        # str, nombre del canal
 ch.direction   # "forward" | "backward"
+ch.group       # str, grupo de origen
+ch.metadata    # dict, metadatos crudos del canal
 ```
 
 ---
@@ -80,21 +94,22 @@ Todas las funciones devuelven un nuevo `SPMChannel` (inmutable).
 
 ## Rugosidad — `spmkit.core.analysis.roughness`
 
-Parámetros ISO 25178.
+Estadísticas de rugosidad areal.
 
 ```python
 from spmkit.core.analysis import roughness
 
 result = roughness.statistics(flat)
 
-result.sa      # rugosidad media aritmética
-result.sq      # rugosidad RMS
-result.sz      # altura máxima (Sp + Sv)
-result.sp      # altura máxima de picos
-result.sv      # profundidad máxima de valles
-result.ssk     # asimetría (skewness)
-result.sku     # curtosis (kurtosis)
+result.Sa      # rugosidad media aritmética
+result.Sq      # rugosidad RMS
+result.Sz      # altura máxima (Sp + |Sv|)
+result.Sp      # altura máxima de picos
+result.Sv      # profundidad máxima de valles (valor negativo)
+result.Ssk     # asimetría (skewness)
+result.Sku     # curtosis (kurtosis)
 result.unit    # unidad del canal ("m", "nm", …)
+result.n_points  # puntos finitos usados
 
 # Convertir a dict
 d = result.to_dict()
@@ -110,17 +125,49 @@ Potencial de contacto y función de trabajo.
 from spmkit.core.analysis import kpfm
 
 # Estadísticas básicas del canal CPD
-result = kpfm.statistics(data["CPD"])
+cpd_channel = data.select("CPD", direction="forward")
+result = kpfm.statistics(cpd_channel)
 
-result.mean_cpd       # CPD medio (V)
-result.std_cpd        # desviación estándar (V)
-result.min_cpd        # mínimo (V)
-result.max_cpd        # máximo (V)
+result.mean           # CPD medio
+result.std            # desviación estándar
+result.minimum        # mínimo
+result.maximum        # máximo
+result.contrast       # máximo - mínimo
+result.unit           # unidad del canal (debe ser V)
+result.work_function  # None: no se proporcionó la función de trabajo de la punta
 
 # Con función de trabajo de la punta (eV)
-result = kpfm.statistics(data["CPD"], tip_work_function=4.8)
+result = kpfm.statistics(cpd_channel, tip_work_function=4.7)
 result.work_function  # función de trabajo de la muestra (eV)
+result.work_function_unit  # "eV"
 ```
+
+La relación implementada es `phi_sample = phi_tip - mean(CPD)`. Sin
+`tip_work_function`, el resultado conserva `work_function=None`.
+
+---
+
+## Perfiles — `spmkit.core.analysis.profiles`
+
+```python
+from spmkit.core.analysis import profiles
+
+profile = profiles.line(
+    ch,
+    (0.5, 0.5),  # (columna, fila) inicial en píxeles
+    (5.5, 3.5),  # (columna, fila) final en píxeles
+    n=3,
+)
+
+profile.distance       # ndarray, distancia física
+profile.height         # ndarray, valores interpolados del canal
+profile.distance_unit  # "m"
+profile.unit           # unidad de altura del canal
+len(profile)           # número de muestras
+```
+
+Ambos extremos deben estar dentro de la imagen. `n=None` elige el número de muestras a
+partir de la longitud del segmento en píxeles.
 
 ---
 
@@ -239,7 +286,7 @@ from spmkit.core.viz import FigureSpec, save_figure
 
 spec = FigureSpec(
     title="Topografía AFM",
-    colormap="batlow",                    # colormaps Crameri
+    colormap="gold",                      # valor por defecto
     colorbar_label="Z-Axis (nm)",
 )
 
@@ -249,7 +296,7 @@ save_figure(flat, spec, "topografia.svg")
 save_figure(flat, spec, "topografia.pdf")
 ```
 
-**Colormaps disponibles** (Crameri perceptualmente uniformes):
+Además de `gold`, hay colormaps de matplotlib y Crameri cuando están instalados, por ejemplo:
 
 `batlow`, `tokyo`, `oslo`, `vik`, `davos`, `hawaii`, `lapaz`, `roma`, `turku`, `acton`
 
@@ -258,11 +305,16 @@ save_figure(flat, spec, "topografia.pdf")
 ## Exportación — `spmkit.core.export`
 
 ```python
+from spmkit.core.analysis import roughness
 from spmkit.core.export import to_csv, to_json, to_hdf5
 
 # Exportar resultados de rugosidad
+roughness_result = roughness.statistics(flat)
 to_csv(roughness_result, "roughness.csv")
 to_json(roughness_result, "roughness.json")
+
+# Exportar un perfil: distance[m],height[unidad]
+to_csv(profile, "profile.csv")
 
 # Exportar datos completos a HDF5
 to_hdf5(data, "scan.h5")

@@ -68,6 +68,9 @@ def test_e2e_force_flow(qtbot, synthetic_volume) -> None:  # type: ignore[no-unt
     assert mvm.result is not None  # el mapa de módulo se calculó (grilla definida)
     for key in ("force_canvas", "map_canvas", "smfs_canvas", "batch_table"):
         assert not ws.panel(key).errored
+    ws.close()
+    ws.deleteLater()
+    qtbot.wait(0)
 
 
 def test_e2e_image_flow(qtbot) -> None:  # type: ignore[no-untyped-def]
@@ -81,6 +84,9 @@ def test_e2e_image_flow(qtbot) -> None:  # type: ignore[no-untyped-def]
     assert ivm.roughness() is not None  # la rugosidad se computa sobre la topografía
     for key in ("image_canvas", "grains_canvas", "spectral_canvas"):
         assert not ws.panel(key).errored
+    ws.close()
+    ws.deleteLater()
+    qtbot.wait(0)
 
 
 def test_e2e_resonance_flow(qtbot) -> None:  # type: ignore[no-untyped-def]
@@ -93,3 +99,6 @@ def test_e2e_resonance_flow(qtbot) -> None:  # type: ignore[no-untyped-def]
     assert rvm.result is not None
     assert abs(rvm.result.peak.f0 - 72_800.0) < 500.0  # recupera f0 del pico sintético
     assert not ws.panel("resonance_canvas").errored
+    ws.close()
+    ws.deleteLater()
+    qtbot.wait(0)

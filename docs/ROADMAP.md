@@ -12,7 +12,8 @@
   (cono) → módulo de Young, adhesión.
 
 ### Formatos e interop
-- Lectura `.nid` (validada con archivos del lab), `.nhf` (HDF5), `.gwy`.
+- Lectura `.nid` (validada externamente), `.nhf` experimental (contrato HDF5
+  sintético) y `.gwy` (round-trip).
 - Escritura `.gwy` (round-trip con Gwyddion) + "Abrir en Gwyddion".
 - Exportación CSV / JSON / HDF5 / PNG / SVG / PDF.
 
@@ -45,7 +46,7 @@
 - [ ] FFT / análisis de PSD de rugosidad.
 
 ### Formatos
-- [ ] Validar `.nhf` con archivos reales (o delegar en NSFopen).
+- [ ] Validar `.nhf` con un oráculo externo y evaluar una integración futura con NSFopen.
 - [ ] Soporte de más formatos (Bruker, Asylum) vía AFMReader.
 
 ### Infra
@@ -56,7 +57,7 @@
 
 | Proyecto | Uso potencial |
 |----------|---------------|
-| [NSFopen](https://pypi.org/project/NSFopen/) | Lector `.nid`/`.nhf` validado (fallback) |
+| [NSFopen](https://pypi.org/project/NSFopen/) | Integración futura evaluable para `.nid`/`.nhf` |
 | [gwyfile](https://pypi.org/project/gwyfile/) | Interop `.gwy` (adoptado) |
 | [cmcrameri](https://github.com/callumrollo/cmcrameri) | Colormaps perceptuales (adoptado) |
 | [matplotlib-scalebar](https://pypi.org/project/matplotlib-scalebar/) | Barra de escala (adoptado) |

@@ -47,7 +47,7 @@ def _fmt_modulus(e: float, es: float) -> str:
 
 def _fmt_scaled(value: object, scale: float, unit: str, prec: str = ".3g") -> str:
     """Formatea un número escalado (p. ej. N→nN) o ``—`` si no es finito."""
-    if not isinstance(value, (int, float)) or not math.isfinite(float(value)):
+    if not isinstance(value, int | float) or not math.isfinite(float(value)):
         return _EMPTY
     return f"{float(value) * scale:{prec}} {unit}"
 
@@ -99,7 +99,7 @@ class InspectorPanel(Panel):
         )
         r2 = ctx.get("r_squared")
         self._values["r_squared"].setText(
-            f"{float(r2):.4f}" if isinstance(r2, (int, float)) and math.isfinite(r2) else _EMPTY
+            f"{float(r2):.4f}" if isinstance(r2, int | float) and math.isfinite(r2) else _EMPTY
         )
         self._values["contact"].setText(_fmt_scaled(ctx.get("contact_point"), 1e9, "nm"))
         self._values["adhesion"].setText(_fmt_scaled(ctx.get("adhesion"), 1e9, "nN"))

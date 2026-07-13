@@ -4,10 +4,10 @@ build-backend = "hatchling.build"
 
 [project]
 name = "spmkit"
-version = "0.1.2"
+version = "0.1.4"
 description = "Analizador open-source de datos AFM/KPFM para microscopía de sonda de barrido (SPM)"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.11,<3.13"
 license = { text = "MIT" }
 authors = [
     { name = "José Labarca", email = "jlabarca@usm.cl" },
@@ -34,7 +34,6 @@ dependencies = [
 [project.optional-dependencies]
 hdf5 = ["h5py>=3.8"]
 gwy = ["gwyfile>=0.3"]                       # interop con Gwyddion (.gwy)
-nanosurf = ["NSFopen>=2.2"]                  # lector .nhf validado (NanoSurf)
 afm = ["afmformats>=0.18"]                   # lectores de la cola larga (JPK QI, .ibw, HDF5, NT-MDT…)
 jpk = ["tifffile>=2023.7"]                    # curvas/mapas de fuerza JPK en formato TIFF
 grains = ["scipy>=1.10"]                     # detección de granos/partículas
@@ -52,12 +51,13 @@ dev = [
     "pytest-cov>=5.0",
     "ruff>=0.6",
     "mypy>=1.10",
+    "types-PyYAML>=6.0",
     "black>=24.0",
     "pre-commit>=3.7",
 ]
 test-gui = ["pytest-qt>=4.4"]  # tests de GUI (requiere también el extra 'gui')
 docs = ["mkdocs-material>=9.5"]
-all = ["spmkit[hdf5,gwy,nanosurf,afm,jpk,grains,viz,report,gui]"]
+all = ["spmkit[hdf5,gwy,afm,jpk,grains,viz,report,gui]"]
 
 [project.urls]
 Homepage = "https://github.com/kegouro/spmkit"
@@ -69,12 +69,15 @@ spmkit = "spmkit.cli.app:app"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/spmkit"]
+exclude = ["/src/spmkit/gui/legacy"]
 
 [tool.hatch.build.targets.sdist]
 # El sdist no necesita las imágenes de docs (banners/capturas ~4 MB); mantiene el texto.
 exclude = [
     "docs/images/",
     "/.github",
+    "/src/spmkit/gui/legacy",
+    "/.superpowers",
     "/reference",
     "/ui_preview",
     "/site",
@@ -110,6 +113,7 @@ target-version = ["py311"]
 # sigue siendo compatible con 3.11+ (lo garantiza ruff target-version py311).
 python_version = "3.12"
 packages = ["spmkit"]
+exclude = ["^src/spmkit/gui/legacy/"]
 ignore_missing_imports = true
 disallow_untyped_defs = true
 warn_unused_ignores = true

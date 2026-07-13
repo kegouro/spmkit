@@ -66,6 +66,29 @@ def test_jpk_tiff_conversion_exacta(tmp_path) -> None:
     np.testing.assert_allclose(ext.separation, raw_h[0] * m_h - raw_vd[0] * m_dm)
 
 
+def test_jpk_tiff_conserva_segmentos_con_tiff_frames(tmp_path, monkeypatch) -> None:
+    path = tmp_path / "curva_con_frames"
+    raw = np.array([[10, 20, 30, 40]], dtype=np.int32)
+    _write_synthetic_jpk_tiff(path, raw, raw, 1e-9, 1e-9, 1e-8)
+    tiff_file = tifffile.TiffFile
+
+    def abrir_con_frames(*args, **kwargs):
+        kwargs["_useframes"] = True
+        archivo = tiff_file(*args, **kwargs)
+        assert any(isinstance(page, tifffile.TiffFrame) for page in archivo.pages)
+        return archivo
+
+    monkeypatch.setattr(tifffile, "TiffFile", abrir_con_frames)
+
+    assert looks_like_jpk_tiff(path)
+    volume = load_jpk_tiff(path)
+    assert volume.n_curves == 1
+    assert [segment.segment_type for segment in volume.curve(0).segments] == [
+        "extend",
+        "retract",
+    ]
+
+
 def test_jpk_tiff_via_load_any(tmp_path) -> None:
     """``load_any`` reconoce el JPK-TIFF por contenido y devuelve un ForceVolume."""
     from spmkit.core.io.loadany import inspect_any, load_any

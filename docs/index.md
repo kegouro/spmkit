@@ -11,9 +11,13 @@
 
 ---
 
-spmkit lee formatos **NanoSurf** (`.nid`, `.nhf`) y **Gwyddion** (`.gwy`) y entrega análisis listo para publicar: rugosidad ISO 25178, perfiles interactivos, KPFM y nanomecánica, con una CLI y una GUI científica completa.
+spmkit lee imágenes **NanoSurf** (`.nid`), archivos **Gwyddion** (`.gwy`) y, de forma
+experimental, contenedores NanoSurf HDF5 (`.nhf`). Entrega estadísticas areales, perfiles,
+KPFM y nanomecánica mediante una API, una CLI y la GUI Fathom.
 
-Su lectura del `.nid` está **validada a precisión de máquina** contra Gwyddion.
+La lectura `.nid` está validada externamente a precisión de máquina contra exportaciones de
+Gwyddion. El soporte `.gwy` tiene pruebas de escritura y relectura (*round-trip*); `.nhf`
+mantiene un contrato probado con archivos sintéticos, pero continúa marcado como experimental.
 
 ![spmkit GUI](images/screenshot_viewer.png)
 
@@ -25,8 +29,8 @@ Su lectura del `.nid` está **validada a precisión de máquina** contra Gwyddio
 
 | Capacidad | Descripción |
 |-----------|-------------|
-| **Formatos** | Lee `.nid`, `.nhf`, `.gwy`; escribe `.gwy` (round-trip con Gwyddion) |
-| **Rugosidad** | ISO 25178 (Sa, Sq, Sz, Ssk, Sku) + nivelación (plano / polinomio / filas) |
+| **Formatos** | `.nid` validado externamente; `.gwy` con round-trip; `.nhf` experimental y contract-tested |
+| **Rugosidad** | Estadísticas areales (Sa, Sq, Sz, Sp, Sv, Ssk, Sku) + nivelación (plano / polinomio / filas) |
 | **Perfiles** | Perfiles de línea interactivos con interpolación bilineal |
 | **KPFM** | Potencial de contacto (CPD) y función de trabajo |
 | **Nanomecánica** | Hertz / Sneddon → módulo de Young, adhesión, mapas de módulo |
