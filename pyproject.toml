@@ -77,6 +77,7 @@ exclude = [
     "docs/images/",
     "/.github",
     "/src/spmkit/gui/legacy",
+    "/.superpowers",
     "/reference",
     "/ui_preview",
     "/site",

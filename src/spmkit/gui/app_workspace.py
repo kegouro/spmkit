@@ -181,9 +181,7 @@ def _save_project(ws: Workspace, vm: ForceViewModel, session: dict[str, Any]) ->
         try:
             files = [OpenFile.from_path(session["path"], session["kind"])]
         except OSError:
-            files = [
-                OpenFile(path=str(session["path"]), kind=session["kind"], sha256=None)
-            ]
+            files = [OpenFile(path=str(session["path"]), kind=session["kind"], sha256=None)]
             without_hash = True
     state = ProjectState(files=files, params=vm.params, perspective=ws.active_perspective)
     save_project(state, path)

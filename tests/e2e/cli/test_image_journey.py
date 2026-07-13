@@ -63,14 +63,10 @@ def test_real_gwy_cli_info_selection_and_analysis(real_gwy_path: Path, tmp_path:
     expected_roughness = roughness.statistics(
         leveling.plane_fit(data.select("Z-Axis", direction="forward"))
     )
-    expected_kpfm = kpfm.statistics(
-        data.select("CPD", direction="forward"), tip_work_function=4.7
-    )
+    expected_kpfm = kpfm.statistics(data.select("CPD", direction="forward"), tip_work_function=4.7)
     stem = real_gwy_path.stem
     roughness_csv = _csv_scalars(output_dir / f"{stem}_roughness.csv")
-    roughness_json = json.loads(
-        (output_dir / f"{stem}_roughness.json").read_text(encoding="utf-8")
-    )
+    roughness_json = json.loads((output_dir / f"{stem}_roughness.json").read_text(encoding="utf-8"))
     kpfm_csv = _csv_scalars(output_dir / f"{stem}_kpfm.csv")
     kpfm_json = json.loads((output_dir / f"{stem}_kpfm.json").read_text(encoding="utf-8"))
     assert roughness_csv["unit"] == roughness_json["unit"] == expected_roughness.unit
