@@ -2,7 +2,7 @@
 
 ## Requisitos
 
-- **Python ≥ 3.11**
+- **Python 3.11–3.12**
 - pip o [uv](https://github.com/astral-sh/uv)
 
 ---
@@ -32,10 +32,9 @@ Añade PyQt6, pyqtgraph y matplotlib (necesario para las 7 pestañas de la GUI).
 | `gui` | Interfaz gráfica (PyQt6 + pyqtgraph) |
 | `viz` | Figuras de publicación (matplotlib, cmcrameri, scale bar) |
 | `gwy` | Interoperabilidad con Gwyddion (`.gwy`) |
-| `hdf5` | Lectura / exportación HDF5 |
+| `hdf5` | Lectura experimental `.nhf` y exportación HDF5 (h5py) |
 | `grains` | Detección de granos y partículas (scipy) |
 | `report` | Reportes HTML/PDF (Jinja2) |
-| `nanosurf` | Lector `.nhf` validado (NSFopen) |
 
 Instalar varios extras:
 
@@ -66,7 +65,7 @@ spmkit --version
 Resultado esperado:
 
 ```
-spmkit 0.1.0
+spmkit 0.1.4
 ```
 
 ---

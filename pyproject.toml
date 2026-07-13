@@ -34,7 +34,6 @@ dependencies = [
 [project.optional-dependencies]
 hdf5 = ["h5py>=3.8"]
 gwy = ["gwyfile>=0.3"]                       # interop con Gwyddion (.gwy)
-nanosurf = ["NSFopen>=2.2"]                  # lector .nhf validado (NanoSurf)
 afm = ["afmformats>=0.18"]                   # lectores de la cola larga (JPK QI, .ibw, HDF5, NT-MDT…)
 jpk = ["tifffile>=2023.7"]                    # curvas/mapas de fuerza JPK en formato TIFF
 grains = ["scipy>=1.10"]                     # detección de granos/partículas
@@ -58,7 +57,7 @@ dev = [
 ]
 test-gui = ["pytest-qt>=4.4"]  # tests de GUI (requiere también el extra 'gui')
 docs = ["mkdocs-material>=9.5"]
-all = ["spmkit[hdf5,gwy,nanosurf,afm,jpk,grains,viz,report,gui]"]
+all = ["spmkit[hdf5,gwy,afm,jpk,grains,viz,report,gui]"]
 
 [project.urls]
 Homepage = "https://github.com/kegouro/spmkit"

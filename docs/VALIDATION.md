@@ -5,6 +5,18 @@ del instrumento de forma correcta, para dar confianza científica a los
 resultados. Las pruebas viven en `tests/validation/` y se ejecutan con
 `pytest tests/validation` (se omiten si no están los archivos del lab).
 
+## Alcance por formato
+
+| Formato | Evidencia disponible | Estado |
+|---------|----------------------|--------|
+| `.nid` | Comparación externa contra exportaciones de Gwyddion | Validado externamente |
+| `.gwy` | Escritura y relectura con igualdad de datos | Round-trip reproducible |
+| `.nhf` | Archivos HDF5 sintéticos que ejercitan el contrato público | Experimental |
+
+El lector `.nhf` conserva datos y atributos del esquema genérico que recibe,
+ignora datasets que no son 2D y reporta archivos ilegibles. Estas pruebas no
+constituyen validación contra un instrumento ni contra un oráculo externo.
+
 ## 1. Validación contra ground truth (Gwyddion)
 
 Se comparó la lectura del `.nid` (crudo del instrumento) contra el `.gwy`
