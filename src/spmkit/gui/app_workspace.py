@@ -256,7 +256,7 @@ def _suggested(name: str) -> str:
 
 def _scalar_results(ctx: dict) -> dict:
     """Filtra el contexto a valores serializables (descarta el objeto de ajuste)."""
-    return {k: v for k, v in ctx.items() if isinstance(v, (int, float, str, bool)) or v is None}
+    return {k: v for k, v in ctx.items() if isinstance(v, int | float | str | bool) or v is None}
 
 
 def _results_tsv(ctx: dict) -> str:
