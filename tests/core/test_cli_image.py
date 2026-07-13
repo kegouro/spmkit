@@ -7,6 +7,7 @@ from typing import Any
 
 import numpy as np
 import pytest
+from click import unstyle
 from typer.testing import CliRunner
 
 from spmkit.core.models import SPMChannel, SPMData
@@ -14,6 +15,10 @@ from spmkit.core.models import SPMChannel, SPMData
 cli_app = importlib.import_module("spmkit.cli.app")
 app = cli_app.app
 runner = CliRunner()
+
+
+def _compact_output(output: str) -> str:
+    return "".join(unstyle(output).replace("│", " ").split())
 
 
 def _channel(
@@ -59,9 +64,10 @@ def test_help_canales_incluye_selectores_y_gwy(command: str) -> None:
     result = runner.invoke(app, [command, "--help"])
 
     assert result.exit_code == 0, result.output
-    assert "--direction" in result.output
-    assert "--group" in result.output
-    assert ".gwy" in result.output
+    output = _compact_output(result.output)
+    assert "--direction" in output
+    assert "--group" in output
+    assert ".gwy" in output
 
 
 def test_help_level_muestra_choices_y_analyze_muestra_selectores_cpd() -> None:
@@ -69,9 +75,11 @@ def test_help_level_muestra_choices_y_analyze_muestra_selectores_cpd() -> None:
     analyze_help = runner.invoke(app, ["analyze", "--help"])
 
     assert roughness_help.exit_code == 0, roughness_help.output
-    assert all(choice in roughness_help.output for choice in ("plane", "poly", "rows", "none"))
-    assert "--cpd-direction" in analyze_help.output
-    assert "--cpd-group" in analyze_help.output
+    roughness_output = _compact_output(roughness_help.output)
+    analyze_output = _compact_output(analyze_help.output)
+    assert all(choice in roughness_output for choice in ("plane", "poly", "rows", "none"))
+    assert "--cpd-direction" in analyze_output
+    assert "--cpd-group" in analyze_output
 
 
 def test_info_muestra_grupo(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
@@ -83,7 +91,7 @@ def test_info_muestra_grupo(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> 
 
     assert result.exit_code == 0, result.output
     assert "Grupo" in result.output
-    assert "Scan 1" in result.output
+    assert "Scan1" in _compact_output(result.output)
 
 
 def test_level_invalido_se_rechaza_durante_parsing_con_choices(tmp_path: Path) -> None:
@@ -93,8 +101,9 @@ def test_level_invalido_se_rechaza_durante_parsing_con_choices(tmp_path: Path) -
     result = runner.invoke(app, ["roughness", str(source), "--level", "invalid"])
 
     assert result.exit_code == 2
-    assert "invalid" in result.output
-    assert all(choice in result.output for choice in ("plane", "poly", "rows", "none"))
+    output = _compact_output(result.output)
+    assert "invalid" in output
+    assert all(choice in output for choice in ("plane", "poly", "rows", "none"))
 
 
 def test_roughness_rows_usa_mediana(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
@@ -138,10 +147,10 @@ def test_roughness_ambigua_es_bad_parameter_accionable(
     result, selected = _invoke_roughness(monkeypatch, tmp_path, data)
 
     assert result.exit_code == 2
-    normalized_output = " ".join(result.output.replace("│", " ").split())
+    normalized_output = _compact_output(result.output)
     assert "ambigua" in normalized_output
-    assert "Scan 1" in normalized_output
-    assert "Scan 2" in normalized_output
+    assert "Scan1" in normalized_output
+    assert "Scan2" in normalized_output
     assert "--direction" in normalized_output
     assert "--group" in normalized_output
     assert selected == []
@@ -210,8 +219,9 @@ def test_analyze_rechaza_cpd_ambiguo_si_el_nombre_existe(
     )
 
     assert result.exit_code == 2
-    assert "ambigua" in result.output
-    assert "Scan 1" in result.output
-    assert "Scan 2" in result.output
-    assert "--cpd-direction" in result.output
-    assert "--cpd-group" in result.output
+    output = _compact_output(result.output)
+    assert "ambigua" in output
+    assert "Scan1" in output
+    assert "Scan2" in output
+    assert "--cpd-direction" in output
+    assert "--cpd-group" in output
