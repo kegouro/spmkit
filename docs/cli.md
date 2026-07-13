@@ -2,6 +2,8 @@
 
 spmkit expone una CLI construida con [Typer](https://typer.tiangolo.com/) y [Rich](https://github.com/Textualize/rich).
 
+Los comandos de imagen aceptan `.nid`, `.gwy` y `.nhf`; el lector `.nhf` es experimental.
+
 ```bash
 spmkit --help
 ```
@@ -29,7 +31,7 @@ spmkit info FILE
 
 | Argumento | Descripción |
 |-----------|-------------|
-| `FILE` | Ruta al archivo `.nid` o `.nhf` |
+| `FILE` | Ruta al archivo `.nid`, `.gwy` o `.nhf` experimental |
 
 **Ejemplo:**
 
@@ -41,21 +43,20 @@ Salida (tabla Rich):
 
 ```
           scan.nid  ·  formato nid
-┌──────────────────┬───────────┬───────────┬────────┬────────────────┐
-│ Canal            │ Dirección │ Forma     │ Unidad │ Tamaño X·Y     │
-├──────────────────┼───────────┼───────────┼────────┼────────────────┤
-│ Z-Axis           │ forward   │ 256×256   │ m      │ 5.00×5.00 µm   │
-│ Z-Axis           │ backward  │ 256×256   │ m      │ 5.00×5.00 µm   │
-│ Phase            │ forward   │ 256×256   │ °      │ 5.00×5.00 µm   │
-│ CPD              │ forward   │ 256×256   │ V      │ 5.00×5.00 µm   │
-└──────────────────┴───────────┴───────────┴────────┴────────────────┘
+┌────────┬───────────┬─────────────────────┬─────────┬────────┬────────────────┐
+│ Canal  │ Dirección │ Grupo               │ Forma   │ Unidad │ Tamaño X·Y     │
+├────────┼───────────┼─────────────────────┼─────────┼────────┼────────────────┤
+│ Z-Axis │ forward   │ Topography forward  │ 256×256 │ m      │ 5.00×5.00 µm   │
+│ Z-Axis │ backward  │ Topography backward │ 256×256 │ m      │ 5.00×5.00 µm   │
+│ CPD    │ forward   │ Potential forward   │ 256×256 │ V      │ 5.00×5.00 µm   │
+└────────┴───────────┴─────────────────────┴─────────┴────────┴────────────────┘
 ```
 
 ---
 
 ## `spmkit roughness`
 
-Calcula parámetros de rugosidad areal (ISO 25178).
+Calcula estadísticas de rugosidad areal sobre el canal seleccionado.
 
 ```bash
 spmkit roughness FILE [OPTIONS]
@@ -65,35 +66,60 @@ spmkit roughness FILE [OPTIONS]
 
 | Argumento | Descripción |
 |-----------|-------------|
-| `FILE` | Archivo `.nid` o `.nhf` |
+| `FILE` | Archivo `.nid`, `.gwy` o `.nhf` experimental |
 
 **Opciones:**
 
 | Opción | Por defecto | Descripción |
 |--------|-------------|-------------|
 | `--channel`, `-c` | `Z-Axis` | Canal a analizar |
-| `--level`, `-l` | `plane` | Nivelación: `plane` \| `poly` \| `none` |
+| `--direction` | — | Dirección del canal |
+| `--group` | — | Grupo del canal |
+| `--level`, `-l` | `plane` | Nivelación: `plane` \| `poly` \| `rows` \| `none` |
 
 **Ejemplo:**
 
 ```bash
-spmkit roughness scan.nid -c Z-Axis --level plane
+spmkit roughness scan.gwy -c Z-Axis --direction forward --level plane
 ```
 
-Salida:
+La tabla usa los nombres reales del resultado: `Sa`, `Sq`, `Sz`, `Sp`, `Sv`, `Ssk`, `Sku`,
+`unit` y `n_points`.
 
+Si el nombre identifica más de un canal, añade `--direction`; si la selección continúa
+ambigua, añade `--group`. Consulta ambos valores con `spmkit info FILE`.
+
+---
+
+## `spmkit profile`
+
+Extrae un perfil entre dos coordenadas `(X, Y)` de píxel y lo guarda como CSV.
+
+```bash
+spmkit profile FILE --x1 X --y1 Y [OPTIONS]
 ```
-   Rugosidad · Z-Axis (m)
-┌───────────┬──────────────┐
-│ Parámetro │        Valor │
-├───────────┼──────────────┤
-│ sa        │    2.388e-08 │
-│ sq        │    3.901e-08 │
-│ sz        │    2.205e-07 │
-│ ssk       │       2.4395 │
-│ sku       │       8.2629 │
-└───────────┴──────────────┘
+
+**Opciones:**
+
+| Opción | Por defecto | Descripción |
+|--------|-------------|-------------|
+| `--channel`, `-c` | `Z-Axis` | Canal a analizar |
+| `--direction` | — | Dirección del canal |
+| `--group` | — | Grupo del canal |
+| `--x0`, `--y0` | `0.0`, `0.0` | Punto inicial en píxeles |
+| `--x1`, `--y1` | requeridos | Punto final en píxeles |
+| `--n` | auto | Número de muestras |
+| `--level`, `-l` | `plane` | `plane` \| `poly` \| `rows` \| `none` |
+| `--output`, `-o` | `profile.csv` | CSV de salida |
+
+```bash
+spmkit profile scan.gwy --direction forward \
+  --x0 0.5 --y0 0.5 --x1 5.5 --y1 3.5 --n 3 \
+  --level none --output profile.csv
 ```
+
+Los extremos deben quedar dentro de la imagen. El encabezado del archivo es
+`distance[m],height[unidad]`, donde `unidad` es la unidad física del canal.
 
 ---
 
@@ -111,14 +137,20 @@ spmkit analyze FILE [OPTIONS]
 |--------|-------------|-------------|
 | `--output`, `-o` | `./results` | Carpeta de salida |
 | `--channel`, `-c` | `Z-Axis` | Canal de topografía |
+| `--direction` | — | Dirección del canal de topografía |
+| `--group` | — | Grupo del canal de topografía |
 | `--cpd-channel` | `CPD` | Canal KPFM |
-| `--level`, `-l` | `plane` | Nivelación |
+| `--cpd-direction` | — | Dirección del canal CPD |
+| `--cpd-group` | — | Grupo del canal CPD |
+| `--level`, `-l` | `plane` | `plane` \| `poly` \| `rows` \| `none` |
 | `--tip-wf` | — | Función de trabajo de la punta (eV) |
 
 **Ejemplo:**
 
 ```bash
-spmkit analyze scan.nid --output ./out --tip-wf 4.8
+spmkit analyze scan.gwy --output ./out \
+  --channel Z-Axis --direction forward \
+  --cpd-channel CPD --cpd-direction forward --tip-wf 4.7
 ```
 
 Genera:
@@ -210,7 +242,7 @@ spmkit batch FOLDER [OPTIONS]
 
 | Argumento | Descripción |
 |-----------|-------------|
-| `FOLDER` | Carpeta con archivos `.nid`, `.nhf` o `.gwy` |
+| `FOLDER` | Carpeta con `.nid`, `.gwy` o `.nhf` experimental |
 
 **Opciones:**
 
@@ -240,14 +272,16 @@ spmkit figure FILE [OPTIONS]
 | Opción | Por defecto | Descripción |
 |--------|-------------|-------------|
 | `--channel`, `-c` | `Z-Axis` | Canal a visualizar |
+| `--direction` | — | Dirección del canal |
+| `--group` | — | Grupo del canal |
 | `--output`, `-o` | `figure.png` | Archivo de salida (`.png`, `.svg`, `.pdf`) |
-| `--colormap` | `batlow` | Colormap (colormaps Crameri disponibles) |
+| `--colormap` | `gold` | Colormap |
 | `--title` | (nombre del canal) | Título de la figura |
 
 **Ejemplo:**
 
 ```bash
-spmkit figure scan.nid -c Z-Axis -o topografia.svg --colormap tokyo
+spmkit figure scan.gwy -c Z-Axis --direction forward -o topografia.svg
 ```
 
 ---
@@ -318,11 +352,13 @@ spmkit psd FILE [OPTIONS]
 | Opción | Por defecto | Descripción |
 |--------|-------------|-------------|
 | `--channel`, `-c` | `Z-Axis` | Canal a analizar |
+| `--direction` | — | Dirección del canal |
+| `--group` | — | Grupo del canal |
 
 **Ejemplo:**
 
 ```bash
-spmkit psd scan.nid -c Z-Axis
+spmkit psd scan.gwy -c Z-Axis --direction forward
 ```
 
 Salida:
@@ -347,8 +383,10 @@ Salida:
 Lanza la interfaz gráfica (requiere el extra `gui`).
 
 ```bash
-spmkit gui
+spmkit gui [FILE]
 ```
+
+`FILE` es opcional; cuando se indica, Fathom intenta abrirlo al arrancar.
 
 !!! tip
     Si ves `ImportError`, instala el extra: `pip install "spmkit[gui]"`
