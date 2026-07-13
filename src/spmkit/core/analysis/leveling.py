@@ -22,8 +22,10 @@ def _image_data(channel: SPMChannel) -> np.ndarray:
 def _fit_coefficients(a_mat: np.ndarray, z: np.ndarray) -> np.ndarray:
     finite = np.isfinite(z).ravel()
     fit_matrix = a_mat[finite]
-    if fit_matrix.shape[0] < a_mat.shape[1] or np.linalg.matrix_rank(fit_matrix) < a_mat.shape[1]:
-        raise ValueError("Puntos finitos independientes o rango insuficiente para el ajuste")
+    if fit_matrix.shape[0] < a_mat.shape[1]:
+        raise ValueError("Puntos finitos insuficientes para el ajuste")
+    if np.linalg.matrix_rank(fit_matrix) < a_mat.shape[1]:
+        raise ValueError("Rango insuficiente de puntos finitos para el ajuste")
     coeffs, *_ = np.linalg.lstsq(fit_matrix, z.ravel()[finite], rcond=None)
     return coeffs
 
@@ -51,9 +53,11 @@ def polynomial(channel: SPMChannel, order: int = 2) -> SPMChannel:
         raise ValueError("order debe ser >= 1")
     z = _image_data(channel)
     rows, cols = z.shape
-    yy, xx = np.mgrid[0:rows, 0:cols]
-    x = xx.ravel().astype(np.float64)
-    y = yy.ravel().astype(np.float64)
+    y_axis = np.linspace(-1.0, 1.0, rows)
+    x_axis = np.linspace(-1.0, 1.0, cols)
+    yy, xx = np.meshgrid(y_axis, x_axis, indexing="ij")
+    x = xx.ravel()
+    y = yy.ravel()
     terms = [(x**i) * (y**j) for i in range(order + 1) for j in range(order + 1 - i)]
     a_mat = np.column_stack(terms)
     coeffs = _fit_coefficients(a_mat, z)

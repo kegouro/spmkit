@@ -74,6 +74,14 @@ def test_polynomial_ignores_nan_and_preserves_mask() -> None:
     assert np.array_equal(ch.data, original, equal_nan=True)
 
 
+def test_polynomial_avoids_false_rank_loss_on_large_coordinates() -> None:
+    ch = SPMChannel(name="Z", data=np.zeros((32, 32)), unit="m", x_range=1e-6, y_range=1e-6)
+
+    leveled = leveling.polynomial(ch, order=8)
+
+    assert np.array_equal(leveled.data, np.zeros((32, 32)))
+
+
 @pytest.mark.parametrize("operation", [leveling.plane_fit, leveling.polynomial])
 def test_surface_fit_requires_image_of_at_least_two_by_two(
     operation: Callable[[SPMChannel], SPMChannel],
@@ -97,10 +105,26 @@ def test_plane_fit_requires_enough_independent_finite_points() -> None:
         leveling.plane_fit(ch)
 
 
+def test_plane_fit_rejects_collinear_finite_points_by_rank() -> None:
+    data = np.full((3, 3), np.nan)
+    np.fill_diagonal(data, [1.0, 2.0, 3.0])
+    ch = SPMChannel(name="Z", data=data, unit="m", x_range=1e-6, y_range=1e-6)
+
+    with pytest.raises(ValueError, match="(?i)rango insuficiente"):
+        leveling.plane_fit(ch)
+
+
 def test_polynomial_requires_enough_independent_finite_points() -> None:
     ch = SPMChannel(name="Z", data=np.ones((2, 2)), unit="m", x_range=1e-6, y_range=1e-6)
 
     with pytest.raises(ValueError, match="(?i)puntos finitos"):
+        leveling.polynomial(ch, order=2)
+
+
+def test_polynomial_rejects_dependent_basis_by_rank() -> None:
+    ch = SPMChannel(name="Z", data=np.ones((2, 3)), unit="m", x_range=1e-6, y_range=1e-6)
+
+    with pytest.raises(ValueError, match="(?i)rango insuficiente"):
         leveling.polynomial(ch, order=2)
 
 
