@@ -69,12 +69,14 @@ spmkit = "spmkit.cli.app:app"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/spmkit"]
+exclude = ["/src/spmkit/gui/legacy"]
 
 [tool.hatch.build.targets.sdist]
 # El sdist no necesita las imágenes de docs (banners/capturas ~4 MB); mantiene el texto.
 exclude = [
     "docs/images/",
     "/.github",
+    "/src/spmkit/gui/legacy",
     "/reference",
     "/ui_preview",
     "/site",
