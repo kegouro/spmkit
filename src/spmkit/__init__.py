@@ -9,8 +9,13 @@ API de conveniencia de nivel superior::
 Para el análisis usa los submódulos de :mod:`spmkit.core.analysis`.
 """
 
+from importlib.metadata import PackageNotFoundError, version
+
 from spmkit.core import SPMChannel, SPMData, load
 
-__version__ = "0.1.2"
+try:
+    __version__ = version("spmkit")
+except PackageNotFoundError:
+    __version__ = "0+unknown"
 
 __all__ = ["load", "SPMData", "SPMChannel", "__version__"]

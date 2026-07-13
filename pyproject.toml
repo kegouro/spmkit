@@ -4,10 +4,10 @@ build-backend = "hatchling.build"
 
 [project]
 name = "spmkit"
-version = "0.1.2"
+version = "0.1.4"
 description = "Analizador open-source de datos AFM/KPFM para microscopía de sonda de barrido (SPM)"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.11,<3.13"
 license = { text = "MIT" }
 authors = [
     { name = "José Labarca", email = "jlabarca@usm.cl" },
