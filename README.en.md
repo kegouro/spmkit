@@ -180,6 +180,8 @@ Heavy dependencies are **optional extras**, keeping the base engine light:
 | `report` | HTML/PDF reports (`jinja2` + `viz`). |
 | `viz` | Publication figures (`matplotlib`, `cmcrameri`, scalebars). |
 
+[User Guide](docs/user-guide.md) · [Printable PDF](docs/user-guide.pdf)
+
 ---
 
 ## Quick start

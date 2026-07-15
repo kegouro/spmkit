@@ -180,6 +180,8 @@ Las dependencias pesadas son **extras opcionales**, de modo que el motor base qu
 | `report` | Reportes HTML/PDF (`jinja2` + `viz`). |
 | `viz` | Figuras de publicación (`matplotlib`, `cmcrameri`, *scalebars*). |
 
+[Guía de usuario](docs/user-guide.md) · [PDF imprimible](docs/user-guide.pdf)
+
 ---
 
 ## Inicio rápido
