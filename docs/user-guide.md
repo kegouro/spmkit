@@ -23,8 +23,7 @@ produces publication‑ready results: roughness parameters, line profiles, KPFM 
 statistics, nanomechanical property maps, thermal‑tune cantilever calibration, grain detection,
 spectral analysis, and single‑molecule force spectroscopy.
 
-SPM‑Kit was developed at the **SPM Lab of Universidad Técnica Federico Santa María (UTFSM)**
-and is released under the MIT license.
+SPM‑Kit was developed independently by physics students at **Universidad Técnica Federico Santa María (UTFSM)**, informed by practical work with AFM/SPM data, and is released under the MIT license.
 
 ### 1.2 What is Fathom?
 
@@ -542,7 +541,7 @@ fluid damping, or real cantilever geometry.
 **Example data:** Synthetic data can be generated with:
 ```python
 import numpy as np
-# ponytail: synthetic roughness demo
+# synthetic roughness demo
 x = np.linspace(0, 5e-6, 256)
 X, Y = np.meshgrid(x, x)
 noise = np.random.normal(0, 1e-8, (256, 256))
@@ -563,8 +562,8 @@ Always report these alongside roughness values.
 ```bash
 spmkit forcecurve sample.jpk-force --model dmt --tip-radius 2e-8
 ```
+**Output** *(illustrative values; actual results depend on input data)***:**
 
-**Output:**
 ```
           Force Curve Fit · curve 0 · dmt
 ┌───────────────────────┬───────────────────────┐
