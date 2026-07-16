@@ -30,21 +30,34 @@ if _HAS_GUI:
 
     @pytest.fixture(autouse=True)
     def _flush_qt():  # type: ignore[no-untyped-def]
-        """Purga los widgets pendientes (deleteLater) entre tests.
-
-        Evita el segfault por acumulación de recursos nativos al correr muchos tests
-        de GUI pesados en un mismo proceso (cada uno crea un Workspace completo).
-        """
+        """Flush deferred Qt deletions safely between GUI tests."""
         yield
-        from PyQt6.QtWidgets import QApplication
 
-        app = QApplication.instance()
-        if app is not None:
-            app.processEvents()
-            app.sendPostedEvents(None, 0)  # ejecuta los deleteLater encolados
+        import gc
+
+        import pyqtgraph as pg
+        from PyQt6.QtCore import QCoreApplication, QEvent
+
+        app = QCoreApplication.instance()
+        if app is None:
+            return
+
+        # Keep active ViewBox wrappers alive while Qt processes native deletion.
+        held_viewboxes = list(pg.ViewBox.AllViews.keys())
+
         gc.collect()
-        if app is not None:
-            app.processEvents()
+        QCoreApplication.sendPostedEvents(
+            None,
+            QEvent.Type.DeferredDelete,
+        )
+
+        gc.collect()
+        QCoreApplication.sendPostedEvents(
+            None,
+            QEvent.Type.DeferredDelete,
+        )
+
+        # References are released naturally when the fixture finalizer returns.
 
 
 def _hertz_curve(
