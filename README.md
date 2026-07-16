@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/images/brand/banner.png" alt="SPM-Kit · Fathom" width="100%">
+<img src="docs/images/brand/spmkit_banner_final.png" alt="SPM-Kit" width="100%">
 
 # SPM-Kit · Fathom
 
@@ -20,6 +20,8 @@
 
 [Sinopsis](#sinopsis) · [Características](#características) · [Perspectivas](#galería-de-perspectivas) · [Instalación](#instalación) · [Tutoriales](#tutoriales) · [Arquitectura](#arquitectura) · [Extender](#extensibilidad) · [Validación](#validación-científica)
 
+<img src="docs/images/brand/fathom_banner_final.png" alt="Fathom Workspace" width="100%">
+<br><br>
 <img src="docs/images/fathom_tour.gif" alt="Recorrido por las perspectivas de Fathom" width="90%">
 
 <sub>Fathom analiza por <b>perspectivas</b>: se cambia de tarea, no de pestaña. Todos los datos mostrados aquí son <b>sintéticos y reproducibles</b> (<a href="scripts/gen_docs_media.py"><code>scripts/gen_docs_media.py</code></a>).</sub>
