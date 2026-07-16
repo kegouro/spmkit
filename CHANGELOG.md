@@ -6,6 +6,29 @@ el versionado es [SemVer](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [0.1.5] - 2026-07-16
+
+### Añadido
+- **Verificación automática de versión**: se añadió
+  `tests/test_version_consistency.py` para comprobar que `pyproject.toml`,
+  `spmkit.__version__` y `CITATION.cff` declaren la misma versión activa.
+
+### Corregido
+- **Metadatos de publicación sincronizados**: la versión activa del paquete,
+  la distribución y los metadatos de citación se normalizaron a `0.1.5`,
+  corrigiendo la discrepancia heredada de la publicación `0.1.4` sin modificar
+  su tag histórico.
+- **Estabilidad de las pruebas GUI**: el teardown conserva temporalmente los
+  wrappers de `pyqtgraph.ViewBox` mientras Qt procesa eliminaciones diferidas,
+  evitando fallos nativos durante ejecuciones acumuladas de la suite GUI. Este
+  cambio afecta exclusivamente al arnés de pruebas, no al comportamiento de
+  Fathom en producción.
+
+### Mantenimiento
+- El tag histórico `v0.1.4` permanece intacto; la corrección de sus metadatos
+  se publica de forma progresiva como `v0.1.5`.
+
+
 ### Documentación — Guía de extensión y guía de usuario Fathom (F5 del roadmap)
 - **Nueva guía "Extender spmkit y Fathom"** (`docs/extending.md`): los tres puntos de
   extensión (formatos/análisis por `spmkit.plugins.v1`, perspectivas/paneles por `ModuleSpec`

@@ -19,8 +19,8 @@ keywords:
   - data analysis
   - materials science
   - Python
-version: 0.1.4
-date-released: "2026-07-11"
+version: 0.1.5
+date-released: "2026-07-16"
 identifiers:
   - type: doi
     value: "10.5281/zenodo.21303280"

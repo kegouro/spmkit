@@ -11,6 +11,6 @@ Para el análisis usa los submódulos de :mod:`spmkit.core.analysis`.
 
 from spmkit.core import SPMChannel, SPMData, load
 
-__version__ = "0.1.2"
+__version__ = "0.1.5"
 
 __all__ = ["load", "SPMData", "SPMChannel", "__version__"]
