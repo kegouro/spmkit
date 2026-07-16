@@ -8,12 +8,14 @@ from pathlib import Path
 from spmkit.core.io.gwy import load_gwy
 from spmkit.core.io.nhf import load_nhf
 from spmkit.core.io.nid import load_nid
+from spmkit.core.io.npz import load_npz
 from spmkit.core.models import SPMData
 
 _PARSERS: dict[str, Callable[[str | Path], SPMData]] = {
     ".nid": load_nid,
     ".nhf": load_nhf,
     ".gwy": load_gwy,
+    ".npz": load_npz,
 }
 
 
