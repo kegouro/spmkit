@@ -15,7 +15,7 @@ from rich.table import Table
 
 from spmkit import __version__, load
 from spmkit.core.analysis import kpfm, leveling, profiles, roughness, spectral
-from spmkit.core.export import to_csv, to_json
+from spmkit.core.export import RunManifest, to_csv, to_json
 from spmkit.core.models import SPMChannel, SPMData
 from spmkit.core.verify import trace_nid
 
@@ -187,6 +187,10 @@ def analyze(
     ),
 ) -> None:
     """Pipeline completo: rugosidad (+ KPFM si hay canal) → CSV + JSON."""
+    import json
+    import time
+
+    start_time = time.perf_counter()
     data = load(file)
     output.mkdir(parents=True, exist_ok=True)
     stem = file.stem
@@ -200,6 +204,9 @@ def analyze(
     to_json(rough, output / f"{stem}_roughness.json")
     console.print(f"[green]✓[/] Rugosidad → {output / (stem + '_roughness.csv')}")
 
+    results_produced = ["roughness"]
+    warnings = []
+
     if cpd_channel in data.names:
         cpd_ch = _select_channel(
             data,
@@ -212,8 +219,39 @@ def analyze(
         to_csv(cpd, output / f"{stem}_kpfm.csv")
         to_json(cpd, output / f"{stem}_kpfm.json")
         console.print(f"[green]✓[/] KPFM → {output / (stem + '_kpfm.csv')}")
+        results_produced.append("kpfm")
     else:
         console.print(f"[yellow]·[/] Sin canal CPD ({cpd_channel!r}); se omite KPFM.")
+        warnings.append(f"Sin canal CPD ({cpd_channel!r}); se omite KPFM.")
+
+    duration = time.perf_counter() - start_time
+
+    args_dict = {
+        "channel": channel,
+        "cpd_channel": cpd_channel,
+        "level": level,
+        "tip_work_function": tip_work_function,
+    }
+
+    try:
+        manifest = RunManifest.create(
+            input_path=file,
+            command="analyze",
+            args=args_dict,
+            channel=channel,
+            leveling_method=level,
+            units=ch.unit,
+            results_produced=results_produced,
+            warnings=warnings,
+            status="OK",
+            duration_seconds=duration,
+        )
+        manifest_path = output / f"{stem}_run_manifest.json"
+        with manifest_path.open("w", encoding="utf-8") as f:
+            json.dump(manifest.to_dict(), f, indent=2, ensure_ascii=False)
+        console.print(f"[green]✓[/] Manifiesto → {manifest_path}")
+    except Exception as e:
+        console.print(f"[red]Error al generar manifiesto:[/] {e}")
 
 
 @app.command()

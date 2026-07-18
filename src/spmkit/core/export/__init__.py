@@ -1,5 +1,6 @@
 """Exportación de datos y resultados a formatos abiertos."""
 
+from spmkit.core.export.manifest import RunManifest
 from spmkit.core.export.writers import export_curve, export_volume, to_csv, to_hdf5, to_json
 
-__all__ = ["to_csv", "to_hdf5", "to_json", "export_volume", "export_curve"]
+__all__ = ["to_csv", "to_hdf5", "to_json", "export_volume", "export_curve", "RunManifest"]
