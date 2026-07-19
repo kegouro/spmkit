@@ -6,6 +6,12 @@ el versionado es [SemVer](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+### Validación — hito Nanoscope SPM v0.1
+- Soporte nativo limitado para imágenes Nanoscope III `.spm`, documentado con seis
+  archivos demostrados frente a Gwyddion 2.71. El alcance permanece **parcial** y
+  `LEVEL 2 NUMERICALLY_VERIFIED`; la confirmación externa prerregistrada no es un
+  blind holdout por `ACCIDENTAL_PRE_FREEZE_UNBLINDING`.
+
 ### Documentación — Guía de extensión y guía de usuario Fathom (F5 del roadmap)
 - **Nueva guía "Extender spmkit y Fathom"** (`docs/extending.md`): los tres puntos de
   extensión (formatos/análisis por `spmkit.plugins.v1`, perspectivas/paneles por `ModuleSpec`

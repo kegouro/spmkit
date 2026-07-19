@@ -47,6 +47,7 @@
 - [Extensibilidad](#extensibilidad)
 - [Validación científica](#validación-científica)
 - [Desarrollo y calidad](#desarrollo-y-calidad)
+- [Agradecimientos](#agradecimientos)
 - [Reproducir los medios](#reproducir-los-medios-de-este-readme)
 - [Citar](#citar)
 
@@ -416,7 +417,7 @@ flowchart LR
 | `.nid` | NanoSurf clásico | Lectura validada a **precisión de máquina** contra Gwyddion; imagen y espectroscopía. |
 | `.gwy` | Gwyddion | Lectura y escritura nativa. |
 | `.nhf` | NanoSurf HDF5 | Lectura (experimental). |
-| `.spm` / `.00N` | Bruker / Nanoscope | Imagen — **experimental**, escalado sin validar; reimplementado citando [AFMReader](https://github.com/AFM-SPM/AFMReader) y [TopoStats](https://github.com/AFM-SPM/TopoStats). |
+| `.spm` / `.00N` | Bruker / Nanoscope | Imagen Nanoscope III `.spm` — soporte **parcial**; seis archivos demostrados contra Gwyddion 2.71 a precisión de matriz. `.00N` no fue evaluado en este hito. |
 | `.jpk-force` / `.jpk-qi` | JPK Instruments | Curvas y mapas de fuerza (extra `afm`). |
 | JPK-TIFF | JPK (exportación TIFF) | Curvas de fuerza detectadas **por contenido** (extra `jpk`). |
 | `.ibw`, HDF5, NT-MDT… | Varios | Cola larga vía `afmformats` (extra `afm`). |
@@ -490,6 +491,18 @@ La rigurosidad es el pilar del proyecto. Cada modelo físico pasa un ***gate* de
 
 Además del *round-trip* de formatos (correlación de **precisión de máquina** contra Gwyddion), el lector `.nid` incluye **trazabilidad byte a byte** (`spmkit verify`). La integración continua ejecuta **más de 460 pruebas** de núcleo, validación y GUI (esta última *offscreen*) en Python 3.11 y 3.12.
 
+### Hito Nanoscope SPM v0.1
+
+El lector nativo limitado para Nanoscope III `.spm` reprodujo contra Gwyddion 2.71
+las matrices de seis archivos experimentales demostrados (cuatro `DEVELOPMENT` y
+dos `EXTERNAL_CONFIRMATION`) con delta máximo y RMS de píxel de `0.0 nm`. Las
+comparaciones Sa/Sq/Sz fueron 12/12 y 6/6 dentro de la tolerancia congelada. Es
+evidencia `LEVEL 2 NUMERICALLY_VERIFIED` para este alcance limitado, no soporte
+universal del formato ni validación física. La confirmación Lancaster fue
+prerregistrada pero no ciega por `ACCIDENTAL_PRE_FREEZE_UNBLINDING`; no hay un
+blind holdout. Véase la [auditoría final](../spmkit-validation/docs/campaigns/nanoscope_spm_parser_pilot_v0.1_audit.md)
+en el repositorio hermano `spmkit-validation`.
+
 ---
 
 ## Desarrollo y calidad
@@ -503,6 +516,11 @@ make gui        # lanza Fathom
 - **Tipos**: `mypy` estricto sobre `core` (`disallow_untyped_defs`). **Estilo**: `black` y `ruff` a 100 columnas.
 - **Pruebas**: `tests/core/` (unitarias), `tests/validation/` (trazabilidad científica), `tests/gui/` (offscreen, requieren los extras `gui` + `test-gui`).
 - **Convención**: todo análisis numérico vive en `src/spmkit/core/`; `cli/` y `gui/` solo lo invocan. Ver [`CLAUDE.md`](CLAUDE.md) y [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
+## Agradecimientos
+
+María Saavedra Fredes y Benjamin Schleyer ayudaron a localizar y compartir
+datasets candidatos para la campaña de validación.
 
 ### Reproducir los medios de este README
 
