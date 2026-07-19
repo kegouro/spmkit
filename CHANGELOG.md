@@ -6,6 +6,9 @@ el versionado es [SemVer](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+### Changed
+- Sincronizada la metadata de desarrollo en `0.1.5.dev0`; la cita conserva la última release publicada.
+
 ### Validación — hito Nanoscope SPM v0.1
 - Soporte nativo limitado para imágenes Nanoscope III `.spm`, documentado con seis
   archivos demostrados frente a Gwyddion 2.71. El alcance permanece **parcial** y

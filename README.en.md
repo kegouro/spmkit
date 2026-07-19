@@ -45,6 +45,7 @@
 - [Extensibility](#extensibility)
 - [Scientific validation](#scientific-validation)
 - [Development and quality](#development-and-quality)
+- [Acknowledgements](#acknowledgements)
 - [Reproduce the media](#reproduce-this-readmes-media)
 - [Cite](#cite)
 
@@ -54,14 +55,14 @@
 
 ## Overview
 
-**SPM-Kit** is a rigorous, open-source (MIT) toolkit to decode, analyze, and visualize scanning-probe-microscopy data —**AFM, KPFM, and force spectroscopy**— developed at the **SPM Lab** of Universidad Técnica Federico Santa María (UTFSM). It starts from a simple premise: scientific analysis must be **traceable, reproducible, and honest**, free of proprietary software and black boxes.
+**SPM-Kit** is a rigorous, open-source (MIT) toolkit to decode, analyze, and visualize scanning-probe-microscopy data —**AFM, KPFM, and force spectroscopy**— independently developed by José Labarca Baeza in the academic context of the SPM Lab at Universidad Técnica Federico Santa María (UTFSM). It starts from a simple premise: scientific analysis must be **traceable, reproducible, and honest**, free of proprietary software and black boxes.
 
 It is organized in two layers with a strict boundary between them:
 
 | Layer | Role | Install |
 |-------|------|---------|
 | **`spmkit.core`** | The pure **numerical engine**, no GUI: format readers, validated analysis, export. Python + NumPy; heavy dependencies optional. | `pip install spmkit` |
-| **Fathom** | The interactive **workspace** (PyQt6) built on that engine, meant to **replace** proprietary tools such as Nanosurf ANA and JPK Data Processing in day-to-day research. | `pip install "spmkit[gui]"` |
+| **Fathom** | The interactive **workspace** (PyQt6) built on that engine, designed as an open alternative for workflows commonly performed with Nanosurf ANA and JPK Data Processing. | `pip install "spmkit[gui]"` |
 
 That separation is not cosmetic: **`core/` imports no GUI layer**, and an architecture test enforces it. All analysis is scriptable, runs headless on a server or cluster, and the GUI is a transparent control panel onto the same code.
 
@@ -414,7 +415,7 @@ flowchart LR
 | `.nid` | Classic NanoSurf | Read validated to **machine precision** against Gwyddion; image and spectroscopy. |
 | `.gwy` | Gwyddion | Native read and write. |
 | `.nhf` | NanoSurf HDF5 | Read (experimental). |
-| `.spm` / `.00N` | Bruker / Nanoscope | Image — **experimental**, unvalidated scaling; reimplemented citing [AFMReader](https://github.com/AFM-SPM/AFMReader) and [TopoStats](https://github.com/AFM-SPM/TopoStats). |
+| `.spm` / `.00N` | Bruker / Nanoscope | Limited native Nanoscope III `.spm` image support; six demonstrated experimental files with matrix-precision agreement against Gwyddion 2.71. Support remains **partial**; `.00N` was unassessed in this milestone. |
 | `.jpk-force` / `.jpk-qi` | JPK Instruments | Force curves and maps (extra `afm`). |
 | JPK-TIFF | JPK (TIFF export) | Force curves detected **by content** (extra `jpk`). |
 | `.ibw`, HDF5, NT-MDT… | Various | Long tail via `afmformats` (extra `afm`). |
@@ -488,6 +489,10 @@ Rigor is the backbone of the project. Every physical model passes a **numerical 
 
 Beyond the format round-trip (**machine-precision** correlation against Gwyddion), the `.nid` reader includes **byte-level traceability** (`spmkit verify`). Continuous integration runs **over 460 tests** of core, validation, and GUI (the latter offscreen) on Python 3.11 and 3.12.
 
+### Nanoscope SPM v0.1 milestone
+
+The limited native Nanoscope III `.spm` reader reproduced the matrices of six demonstrated experimental files against Gwyddion 2.71 (four `DEVELOPMENT` and two `EXTERNAL_CONFIRMATION`) with maximum and RMS pixel deltas of `0.0 nm`. Sa/Sq/Sz comparisons were 12/12 and 6/6 within the frozen tolerance. This is `LEVEL 2 NUMERICALLY_VERIFIED` evidence for this limited scope, not universal format support or physical validation. The Lancaster confirmation was preregistered but non-blind because `ACCIDENTAL_PRE_FREEZE_UNBLINDING` exposed metrics before implementation; there is no blind holdout. See the [public audit](https://github.com/kegouro/spmkit-validation/blob/main/docs/campaigns/nanoscope_spm_parser_pilot_v0.1_audit.md).
+
 ---
 
 ## Development and quality
@@ -501,6 +506,10 @@ make gui        # launch Fathom
 - **Types**: `mypy` strict on `core` (`disallow_untyped_defs`). **Style**: `black` and `ruff` at 100 columns.
 - **Tests**: `tests/core/` (unit), `tests/validation/` (scientific traceability), `tests/gui/` (offscreen, need the `gui` + `test-gui` extras).
 - **Convention**: all numerical analysis lives in `src/spmkit/core/`; `cli/` and `gui/` only invoke it. See [`CLAUDE.md`](CLAUDE.md) and [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
+## Acknowledgements
+
+María Saavedra Fredes and Benjamin Schleyer helped locate and share candidate datasets for the validation campaign.
 
 ### Reproduce this README's media
 
@@ -523,6 +532,6 @@ If you use SPM-Kit or Fathom in a publication, cite it per [`CITATION.cff`](CITA
 
 <sub>Structured under the <b><a href="https://kegouro.github.io">Pharos Project</a></b> — scientific infrastructure without computational barriers.</sub>
 <br>
-<sub>José Labarca Baeza · Prof. Tomás Corrales · SPM Lab, UTFSM · MIT License © 2026</sub>
+<sub>José Labarca Baeza · Independent project in the context of the SPM Lab, UTFSM · MIT License © 2026</sub>
 
 </div>
