@@ -39,7 +39,7 @@ def load_npz(path: str | Path) -> SPMData:
                 else str(data["model_name"])
             )
             # SPM-Kit prefiere "Z-Axis" como canal primario para
-            # que los comandos por defecto lo encuentren, o bien el model name. 
+            # que los comandos por defecto lo encuentren, o bien el model name.
             # Lo forzaremos a "Z-Axis" y pasaremos model_name en metadata.
 
     # Crear un único canal simulando la topografía
@@ -51,7 +51,7 @@ def load_npz(path: str | Path) -> SPMData:
         y_range=y_size,
         direction="forward",
         group="synthetic",
-        metadata={"source": "npz", "model_name": model_name}
+        metadata={"source": "npz", "model_name": model_name},
     )
 
     return SPMData(channels=(ch,))
