@@ -57,14 +57,14 @@
 
 ## Sinopsis
 
-**SPM-Kit** es un *toolkit* riguroso y de código abierto (MIT) para decodificar, analizar y visualizar datos de microscopía de sonda de barrido —**AFM, KPFM y espectroscopía de fuerza**— desarrollado en el **SPM Lab** de la Universidad Técnica Federico Santa María (UTFSM). Nace de una premisa simple: el análisis científico debe ser **trazable, reproducible y honesto**, sin depender de software propietario ni de cajas negras.
+**SPM-Kit** es un *toolkit* riguroso y de código abierto (MIT) para decodificar, analizar y visualizar datos de microscopía de sonda de barrido —**AFM, KPFM y espectroscopía de fuerza**— desarrollado independientemente por José Labarca Baeza en el contexto académico del SPM Lab de la Universidad Técnica Federico Santa María (UTFSM). Nace de una premisa simple: el análisis científico debe ser **trazable, reproducible y honesto**, sin depender de software propietario ni de cajas negras.
 
 Se organiza en dos capas con una frontera estricta entre ellas:
 
 | Capa | Rol | Instalación |
 |------|-----|-------------|
 | **`spmkit.core`** | El **motor numérico** puro, sin interfaz gráfica: lectores de formato, análisis validado y exportación. Python + NumPy; dependencias pesadas opcionales. | `pip install spmkit` |
-| **Fathom** | El **workspace interactivo** (PyQt6) construido sobre ese motor, pensado para **sustituir** herramientas propietarias como Nanosurf ANA y JPK Data Processing en investigación diaria. | `pip install "spmkit[gui]"` |
+| **Fathom** | El **workspace interactivo** (PyQt6) construido sobre ese motor, diseñado como una alternativa abierta para flujos de trabajo habitualmente realizados con Nanosurf ANA y JPK Data Processing. | `pip install "spmkit[gui]"` |
 
 Esa separación no es cosmética: **`core/` no importa ninguna capa de interfaz**, y una prueba de arquitectura lo hace cumplir. Todo el análisis es scriptable, corre *headless* en un servidor o clúster, y la GUI es un panel de control transparente hacia el mismo código.
 
@@ -518,8 +518,7 @@ make gui        # lanza Fathom
 
 ## Agradecimientos
 
-María Saavedra Fredes y Benjamin Schleyer ayudaron brindando 
-datasets proopios como candidatos para la campaña de validación.
+María Saavedra Fredes y Benjamin Schleyer ayudaron a localizar y compartir datasets candidatos para la campaña de validación.
 
 ### Reproducir los medios de este README
 
@@ -542,6 +541,6 @@ Si usas SPM-Kit o Fathom en una publicación, cítalo según [`CITATION.cff`](CI
 
 <sub>Estructurado bajo el <b><a href="https://kegouro.github.io">Pharos Project</a></b> — infraestructura científica sin barreras computacionales.</sub>
 <br>
-<sub>José Labarca Baeza · Prof. Tomás Corrales · SPM Lab, UTFSM · Licencia MIT © 2026</sub>
+<sub>José Labarca Baeza · Proyecto independiente en el contexto del SPM Lab, UTFSM · Licencia MIT © 2026</sub>
 
 </div>
