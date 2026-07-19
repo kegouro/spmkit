@@ -122,7 +122,9 @@ def _int_dtype(bytes_per_pixel: int) -> np.dtype:
     raise ValueError(f"Variante .spm no soportada: {bytes_per_pixel} bytes/pixel")
 
 
-def _pixel_layout(sections: list[tuple[str, dict[str, str]]], keys: dict[str, str]) -> tuple[np.dtype, int]:
+def _pixel_layout(
+    sections: list[tuple[str, dict[str, str]]], keys: dict[str, str]
+) -> tuple[np.dtype, int]:
     declared = int(keys.get("Bytes/pixel", "2"))
     _int_dtype(declared)
     version = 0
