@@ -1,0 +1,1696 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Analizador open-source de datos AFM/KPFM para microscopía de sonda de barrido">
+      
+      
+      
+        <link rel="canonical" href="https://kegouro.github.io/spmkit/design/FORCE_SPECTROSCOPY/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Diseño: spmkit como reemplazo de Nanosurf ANA + JPK Data Processing (curvas de fuerza) - spmkit</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#diseno-spmkit-como-reemplazo-de-nanosurf-ana-jpk-data-processing-curvas-de-fuerza" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="spmkit" class="md-header__button md-logo" aria-label="spmkit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            spmkit
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Diseño: spmkit como reemplazo de Nanosurf ANA + JPK Data Processing (curvas de fuerza)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="teal"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="teal"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/kegouro/spmkit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    kegouro/spmkit
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Inicio
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../getting-started/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Primeros pasos
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../user-guide/" class="md-tabs__link">
+          
+  
+  
+  Guía de usuario
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API Python
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../theory/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Guía de teoría
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../ARCHITECTURE/" class="md-tabs__link">
+          
+  
+  
+  Referencia técnica
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="https://kegouro.github.io" class="md-tabs__link">
+        
+  
+  
+    
+  
+  ↗ Pharos Project
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="spmkit" class="md-nav__button md-logo" aria-label="spmkit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    spmkit
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/kegouro/spmkit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    kegouro/spmkit
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Primeros pasos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guía de usuario
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guía de usuario
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interfaz gráfica (GUI)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Referencia CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Python
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guía de teoría
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Referencia técnica
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Referencia técnica
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ARCHITECTURE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extending/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extender spmkit y Fathom
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../COMPETITION_ROADMAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plan de competencia (JPK/ANA)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VALIDATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validación científica
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../TRACEABILITY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trazabilidad del pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ROADMAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../UI_DESIGN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diseño de UI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://kegouro.github.io" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ↗ Pharos Project
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="diseno-spmkit-como-reemplazo-de-nanosurf-ana-jpk-data-processing-curvas-de-fuerza">Diseño: spmkit como reemplazo de Nanosurf ANA + JPK Data Processing (curvas de fuerza)<a class="headerlink" href="#diseno-spmkit-como-reemplazo-de-nanosurf-ana-jpk-data-processing-curvas-de-fuerza" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Documento de arquitectura y plan de evolución. Estado: <strong>propuesta</strong> (v2, 2026-07).
+Objetivo estratégico: no clonar Gwyddion (imágenes), sino <strong>superar el análisis de
+curvas de fuerza</strong> de Nanosurf ANA y JPK/Bruker <em>Data Processing 8.1</em>.</p>
+<p><strong>v2</strong> incorpora la revisión de diseño: estado de calibración explícito, lazy loading de
+force-volumes, ejecución paralela, pipeline con condiciones seguras, modelos viscoelásticos,
+incertidumbre Monte Carlo y API Jupyter/headless de primera clase. Detalle en §15.</p>
+</blockquote>
+<hr />
+<h2 id="1-objetivo-y-alcance">1. Objetivo y alcance<a class="headerlink" href="#1-objetivo-y-alcance" title="Permanent link">&para;</a></h2>
+<p>El profesor quiere reemplazar dos herramientas de análisis <strong>offline</strong>:</p>
+<ul>
+<li><strong>Nanosurf ANA</strong> — análisis de datos de instrumentos Nanosurf (<code>.nid</code>/<code>.nhf</code>).</li>
+<li><strong>JPK/Bruker SPM Data Processing 8.1</strong> — análisis de curvas de fuerza y force-maps
+  de instrumentos NanoWizard (<code>.jpk-force</code>, <code>.jpk-force-map</code>, <code>.jpk-qi-data</code>).</li>
+</ul>
+<p>Ambos comparten un mismo núcleo funcional: <strong>espectroscopía de fuerza</strong> (force curves,
+force spectroscopy). spmkit ya lee <code>.nid</code> a precisión de máquina y tiene un ajuste Hertz
+básico; falta el resto del flujo profesional. Este documento define <strong>cómo llegar ahí sin
+romper la arquitectura de 3 capas</strong> (<code>core</code> puro / <code>cli</code> / <code>gui</code>).</p>
+<p>Fuera de alcance (por ahora): control del instrumento / adquisición. spmkit es análisis
+offline, igual que ANA y JPK Data Processing.</p>
+<hr />
+<h2 id="2-que-hacen-ana-jpk-que-spmkit-todavia-no">2. Qué hacen ANA / JPK que spmkit todavía no<a class="headerlink" href="#2-que-hacen-ana-jpk-que-spmkit-todavia-no" title="Permanent link">&para;</a></h2>
+<p>Mapeado contra el manual <em>NanoWizard Series User Manual 8.1</em> (§6 Force Spectroscopy,
+§7 Calibration) y el <em>BioAFM Handbook 8.1</em> (§6 Force spectroscopy, §7 Cantilevers).</p>
+<table>
+<thead>
+<tr>
+<th>Capacidad</th>
+<th>JPK / ANA</th>
+<th>spmkit hoy</th>
+<th>Brecha</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Segmentos extend/retract (+ pausa)</td>
+<td>✅</td>
+<td>❌ (1 fila = 1 curva)</td>
+<td><strong>crítica</strong></td>
+</tr>
+<tr>
+<td>Canales crudos: height, (v)deflection, tiempo</td>
+<td>✅</td>
+<td>❌ (solo z, force)</td>
+<td><strong>crítica</strong></td>
+</tr>
+<tr>
+<td>Calibración: InvOLS (sensibilidad)</td>
+<td>✅</td>
+<td>❌</td>
+<td><strong>crítica</strong></td>
+</tr>
+<tr>
+<td>Calibración: k por ruido térmico / Sader / contacto</td>
+<td>✅</td>
+<td>parcial (equipartición cruda)</td>
+<td>alta</td>
+</tr>
+<tr>
+<td>Separación punta-muestra (<code>sep = height − deflexión</code>)</td>
+<td>✅</td>
+<td>aprox. cruda</td>
+<td>alta</td>
+</tr>
+<tr>
+<td>Corrección de línea base (offset + tilt)</td>
+<td>✅</td>
+<td>offset+tilt (1 curva)</td>
+<td>ok</td>
+</tr>
+<tr>
+<td>Detección de contacto robusta</td>
+<td>✅ (varios métodos)</td>
+<td>✅ (threshold + RoV, recién añadido)</td>
+<td>ok</td>
+</tr>
+<tr>
+<td>Modelos: Hertz, Sneddon, DMT</td>
+<td>✅</td>
+<td>✅ (recién añadido)</td>
+<td>ok</td>
+</tr>
+<tr>
+<td>Modelos: JKR, Oliver-Pharr, bottom-effect</td>
+<td>✅</td>
+<td>❌</td>
+<td>media</td>
+</tr>
+<tr>
+<td>Adhesión y <strong>energía de disipación</strong> (histéresis)</td>
+<td>✅</td>
+<td>solo pull-off</td>
+<td>media</td>
+</tr>
+<tr>
+<td>Detección de eventos de ruptura + WLC/FJC (single-molecule)</td>
+<td>✅</td>
+<td>❌</td>
+<td>media</td>
+</tr>
+<tr>
+<td>Incertidumbre y bondad de ajuste (σ, R²)</td>
+<td>✅</td>
+<td>✅ (recién añadido)</td>
+<td>ok</td>
+</tr>
+<tr>
+<td><strong>Pipeline de procesamiento apilable y reproducible</strong></td>
+<td>✅ (Analysis Pipeline)</td>
+<td>❌</td>
+<td><strong>estratégica</strong></td>
+</tr>
+<tr>
+<td>Force-volume / QI maps → mapas de propiedades</td>
+<td>✅</td>
+<td>parcial (<code>fit_all</code>)</td>
+<td>alta</td>
+</tr>
+<tr>
+<td>Histogramas/distribuciones batch (E, adhesión) con ajuste</td>
+<td>✅</td>
+<td>❌</td>
+<td>media</td>
+</tr>
+<tr>
+<td>Lectura <code>.jpk-force*</code></td>
+<td>✅ (nativo)</td>
+<td>❌</td>
+<td>alta</td>
+</tr>
+<tr>
+<td>Provenance / trazabilidad de cada resultado</td>
+<td>parcial</td>
+<td>❌</td>
+<td>estratégica</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Lectura clave:</strong> la diferencia decisiva no es "más modelos". Es que ANA/JPK organizan
+todo como un <strong>pipeline de operaciones reproducible sobre segmentos calibrados</strong>. Esa es la
+pieza que hay que construir; los modelos cuelgan de ahí.</p>
+<hr />
+<h2 id="3-principios-de-diseno">3. Principios de diseño<a class="headerlink" href="#3-principios-de-diseno" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Respetar la regla de oro</strong>: <code>core</code> sin UI; <code>cli</code>/<code>gui</code> solo orquestan. Todo lo nuevo
+   de física vive en <code>core/</code>.</li>
+<li><strong>El pipeline es la columna vertebral</strong>, no una feature más. Curva única, force-map y
+   batch corren el <strong>mismo</strong> <code>Recipe</code>. La GUI graba las acciones del usuario como <code>Recipe</code>.</li>
+<li><strong>Inmutabilidad y unidades explícitas</strong> (como el modelo actual): cada dataclass congelada,
+   cada cantidad con su unidad documentada.</li>
+<li><strong>Compatibilidad hacia atrás</strong>: <code>ForceCurve.z</code>/<code>.force</code> siguen funcionando; el modelo nuevo
+   los deriva. No rompemos <code>fit_hertz</code> ni los tests actuales.</li>
+<li><strong>Crecer por fases verificables</strong>: cada fase entra con tests known-answer y sin romper CI.</li>
+</ol>
+<hr />
+<h2 id="4-evolucion-del-modelo-de-datos-coremodelsforcepy-nuevo">4. Evolución del modelo de datos — <code>core/models/force.py</code> (NUEVO)<a class="headerlink" href="#4-evolucion-del-modelo-de-datos-coremodelsforcepy-nuevo" title="Permanent link">&para;</a></h2>
+<p>El corazón del cambio. Reemplaza el <code>ForceCurve</code> plano por un modelo con segmentos y
+canales crudos, calibrable.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">#: Estado de calibración de un segmento (evita doble-InvOLS / fuerza sin calibrar).</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="c1">#   &quot;raw_v&quot;        → señal cruda (V), sin calibrar</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1">#   &quot;deflection_m&quot; → deflexión en metros (InvOLS aplicado)</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1">#   &quot;force_n&quot;      → fuerza en newtons (k aplicado); listo para ajustar</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">CalState</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;raw_v&quot;</span><span class="p">,</span> <span class="s2">&quot;deflection_m&quot;</span><span class="p">,</span> <span class="s2">&quot;force_n&quot;</span><span class="p">]</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="k">class</span><span class="w"> </span><span class="nc">ForceSegment</span><span class="p">:</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Un segmento de una curva de fuerza (extend / retract / pause / modulation).</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="sd">    Guarda SIEMPRE los canales crudos (para poder recalibrar) y, a medida que el</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="sd">    pipeline avanza, los derivados. ``state`` dice hasta dónde se calibró.</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="n">segment_type</span><span class="p">:</span> <span class="nb">str</span>                     <span class="c1"># &quot;extend&quot; | &quot;retract&quot; | &quot;pause&quot; | &quot;modulation&quot;</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="n">direction</span><span class="p">:</span> <span class="nb">str</span>                        <span class="c1"># &quot;approach&quot; | &quot;retract&quot; | &quot;static&quot;</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="n">raw_height</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>                <span class="c1"># altura del piezo/medida (m)</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n">raw_deflection</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>            <span class="c1"># señal cruda (V) o m si el archivo ya viene calibrado</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="n">time</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>        <span class="c1"># tiempo (s): loading rate, viscoelasticidad</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="n">cycle</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>                        <span class="c1"># índice de ciclo (curvas multi-ciclo)</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    <span class="n">state</span><span class="p">:</span> <span class="n">CalState</span> <span class="o">=</span> <span class="s2">&quot;raw_v&quot;</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    <span class="c1"># Derivados que rellena el pipeline (None hasta que la op correspondiente corre):</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    <span class="n">deflection</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># m, tras InvOLS</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>    <span class="n">force</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>       <span class="c1"># N, tras k</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    <span class="n">separation</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># m, tras height − deflexión</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">require_force</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Devuelve la fuerza o lanza un error controlado si no se ha calibrado.&quot;&quot;&quot;</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">force</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>                <span class="s2">&quot;Segmento sin fuerza calibrada (state=&quot;</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="si">!r}</span><span class="s2">); corre &#39;calibrate&#39; antes de &#39;fit_elasticity&#39;.&quot;</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>            <span class="p">)</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">force</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>
+<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="k">class</span><span class="w"> </span><span class="nc">ForceCurve</span><span class="p">:</span>                     <span class="c1"># reemplaza al actual (con shim de compatibilidad)</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Una curva de fuerza completa: uno o más segmentos, más calibración y posición.&quot;&quot;&quot;</span>
+<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>    <span class="n">segments</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ForceSegment</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>    <span class="n">calibration</span><span class="p">:</span> <span class="s2">&quot;Calibration | None&quot;</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>    <span class="n">position</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>   <span class="c1"># (x, y) en m, para force-maps</span>
+<a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>    <span class="n">index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+<a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>    <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+<a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>
+<a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">segment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cycle</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ForceSegment</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>    <span class="c1"># --- shim de compatibilidad con el modelo viejo (extend) ---</span>
+<a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>    <span class="nd">@property</span>
+<a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">z</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span> <span class="o">...</span>        <span class="c1"># height del extend</span>
+<a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>    <span class="nd">@property</span>
+<a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">force_legacy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span> <span class="o">...</span>
+<a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a>
+<a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a>
+<a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a><span class="k">class</span><span class="w"> </span><span class="nc">ForceVolume</span><span class="p">:</span>
+<a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Grilla de curvas de fuerza (force-map / QI) con carga perezosa.</span>
+<a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a>
+<a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a><span class="sd">    NO mantiene las curvas en RAM: un ``.jpk-force-map`` puede pesar GB. Guarda un</span>
+<a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a><span class="sd">    índice y un ``loader`` que lee la curva N bajo demanda (con caché LRU). Para</span>
+<a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a><span class="sd">    ``.nid`` (curvas chicas) el loader es trivialmente in-memory.</span>
+<a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a>    <span class="n">loader</span><span class="p">:</span> <span class="s2">&quot;Callable[[int], ForceCurve]&quot;</span>     <span class="c1"># lee la curva N bajo demanda</span>
+<a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a>    <span class="n">n_curves</span><span class="p">:</span> <span class="nb">int</span>
+<a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a>    <span class="n">grid_shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>               <span class="c1"># (rows, cols)</span>
+<a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a>    <span class="n">x_range</span><span class="p">:</span> <span class="nb">float</span>                            <span class="c1"># m</span>
+<a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a>    <span class="n">y_range</span><span class="p">:</span> <span class="nb">float</span>                            <span class="c1"># m</span>
+<a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a>    <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+<a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a>
+<a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">curve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ForceCurve</span><span class="p">:</span>
+<a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Lee (perezosamente, con caché) la curva ``index``.&quot;&quot;&quot;</span>
+<a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a>        <span class="o">...</span>
+</code></pre></div>
+<p><strong>Migración segura:</strong> <code>mechanics.extract_curves()</code> pasa a construir <code>ForceCurve</code> con un solo
+segmento <code>extend</code> cuando el <code>.nid</code> no distingue trazas, y con <code>extend</code>+<code>retract</code> cuando sí.
+El <code>fit_hertz</code> actual sigue aceptando el <code>ForceCurve</code> (usa el segmento <code>extend</code>). Los tests
+existentes no cambian.</p>
+<p><strong>Estado de calibración:</strong> solo la operación <code>calibrate</code> del pipeline puede pasar un segmento
+de <code>raw_v</code> → <code>deflection_m</code> → <code>force_n</code>. Las demás operaciones validan el <code>state</code> que necesitan
+(p. ej. <code>fit_elasticity</code> exige <code>force_n</code> vía <code>require_force()</code>). Esto cierra el riesgo de aplicar
+InvOLS dos veces o ajustar sin calibrar. Se eligió un <code>state</code> explícito en vez de <code>pint</code>/
+<code>astropy.units</code> para no cargar el <code>core</code> con una dependencia de unidades (hoy solo numpy).</p>
+<hr />
+<h2 id="5-subsistema-de-calibracion-coreanalysiscalibrationpy-nuevo">5. Subsistema de calibración — <code>core/analysis/calibration.py</code> (NUEVO)<a class="headerlink" href="#5-subsistema-de-calibracion-coreanalysiscalibrationpy-nuevo" title="Permanent link">&para;</a></h2>
+<p>Convierte señal cruda (V) → deflexión (m) → fuerza (N). Es lo primero que hace cualquier
+analista en ANA/JPK y hoy no existe.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">Calibration</span><span class="p">:</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">invols</span><span class="p">:</span> <span class="nb">float</span>           <span class="c1"># sensibilidad de deflexión, m/V (a.k.a. deflection sensitivity)</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">spring_constant</span><span class="p">:</span> <span class="nb">float</span>  <span class="c1"># k, N/m</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">method</span><span class="p">:</span> <span class="nb">str</span>             <span class="c1"># &quot;thermal&quot; | &quot;sader&quot; | &quot;contact&quot; | &quot;manual&quot;</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">293.15</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">provenance</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="k">def</span><span class="w"> </span><span class="nf">deflection_sensitivity</span><span class="p">(</span><span class="n">hard_contact</span><span class="p">:</span> <span class="n">ForceSegment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;InvOLS = pendiente del contacto sobre sustrato rígido (m/V).&quot;&quot;&quot;</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="k">def</span><span class="w"> </span><span class="nf">spring_constant_thermal</span><span class="p">(</span><span class="n">psd_freq</span><span class="p">,</span> <span class="n">psd_amp</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mf">293.15</span><span class="p">,</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>                            <span class="n">correction_factor</span><span class="o">=</span><span class="mf">0.817</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Ruido térmico: área del pico de resonancia → ⟨x²⟩ → k = χ·k_BT/⟨x²⟩ (Butt-Jaschke).&quot;&quot;&quot;</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="k">def</span><span class="w"> </span><span class="nf">spring_constant_sader</span><span class="p">(</span><span class="n">f0</span><span class="p">,</span> <span class="n">q_factor</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">fluid</span><span class="o">=</span><span class="s2">&quot;air&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Método de Sader (geometría + f0 + Q), sin tocar la muestra.&quot;&quot;&quot;</span>
+</code></pre></div>
+<p><code>thermal_spring_constant</code> (hoy en <code>mechanics.py</code>) se <strong>mueve</strong> aquí y se generaliza; se deja
+un alias en <code>mechanics</code> por compatibilidad. El factor χ de Butt-Jaschke ya lo añadimos.</p>
+<hr />
+<h2 id="6-el-motor-de-pipeline-corepipeline-nuevo-pieza-maestra">6. El motor de Pipeline — <code>core/pipeline/</code> (NUEVO, pieza maestra)<a class="headerlink" href="#6-el-motor-de-pipeline-corepipeline-nuevo-pieza-maestra" title="Permanent link">&para;</a></h2>
+<p>Equivale a la <strong>Analysis Pipeline</strong> de JPK (manual §6.1.3). Una lista ordenada, serializable
+y reproducible de operaciones que corre igual sobre una curva, un force-map o un batch.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>core/pipeline/
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>├── __init__.py
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>├── operations.py     # registro nombre → función; cada op: (ForceCurve, **params) → ForceCurve|Result
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>├── recipe.py         # Recipe: lista ordenada de (op, params); to_yaml/from_yaml
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>└── run.py            # run(recipe, target) → resultado + provenance estampada
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">Recipe</span><span class="p">:</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">steps</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>     <span class="c1"># [(&quot;baseline_correct&quot;, {...}), (&quot;fit_elasticity&quot;, {...})]</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">to_yaml</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span> <span class="o">...</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="nd">@classmethod</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Recipe&quot;</span><span class="p">:</span> <span class="o">...</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="c1"># Operaciones registradas (todas puras, en core):</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="c1">#   calibrate, baseline_correct, tip_sample_separation, smooth,</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="c1">#   find_contact_point, fit_elasticity, detect_events, adhesion, dissipation</span>
+</code></pre></div>
+<p><strong>Por qué desbloquea todo con poco código:</strong>
+- <code>core/batch.py</code> deja de estar hardcodeado a "roughness+KPFM en Z-Axis/CPD" → corre cualquier <code>Recipe</code>.
+- La GUI <strong>graba</strong> lo que el usuario hace como un <code>.recipe.yaml</code> compartible/versionable.
+- Es la unidad de <strong>reproducibilidad</strong> y el portador natural de <strong>provenance</strong>.
+- Un force-map = correr el mismo <code>Recipe</code> por píxel.</p>
+<hr />
+<h2 id="7-modelos-de-contacto-y-eventos">7. Modelos de contacto y eventos<a class="headerlink" href="#7-modelos-de-contacto-y-eventos" title="Permanent link">&para;</a></h2>
+<p><strong><code>core/analysis/mechanics.py</code> (EXTENDER):</strong> ya tiene Hertz/paraboloide/cono/DMT + σ/R² + RoV.
+Añadir:
+- <code>jkr</code> (Johnson-Kendall-Roberts): relación paramétrica implícita fuerza-indentación (adhesión fuerte, muestras blandas).
+- <code>oliver_pharr</code>: rigidez de contacto de la pendiente de descarga (materiales duros).
+- <code>bottom_effect</code>: corrección de sustrato rígido para muestras delgadas (Dimitriadis).</p>
+<p><strong><code>core/analysis/events.py</code> (NUEVO):</strong> detección de eventos de ruptura en el retract y ajuste
+de polímeros para single-molecule force spectroscopy:
+- <code>detect_ruptures(retract) -&gt; list[RuptureEvent]</code> (saltos de fuerza).
+- <code>fit_wlc(event) / fit_fjc(event)</code> → longitud de contorno, fuerza de ruptura, loading rate.
+- Histograma de fuerzas de ruptura (batch).</p>
+<hr />
+<h2 id="8-force-volume-mapas-coreanalysisforcevolumepy-nuevo">8. Force-volume / mapas — <code>core/analysis/forcevolume.py</code> (NUEVO)<a class="headerlink" href="#8-force-volume-mapas-coreanalysisforcevolumepy-nuevo" title="Permanent link">&para;</a></h2>
+<p>Reemplaza y generaliza <code>mechanics.fit_all</code>. Corre un <code>Recipe</code> por píxel y arma mapas:
+- Mapas: módulo E, adhesión, altura de contacto, disipación, pendiente de contacto.
+- ROI/máscara para excluir zonas o medir sobre una región.
+- Estadística batch: histogramas de E/adhesión con ajuste gaussiano/log-normal.
+- Selección de píxel ↔ curva (para la UI: clic en el mapa muestra la curva).</p>
+<hr />
+<h2 id="9-lectores-coreio">9. Lectores — <code>core/io/</code><a class="headerlink" href="#9-lectores-coreio" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong><code>jpk.py</code> (NUEVO):</strong> <code>.jpk-force</code>, <code>.jpk-force-map</code>, <code>.jpk-qi-data</code>. Son archivos ZIP con
+  cabeceras <code>.properties</code> + segmentos binarios. Devuelven <code>ForceCurve</code>/<code>ForceVolume</code>.
+  Registrar en <code>registry.py</code> (<code>_PARSERS</code>). Añadir test de validación con un archivo sintético.</li>
+<li><strong><code>.nid</code> espectroscopía (MEJORAR <code>nid.py</code>):</strong> hoy trata cada fila como curva plana. Detectar
+  trazas extend/retract (por <code>Frame</code>/dirección) y construir <code>ForceCurve</code> con segmentos.</li>
+<li><strong><code>.jpk-qi-image</code> / imágenes:</strong> ya cubierto por el modelo de imagen existente.</li>
+</ul>
+<hr />
+<h2 id="10-provenance-y-exportacion">10. Provenance y exportación<a class="headerlink" href="#10-provenance-y-exportacion" title="Permanent link">&para;</a></h2>
+<p>Cada export (HDF5/CSV/JSON/reporte) estampa: versión de spmkit, timestamp UTC, hash del
+archivo fuente, la <code>Recipe</code> aplicada, y la <code>Calibration</code>. Nuevo comando <code>spmkit crate</code> empaqueta
+datos + recipe + resultados (estilo RO-Crate) para reproducibilidad FAIR. Esto ataca la brecha
+"provenance" que ni ANA ni JPK cubren bien → diferenciador real ante universidades.</p>
+<hr />
+<h2 id="11-rediseno-de-ui-de-7-pestanas-planas-a-un-workspace-por-flujo">11. Rediseño de UI — de 7 pestañas planas a un <em>workspace</em> por flujo<a class="headerlink" href="#11-rediseno-de-ui-de-7-pestanas-planas-a-un-workspace-por-flujo" title="Permanent link">&para;</a></h2>
+<p><strong>Problema actual:</strong> 7 pestañas desconectadas (Visor, Nanomecánica, Vista 3D, Resonancia,
+Simulador, Editor, Comparar), cada una un form estático, todo en el hilo de UI (se congela).
+No refleja el flujo de trabajo de un analista.</p>
+<p><strong>Nuevo modelo:</strong> un <strong>workspace por perspectivas</strong> que imita el flujo de ANA/JPK:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>Cargar → Calibrar → Pipeline de procesamiento → Ajustar → Mapa/Batch → Exportar
+</code></pre></div>
+<h3 id="layout-perspectiva-curva-de-fuerza">Layout (perspectiva "Curva de fuerza")<a class="headerlink" href="#layout-perspectiva-curva-de-fuerza" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>┌──────────────────────────────────────────────────────────────────────────┐
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>│ Toolbar:  Abrir · Perspectiva[Curva|Mapa|Imagen] · Recipe▾ · Export · Tema │
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>├───────────────┬──────────────────────────────────────┬─────────────────────┤
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>│ NAVEGADOR     │            LIENZO DE CURVA            │  PIPELINE (apilable) │
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>│ (izquierda)   │            (centro)                   │  (derecha)           │
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>│               │                                       │                      │
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>│ ▸ archivo.jpk │   extend ─ (azul)  retract ─ (naranjo)│  ✓ Calibración       │
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>│   ▸ curva 0   │   ● punto de contacto                 │     InvOLS · k        │
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>│   ▸ curva 1 ◄ │   ─ ajuste (Hertz/DMT/JKR)            │  ✓ Línea base        │
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>│   ...         │   ▲ eventos de ruptura                │  ✓ Contacto (RoV)     │
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>│ [mapa QI 🔲]  │                                       │  ✓ Ajuste elasticidad│
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>│  (clic=curva) │   [scrubber de curvas ◄════▶ ]        │  + Añadir paso ▾     │
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>│               │                                       │  ── Resultados ──     │
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>│               │                                       │  E = 4.5 ± 0.1 MPa    │
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>│               │                                       │  R² = 0.999 · adh …   │
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>├───────────────┴──────────────────────────────────────┴─────────────────────┤
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>│ DOCK inferior:  Mapas de propiedades · Histogramas (E, adhesión) · Tabla batch │
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>└──────────────────────────────────────────────────────────────────────────┘
+</code></pre></div>
+<ul>
+<li><strong>Perspectivas</strong> (no pestañas planas): "Curva" (análisis profundo de 1 curva), "Mapa"
+  (force-volume, mapas + histogramas), "Imagen" (el visor de topografía actual). Comparten
+  panel de pipeline y navegador. El Simulador y Resonancia pasan a ser perspectivas/plugins
+  secundarios.</li>
+<li><strong>Pipeline panel = la Analysis Pipeline de JPK</strong>: pasos apilables, reordenables (drag),
+  activables, con parámetros editables. Es la misma <code>Recipe</code> del core → lo que ves es lo que
+  se guarda y se reproduce.</li>
+<li><strong>Threading obligatorio</strong>: <code>fit_all</code>, force-maps, reportes y carga corren en <code>QThreadPool</code>
+  con barra de progreso cancelable. Se acaba el congelamiento (brecha que marcó la auditoría).</li>
+<li><strong>Sesión guardable</strong>: <code>.spmproj</code> con archivos cargados, recipe, calibración y layout.</li>
+</ul>
+<h3 id="reestructuracion-de-gui-rehacer-reutilizando-lo-que-sirve">Reestructuración de <code>gui/</code> (rehacer, reutilizando lo que sirve)<a class="headerlink" href="#reestructuracion-de-gui-rehacer-reutilizando-lo-que-sirve" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>gui/
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>├── app.py                      # entrypoint (se conserva)
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>├── workspace.py                # NUEVO shell: navegador + centro + pipeline + dock inferior
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>├── perspectives/
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>│   ├── curve.py                # NUEVO: perspectiva Curva (reemplaza nanomech_tab)
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>│   ├── map.py                  # NUEVO: perspectiva Mapa (force-volume)
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>│   └── image.py                # adapta viewer_tab actual
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>├── widgets/
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>│   ├── force_canvas.py         # NUEVO: lienzo pyqtgraph con segmentos/ajuste/eventos
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>│   ├── pipeline_panel.py       # NUEVO: la Analysis Pipeline (edita Recipe del core)
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>│   ├── calibration_panel.py    # NUEVO: InvOLS + k (thermal/Sader)
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>│   ├── data_browser.py         # NUEVO: árbol archivos→curvas + thumbnail de mapa
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>│   ├── mpl_canvas.py           # NUEVO base: extrae el boilerplate matplotlib duplicado en 6 tabs
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>│   └── background.py           # NUEVO: helper QThreadPool + QProgressDialog
+<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>├── theme.py                    # se conserva (aplicar mpl_style de verdad)
+<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>└── figure_tab.py, compare_tab.py, view3d_tab.py, simulator_tab.py, resonance_tab.py
+<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>                                # se conservan como perspectivas/paneles secundarios, migran gradual
+</code></pre></div>
+<hr />
+<h2 id="12-mapa-de-archivos-rutas-exactas">12. Mapa de archivos (rutas exactas)<a class="headerlink" href="#12-mapa-de-archivos-rutas-exactas" title="Permanent link">&para;</a></h2>
+<p><strong>Nuevos (core):</strong>
+- <code>src/spmkit/core/models/force.py</code> — <code>ForceSegment</code>, <code>ForceCurve</code>, <code>ForceVolume</code>.
+- <code>src/spmkit/core/analysis/calibration.py</code> — InvOLS, k (thermal/Sader), <code>Calibration</code>.
+- <code>src/spmkit/core/analysis/events.py</code> — ruptura, WLC/FJC.
+- <code>src/spmkit/core/analysis/forcevolume.py</code> — mapas + batch stats.
+- <code>src/spmkit/core/pipeline/{__init__,operations,recipe,run}.py</code> — el motor de Recipe.
+- <code>src/spmkit/core/io/jpk.py</code> — lectores <code>.jpk-force*</code>.</p>
+<p><strong>Modificados (core):</strong>
+- <code>src/spmkit/core/analysis/mechanics.py</code> — + JKR, Oliver-Pharr, bottom-effect; usar el nuevo modelo.
+- <code>src/spmkit/core/io/nid.py</code> — construir segmentos extend/retract en espectroscopía.
+- <code>src/spmkit/core/io/registry.py</code> — registrar <code>jpk</code>.
+- <code>src/spmkit/core/batch.py</code> — ejecutar <code>Recipe</code> en vez de análisis hardcodeado.
+- <code>src/spmkit/core/export/writers.py</code> — estampar provenance + recipe + calibración.
+- <code>src/spmkit/core/models/__init__.py</code>, <code>core/analysis/__init__.py</code> — exports públicos.</p>
+<p><strong>Nuevos/rehechos (gui):</strong> ver §11.</p>
+<p><strong>Nuevos (cli):</strong>
+- <code>spmkit calibrate</code>, <code>spmkit fit</code> (con <code>--model jkr|oliver-pharr</code>), <code>spmkit fmap</code>,
+  <code>spmkit recipe run &lt;recipe.yaml&gt; &lt;archivo&gt;</code>, <code>spmkit crate</code>.</p>
+<p><strong>Tests:</strong> un <code>tests/core/test_pipeline.py</code>, <code>test_calibration.py</code>, <code>test_events.py</code>,
+<code>test_forcevolume.py</code>, <code>test_io_jpk.py</code>, y validación con archivos sintéticos.</p>
+<hr />
+<h2 id="13-roadmap-por-fases-incremental-y-verificable">13. Roadmap por fases (incremental y verificable)<a class="headerlink" href="#13-roadmap-por-fases-incremental-y-verificable" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Fase</th>
+<th>Entrega</th>
+<th>Verificación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>0. Credibilidad</strong> (casi listo)</td>
+<td>Fuga de privacidad saneada ✅, release limpio 0.1.3, badges dinámicos</td>
+<td>CI verde, tag == versión</td>
+</tr>
+<tr>
+<td><strong>0.5. Spike JPK</strong> (NUEVO)</td>
+<td>2–3 días: abrir un <code>.jpk-force</code> en Python, leer 1 segmento y sus factores de escala. NO escribir el lector completo.</td>
+<td>Se extraen arrays crudos de una curva real</td>
+</tr>
+<tr>
+<td><strong>1. Modelo + calibración</strong></td>
+<td><code>force.py</code> (segmentos con <code>state</code> de calibración + interfaz de <strong>lazy loading</strong> para <code>ForceVolume</code>), <code>calibration.py</code> (InvOLS, k thermal/Sader), separación punta-muestra. Shim de compatibilidad.</td>
+<td>Known-answer InvOLS/k; guardas de <code>state</code>; tests actuales intactos</td>
+</tr>
+<tr>
+<td><strong>2. Pipeline (keystone)</strong></td>
+<td><code>core/pipeline/</code> (Recipe con <strong>condiciones seguras</strong>, operations, run con <strong>ejecución paralela</strong> stdlib+opcional joblib), <code>batch.py</code> genérico</td>
+<td>Recipe roundtrip YAML; batch corre recipe; paralelo == secuencial</td>
+</tr>
+<tr>
+<td><strong>3. Modelos + viscoelasticidad</strong></td>
+<td>JKR, Oliver-Pharr, bottom-effect; <strong>modelos viscoelásticos</strong> (relajación/creep/SLS); <strong>incertidumbre Monte Carlo</strong> (propaga InvOLS+k); disipación/adhesión-energía. <em>(WLC/FJC → Fase 7)</em></td>
+<td>Known-answer por modelo; MC da σ física; SLS recupera τ</td>
+</tr>
+<tr>
+<td><strong>4. Lectores JPK</strong></td>
+<td><code>io/jpk.py</code> (.jpk-force/-map/-qi con lazy loading), <code>.nid</code> con segmentos</td>
+<td>Validación con archivo sintético + real</td>
+</tr>
+<tr>
+<td><strong>5. Force-volume + batch</strong></td>
+<td><code>forcevolume.py</code> (mapas por píxel en paralelo, ROI, histogramas con ajuste)</td>
+<td>Mapa recupera E conocido; histograma</td>
+</tr>
+<tr>
+<td><strong>6. UI workspace</strong></td>
+<td><code>gui/workspace.py</code> + perspectivas + pipeline panel + threading; lienzo <strong>pyqtgraph</strong> (scrubbing de 10k curvas a 60 fps)</td>
+<td>Smoke test GUI headless; no congela</td>
+</tr>
+<tr>
+<td><strong>7. Provenance + comunidad + single-molecule</strong></td>
+<td>Exports con recipe/hash, <code>spmkit crate</code> (RO-Crate/FAIR), plugin entry-points, <code>events.py</code> (ruptura, WLC/FJC), docs/notebooks</td>
+<td>Roundtrip provenance; WLC recupera Lc; plugin de ejemplo</td>
+</tr>
+</tbody>
+</table>
+<p>Recomendación de orden: <strong>0.5 → 1 → 2 → 3</strong> primero (el core de curvas de fuerza, que es lo
+que tu profe quiere), luego <strong>6</strong> (UI) para el "wow" demostrable, y <strong>4/5/7</strong> después según qué
+instrumentos haya que soportar.</p>
+<hr />
+<h2 id="14-decisiones-tomadas-2026-07-03">14. Decisiones tomadas (2026-07-03)<a class="headerlink" href="#14-decisiones-tomadas-2026-07-03" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Formatos:</strong> <strong>Nanosurf <code>.nid</code> primero.</strong> El lab es principalmente Nanosurf. Se prioriza
+   mejorar la espectroscopía <code>.nid</code> (segmentos extend/retract) en Fase 1; el lector JPK
+   (<code>.jpk-force*</code>) baja a Fase 4.</li>
+<li><strong>UI:</strong> <strong>Rehacer limpio de una.</strong> Se reemplaza la GUI entera por el nuevo <code>workspace.py</code>
+   (no migración gradual). → Se hace en una rama dedicada, con smoke test headless antes de
+   fusionar, para no dejar la app rota en <code>main</code>. Las pestañas viejas se retiran al cerrar la
+   Fase 6.</li>
+<li><strong>Formato de <code>Recipe</code>:</strong> <strong>YAML</strong> (legible y editable a mano).</li>
+<li><strong>Single-molecule (WLC/FJC):</strong> <strong>Después.</strong> El foco inmediato es nanomecánica (módulo,
+   adhesión, disipación, mapas). <code>events.py</code> y los ajustes WLC/FJC se mueven a una fase
+   posterior (post-Fase 5), condicionados a que el lab haga unfolding/unbinding.</li>
+</ol>
+<h3 id="orden-de-ejecucion-acordado">Orden de ejecución acordado<a class="headerlink" href="#orden-de-ejecucion-acordado" title="Permanent link">&para;</a></h3>
+<p><code>Fase 0.5 (spike JPK, 2-3 días)</code> → <code>Fase 1 (.nid con segmentos + calibración + lazy loading)</code> →
+<code>Fase 2 (pipeline/Recipe + paralelo)</code> → <code>Fase 3 (JKR, Oliver-Pharr, bottom-effect,
+viscoelástico, Monte Carlo — sin WLC/FJC)</code> → <code>Fase 5 (force-volume + batch)</code> →
+<code>Fase 6 (UI rehecha, rama dedicada, pyqtgraph)</code> → <code>Fase 4 (lector JPK)</code> y
+<code>Fase 7 (provenance + plugins + single-molecule)</code> al final.</p>
+<hr />
+<h2 id="15-refinamientos-tras-revision-v2">15. Refinamientos tras revisión (v2)<a class="headerlink" href="#15-refinamientos-tras-revision-v2" title="Permanent link">&para;</a></h2>
+<p>Ajustes acordados en la revisión de diseño, con el razonamiento de cada decisión.</p>
+<h3 id="151-estado-de-calibracion-explicito-4">15.1 Estado de calibración explícito (§4)<a class="headerlink" href="#151-estado-de-calibracion-explicito-4" title="Permanent link">&para;</a></h3>
+<p>Cada <code>ForceSegment</code> guarda su <code>state</code> (<code>raw_v</code> → <code>deflection_m</code> → <code>force_n</code>) y los canales
+crudos (<code>raw_height</code>, <code>raw_deflection</code>) además de los derivados. Solo <code>calibrate</code> avanza el
+estado; el resto de operaciones validan lo que necesitan (<code>require_force()</code>). Cierra el riesgo
+de doble-InvOLS o de ajustar sin fuerza. <strong>Sin <code>pint</code>/<code>astropy.units</code></strong>: se evita cargar el
+<code>core</code> con una dependencia de unidades; un <code>state</code> + guardas logra lo mismo.</p>
+<h3 id="152-lazy-loading-de-force-volumes-4-fase-1">15.2 Lazy loading de force-volumes (§4, Fase 1)<a class="headerlink" href="#152-lazy-loading-de-force-volumes-4-fase-1" title="Permanent link">&para;</a></h3>
+<p><code>ForceVolume</code> no mantiene las curvas en RAM (un <code>.jpk-force-map</code> pesa GB). Guarda <code>n_curves</code>,
+<code>grid_shape</code> y un <code>loader(index) -&gt; ForceCurve</code> con caché LRU. La <strong>interfaz</strong> se diseña desde
+la Fase 1 para no reescribir el modelo después; para <code>.nid</code> (curvas chicas) el loader es
+in-memory trivial. Es la diferencia entre soportar mapas grandes o reventar la RAM.</p>
+<h3 id="153-ejecucion-paralela-del-pipeline-6-fase-2">15.3 Ejecución paralela del pipeline (§6, Fase 2)<a class="headerlink" href="#153-ejecucion-paralela-del-pipeline-6-fase-2" title="Permanent link">&para;</a></h3>
+<p>El cómputo por curva es CPU-bound; el GIL serializa Python puro (aunque NumPy/SciPy lo liberen).
+<code>run.py</code> sobre un <code>ForceVolume</code> usa <code>concurrent.futures.ProcessPoolExecutor</code> (stdlib, cero
+dependencias) con <em>chunking</em> para amortizar el IPC. <code>joblib[loky]</code> queda como <strong>extra opcional</strong>
+(<code>spmkit[parallel]</code>) para quien quiera su robustez/backends. El <code>Recipe</code> es serializable (YAML),
+así que se envía a los workers sin problema.</p>
+<h3 id="154-pipeline-con-condiciones-seguras-6-fase-2">15.4 Pipeline con condiciones seguras (§6, Fase 2)<a class="headerlink" href="#154-pipeline-con-condiciones-seguras-6-fase-2" title="Permanent link">&para;</a></h3>
+<p>Los pasos del <code>Recipe</code> admiten una <code>condition</code> (p. ej. correr <code>fit_elasticity</code> solo si se
+detectó contacto). <strong>No se usa <code>eval()</code></strong>: un <code>recipe.yaml</code> es un archivo externo y evaluar
+strings arbitrarios es un hueco de seguridad. Se implementa un evaluador restringido —
+comparaciones (<code>==</code>, <code>&lt;</code>, <code>&gt;</code>, <code>and</code>, <code>or</code>) sobre un conjunto de campos de resultado con lista
+blanca (<code>contact_detected</code>, <code>r_squared</code>, <code>n_fit</code>, ...)—, no Python arbitrario.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">standard_nanoindentation</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nt">steps</span><span class="p">:</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">op</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">calibrate</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="nt">params</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">invols</span><span class="p">:</span><span class="w"> </span><span class="nv">50.0e-9</span><span class="p p-Indicator">,</span><span class="nt"> k</span><span class="p">:</span><span class="w"> </span><span class="nv">0.2</span><span class="p p-Indicator">}</span><span class="w">   </span><span class="c1"># o &quot;from_metadata&quot; para leerlos del archivo</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">op</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">correct_baseline</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span><span class="nt">params</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">segment</span><span class="p">:</span><span class="w"> </span><span class="nv">extend</span><span class="p p-Indicator">,</span><span class="nt"> region</span><span class="p">:</span><span class="w"> </span><span class="nv">pre-contact</span><span class="p p-Indicator">}</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">op</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">find_contact_point</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">    </span><span class="nt">params</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">method</span><span class="p">:</span><span class="w"> </span><span class="nv">rov</span><span class="p p-Indicator">,</span><span class="nt"> threshold</span><span class="p">:</span><span class="w"> </span><span class="nv">0.2</span><span class="p p-Indicator">}</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">op</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fit_elasticity</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">    </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;contact_detected</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">r_squared</span><span class="nv"> </span><span class="s">&gt;</span><span class="nv"> </span><span class="s">0.9&quot;</span><span class="w">   </span><span class="c1"># evaluador restringido, sin eval()</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">    </span><span class="nt">params</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="nv">hertz</span><span class="p p-Indicator">,</span><span class="nt"> tip_radius</span><span class="p">:</span><span class="w"> </span><span class="nv">20.0e-9</span><span class="p p-Indicator">,</span><span class="nt"> max_indentation</span><span class="p">:</span><span class="w"> </span><span class="nv">50.0e-9</span><span class="p p-Indicator">}</span>
+</code></pre></div>
+<h3 id="155-viscoelasticidad-el-diferenciador-real-7-fase-3">15.5 Viscoelasticidad — el diferenciador real (§7, Fase 3)<a class="headerlink" href="#155-viscoelasticidad-el-diferenciador-real-7-fase-3" title="Permanent link">&para;</a></h3>
+<p>JPK y ANA son flojos en viscoelasticidad; ahí spmkit los supera de verdad. En muestras blandas
+(polímeros, células, hidrogeles) hay histéresis y dependencia con la tasa de carga que un modelo
+elástico no captura. Se añaden modelos analíticos bien definidos: <strong>relajación de esfuerzo</strong>,
+<strong>fluencia/creep</strong> y <strong>Standard Linear Solid (SLS)</strong> → módulos E₀/E∞ y tiempo de relajación τ.
+Requiere el canal <code>time</code> y segmentos <code>pause</code>/<code>modulation</code> (por eso el modelo enriquecido de §4).
+<em>Nota:</em> la librería "PyRhizome" mencionada en la revisión <strong>no se pudo verificar</strong> que exista;
+se implementa propio (modelos cerrados) y se evalúa alguna librería de reología AFM como
+referencia antes de reimplementar, no como dependencia a ciegas.</p>
+<h3 id="156-incertidumbre-monte-carlo-7-fase-3-publicable">15.6 Incertidumbre Monte Carlo (§7, Fase 3) — publicable<a class="headerlink" href="#156-incertidumbre-monte-carlo-7-fase-3-publicable" title="Permanent link">&para;</a></h3>
+<p><code>fit_elasticity</code> reporta σ del ajuste, pero eso ignora la incertidumbre física de InvOLS y de k.
+Nuevo <code>fit_elasticity_mc()</code>: repite el ajuste N veces muestreando InvOLS y k dentro de sus
+errores → un E con incertidumbre <strong>física real</strong>, no solo matemática. Es exactamente lo que
+falta en JPK/ANA y lo que un referee valora.</p>
+<h3 id="157-api-jupyterheadless-de-primera-clase-10-elevado">15.7 API Jupyter/headless de primera clase (§10, elevado)<a class="headerlink" href="#157-api-jupyterheadless-de-primera-clase-10-elevado" title="Permanent link">&para;</a></h3>
+<p>El <code>core</code> puro + <code>Recipe</code> en YAML hacen a spmkit <em>scriptable</em> — algo que ANA/JPK (cajas negras)
+no ofrecen. Se expone una API de nivel superior:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">spmkit</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">recipe</span>  <span class="o">=</span> <span class="n">spmkit</span><span class="o">.</span><span class="n">Recipe</span><span class="o">.</span><span class="n">from_yaml</span><span class="p">(</span><span class="s2">&quot;mi_analisis.yaml&quot;</span><span class="p">)</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">results</span> <span class="o">=</span> <span class="n">spmkit</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">recipe</span><span class="p">,</span> <span class="s2">&quot;experimento.nid&quot;</span><span class="p">)</span>     <span class="c1"># corre el pipeline</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="n">results</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;resultados.csv&quot;</span><span class="p">)</span>     <span class="c1"># pandas es extra opcional</span>
+</code></pre></div>
+<p><code>_repr_html_</code>/<code>_repr_png_</code> en <code>SPMChannel</code> y los <code>*Result</code> para render inline en notebooks.
+<code>to_dataframe()</code> vive en un camino opcional (<code>spmkit[pandas]</code>) para no cargar el core. Mensaje
+de marketing: <em>"JPK Data Processing, pero scriptable y reproducible."</em></p>
+<hr />
+<h2 id="16-detalles-de-implementacion-v21-the-devil-is-in-the-details">16. Detalles de implementación (v2.1) — "the devil is in the details"<a class="headerlink" href="#16-detalles-de-implementacion-v21-the-devil-is-in-the-details" title="Permanent link">&para;</a></h2>
+<p>Gotchas técnicos detectados en la segunda revisión, a respetar al escribir código.</p>
+<h3 id="161-loaders-picklables-multiprocessing-lazy-loading">16.1 Loaders picklables (multiprocessing + lazy loading)<a class="headerlink" href="#161-loaders-picklables-multiprocessing-lazy-loading" title="Permanent link">&para;</a></h3>
+<p><code>ProcessPoolExecutor</code> serializa con <code>pickle</code>, y <strong>los <code>lambda</code>/closures no son picklables</strong>;
+un file handle abierto tampoco cruza a otro proceso. Por eso <code>ForceVolume.loader</code> <strong>no</strong> es una
+función anónima sino una <strong>instancia de clase picklable</strong> que guarda solo la ruta (o las curvas,
+para in-memory) e implementa <code>__call__</code>; cada worker abre su propio handle a partir de la ruta.
+Se provee <code>InMemoryLoader</code> (dataclass congelada con las curvas) para <code>.nid</code>; los lectores de
+archivos grandes usarán un <code>FileLoader(path, index_table)</code>. Esto mantiene stdlib viable y deja
+<code>joblib</code> como extra opcional real, no obligatorio.</p>
+<h3 id="162-origen-dinamico-de-la-calibracion">16.2 Origen dinámico de la calibración<a class="headerlink" href="#162-origen-dinamico-de-la-calibracion" title="Permanent link">&para;</a></h3>
+<p>La op <code>calibrate</code> resuelve <code>invols</code>/<code>k</code> dinámicamente: <code>"from_metadata"</code> los lee del <code>.nid</code>/
+<code>.jpk</code> (varían por día o por curva si se calibró in-situ) y cae al valor explícito si no están.
+Así el mismo <code>Recipe</code> sirve para un dataset completo, no solo un lote uniforme.</p>
+<h3 id="163-semilla-del-monte-carlo-determinismo-en-ci">16.3 Semilla del Monte Carlo (determinismo en CI)<a class="headerlink" href="#163-semilla-del-monte-carlo-determinismo-en-ci" title="Permanent link">&para;</a></h3>
+<p><code>fit_elasticity_mc</code> es estocástico → <strong>debe</strong> aceptar <code>seed</code> en su config YAML. Los tests fijan
+la semilla (coherente con la convención del repo: todo RNG usa <code>np.random.default_rng(seed)</code>).
+Sin esto, los known-answer de CI fallarían de forma intermitente.</p>
+<h3 id="164-callback-de-progreso-a-traves-de-procesos">16.4 Callback de progreso a través de procesos<a class="headerlink" href="#164-callback-de-progreso-a-traves-de-procesos" title="Permanent link">&para;</a></h3>
+<p><code>core/pipeline/run.py</code> acepta <code>progress: Callable[[float, str], None] | None</code>. El bucle que
+consume el pool (en el <strong>proceso principal</strong>, vía <code>as_completed</code>) invoca el callback a medida
+que llegan resultados; el wrapper de Qt lo traduce a un <code>pyqtSignal</code> hacia el hilo de UI. Así
+<code>core</code> no depende de Qt y la barra de progreso avanza sin congelar la interfaz.</p>
+<h3 id="165-regla-de-renderizado-hibrido-pyqtgraph-vs-matplotlib">16.5 Regla de renderizado híbrido (pyqtgraph vs matplotlib)<a class="headerlink" href="#165-regla-de-renderizado-hibrido-pyqtgraph-vs-matplotlib" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>pyqtgraph</strong> para todo lo interactivo: lienzo de curvas, scrubbing de 10k curvas, mapas de
+  propiedades en vivo (60 fps).</li>
+<li><strong>matplotlib</strong> solo para el dock de histogramas/reportes y la <strong>exportación final</strong> de figuras
+  de publicación (tipografía LaTeX, alta DPI). No se usa matplotlib en el camino interactivo.</li>
+</ul>
+<h3 id="166-esquema-del-dataframe-de-resultados-formato-long">16.6 Esquema del DataFrame de resultados (formato <em>long</em>)<a class="headerlink" href="#166-esquema-del-dataframe-de-resultados-formato-long" title="Permanent link">&para;</a></h3>
+<p><code>results.to_dataframe()</code> emite un esquema estándar y estable (para reemplazar a JPK y permitir
+<code>df.plot.scatter(x="x", y="E")</code> directo):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>columns = [curve_index, x, y, segment, cycle, model,
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>           E_Pa, E_err_Pa, r_squared, adhesion_N, dissipation_J,
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>           contact_point_m, n_fit]
+</code></pre></div>
+<p>Una fila por (curva × segmento ajustado). Unidades SI explícitas en el nombre de columna.</p>
+<hr />
+<h2 id="17-resultado-del-spike-jpk-fase-05-hecho">17. Resultado del spike JPK (Fase 0.5) — ✅ hecho<a class="headerlink" href="#17-resultado-del-spike-jpk-fase-05-hecho" title="Permanent link">&para;</a></h2>
+<p>Se desempaquetaron curvas de fuerza JPK reales (dataset abierto <strong>afmformats</strong>,
+<code>AFM-analysis/afmformats</code>). Muestras en <code>reference/jpk_samples/</code> (gitignored). Un
+<code>.jpk-force</code>/<code>.jpk-force-map</code> es un <strong>ZIP</strong> con esta estructura:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>header.properties                              # cabecera global
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>segments/0/segment-header.properties           # segmento 0 (extend)
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>segments/0/channels/height.dat                 # canales crudos (enteros)
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>segments/0/channels/vDeflection.dat
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>segments/0/channels/strainGaugeHeight.dat
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>segments/1/...                                 # segmento 1 (retract)
+</code></pre></div>
+<ul>
+<li><strong>Segmentos</strong>: <code>force-segment-header.name.name = extend-spm</code> / <code>retract-spm</code>;
+  <code>num-points</code> por segmento. → mapea 1:1 a <code>ForceSegment</code> (§4).</li>
+<li><strong>Canales <code>.dat</code></strong>: enteros crudos, <code>data.type = short</code> (int16, big-endian JPK).</li>
+<li><strong>Conversión = cascada de "calibration slots"</strong> (cada uno <code>offset + multiplier</code>):</li>
+<li><code>encoder</code> (short → V): <code>multiplier</code>, <code>offset</code>.</li>
+<li><code>conversion.distance</code> (V → m): <code>multiplier</code> = <strong>InVOLS</strong> (sensibilidad, m/V).</li>
+<li><code>conversion.force</code> (m → N): <code>multiplier</code> = <strong>constante de resorte k</strong> (N/m).</li>
+</ul>
+<p>Ejemplo real del sample: InVOLS ≈ 7.0e-8 m/V, k ≈ 0.0435 N/m — <strong>ambos vienen en
+  el archivo</strong> (confirma §16.2 <code>from_metadata</code>).</p>
+<p><strong>Implicancia para el lector JPK (Fase 4):</strong> <code>io/jpk.py</code> = <code>zipfile</code> + parseo de
+<code>.properties</code> (INI-like <code>clave=valor</code>) + <code>np.frombuffer(dtype='&gt;i2')</code> por canal +
+aplicar la cascada de conversiones. La <code>Calibration</code> se lee directa de los slots
+<code>distance</code>/<code>force</code>. El ecosistema <code>afmformats</code>/<code>nanite</code>/<code>PyJibe</code> (Paul Müller) sirve
+de referencia de implementación (y de datos de test).</p>
+<hr />
+<h2 id="18-estado-de-implementacion-2026-07">18. Estado de implementación (2026-07)<a class="headerlink" href="#18-estado-de-implementacion-2026-07" title="Permanent link">&para;</a></h2>
+<p><strong>Hecho y validado (en la rama <code>feat/force-spectroscopy</code>):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Módulo</th>
+<th>Qué hace</th>
+<th>Validación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>core/models/force.py</code></td>
+<td>Modelo de segmentos + ForceVolume lazy</td>
+<td>pickling, shim, guardas</td>
+</tr>
+<tr>
+<td><code>core/pipeline/</code></td>
+<td>Recipe YAML + condiciones seguras + run</td>
+<td>roundtrip, evaluador <code>ast</code></td>
+</tr>
+<tr>
+<td><code>core/analysis/calibration.py</code></td>
+<td>InVOLS, k térmico, conversiones</td>
+<td>known-answer</td>
+</tr>
+<tr>
+<td><code>core/analysis/forcecurve.py</code></td>
+<td>Ajuste nativo robusto + MC + disipación</td>
+<td>sintético (E exacto), JPK real 302 kPa R²0.97</td>
+</tr>
+<tr>
+<td><code>core/io/jpk.py</code></td>
+<td>Lector <code>.jpk-force</code></td>
+<td>fixture + JPK real (InVOLS/k recuperados)</td>
+</tr>
+<tr>
+<td><code>core/io/nid.py</code> <code>load_nid_force</code></td>
+<td>Force-volume NanoSurf (extend/retract)</td>
+<td><code>.nid</code> real 10×10, 100 curvas</td>
+</tr>
+<tr>
+<td><code>core/analysis/forcevolume.py</code></td>
+<td>Mapas por píxel + paralelo + estadística</td>
+<td>mapa recupera módulo, paralelo==secuencial</td>
+</tr>
+<tr>
+<td><code>core/forcebatch.py</code></td>
+<td>Batch de carpeta → CSV/DataFrame</td>
+<td>sintético + <code>.nid</code> real</td>
+</tr>
+<tr>
+<td>CLI</td>
+<td><code>forcecurve</code>, <code>forcemap</code>, <code>fbatch</code></td>
+<td>tests + corridas reales</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Caveats / follow-ups conocidos:</strong></p>
+<ol>
+<li><strong>Calidad de ajuste en <code>.nid</code> real:</strong> las curvas NanoSurf de nanomecánica traen
+   snap-in/adhesión fuertes y el canal <code>Tip-Sample Separation</code> viene <strong>saturado</strong>
+   en el contacto (≈85% de valores únicos), así que se cae a la altura del piezo →
+   módulo "aparente" (sobreestimado, R² moderado). Refinamiento pendiente: corrección
+   de flexión con k del <code>.nid</code>, manejo dedicado del snap-in, y contacto por RoV sobre
+   la rama de carga. El pipeline corre end-to-end y no produce basura (E finito), pero
+   el número absoluto en <code>.nid</code> aún no es de publicación (en JPK sí: 302 kPa, R²0.97).</li>
+<li><strong><code>.jpk-force-map</code> (force-volume JPK):</strong> su ZIP usa <code>shared-data/</code> con conversiones
+   compartidas e indirección <code>lcd-info</code> por segmento (headers pequeños que referencian
+   la calibración compartida). Parsearlo bien requiere resolver esa indirección; queda
+   como follow-up. Los mapas ya funcionan vía <code>.nid</code>; el <code>.jpk-force</code> de curva única sí.</li>
+<li><strong>Provenance en exports</strong> (recipe + hash + versión) y la <strong>GUI workspace</strong> (Fase 6)
+   siguen pendientes.
+```</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://kegouro.github.io" target="_blank" rel="noopener" title="Pharos Project — el ecosistema" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8 10V8h1V4H8V3l4-2 4 2v1h-1v4h1v2h-1.26l-6.3 3.64L9 10zm5-2V4h-2v4zM7 23l.04-.24 9.11-5.26.52 3.38L13 23zm1.05-6.83L15.31 12l.52 3.37-8.4 4.85z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate", "search.suggest", "navigation.top", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
