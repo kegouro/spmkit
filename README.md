@@ -518,8 +518,8 @@ make gui        # lanza Fathom
 
 ## Agradecimientos
 
-María Saavedra Fredes y Benjamin Schleyer ayudaron a localizar y compartir
-datasets candidatos para la campaña de validación.
+María Saavedra Fredes y Benjamin Schleyer ayudaron brindando 
+datasets proopios como candidatos para la campaña de validación.
 
 ### Reproducir los medios de este README
 
