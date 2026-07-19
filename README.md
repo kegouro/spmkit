@@ -499,9 +499,8 @@ dos `EXTERNAL_CONFIRMATION`) con delta máximo y RMS de píxel de `0.0 nm`. Las
 comparaciones Sa/Sq/Sz fueron 12/12 y 6/6 dentro de la tolerancia congelada. Es
 evidencia `LEVEL 2 NUMERICALLY_VERIFIED` para este alcance limitado, no soporte
 universal del formato ni validación física. La confirmación Lancaster fue
-prerregistrada pero no ciega por `ACCIDENTAL_PRE_FREEZE_UNBLINDING`; no hay un
-blind holdout. Véase la [auditoría final](../spmkit-validation/docs/campaigns/nanoscope_spm_parser_pilot_v0.1_audit.md)
-en el repositorio hermano `spmkit-validation`.
+prerregistrada pero no ciega porque el *preflight* expuso métricas antes de la
+implementación; no hay un blind holdout. Véase la [auditoría final](https://github.com/kegouro/spmkit-validation/blob/1fdc21b45841434758d256ea3b4be77910b74073/docs/campaigns/nanoscope_spm_parser_pilot_v0.1_audit.md).
 
 ---
 
