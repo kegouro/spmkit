@@ -40,7 +40,10 @@ _SECTION_RE = re.compile(rb"^\\\*(?P<name>.+?)\s*$")
 # el separador clave/valor es un colon **seguido de espacio**.
 _KEY_RE = re.compile(rb"^\\(?P<key>@?.+?):\s(?P<val>.*?)\s*$")
 #: ``\@2:Z scale: V [Sens. Zscale] (0.00615 nm/LSB)`` → (sens_ref, hard, unidad).
-_ZSCALE_RE = re.compile(r"\[(?P<ref>[^\]]+)\]\s*\(?\s*(?P<hard>[-\d.eE+]+)\s*(?P<unit>\S+)")
+_ZSCALE_RE = re.compile(
+    r"\[(?P<ref>[^\]]+)\]\s*\(?\s*(?P<hard>[-\d.eE+]+)\s*(?P<unit>\S+)\)"
+    r"(?:\s*(?P<value>[-\d.eE+]+)\s*(?P<value_unit>\S+))?"
+)
 #: ``\@Sens. Zscale: V 34.5 nm/V`` → (valor, unidad).
 _SENS_RE = re.compile(r"([-\d.eE+]+)\s*(\S+)")
 _UNIT_TO_M = {"m": 1.0, "mm": 1e-3, "um": 1e-6, "µm": 1e-6, "~m": 1e-6, "nm": 1e-9, "pm": 1e-12}
@@ -98,19 +101,36 @@ def _scan_size(sections: list[tuple[str, dict[str, str]]]) -> tuple[float, float
 
 
 def _sensitivity(sections: list[tuple[str, dict[str, str]]], ref: str) -> float | None:
-    """Sensibilidad *soft* ``\\@Sens. <ref>`` (física/voltio), buscada en todas las secciones."""
-    key = f"@Sens. {ref}"
+    key = f"@Sens. {ref.removeprefix('Sens. ')}"
     for _name, keys in sections:
         for k, v in keys.items():
-            if k == key or k.endswith(ref):
+            if k == key:
                 m = _SENS_RE.search(v)
                 if m:
-                    return float(m.group(1))
+                    unit = m.group(2).split("/", 1)[0]
+                    factor = _UNIT_TO_M.get(unit)
+                    if factor is not None:
+                        return float(m.group(1)) * factor
     return None
 
 
 def _int_dtype(bytes_per_pixel: int) -> np.dtype:
-    return np.dtype("<i4") if bytes_per_pixel >= 4 else np.dtype("<i2")
+    if bytes_per_pixel == 2:
+        return np.dtype("<i2")
+    if bytes_per_pixel == 4:
+        return np.dtype("<i4")
+    raise ValueError(f"Variante .spm no soportada: {bytes_per_pixel} bytes/pixel")
+
+
+def _pixel_layout(sections: list[tuple[str, dict[str, str]]], keys: dict[str, str]) -> tuple[np.dtype, int]:
+    declared = int(keys.get("Bytes/pixel", "2"))
+    _int_dtype(declared)
+    version = 0
+    for name, values in sections:
+        if name == "File list" and values.get("Version"):
+            version = int(values["Version"], 0)
+            break
+    return _int_dtype(4 if version >= 0x09200000 else 2), declared
 
 
 def load_bruker_spm(path: str | Path) -> SPMData:
@@ -136,13 +156,15 @@ def load_bruker_spm(path: str | Path) -> SPMData:
             offset = int(keys["Data offset"])
             samps = int(keys.get("Samps/line") or keys["Number of Samps/line"])
             lines = int(keys["Number of lines"])
-            bpp = int(keys.get("Bytes/pixel", "2"))
         except (KeyError, ValueError) as exc:
             raise ValueError(
                 f".spm corrupto: sección {name!r} sin dimensiones ({exc}): {path}"
             ) from exc
 
-        dt = _int_dtype(bpp)
+        try:
+            dt, qbpp = _pixel_layout(sections, keys)
+        except ValueError as exc:
+            raise ValueError(f"{exc}: {path}") from exc
         count = samps * lines
         need = count * dt.itemsize
         if offset + need > len(blob):
@@ -152,7 +174,7 @@ def load_bruker_spm(path: str | Path) -> SPMData:
         # Nombre del canal y escalado (hard × sens). Sin escala confiable → crudo.
         label = _by_suffix(keys, "Image Data") or name
         cname = _channel_name(label)
-        scale, unit = _channel_scale(keys, sections)
+        scale, unit = _channel_scale(keys, sections, qbpp)
         data = raw.astype(np.float64) * scale
         if scale != 1.0:
             scaled_any = True
@@ -189,7 +211,7 @@ def _channel_name(label: str) -> str:
 
 
 def _channel_scale(
-    keys: dict[str, str], sections: list[tuple[str, dict[str, str]]]
+    keys: dict[str, str], sections: list[tuple[str, dict[str, str]]], qbpp: int
 ) -> tuple[float, str]:
     """``(factor, unidad)`` para convertir el crudo a físico. ``(1.0, "")`` si no se resuelve."""
     zscale = _by_suffix(keys, "Z scale")
@@ -199,8 +221,17 @@ def _channel_scale(
     if not m:
         return 1.0, ""
     hard = float(m.group("hard"))
-    hard_unit = m.group("unit").split("/")[0]  # "nm/LSB" → "nm"
+    hard_unit = m.group("unit").split("/")[0]
     sens = _sensitivity(sections, m.group("ref"))
-    if sens is None:  # sin sensibilidad soft: usa solo la hard (unidad de la hard)
-        return hard * _UNIT_TO_M.get(hard_unit, 1.0), "m"
-    return hard * sens * _UNIT_TO_M.get(hard_unit, 1.0), "m"
+    hard_factor = _UNIT_TO_M.get(hard_unit)
+    if hard_factor is not None:
+        return hard * hard_factor, "m"
+    value = m.group("value")
+    value_unit = (m.group("value_unit") or "").split("/", 1)[0]
+    if value is not None and value_unit in {"V", "mV"} and sens is not None:
+        volts_per_lsb = float(value) * (1e-3 if value_unit == "mV" else 1.0)
+        return volts_per_lsb * sens / 256**qbpp, "m"
+    if hard_unit in {"V", "mV"} and sens is not None:
+        volts_per_lsb = hard * (1e-3 if hard_unit == "mV" else 1.0)
+        return volts_per_lsb * sens, "m"
+    return 1.0, ""
