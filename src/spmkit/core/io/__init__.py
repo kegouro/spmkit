@@ -7,6 +7,7 @@ dispatcher ``load_force`` por extensión).
 
 from spmkit.core.io.forceload import load_force, supported_force_extensions
 from spmkit.core.io.gwy import load_gwy, save_gwy
+from spmkit.core.io.igor_ibw import load_igor_ibw
 from spmkit.core.io.jpk import load_jpk_force
 from spmkit.core.io.loadany import inspect_any, load_any
 from spmkit.core.io.nhf import load_nhf
@@ -21,6 +22,7 @@ __all__ = [
     "load_nid_force",
     "load_nhf",
     "load_gwy",
+    "load_igor_ibw",
     "save_gwy",
     "load_jpk_force",
     "load_force",
