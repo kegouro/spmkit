@@ -15,6 +15,15 @@ venv/
 .coverage
 htmlcov/
 
+# Local environment and secrets (only sanitized templates are versionable)
+.env
+.env.*
+.envrc
+.direnv/
+!.env.example
+!.env.sample
+!.env.template
+
 # OS
 .DS_Store
 

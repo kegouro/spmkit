@@ -9,7 +9,7 @@
 *Nanomecánica, espectroscopía de fuerza de molécula única, metrología de imagen y sensado de masa por resonancia — con física validada por recuperación numérica.*
 
 [![CI](https://github.com/kegouro/spmkit/actions/workflows/ci.yml/badge.svg)](https://github.com/kegouro/spmkit/actions/workflows/ci.yml)
-[![Pruebas](https://img.shields.io/badge/pruebas-460%2B-brightgreen.svg)](https://github.com/kegouro/spmkit/actions/workflows/ci.yml)
+[![Pruebas](https://img.shields.io/badge/pruebas-CI-brightgreen.svg)](https://github.com/kegouro/spmkit/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12-blue.svg)](https://pypi.org/project/spmkit/)
 [![Licencia: MIT](https://img.shields.io/badge/licencia-MIT-yellow.svg)](LICENSE)
 [![Estilo: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
@@ -17,6 +17,8 @@
 [![DOI](https://zenodo.org/badge/1270254374.svg)](https://zenodo.org/badge/latestdoi/1270254374)
 
 **Español** · [English](README.en.md)
+
+> **Validación externa:** Sa, Sq y Sz fueron contrastados mediante un protocolo congelado contra Gwyddion 2.71: 18/18 comparaciones conformes sobre seis superficies sintéticas. Alcance limitado, `LEVEL 3 CROSS_VALIDATED`. Véase el [registro canónico de la campaña](https://github.com/kegouro/spmkit-validation/blob/2a3d6c780722a79cb19c079cec0476969267b10b/evidence/phase01e-gwyddion/gate-results.json).
 
 [Sinopsis](#sinopsis) · [Características](#características) · [Perspectivas](#galería-de-perspectivas) · [Instalación](#instalación) · [Tutoriales](#tutoriales) · [Arquitectura](#arquitectura) · [Extender](#extensibilidad) · [Validación](#validación-científica)
 
@@ -489,7 +491,7 @@ La rigurosidad es el pilar del proyecto. Cada modelo físico pasa un ***gate* de
 | Relajación SLS | Tiempo característico τ | < 4 % |
 | Sintonía térmica (SHO) | f₀, Q | 0.01 % / 4 % vs instrumento real |
 
-Además del *round-trip* de formatos (correlación de **precisión de máquina** contra Gwyddion), el lector `.nid` incluye **trazabilidad byte a byte** (`spmkit verify`). La integración continua ejecuta **más de 460 pruebas** de núcleo, validación y GUI (esta última *offscreen*) en Python 3.11 y 3.12.
+Además del *round-trip* de formatos (correlación de **precisión de máquina** contra Gwyddion), el lector `.nid` incluye **trazabilidad byte a byte** (`spmkit verify`). La integración continua cubre pruebas de núcleo, validación y GUI (esta última *offscreen*) en Python 3.11 y 3.12; la reproducción local completa requiere los extras correspondientes.
 
 ### Hito Nanoscope SPM v0.1
 
@@ -501,6 +503,35 @@ evidencia `LEVEL 2 NUMERICALLY_VERIFIED` para este alcance limitado, no soporte
 universal del formato ni validación física. La confirmación Lancaster fue
 prerregistrada pero no ciega porque el *preflight* expuso métricas antes de la
 implementación; no hay un blind holdout. Véase la [auditoría final](https://github.com/kegouro/spmkit-validation/blob/1fdc21b45841434758d256ea3b4be77910b74073/docs/campaigns/nanoscope_spm_parser_pilot_v0.1_audit.md).
+
+### Hito de validación cruzada Gwyddion v0.1
+
+El wheel publicado de SPMKit 0.1.4 fue evaluado como sistema bajo prueba mediante
+un arnés externo y un protocolo congelado. Se ejecutaron seis superficies
+sintéticas `binary64` de campo completo tanto con SPMKit como con una referencia
+basada en las bibliotecas de Gwyddion 2.71, instalada desde su release upstream
+verificada en un prefijo aislado.
+
+Las métricas Sa, Sq y Sz produjeron 18/18 comparaciones conformes, sin fallos,
+errores ni resultados inconclusos. La repetición local reprodujo los 18 valores,
+resultados, unidades y hashes de entrada. Los tests negativos de independencia
+pasaron 8/8 y los tests de manipulación pasaron 7/7.
+
+| Campaña | Sistema de referencia | Casos | Comparaciones | Resultado | Claim |
+| --- | --- | ---: | ---: | ---: | --- |
+| Rugosidad sintética v0.1 | Gwyddion 2.71 | 6 | 18 | 18 PASS | Level 3 |
+| Nanoscope SPM v0.1 | Gwyddion 2.71 | 6 archivos experimentales demostrados | 18 | 18 dentro de tolerancia | Level 2 |
+
+Esto respalda claims limitadas `LEVEL 3 CROSS_VALIDATED` para Sa, Sq y Sz dentro
+del alcance sintético evaluado. No constituye validación física, validación con
+datos reales, blind holdout, Level 5, autenticidad criptográfica ni equivalencia
+general con Gwyddion. La referencia usa las bibliotecas de Gwyddion mediante un
+wrapper congelado escrito por el harness; la acumulación de Sa reside en ese
+wrapper. Esta campaña no accedió a datos reales ni holdout. La campaña Nanoscope
+sí trabajó con seis archivos experimentales demostrados, pero tuvo
+`ACCIDENTAL_PRE_FREEZE_UNBLINDING` y no es blind holdout; el Level 3 nuevo no
+corresponde al parser Nanoscope general. Véase el
+[registro canónico de la campaña](https://github.com/kegouro/spmkit-validation/blob/2a3d6c780722a79cb19c079cec0476969267b10b/evidence/phase01e-gwyddion/gate-results.json).
 
 ---
 
