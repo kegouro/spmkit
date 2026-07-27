@@ -19,6 +19,8 @@
 **Español** · [English](README.en.md)
 
 > **Validación externa:** Sa, Sq y Sz fueron contrastados mediante un protocolo congelado contra Gwyddion 2.71: 18/18 comparaciones conformes sobre seis superficies sintéticas. Alcance limitado, `LEVEL 3 CROSS_VALIDATED`. Véase el [registro canónico de la campaña](https://github.com/kegouro/spmkit-validation/blob/2a3d6c780722a79cb19c079cec0476969267b10b/evidence/phase01e-gwyddion/gate-results.json).
+>
+> **Cobertura de verificación:** 741 tests automatizados únicos, además de 18 comparaciones cruzadas externas de Sa, Sq y Sz contra Gwyddion 2.71.
 
 [Sinopsis](#sinopsis) · [Características](#características) · [Perspectivas](#galería-de-perspectivas) · [Instalación](#instalación) · [Tutoriales](#tutoriales) · [Arquitectura](#arquitectura) · [Extender](#extensibilidad) · [Validación](#validación-científica)
 
