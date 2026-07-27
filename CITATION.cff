@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "Si usas este software, por favor cítalo."
 title: "spmkit — análisis de datos AFM/KPFM"
-abstract: "Analizador open-source de datos de microscopía de sonda de barrido (AFM/KPFM), validado contra Gwyddion."
+abstract: "Open-source AFM/KPFM scanning probe microscopy data analyzer. Sa, Sq and Sz externally cross-validated against Gwyddion 2.71 on synthetic surfaces (LEVEL 3). Independently developed by José Labarca Baeza in the academic context of the SPM Lab, UTFSM."
 type: software
 authors:
   - family-names: "Labarca Baeza"

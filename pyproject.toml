@@ -10,10 +10,9 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
 authors = [
-    { name = "José Labarca", email = "jlabarca@usm.cl" },
-    { name = "Tomás Corrales" },
+    { name = "José Labarca Baeza", email = "jlabarca@usm.cl" },
 ]
-maintainers = [{ name = "SPM Lab UTFSM" }]
+maintainers = [{ name = "José Labarca Baeza", email = "jlabarca@usm.cl" }]
 keywords = ["afm", "kpfm", "spm", "nanosurf", "microscopy", "roughness", "nid"]
 classifiers = [
     "Development Status :: 3 - Alpha",

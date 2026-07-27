@@ -526,6 +526,21 @@ Nanoscope parser. See the [canonical campaign record](https://github.com/kegouro
 
 ---
 
+## Ecosystem
+
+SPM-Kit is the central product of a scientific infrastructure ecosystem:
+
+| Repository | Role |
+|---|---|
+| **[spmkit](https://github.com/kegouro/spmkit)** (this repo) | Numerical engine, Python API, CLI and graphical workspace (Fathom) |
+| **[spmkit-validation](https://github.com/kegouro/spmkit-validation)** | External black-box validation harness: runs SPM-Kit via `subprocess` and preserves reproducible evidence |
+| **[spmkit-phantoms](https://github.com/kegouro/spmkit-phantoms)** | Deterministic synthetic surfaces with known *ground truth*, controlled corruptions and canonical hashes |
+| **[spmkit-data-hunter](https://github.com/kegouro/spmkit-data-hunter)** | Discovery, inventory and triage of public AFM/SPM datasets for validation |
+
+> **Find the evidence → define the truth → test the system externally → preserve the result.**
+
+---
+
 ## Development and quality
 
 ```bash
@@ -540,7 +555,7 @@ make gui        # launch Fathom
 
 ## Acknowledgements
 
-María Saavedra Fredes and Benjamin Schleyer helped locate and share candidate datasets for the validation campaign.
+Tomás Corrales and the SPM Lab at UTFSM for providing selected experimental datasets and laboratory context used during development and evaluation. María Saavedra Fredes and Benjamin Schleyer helped locate and share candidate datasets for the validation campaign.
 
 ### Reproduce this README's media
 

@@ -1,7 +1,9 @@
 # Contribuir a spmkit
 
-¡Gracias por tu interés! spmkit es desarrollado por el SPM Lab de la UTFSM y
-recibe contribuciones de la comunidad.
+¡Gracias por tu interés! spmkit es diseñado y desarrollado independientemente por
+José Labarca Baeza, estudiante de pregrado de Física en la Universidad Técnica
+Federico Santa María, en el contexto académico del SPM Lab. Recibe contribuciones
+de la comunidad.
 
 ## Preparar el entorno
 

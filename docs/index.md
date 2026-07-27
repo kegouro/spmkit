@@ -2,7 +2,7 @@
 
 **Analizador open-source de datos AFM / KPFM para microscopía de sonda de barrido**
 
-*Desarrollado en el SPM Lab de la Universidad Técnica Federico Santa María (UTFSM)*
+*Diseñado y desarrollado independientemente por José Labarca Baeza · SPM Lab, Universidad Técnica Federico Santa María*
 
 [![CI](https://github.com/kegouro/spmkit/actions/workflows/ci.yml/badge.svg)](https://github.com/kegouro/spmkit/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/spmkit.svg?color=2dd4bf)](https://pypi.org/project/spmkit/)
@@ -13,7 +13,7 @@
 
 spmkit lee formatos **NanoSurf** (`.nid`, `.nhf`) y **Gwyddion** (`.gwy`) y entrega análisis listo para publicar: rugosidad ISO 25178, perfiles interactivos, KPFM y nanomecánica, con una CLI y una GUI científica completa.
 
-Su lectura del `.nid` está **validada a precisión de máquina** contra Gwyddion.
+Su lectura del `.nid` tiene **correlación de precisión de máquina** con Gwyddion, y Sa/Sq/Sz tienen **validación cruzada externa** (`LEVEL 3`) contra Gwyddion 2.71 en superficies sintéticas.
 
 ![spmkit GUI](images/screenshot_viewer.png)
 
