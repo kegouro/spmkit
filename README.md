@@ -16,7 +16,10 @@
 [![Tipado: mypy](https://img.shields.io/badge/tipado-mypy%20estricto-blue.svg)](https://mypy-lang.org/)
 [![DOI](https://zenodo.org/badge/1270254374.svg)](https://zenodo.org/badge/latestdoi/1270254374)
 
-**Español** · [English](README.en.md)
+<p align="center">
+  <a href="README.md"><img src="https://img.shields.io/badge/README-Español-blue?style=for-the-badge" alt="Español"></a>
+  <a href="README.en.md"><img src="https://img.shields.io/badge/README-English-lightgrey?style=for-the-badge" alt="English"></a>
+</p>
 
 > **Validación externa:** Sa, Sq y Sz fueron contrastados mediante un protocolo congelado contra Gwyddion 2.71: 18/18 comparaciones conformes sobre seis superficies sintéticas. Alcance limitado, `LEVEL 3 CROSS_VALIDATED`. Véase el [registro canónico de la campaña](https://github.com/kegouro/spmkit-validation/blob/2a3d6c780722a79cb19c079cec0476969267b10b/evidence/phase01e-gwyddion/gate-results.json).
 >
