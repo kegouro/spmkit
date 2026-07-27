@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/images/brand/banner.png" alt="SPM-Kit · Fathom" width="100%">
+<img src="docs/images/brand/fathom_banner_new.jpeg" alt="SPM-Kit · Fathom" width="100%">
 
 # SPM-Kit · Fathom
 
