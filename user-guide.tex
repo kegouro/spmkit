@@ -1,0 +1,1016 @@
+% SPM-Kit {\textperiodcentered} Fathom Usage Guide --- v0.1.2
+\documentclass[a4paper,11pt]{article}
+
+% == Packages ==
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage[margin=2.2cm, bottom=2.5cm]{geometry}
+\usepackage{microtype}
+\usepackage[colorlinks=true, linkcolor=blue!60!black, urlcolor=blue!60!black, citecolor=blue!60!black]{hyperref}
+\usepackage[table]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage[breakable, skins]{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{upquote}
+\usepackage{textcomp}
+\usepackage{xurl}
+\usepackage{calc}
+\usepackage{needspace}
+\usepackage{graphicx}
+\usepackage{listings}
+
+% == Colours ==
+\definecolor{noteblue}{RGB}{30,100,180}
+\definecolor{warnamber}{RGB}{180,120,20}
+\definecolor{tipgreen}{RGB}{30,130,70}
+\definecolor{codegray}{RGB}{50,50,50}
+\definecolor{lightgray}{RGB}{245,245,245}
+
+% == Code block style ==
+\newcommand{\cmd}[1]{\texttt{\small #1}}
+
+\lstset{
+  basicstyle=\small\ttfamily,
+  backgroundcolor=\color{lightgray},
+  frame=none,
+  breaklines=true,
+  breakatwhitespace=false,
+  postbreak=\mbox{\textcolor{gray}{$\hookrightarrow$}\space},
+  showstringspaces=false,
+  aboveskip=4pt,
+  belowskip=4pt,
+  xleftmargin=4pt,
+  xrightmargin=4pt,
+  framexleftmargin=4pt,
+  framexrightmargin=4pt,
+  columns=flexible,
+  keepspaces=true,
+  upquote=true,
+}
+
+
+
+% == Note / warning boxes ==
+\newtcolorbox{infobox}[1][]{colback=noteblue!5, colframe=noteblue!40,
+  title={\textcolor{noteblue}{#1}}, fonttitle=\bfseries, breakable}
+
+\newtcolorbox{warnbox}[1][]{colback=warnamber!5, colframe=warnamber!50,
+  title={\textcolor{warnamber}{#1}}, fonttitle=\bfseries, breakable}
+
+% == Page style ==
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small SPM-Kit {\textperiodcentered} Fathom --- Usage Guide v0.1.2}
+\fancyhead[R]{\small\thepage/\pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% == Captionless table continuation ==
+\newcommand{\tcont}[1]{%
+  \multicolumn{1}{c}{\small\dots\ \emph{#1 continued}}\\}
+
+\begin{document}
+
+% ===========================================================
+% TITLE
+% ===========================================================
+
+\begin{titlepage}
+\raggedright
+\vspace*{4cm}
+
+{\Huge\bfseries SPM-Kit {\textperiodcentered} Fathom}\\[0.4cm]
+{\LARGE Usage Guide}\\[1.5cm]
+{\large Version 0.1.2 (Alpha)}\\[0.3cm]
+{\large 2026-07-14}\\[2cm]
+
+{\normalsize
+  \textbf{Authors:} Jos\'e Labarca \& Tom\'as Corrales\\
+  \textbf{License:} MIT\\
+  \textbf{Repository:} \url{https://github.com/kegouro/spmkit}\\[1cm]
+
+  \emph{Canonical documentation: This PDF is a printable companion. The Markdown
+  version at \texttt{docs/user-guide.md} is the authoritative reference and may
+  contain additional detail. Both are verified against SPM-Kit~0.1.2.}
+}
+
+\vspace{1cm}
+{\normalsize
+  SPM-Kit is an open-source Python toolkit for analysing AFM/KPFM scanning-probe-microscopy
+  data. Fathom is its desktop workspace. This guide covers installation, conceptual model,
+  supported formats, the Fathom GUI, CLI reference, Python API, scientific validation,
+  and extensibility.
+}
+
+\vfill
+{\footnotesize
+  This open-source project has been developed without dedicated institutional funding.
+  Development status: Alpha (3~---~Alpha). API may change before 1.0.
+}
+\end{titlepage}
+
+\tableofcontents
+\clearpage
+
+% ===========================================================
+% 1. INTRODUCTION
+% ===========================================================
+\section{Introduction}
+
+\subsection{What is SPM-Kit?}
+
+SPM-Kit is an open-source Python toolkit for analysing AFM/KPFM scanning-probe-microscopy data.
+It reads raw instrument files and produces publication-ready results: roughness
+(ISO~25178), KPFM contact-potential statistics, nanomechanical property maps,
+thermal-tune cantilever calibration, grain detection, spectral/fractal analysis, and
+single-molecule force spectroscopy.
+
+SPM-Kit was developed independently by physics students at Universidad T\'ecnica Federico Santa Mar\'ia (UTFSM), informed by practical work with AFM/SPM data, and is released under the MIT license.
+and is released under the MIT license.
+
+\subsection{What is Fathom?}
+
+Fathom is the desktop workspace application bundled with SPM-Kit. It is a PyQt6~+~pyqtgraph
+GUI organised into \emph{perspectives} (task-oriented views), not flat tabs. A command
+palette (\texttt{Ctrl+K}) provides keyboard access to every function.
+
+\subsection{Component relationship}
+
+\begin{lstlisting}[language=bash]
+spmkit (Python package)
+  spmkit.core   -- numerical engine (pure Python, no UI imports)
+  spmkit.cli    -- command-line interface (Typer + Rich)
+  spmkit.gui    -- Fathom desktop workspace (PyQt6 + pyqtgraph)
+\end{lstlisting}
+
+\begin{itemize}
+  \item \texttt{spmkit} is the Python package and CLI entry point.
+  \item \textbf{Fathom} is the graphical workspace.
+  \item \textbf{SPM-Kit} is the project/ecosystem name.
+\end{itemize}
+
+\subsection{What SPM-Kit does \emph{not} do}
+\begin{itemize}[nosep]
+  \item It is \textbf{not a microscope controller}.
+  \item It is \textbf{not a certified metrology tool}.
+  \item It does \textbf{not} provide medical, clinical, or regulatory reports.
+  \item Simulation features are \textbf{educational}, not quantitative digital twins.
+\end{itemize}
+
+\subsection{Status}
+SPM-Kit is \textbf{alpha-stage} (Development Status~3). Core image analysis
+(roughness, KPFM, spectral) is validated against Gwyddion at machine precision.
+Force-spectroscopy workflows are tested on synthetic and lab data. Some readers
+are experimental (see \S\ref{sec:validation}).
+
+% ===========================================================
+% 2. INSTALLATION
+% ===========================================================
+\section{Installation}
+
+Requirements: \textbf{Python\,{\textgreater}=\,3.11}.
+
+\subsection{Core only}
+\begin{lstlisting}[language=bash]
+pip install spmkit
+\end{lstlisting}
+
+Installs: numpy, typer, rich, pyyaml. Sufficient for CLI, Python API, and all image analysis.
+
+\subsection{GUI / Fathom}
+\begin{lstlisting}[language=bash]
+pip install "spmkit[gui]"
+\end{lstlisting}
+
+Adds: PyQt6, pyqtgraph, matplotlib, Crameri colormaps, matplotlib-scalebar.
+
+\subsection{All features}
+\begin{lstlisting}[language=bash]
+pip install "spmkit[all]"
+\end{lstlisting}
+
+\subsection{Extras matrix}
+
+\begin{longtable}{@{}>{\ttfamily}l p{7cm} l@{}}
+\toprule
+\textnormal{Extra} & \textnormal{Provides} & \textnormal{Deps} \\
+\midrule
+gui    & Fathom desktop workspace & PyQt6, pyqtgraph, matplotlib \\
+viz    & Publication figures, colormaps & matplotlib, cmcrameri, scalebar \\
+gwy    & Gwyddion .gwy read/write & gwyfile \\
+hdf5   & HDF5 import/export & h5py \\
+grains & Grain/particle detection & scipy \\
+report & HTML/PDF reports & Jinja2 + spmkit[viz] \\
+nanosurf & Validated .nhf reader & NSFopen \\
+afm    & JPK QI, .ibw, HDF5, NT-MDT & afmformats \\
+jpk    & JPK TIFF force curves & tifffile \\
+parallel & Parallel force-volume & joblib \\
+pandas & DataFrame export & pandas \\
+dev    & Lint, test, type-check & pytest, ruff, mypy, black \\
+test-gui & GUI test runner & pytest-qt \\
+docs   & Documentation build & mkdocs-material \\
+all    & All of the above & --- \\
+\bottomrule
+\end{longtable}
+
+\subsection{Development installation}
+\begin{lstlisting}[language=bash]
+git clone https://github.com/kegouro/spmkit
+cd spmkit
+pip install -e ".[all,dev]"
+\end{lstlisting}
+
+\subsection{Headless / HPC}
+Install core only: \texttt{pip install spmkit}. Add \texttt{[viz]} for headless figure
+generation.
+
+\subsection{Platform notes}
+Developed and tested on \textbf{macOS} and \textbf{Linux}. Windows is not regularly tested.
+Fathom requires a display; set \texttt{QT\_QPA\_PLATFORM=offscreen} for headless tests.
+
+% ===========================================================
+% 3. VERIFICATION
+% ===========================================================
+\section{Verifying the installation}
+
+\begin{lstlisting}[language=bash]
+spmkit --version          # spmkit 0.1.2
+python -c "import spmkit; print(spmkit.__version__)"
+\end{lstlisting}
+
+% ===========================================================
+% 4. CONCEPTUAL MODEL
+% ===========================================================
+\section{Conceptual model}
+
+\subsection{Architecture}
+
+Three strictly separated layers (enforced by \texttt{tests/test\_architecture.py}):
+
+\begin{itemize}[nosep]
+  \item \texttt{core/} --- pure Python, zero UI imports.
+  \item \texttt{cli/} --- Typer + Rich. Only imports the public \texttt{core} API.
+  \item \texttt{gui/} --- PyQt6 + pyqtgraph. Only imports the public \texttt{core} API.
+\end{itemize}
+
+\subsection{Data model}
+
+\begin{lstlisting}[language=bash]
+from spmkit import load, SPMData, SPMChannel
+
+data: SPMData = load("scan.nid")
+ch: SPMChannel = data["Z-Axis"]
+
+ch.data         # 2D ndarray in physical units
+ch.unit         # "m", "V", "{\textdegree}"
+ch.x_range      # metres
+ch.y_range      # metres
+ch.direction    # "forward" | "backward"
+\end{lstlisting}
+
+\subsection{Force-spectroscopy domain}
+
+For force curves: \texttt{ForceCurve}, \texttt{ForceSegment}, \texttt{ForceVolume}
+(lazy-loaded), \texttt{Calibration}.
+
+\subsection{Result objects}
+Every analysis returns an immutable dataclass with a \texttt{.to\_dict()} method,
+serialisable via \texttt{spmkit.core.export}.
+
+% ===========================================================
+% 5. SUPPORTED FILE FORMATS
+% ===========================================================
+\section{Supported file formats}
+
+\begin{longtable}{@{}l l l l l@{}}
+\toprule
+Extension & Source & Type & Access & Status \\
+\midrule
+.nid & NanoSurf & Images + force-volume & Read & \textbf{Validated} \\
+.nhf & NanoSurf HDF5 & Images & Read & Tested \\
+.gwy & Gwyddion & Images & Read+Write & Tested \\
+.nid (spec) & NanoSurf & Force-volume & Read & Tested \\
+.jpk-force & JPK/Bruker & Single curve & Read & Tested \\
+.jpk (TIFF) & JPK/Bruker & Force-map/QI & Read & Experimental \\
+.001/.002 & Bruker SPM & Images & Read & Experimental \\
+.ibw & Asylum & Force curves & Read & Experimental \\
+\bottomrule
+\end{longtable}
+
+\subsection{Maturity vocabulary}
+\begin{description}[nosep]
+  \item[Validated] Numerical output cross-checked against independent reference.
+  \item[Tested] Unit and synthetic-recovery tests pass.
+  \item[Experimental] Reader exists but lacks thorough testing.
+\end{description}
+
+\subsection{What ``validated'' means for .nid}
+The physical conversion has been verified against Gwyddion exports at
+\textbf{correlation~1.000000} for topography, phase, and sensor channels. See
+\texttt{docs/TRACEABILITY.md}.
+
+% ===========================================================
+% 6. QUICK START
+% ===========================================================
+\section{Quick start}
+
+\begin{lstlisting}[language=bash]
+# Inspect a file
+spmkit info scan.nid
+
+# Roughness (ISO 25178)
+spmkit roughness scan.nid -c Z-Axis --level plane
+
+# Publication figure
+spmkit figure scan.nid -c Z-Axis -o topo.png --colormap batlow
+
+# Launch Fathom
+spmkit gui scan.nid
+
+# Force curve fit
+spmkit forcecurve curva.jpk-force --model dmt --tip-radius 2e-8
+\end{lstlisting}
+
+\needspace{4\baselineskip}
+Python:
+
+\begin{lstlisting}[language=bash]
+from spmkit import load
+from spmkit.core.analysis import leveling, roughness
+
+data = load("scan.nid")
+flat = leveling.plane_fit(data["Z-Axis"])
+stats = roughness.statistics(flat)
+print(f"Sa = {stats.sa:.3g} {stats.unit}")
+\end{lstlisting}
+
+% ===========================================================
+% 7. FATHOM DESKTOP WORKSPACE
+% ===========================================================
+\section{Fathom desktop workspace}
+
+\subsection{Launching}
+\begin{lstlisting}[language=bash]
+spmkit gui               # Fathom (default)
+spmkit gui scan.nid      # open file on launch
+spmkit gui --legacy      # legacy 7-tab app (fallback)
+\end{lstlisting}
+
+\subsection{Opening data}
+Drag and drop a file onto the window, or \texttt{Ctrl+O}. Fathom inspects the file and
+routes image channels to image perspectives and force/spectroscopy data to force perspectives.
+If a file contains both, Fathom asks which to open.
+
+\subsection{Projects (.spmproj)}
+\texttt{Ctrl+S} saves the open file, pipeline parameters, and active perspective as a
+human-editable YAML file.
+
+\subsection{Appearance}
+\begin{itemize}[nosep]
+  \item \texttt{Ctrl+Shift+L} --- toggle light/dark theme.
+  \item \texttt{Ctrl+Shift+A} --- appearance dialog (theme presets, accent colour, font size).
+  \item Settings persist between sessions.
+  \item The theme feeds the Qt app, pyqtgraph, and matplotlib simultaneously.
+\end{itemize}
+
+\subsection{Command palette}
+\texttt{Ctrl+K}, then type a command name and press Enter. Indexes all perspectives and
+registered commands.
+
+% ===========================================================
+% 8. PERSPECTIVES
+% ===========================================================
+\section{Perspectives}
+
+Fathom presents 12 perspectives through 6 modules. Each perspective shows only the
+panels relevant to its workflow.
+
+\needspace{4\baselineskip}
+\subsection{Image perspectives}
+
+\begin{longtable}{@{}>{\ttfamily}l p{9cm}@{}}
+\toprule
+\multicolumn{2}{c}{\textbf{Module: image}}\\
+\midrule
+image & Channel viewer, leveling (plane/poly/align-rows), colormap, line profile ROI, roughness + KPFM analysis, profile export.\\
+grains & Particle/grain detection on levelled topography; colour overlay, size statistics. Requires \texttt{grains} extra.\\
+spectral & Radial PSD (log-log), fractal dimension~D, Hurst exponent~H, correlation length.\\
+resonance & Thermal tune: SHO fit $\rightarrow$ f$_0$, Q, spring constant by equipartition.\\
+evaporation & Mass sensing: load series of tuning .nid files $\rightarrow$ f(t), mass, d\textsuperscript{2} law fit.\\
+\bottomrule
+\end{longtable}
+
+\needspace{4\baselineskip}
+\subsection{Force perspectives}
+
+\begin{longtable}{@{}>{\ttfamily}l p{9cm}@{}}
+\toprule
+\multicolumn{2}{c}{\textbf{Module: force}}\\
+\midrule
+force & Navigate curves, fit Hertz/DMT/Sneddon, inspect modulus $\pm$ 1$\sigma$, adhesion, dissipation, R\textsuperscript{2}. Editable pipeline, Monte Carlo uncertainty. Export scientific CSV.\\
+smfs & Single-molecule force spectroscopy: prominence-based rupture detection, WLC/FJC polymer fits, contour-length histogram.\\
+map & Force-volume $\rightarrow$ property maps (modulus, adhesion, contact, R\textsuperscript{2}) + histogram. Vectorised (CPU/GPU) or per-curve pipeline.\\
+batch & Process folders of force curves $\rightarrow$ summary CSV.\\
+\bottomrule
+\end{longtable}
+
+\needspace{4\baselineskip}
+\subsection{Other perspectives}
+
+\begin{longtable}{@{}>{\ttfamily}l p{9cm}@{}}
+\toprule
+\multicolumn{2}{c}{\textbf{Module: figure}}\\
+\midrule
+figure & WYSIWYG publication figure editor: title, axes, colormap, scale bar, draggable annotations. Export PNG/SVG/PDF.\\
+\midrule
+\multicolumn{2}{c}{\textbf{Module: view3d}}\\
+\midrule
+view3d & 3D topography surface with hillshade lighting, visual Z exaggeration.\\
+\midrule
+\multicolumn{2}{c}{\textbf{Module: simulator}}\\
+\midrule
+simulator & Educational cantilever digital twin: thermal noise spectrum, resonance shift with added mass.\\
+\bottomrule
+\end{longtable}
+
+% ===========================================================
+% 9. END-TO-END WORKFLOWS
+% ===========================================================
+\section{End-to-end workflows}
+
+\subsection{Topography leveling and roughness}
+\textbf{CLI:}
+\begin{lstlisting}[language=bash]
+spmkit roughness scan.nid -c Z-Axis --level plane
+\end{lstlisting}
+
+\textbf{Python:}
+\begin{lstlisting}[language=bash]
+from spmkit import load
+from spmkit.core.analysis import leveling, roughness
+
+data = load("scan.nid")
+flat = leveling.plane_fit(data["Z-Axis"])
+stats = roughness.statistics(flat)
+print(stats.sa, stats.sq, stats.sz, stats.unit)
+\end{lstlisting}
+
+\textbf{GUI:} Drag file $\rightarrow$ Image perspective $\rightarrow$ select channel $\rightarrow$ Plane Fit $\rightarrow$ read results from Analysis panel.
+
+\begin{warnbox}[Caveats]
+Roughness depends on scan size, pixel density, and leveling method. Always report these
+alongside roughness values.
+\end{warnbox}
+
+\subsection{Force-curve contact mechanics}
+
+\begin{lstlisting}[language=bash]
+spmkit forcecurve sample.jpk-force --model dmt --tip-radius 2e-8
+\end{lstlisting}
+
+\textbf{Contact models:} \texttt{sphere} (Hertz), \texttt{paraboloid} (Sneddon paraboloid),
+\texttt{cone} (Sneddon cone), \texttt{dmt} (Hertz + adhesion offset). The experimental JKR
+model (\texttt{spmkit jkr}) fits adhesive contact but has not been validated against an
+independent reference.
+
+\begin{warnbox}[Caveats]
+Modulus depends on tip radius (uncertain), contact model (approximation), and calibration.
+Report all three alongside the result. JKR is experimental.
+\end{warnbox}
+
+\subsection{Force-volume property mapping}
+
+\begin{lstlisting}[language=bash]
+spmkit forcemap volume.nid --model dmt --fast -f maps.png
+spmkit forceexport volume.nid -o ./results
+\end{lstlisting}
+
+Creates property maps (modulus, adhesion, contact point, R\textsuperscript{2}), histograms, and CSV exports.
+Use \texttt{--pipeline} for variable-length curves (QI data),
+\texttt{--parallel} for multi-core, \texttt{--backend gpu} for GPU (requires CuPy).
+
+\subsection{Thermal tune}
+Load a thermal spectrum in the Thermal Tune perspective or use:
+\begin{lstlisting}[language=bash]
+from spmkit.core.analysis.mechanics import thermal_spring_constant
+\end{lstlisting}
+
+\subsection{Evaporation / mass sensing}
+\begin{lstlisting}[language=bash]
+spmkit evaporation ./tuning/ -k 0.3 -o evap.csv
+\end{lstlisting}
+
+Tracks f(t) $\rightarrow$ mass $\rightarrow$ evaporation rate. Fits the d\textsuperscript{2} law for diffusion-limited evaporation.
+
+\subsection{KPFM}
+\begin{lstlisting}[language=bash]
+spmkit analyze scan.nid --tip-wf 4.8 -o ./results
+\end{lstlisting}
+
+Reports mean CPD, standard deviation, and sample work function
+($\Phi_{\text{sample}} = \Phi_{\text{tip}} - e\cdot\text{CPD}$).
+
+\subsection{Other workflows}
+\begin{lstlisting}[language=bash]
+spmkit grains scan.nid --min-size 10           # grain detection
+spmkit psd scan.nid -c Z-Axis                   # fractal analysis
+spmkit batch ./measurements/ -o summary.csv     # batch processing
+spmkit fbatch ./curves/ -o batch.csv            # force batch
+spmkit figure scan.nid -o topo.png --colormap batlow  # figure export
+\end{lstlisting}
+
+% ===========================================================
+% 10. COMMAND-LINE REFERENCE
+% ===========================================================
+\section{Command-line reference}
+
+19 commands are registered in the Typer application.
+
+\begin{longtable}{@{}>{\ttfamily}l p{8.5cm}@{}}
+\toprule
+Command & Description \\
+\midrule
+info & Show file metadata and channels \\
+roughness & ISO 25178 parameters (Sa, Sq, Sz, Ssk, Sku) \\
+psd & Spectral: fractal dimension, Hurst, correlation length \\
+analyze & Full pipeline: roughness + KPFM $\rightarrow$ CSV + JSON \\
+nanomech & Force-curve fit (Hertz/DMT/Sneddon) $\rightarrow$ Young's modulus \\
+grains & Grain/particle detection and size statistics \\
+batch & Process folder $\rightarrow$ summary CSV \\
+evaporation & Mass sensing: f(t) $\rightarrow$ mass, evaporation rate, d\textsuperscript{2} law \\
+figure & Publication figure: PNG/SVG/PDF with scale bar \\
+convert & Format conversion (.nid $\rightarrow$ .gwy / .h5) \\
+verify & .nid byte-level integrity audit (8 checks) \\
+gui & Launch Fathom (or legacy with --legacy) \\
+workspace & Force-curve workspace (redesign) \\
+forcecurve & Fit single force curve (JPK/NanoSurf) \\
+forcemap & Force-volume $\rightarrow$ property maps \\
+forcereport & Force-volume report (HTML/LaTeX/PDF) \\
+forceexport & Full export bundle to folder \\
+fbatch & Batch force processing $\rightarrow$ CSV \\
+jkr & \textbf{[Experimental]} JKR adhesive contact fit \\
+\bottomrule
+\end{longtable}
+
+\subsection{Common options}
+\begin{itemize}[nosep]
+  \item \texttt{-{}-channel / -c} --- channel name (default: \texttt{Z-Axis} for images,
+    \texttt{Deflection} for force)
+  \item \texttt{-{}-output / -o} --- output path
+  \item \texttt{-{}-level / -l} --- leveling: \texttt{plane}, \texttt{poly}, \texttt{none}
+  \item \texttt{-{}-model} --- contact model: \texttt{sphere}, \texttt{paraboloid}, \texttt{cone}, \texttt{dmt}
+  \item \texttt{-{}-tip-radius} --- tip radius in metres (default: \texttt{1e-08})
+\end{itemize}
+
+Run \texttt{spmkit <command> --help} for full options.
+
+% ===========================================================
+% 11. PYTHON API
+% ===========================================================
+\section{Python API}
+
+\subsection{Public imports}
+
+\begin{lstlisting}[language=bash]
+from spmkit import load, SPMData, SPMChannel, __version__
+from spmkit.core.analysis import leveling, roughness, kpfm, mechanics
+from spmkit.core.analysis import spectral, grains, resonance
+from spmkit.core.export import to_csv, to_json, to_hdf5
+from spmkit.core.viz import FigureSpec, save_figure
+\end{lstlisting}
+
+\subsection{Loading and inspecting}
+
+\begin{lstlisting}[language=bash]
+data = load("scan.nid")    # auto-detect format
+print(data.names)          # channel names
+ch = data["Z-Axis"]        # SPMChannel
+\end{lstlisting}
+
+\subsection{Analysis}
+
+\begin{lstlisting}[language=bash]
+flat = leveling.plane_fit(data["Z-Axis"])
+stats = roughness.statistics(flat)
+cpd = kpfm.statistics(data["CPD"], tip_work_function=4.8)
+frac = spectral.fractal_dimension(flat)
+grains_result = grains.detect(flat, min_size=4)
+\end{lstlisting}
+
+\subsection{Force spectroscopy}
+
+\begin{lstlisting}[language=bash]
+from spmkit.core.io.forceload import load_nid_force
+from spmkit.core.analysis.mechanics import fit_hertz
+
+volume = load_nid_force("sample.nid")
+result = fit_hertz(volume.curves[0], tip_radius=10e-9, model="dmt")
+print(result.young_modulus, result.r_squared)
+\end{lstlisting}
+
+\subsection{Export and figures}
+
+\begin{lstlisting}[language=bash]
+to_csv(stats, "roughness.csv")
+to_json(stats, "roughness.json")
+to_hdf5(data, "scan.h5")
+
+spec = FigureSpec(title="AFM Topography", colormap="batlow")
+save_figure(flat, spec, "topo.png")
+\end{lstlisting}
+
+\subsection{Recipes}
+
+\begin{lstlisting}[language=bash]
+from spmkit.core.pipeline import Recipe, Step, run
+
+recipe = Recipe(steps=(
+    Step(op="calibrate"),
+    Step(op="find_contact_point"),
+    Step(op="fit_elasticity", params={"model": "dmt", "tip_radius": 2e-8}),
+))
+_, ctx = run(recipe, curve)
+print(ctx["young_modulus"], ctx["r_squared"])
+\end{lstlisting}
+
+% ===========================================================
+% 12. KEYBOARD SHORTCUTS
+% ===========================================================
+\section{Keyboard shortcuts}
+
+\begin{tabularx}{\linewidth}{@{}>{\ttfamily}l X@{}}
+\toprule
+Shortcut & Action \\
+\midrule
+Ctrl+K & Command palette \\
+Ctrl+O & Open file \\
+Ctrl+S & Save project \\
+Ctrl+M & Calculate map \\
+Ctrl+Shift+R & Generate report \\
+Ctrl+Shift+L & Toggle light/dark theme \\
+Ctrl+Shift+A & Customize appearance \\
+Ctrl+Left / Ctrl+Right & Previous / next curve \\
+Ctrl+1 ... Ctrl+5 & Tab switch (legacy app only) \\
+\bottomrule
+\end{tabularx}
+
+% ===========================================================
+% 13. EXPORTS AND PROVENANCE
+% ===========================================================
+\section{Exports and provenance}
+
+\subsection{Export formats}
+
+\begin{tabularx}{\linewidth}{@{}>{\ttfamily}l l X@{}}
+\toprule
+Format & Via & Notes \\
+\midrule
+CSV & \texttt{to\_csv()}, CLI & Units in headers; empty cells for NaN \\
+JSON & \texttt{to\_json()}, CLI & Structured; programmatic consumption \\
+HDF5 & \texttt{to\_hdf5()}, convert & Self-describing binary; requires hdf5 extra \\
+.gwy & \texttt{spmkit convert} & Round-trip with Gwyddion \\
+PNG/SVG/PDF & \texttt{spmkit figure} & Publication-quality figures \\
+HTML/PDF & \texttt{spmkit forcereport} & Full force-volume report \\
+YAML & \texttt{core.pipeline} & Reproducible pipeline recipe \\
+\bottomrule
+\end{tabularx}
+
+\subsection{Provenance}
+\begin{itemize}[nosep]
+  \item \texttt{SPMData.source\_path} records the original file path.
+  \item \texttt{SPMData.metadata} preserves instrument parameters.
+  \item \texttt{spmkit verify} performs 8 byte-level integrity checks on .nid files.
+  \item YAML recipes capture the exact pipeline parameters.
+  \item Exports include metadata when the format supports it.
+\end{itemize}
+
+% ===========================================================
+% 14. SCIENTIFIC VALIDATION
+% ===========================================================
+\section{Scientific validation}
+\label{sec:validation}
+
+SPM-Kit uses a layered approach:
+
+\begin{enumerate}[nosep]
+  \item \textbf{Unit tests} --- function correctness on synthetic input.
+  \item \textbf{Synthetic recovery} --- known-property data $\rightarrow$ verify recovery.
+  \item \textbf{Cross-checks} --- compare against Gwyddion for the same input.
+  \item \textbf{Instrument-file loading} --- real lab files load without errors.
+  \item \textbf{Validation} --- numerical agreement at defined tolerance (only .nid image channels).
+  \item \textbf{Experimental} --- exists but not validated or extensively tested.
+\end{enumerate}
+
+\subsection{Status summary}
+
+\begin{longtable}{@{}p{3.3cm} p{2.8cm} p{1.8cm} p{3.5cm}@{}}
+\toprule
+Capability & Evidence & Status & Limitations \\
+\midrule
+.nid image parsing & vs Gwyddion: corr 1.000000 & \textbf{Validated} & Signed 32-bit LE; other dtypes untested \\
+.nid physical conv. & 8 integrity checks & \textbf{Validated} & Assumes Dim2Range linear \\
+.nid orientation & flipud for Y channels & \textbf{Validated} & Non-image channels as-is \\
+Roughness ISO 25178 & Synthetic $\sigma$ recovery & Tested & Plane-levelled data only \\
+KPFM CPD statistics & Unit tests & Tested & Work function: tip calibration \\
+Hertz/DMT force fit & Synthetic recovery & Tested & Tip radius uncertainty dominant \\
+Force-volume maps & Unit + synthetic tests & Tested & Grid regularity assumed \\
+Thermal tune & Unit tests & Tested & Equipartition assumption \\
+Evaporation & Unit tests & Tested & Spherical droplet; diffusion-limited \\
+Grain detection & Unit tests & Tested & Threshold-based; no shape metrics \\
+Fractal/PSD & Unit tests & Tested & Self-affine model; finite bandwidth \\
+JKR adhesive contact & No external ref & \textbf{Experimental} & Use with caution \\
+.nhf reader & Unit tests & Tested & Generic HDF5 walker \\
+.gwy reader/writer & Round-trip test & Tested & Verified \\
+.jpk-force reader & Unit tests & Tested & Calibration from metadata \\
+JPK QI (.jpk TIFF) & Limited testing & \textbf{Experimental} & Requires jpk extra \\
+Bruker SPM (.001) & Limited testing & \textbf{Experimental} & Requires afm extra \\
+afmformats readers & Limited testing & \textbf{Experimental} & Quality varies by format \\
+SMFS polymer fits & Unit tests & Tested & Model choice critical \\
+Fathom GUI & 37 GUI tests & Tested & Qt version/platform dependent \\
+Architecture & AST test & Enforced & No runtime enforcement \\
+\bottomrule
+\end{longtable}
+
+\subsection{Gwyddion as reference}
+Gwyddion serves as an \emph{independent reference implementation}, not universal ground
+truth. Both tools implement their own conversion from the same byte stream.
+
+\subsection{Simulator}
+The cantilever simulator is \textbf{educational only}. It models a damped harmonic
+oscillator with additive noise. Not suitable for calibration or metrology.
+
+% ===========================================================
+% 15. SAFETY AND INTERPRETATION
+% ===========================================================
+\section{Safety and interpretation warnings}
+
+\begin{itemize}
+  \item \textbf{Results require domain judgment.} High R\textsuperscript{2} does not guarantee correct model choice.
+  \item \textbf{Calibration values matter.} Young's modulus depends on tip radius (uncertain),
+    spring constant (calibration), and contact model (approximation).
+  \item \textbf{Check units.} \texttt{SPMChannel.unit} tells the physical unit.
+  \item \textbf{Experimental readers may misinterpret metadata.} Format parsing is
+    best-effort for reverse-engineered formats.
+  \item \textbf{Fitted parameters are not automatically physical truth.}
+  \item \textbf{SPM-Kit is not a medical, clinical, regulatory, or safety-critical instrument.}
+  \item \textbf{Preserve original data.} SPM-Kit reads without modifying files.
+\end{itemize}
+
+% ===========================================================
+% 16. EXTENSIBILITY
+% ===========================================================
+\section{Extensibility}
+
+\subsection{Entry-point groups}
+
+\begin{tabularx}{\linewidth}{@{}>{\ttfamily}l X@{}}
+\toprule
+Group & Purpose \\
+\midrule
+spmkit.plugins.v1 & Readers, analyses, domains \\
+spmkit.gui.modules & Fathom modules (perspectives + panels) \\
+\bottomrule
+\end{tabularx}
+
+\subsection{Adding a format}
+Implement the \texttt{Reader} Protocol (\texttt{inspect + load}) and register via
+\texttt{spmkit.plugins.v1}.
+
+\subsection{Adding a perspective}
+Define a \texttt{ModuleSpec} with \texttt{PanelSpec} and \texttt{PerspectiveSpec},
+register via \texttt{spmkit.gui.modules}. See \texttt{docs/extending.md} for full details.
+
+% ===========================================================
+% 17. TROUBLESHOOTING
+% ===========================================================
+\section{Troubleshooting}
+
+\begin{description}[nosep, font=\normalfont\ttfamily]
+  \item[Missing GUI extra] \hfill \\ \texttt{pip install "spmkit[gui]"}
+  \item[Qt platform plugin error] \hfill \\ Install Qt dependencies or set \texttt{QT\_QPA\_PLATFORM=offscreen}.
+  \item[Unsupported format] \hfill \\ Check extension matches \texttt{.nid/.nhf/.gwy/.jpk-force}. For experimental readers, install \texttt{afm} or \texttt{jpk}.
+  \item[Missing optional dependency] \hfill \\ Install the relevant extra (e.g. \texttt{pip install "spmkit[grains]"}).
+  \item[Large force-volume memory] \hfill \\ Use lazy loading or the \texttt{--fast} CPU vectorised path.
+  \item[GPU fallback] \hfill \\ CuPy is not bundled. Install separately: \texttt{pip install cupy-cuda12x}.
+  \item[Export failure] \hfill \\ Check write permissions. Use \texttt{--output} with a writable path.
+\end{description}
+
+% ===========================================================
+% 18. DEVELOPMENT
+% ===========================================================
+\section{Development and quality}
+
+\begin{lstlisting}[language=bash]
+git clone https://github.com/kegouro/spmkit
+cd spmkit
+pip install -e ".[all,dev,test-gui]"
+pre-commit install
+\end{lstlisting}
+
+\textbf{Quality checks (CI gate):}
+\begin{lstlisting}[language=bash]
+make check        # lint + types + tests
+make lint         # ruff check
+make type         # mypy (strict on core)
+make test         # pytest with coverage
+\end{lstlisting}
+
+\textbf{GUI tests} (headless):
+\begin{lstlisting}[language=bash]
+QT_QPA_PLATFORM=offscreen pytest tests/gui -q
+\end{lstlisting}
+
+\textbf{Documentation:}
+\begin{lstlisting}[language=bash]
+pip install -e ".[docs]"
+python -m mkdocs build --strict
+\end{lstlisting}
+
+% ===========================================================
+% 19. DATA HUNTER
+% ===========================================================
+\section{Relationship to SPM-Kit Data Hunter}
+
+SPM-Kit Data Hunter is a companion project that discovers and curates public data
+candidates for validation. It does \textbf{not} analyse data and does \textbf{not}
+validate SPM-Kit output.
+
+\begin{itemize}[nosep]
+  \item \textbf{SPM-Kit / Fathom} --- analyse data.
+  \item \textbf{Data Hunter} --- discover data for validation.
+  \item \textbf{Discovery is not validation.}
+\end{itemize}
+
+% ===========================================================
+% 20. CITATION AND LICENSE
+% ===========================================================
+\section{Citation, license, and contributions}
+
+\subsection{How to cite}
+
+\begin{lstlisting}[language=bash]
+@software{spmkit2026,
+  author       = {Jos\'e Labarca and Tom\'as Corrales},
+  title        = {spmkit: Open-source AFM/KPFM analyser
+                  for scanning probe microscopy},
+  year         = {2026},
+  version      = {0.1.2},
+  url          = {https://github.com/kegouro/spmkit},
+}
+\end{lstlisting}
+
+\subsection{License}
+MIT. See \texttt{LICENSE} in the repository root.
+
+\subsection{Contributing}
+Issues and pull requests at \url{https://github.com/kegouro/spmkit/issues}.
+See \texttt{CONTRIBUTING.md}.
+
+\subsection{Funding}
+This open-source project has been developed without dedicated institutional funding.
+
+\subsection{Project status}
+\textbf{Alpha (0.1.2).} Core functionality is stable and tested. APIs may change before
+1.0. New contributors and format readers are welcome.
+
+% ===========================================================
+% APPENDICES
+% ===========================================================
+\appendix
+
+\section{Quick reference card}
+
+\begin{lstlisting}[language=bash]
+# Install
+pip install "spmkit[gui]"
+
+# Inspect
+spmkit info scan.nid
+
+# Analyse
+spmkit roughness scan.nid -c Z-Axis --level plane
+spmkit psd scan.nid -c Z-Axis
+spmkit analyze scan.nid -o ./results --tip-wf 4.8
+
+# Figures
+spmkit figure scan.nid -o topo.png --colormap batlow
+
+# Convert
+spmkit convert scan.nid scan.gwy
+
+# Verify
+spmkit verify scan.nid
+
+# Force
+spmkit forcecurve curve.jpk-force --model dmt --tip-radius 2e-8
+spmkit forcemap volume.nid --fast -f maps.png
+spmkit forcereport volume.nid -o report
+spmkit forceexport volume.nid -o ./export
+spmkit fbatch ./curves/ -o batch.csv
+
+# Evaporation
+spmkit evaporation ./tuning/ -k 0.3 -o evap.csv
+
+# Grains
+spmkit grains scan.nid --min-size 10
+
+# GUI
+spmkit gui [file]
+\end{lstlisting}
+
+\section{CLI command index}
+
+\begin{longtable}{@{}>{\ttfamily}l l l@{}}
+\toprule
+Command & Category & Input \\
+\midrule
+info & Inspection & .nid, .nhf \\
+roughness & Image & .nid, .nhf, .gwy \\
+psd & Spectral & .nid, .nhf, .gwy \\
+analyze & Pipeline & .nid, .nhf, .gwy \\
+nanomech & Force & .nid (spectroscopy) \\
+grains & Image & .nid, .nhf, .gwy \\
+batch & Batch & Folder of SPM \\
+evaporation & Resonance & Folder of .nid tuning \\
+figure & Figure & .nid, .nhf, .gwy \\
+convert & Format & .nid \\
+verify & Audit & .nid \\
+gui & GUI & --- (optional file) \\
+workspace & GUI & Force-curve file \\
+forcecurve & Force & .jpk-force, .nid \\
+forcemap & Force & .nid (force-volume) \\
+forcereport & Force & .nid (force-volume) \\
+forceexport & Force & .nid (force-volume) \\
+fbatch & Batch & Folder of force curves \\
+jkr & Force (exp.) & Calibrated curve \\
+\bottomrule
+\end{longtable}
+
+\section{Perspective index}
+
+\begin{longtable}{@{}>{\ttfamily}l l l l@{}}
+\toprule
+Key & Label & Module & Type \\
+\midrule
+image & Imagen & image & Image \\
+grains & Granos & image & Image \\
+spectral & Espectral & image & Image \\
+resonance & Sintoni'a te'rmica & image & Image \\
+evaporation & Evaporacio'n & image & Image \\
+force & Curva de fuerza & force & Force \\
+smfs & SMFS & force & Force \\
+map & Mapa & force & Force \\
+batch & Batch & force & Force \\
+figure & Figura & figure & Figure \\
+view3d & Vista 3D & view3d & Image \\
+simulator & Simulador & simulator & Educational \\
+\bottomrule
+\end{longtable}
+
+\section{Supported formats matrix}
+
+\begin{longtable}{@{}l l l l l@{}}
+\toprule
+Extension & Source & Type & Access & Status \\
+\midrule
+.nid & NanoSurf & Images + FV & Read & Validated \\
+.nhf & NanoSurf HDF5 & Images & Read & Tested \\
+.gwy & Gwyddion & Images & Read+Write & Tested \\
+.nid (spec) & NanoSurf & Force-volume & Read & Tested \\
+.jpk-force & JPK/Bruker & Single curve & Read & Tested \\
+.jpk (TIFF) & JPK/Bruker & Force-map/QI & Read & Experimental \\
+.001/.002 & Bruker SPM & Images & Read & Experimental \\
+.ibw & Asylum & Force curves & Read & Experimental \\
+\bottomrule
+\end{longtable}
+
+\section{Keyboard shortcuts}
+
+\begin{tabularx}{\linewidth}{@{}>{\ttfamily}l X@{}}
+\toprule
+Shortcut & Action \\
+\midrule
+Ctrl+K & Command palette \\
+Ctrl+O & Open file \\
+Ctrl+S & Save project \\
+Ctrl+M & Calculate map \\
+Ctrl+Shift+R & Generate report \\
+Ctrl+Shift+L & Toggle theme \\
+Ctrl+Shift+A & Appearance settings \\
+Ctrl+Left / Ctrl+Right & Previous / next curve \\
+Ctrl+1 ... Ctrl+5 & Tab switch (legacy app) \\
+\bottomrule
+\end{tabularx}
+
+\vfill
+
+\begin{center}
+{\small --- End of SPM-Kit {\textperiodcentered} Fathom Usage Guide v0.1.2 ---}
+\end{center}
+
+\end{document}

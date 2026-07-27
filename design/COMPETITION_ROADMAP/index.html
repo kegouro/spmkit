@@ -1,0 +1,1405 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Analizador open-source de datos AFM/KPFM para microscopía de sonda de barrido">
+      
+      
+      
+        <link rel="canonical" href="https://kegouro.github.io/spmkit/design/COMPETITION_ROADMAP/">
+      
+      
+        <link rel="prev" href="../../extending/">
+      
+      
+        <link rel="next" href="../../VALIDATION/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Plan de competencia (JPK/ANA) - spmkit</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#plan-de-competencia-real-vs-jpk-data-processing-y-nanosurf-analysis" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="spmkit" class="md-header__button md-logo" aria-label="spmkit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            spmkit
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Plan de competencia (JPK/ANA)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="teal"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="teal"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/kegouro/spmkit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    kegouro/spmkit
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Inicio
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../getting-started/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Primeros pasos
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../user-guide/" class="md-tabs__link">
+          
+  
+  
+  Guía de usuario
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API Python
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../theory/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Guía de teoría
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../ARCHITECTURE/" class="md-tabs__link">
+          
+  
+  
+  Referencia técnica
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="https://kegouro.github.io" class="md-tabs__link">
+        
+  
+  
+    
+  
+  ↗ Pharos Project
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="spmkit" class="md-nav__button md-logo" aria-label="spmkit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    spmkit
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/kegouro/spmkit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    kegouro/spmkit
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Primeros pasos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guía de usuario
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guía de usuario
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interfaz gráfica (GUI)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Referencia CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Python
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guía de teoría
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Referencia técnica
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Referencia técnica
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ARCHITECTURE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extending/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extender spmkit y Fathom
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plan de competencia (JPK/ANA)
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plan de competencia (JPK/ANA)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#veredicto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Veredicto
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lo-que-spmkit-ya-hace-corroboracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lo que spmkit YA hace (corroboración)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#brechas-reales-prioridad-alta-del-informe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Brechas reales (prioridad ALTA del informe)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#roadmap-priorizado-por-maximo-salto-competitivo-costo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Roadmap priorizado (por máximo salto competitivo / costo)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Roadmap priorizado (por máximo salto competitivo / costo)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tanda-0-descubribilidad-s-la-mas-barata-y-de-mayor-impacto-inmediato" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tanda 0 — Descubribilidad (S, la más barata y de mayor impacto inmediato)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tanda-1-qcfiltrado-de-curvas-histogramas-m-el-pegamento-del-flujo-de-lote" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tanda 1 — QC/filtrado de curvas + histogramas (M) — el pegamento del flujo de lote
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tanda-2-smfs-modelos-de-cadena-l-el-mayor-salto-de-capacidad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tanda 2 — SMFS: modelos de cadena (L) — el mayor salto de capacidad
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tanda-3-step-fitting-m" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tanda 3 — Step fitting (M)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tanda-4-paridad-de-imagen-m" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tanda 4 — Paridad de imagen (M)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tanda-5-completitud-mecanica-m" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tanda 5 — Completitud mecánica (M)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-wins-1-dia-cu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick wins (≤1 día c/u)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#principio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Principio
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VALIDATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validación científica
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../TRACEABILITY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trazabilidad del pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ROADMAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../UI_DESIGN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diseño de UI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://kegouro.github.io" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ↗ Pharos Project
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="plan-de-competencia-real-vs-jpk-data-processing-y-nanosurf-analysis">Plan de competencia real vs JPK Data Processing y Nanosurf Analysis<a class="headerlink" href="#plan-de-competencia-real-vs-jpk-data-processing-y-nanosurf-analysis" title="Permanent link">&para;</a></h1>
+<p>Auditoría de spmkit/Fathom contra el informe de capacidades de JPK DP 4.2 y Nanosurf
+Analysis/Report, con un roadmap priorizado para llegar a competir de verdad.</p>
+<h2 id="veredicto">Veredicto<a class="headerlink" href="#veredicto" title="Permanent link">&para;</a></h2>
+<p>spmkit está <strong>más cerca de lo que parece</strong>. La base científica es fuerte y validada
+(lectura <code>.nid</code> a precisión de máquina, calibración InVOLS/k, punto de contacto robusto,
+δ=Z−d, Hertz/paraboloide/cono/DMT, mapas de force-volume con <em>linked brushing</em>, rugosidad
+areal, FFT/PSD, 3D, grains, informe HTML/PDF, API Python). El problema #1 <strong>no es
+capacidad, es descubribilidad</strong>: muchas funciones existen pero están escondidas en la paleta
+⌘K, sin botón ni panel visible — por eso "no se ven". El problema #2 son <strong>dos dominios
+enteros ausentes</strong> (SMFS y step-fitting) y el <strong>pegamento de flujo de lote</strong> (filtrado/QC de
+curvas + histogramas con ajuste).</p>
+<h2 id="lo-que-spmkit-ya-hace-corroboracion">Lo que spmkit YA hace (corroboración)<a class="headerlink" href="#lo-que-spmkit-ya-hace-corroboracion" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Capacidad JPK/ANA</th>
+<th>spmkit</th>
+<th>Nota</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Calibración V→m→N (InVOLS, k, térmica)</td>
+<td>✅</td>
+<td><code>core/analysis/calibration.py</code>, visible en pipeline</td>
+</tr>
+<tr>
+<td>Punto de contacto automático</td>
+<td>✅</td>
+<td>ROV (Gavara) + umbral</td>
+</tr>
+<tr>
+<td>Separación punta-muestra δ=Z−d</td>
+<td>✅</td>
+<td>op <code>tip_sample_separation</code></td>
+</tr>
+<tr>
+<td>Hertz / paraboloide / cono (Sneddon) / DMT</td>
+<td>✅</td>
+<td><code>forcecurve.py</code></td>
+</tr>
+<tr>
+<td><strong>Rango de fit por región (click-drag)</strong></td>
+<td>✅</td>
+<td>checkbox "Región" en la curva — <strong>escondido</strong></td>
+</tr>
+<tr>
+<td><strong>Aplicar el fit de la zona de contacto a TODAS las curvas del mapa</strong></td>
+<td>✅</td>
+<td><code>map_vm</code> usa el pipeline por curva cuando hay <code>fit_min</code> — <strong>escondido</strong></td>
+</tr>
+<tr>
+<td>Poisson configurable</td>
+<td>✅</td>
+<td></td>
+</tr>
+<tr>
+<td>Adhesión (mín/pull-off), disipación (área histéresis)</td>
+<td>✅</td>
+<td>Inspector + informe</td>
+</tr>
+<tr>
+<td>Mapas de fuerza: visor + curva por pixel + mapas de propiedad</td>
+<td>✅</td>
+<td>perspectiva Mapa, CPU/GPU</td>
+</tr>
+<tr>
+<td>Rugosidad (Sa/Sq/Sz areal), perfiles (cross-section), FFT/PSD, 3D, grains</td>
+<td>✅</td>
+<td>perspectivas Imagen/Espectral/3D/Granos</td>
+</tr>
+<tr>
+<td>Batch multi-archivo</td>
+<td>✅</td>
+<td>perspectiva Batch, CLI <code>fbatch</code></td>
+</tr>
+<tr>
+<td>Export CSV/JSON/figuras + informe HTML/PDF/LaTeX</td>
+<td>✅</td>
+<td></td>
+</tr>
+<tr>
+<td>Scripting (API Python)</td>
+<td>✅</td>
+<td><strong>superior</strong> a VBScript de ANA</td>
+</tr>
+<tr>
+<td>Guardar/cargar proceso (<code>.spmproj</code> + Recipe YAML)</td>
+<td>🟡</td>
+<td>existe, no equivalente pleno a <code>.jpk-proc-force</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="brechas-reales-prioridad-alta-del-informe">Brechas reales (prioridad ALTA del informe)<a class="headerlink" href="#brechas-reales-prioridad-alta-del-informe" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Categoría</th>
+<th>Estado</th>
+<th>Falta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Modelos de cadena (SMFS)</strong></td>
+<td>❌ ausente</td>
+<td>WLC (Marko-Siggia + Bouchiat), FJC, extensibles, detección de eventos en retract, multi-pico, pinning. <strong>Dominio bio-AFM/molécula única entero.</strong></td>
+</tr>
+<tr>
+<td><strong>Step fitting</strong></td>
+<td>❌ ausente</td>
+<td>Algoritmo Kerssemakers (tethers de membrana).</td>
+</tr>
+<tr>
+<td><strong>Filtrado/QC de curvas</strong></td>
+<td>❌ ausente</td>
+<td>Clasificar curvas por parámetros (umbral básico, dos grupos, keep/discard), expresiones booleanas sobre resultados.</td>
+</tr>
+<tr>
+<td><strong>Histogramas de batch con ajuste Gaussiano</strong></td>
+<td>🟡 parcial</td>
+<td>Histograma + fit Gaussiano simple/multi-pico de parámetros del lote.</td>
+</tr>
+<tr>
+<td><strong>JKR / viscoelástico</strong></td>
+<td>🟡 experimental</td>
+<td>Validar contra referencia (hoy flagged).</td>
+</tr>
+<tr>
+<td><strong>Sneddon pirámide 4 caras, bottom-effect</strong></td>
+<td>❌</td>
+<td>Geometrías/correcciones que faltan.</td>
+</tr>
+<tr>
+<td><strong>Suavizado</strong></td>
+<td>🟡</td>
+<td>Solo Savitzky-Golay orden fijo; falta Gaussiano, Boxcar, elegir orden.</td>
+</tr>
+<tr>
+<td><strong>Mediciones manuales</strong></td>
+<td>🟡</td>
+<td>Distancia/ángulo entre puntos, altura al setpoint, snap-in, measure-slope.</td>
+</tr>
+<tr>
+<td><strong>Filtros de imagen + correcciones de línea</strong></td>
+<td>❌</td>
+<td>median/lowpass/highpass/edge/invert; histfit, remove-lines.</td>
+</tr>
+<tr>
+<td><strong>Export TIFF 16/32-bit</strong></td>
+<td>❌</td>
+<td>(PNG/SVG/PDF ya están).</td>
+</tr>
+</tbody>
+</table>
+<h2 id="roadmap-priorizado-por-maximo-salto-competitivo-costo">Roadmap priorizado (por máximo salto competitivo / costo)<a class="headerlink" href="#roadmap-priorizado-por-maximo-salto-competitivo-costo" title="Permanent link">&para;</a></h2>
+<h3 id="tanda-0-descubribilidad-s-la-mas-barata-y-de-mayor-impacto-inmediato">Tanda 0 — Descubribilidad (S, la más barata y de mayor impacto inmediato)<a class="headerlink" href="#tanda-0-descubribilidad-s-la-mas-barata-y-de-mayor-impacto-inmediato" title="Permanent link">&para;</a></h3>
+<p>Hacer visible el poder que ya existe. <strong>No agrega capacidad, cierra la queja "no lo veo".</strong>
+- Botones visibles Abrir/Guardar ✅ (hecho).
+- Renombrar/exponer "Región" → <strong>"Zona de contacto"</strong> con ayuda inline; botón "Aplicar a todo
+  el mapa" junto a Calcular mapa.
+- Panel "Mediciones" siempre visible (E±σ, R², adhesión, disipación, δmáx) en vez de solo Inspector.
+- Toolbar contextual por perspectiva (los controles del panel central, hoy algo escondidos).
+- Tour/onboarding de 1 pantalla y tooltips en todo.</p>
+<h3 id="tanda-1-qcfiltrado-de-curvas-histogramas-m-el-pegamento-del-flujo-de-lote">Tanda 1 — QC/filtrado de curvas + histogramas (M) — el pegamento del flujo de lote<a class="headerlink" href="#tanda-1-qcfiltrado-de-curvas-histogramas-m-el-pegamento-del-flujo-de-lote" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>core/analysis/curveqc.py</code>: clasificar curvas por parámetros (umbral ≥/≤, dos grupos,
+  keep/discard); expresiones booleanas reusando el evaluador AST seguro que ya existe.</li>
+<li>Histogramas de parámetros del batch con <strong>ajuste Gaussiano</strong> (simple/multi-pico).</li>
+<li>Perspectiva Batch enriquecida: tabla + histograma + keep/discard por curva.</li>
+</ul>
+<h3 id="tanda-2-smfs-modelos-de-cadena-l-el-mayor-salto-de-capacidad">Tanda 2 — SMFS: modelos de cadena (L) — el mayor salto de capacidad<a class="headerlink" href="#tanda-2-smfs-modelos-de-cadena-l-el-mayor-salto-de-capacidad" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>core/analysis/chain.py</code>: <strong>WLC</strong> (Marko-Siggia + Bouchiat), <strong>FJC</strong>, extensibles (EWLC/EFJC).</li>
+<li>Detección de eventos de ruptura en la rama retract; ajuste <strong>multi-pico</strong>; <strong>pinning</strong> de L/lp.</li>
+<li>Salidas: contour length, persistence length, breaking force, loading rate.</li>
+<li><strong>Módulo Fathom nuevo</strong> (perspectiva "Molécula única") — usa la extensibilidad de F4.</li>
+<li>Desbloquea bio-AFM / espectroscopía de molécula única (el fuerte de JPK).</li>
+</ul>
+<h3 id="tanda-3-step-fitting-m">Tanda 3 — Step fitting (M)<a class="headerlink" href="#tanda-3-step-fitting-m" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>core/analysis/steps.py</code>: algoritmo Kerssemakers (fondo suave + escalones), umbral de
+  significancia, desactivar escalones; salidas position/height/plateau/step_count.</li>
+</ul>
+<h3 id="tanda-4-paridad-de-imagen-m">Tanda 4 — Paridad de imagen (M)<a class="headerlink" href="#tanda-4-paridad-de-imagen-m" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Filtros: median, lowpass (Gaussiano), highpass (unsharp), edge, invert.</li>
+<li>Correcciones de línea: histfit (polinomial por línea), remove-lines (interpolación).</li>
+<li>Herramientas: medir distancia/ángulo, histograma de alturas, crop.</li>
+</ul>
+<h3 id="tanda-5-completitud-mecanica-m">Tanda 5 — Completitud mecánica (M)<a class="headerlink" href="#tanda-5-completitud-mecanica-m" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Sneddon pirámide 4 caras; corrección bottom-effect (muestras delgadas).</li>
+<li><strong>Validar JKR/viscoelástico</strong> (quitar el flag al validar contra referencia).</li>
+<li>Suavizado: Gaussiano + Boxcar + elegir orden SG.</li>
+<li>Export TIFF 16/32-bit; guardar/cargar proceso equivalente a <code>.jpk-proc-force</code>.</li>
+</ul>
+<h2 id="quick-wins-1-dia-cu">Quick wins (≤1 día c/u)<a class="headerlink" href="#quick-wins-1-dia-cu" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Botones Abrir/Guardar ✅.</li>
+<li>"Región" → "Zona de contacto" visible + botón "aplicar al mapa".</li>
+<li>Panel Mediciones siempre visible.</li>
+<li>Histograma con fit Gaussiano en Batch.</li>
+<li>Filtros de imagen median/invert (numpy/scipy, triviales).</li>
+</ol>
+<h2 id="principio">Principio<a class="headerlink" href="#principio" title="Permanent link">&para;</a></h2>
+<p>Reutilizar el core validado y la extensibilidad de F4 (los dominios nuevos = módulos por
+entry-point). Nada de features huérfanas: cada tanda deja algo <strong>visible y testeado</strong>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://kegouro.github.io" target="_blank" rel="noopener" title="Pharos Project — el ecosistema" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8 10V8h1V4H8V3l4-2 4 2v1h-1v4h1v2h-1.26l-6.3 3.64L9 10zm5-2V4h-2v4zM7 23l.04-.24 9.11-5.26.52 3.38L13 23zm1.05-6.83L15.31 12l.52 3.37-8.4 4.85z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate", "search.suggest", "navigation.top", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

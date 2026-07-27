@@ -1,0 +1,1701 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Analizador open-source de datos AFM/KPFM para microscopía de sonda de barrido">
+      
+      
+      
+        <link rel="canonical" href="https://kegouro.github.io/spmkit/design/UI_REDESIGN/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Rediseño total de la UI de spmkit — "Instrumento" - spmkit</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#rediseno-total-de-la-ui-de-spmkit-instrumento" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="spmkit" class="md-header__button md-logo" aria-label="spmkit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            spmkit
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Rediseño total de la UI de spmkit — "Instrumento"
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="teal"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="teal"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/kegouro/spmkit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    kegouro/spmkit
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Inicio
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../getting-started/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Primeros pasos
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../user-guide/" class="md-tabs__link">
+          
+  
+  
+  Guía de usuario
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API Python
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../theory/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Guía de teoría
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../ARCHITECTURE/" class="md-tabs__link">
+          
+  
+  
+  Referencia técnica
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="https://kegouro.github.io" class="md-tabs__link">
+        
+  
+  
+    
+  
+  ↗ Pharos Project
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="spmkit" class="md-nav__button md-logo" aria-label="spmkit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    spmkit
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/kegouro/spmkit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    kegouro/spmkit
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Primeros pasos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guía de usuario
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guía de usuario
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interfaz gráfica (GUI)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Referencia CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Python
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guía de teoría
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Referencia técnica
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Referencia técnica
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ARCHITECTURE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extending/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extender spmkit y Fathom
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../COMPETITION_ROADMAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plan de competencia (JPK/ANA)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VALIDATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validación científica
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../TRACEABILITY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trazabilidad del pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ROADMAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../UI_DESIGN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diseño de UI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://kegouro.github.io" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ↗ Pharos Project
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="rediseno-total-de-la-ui-de-spmkit-instrumento">Rediseño total de la UI de spmkit — "Instrumento"<a class="headerlink" href="#rediseno-total-de-la-ui-de-spmkit-instrumento" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Documento de diseño e implementación. Estado: <strong>propuesta v1</strong> (2026-07).
+Objetivo: rehacer por completo la interfaz — elegante, moderna, dinámica,
+configurable, personalizable, expandible, modificable y <strong>muy cómoda para
+maximizar el flujo de trabajo</strong> — a nivel de herramienta que se presenta ante
+labs y universidades para reemplazar Nanosurf ANA y JPK Data Processing.</p>
+</blockquote>
+<hr />
+<h2 id="0-direccion-de-diseno-el-norte">0. Dirección de diseño (el norte)<a class="headerlink" href="#0-direccion-de-diseno-el-norte" title="Permanent link">&para;</a></h2>
+<p><strong>Nombre de la estética: "Instrumento"</strong> — <em>grafito de precisión con señal teal</em>.
+Tono dominante: <strong>Industrial / Utilitario</strong> cruzado con <strong>Editorial</strong> (tipografía de
+datos refinada). Un solo cruce, disciplinado.</p>
+<p><strong>Puntuación DFII</strong> (Design Feasibility &amp; Impact Index):</p>
+<table>
+<thead>
+<tr>
+<th>Dimensión</th>
+<th>Puntaje</th>
+<th>Razón</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Impacto estético</td>
+<td>4</td>
+<td>El panel de pipeline vivo + el brushing ligado son memorables</td>
+</tr>
+<tr>
+<td>Fit de contexto</td>
+<td>5</td>
+<td>Perfecto para reemplazar un instrumento científico</td>
+</tr>
+<tr>
+<td>Factibilidad</td>
+<td>4</td>
+<td>PyQt6 + pyqtgraph lo permiten; docking/threading requieren rigor</td>
+</tr>
+<tr>
+<td>Seguridad de rendimiento</td>
+<td>4</td>
+<td>pyqtgraph (GPU) + hilos; con disciplina se mantiene fluido</td>
+</tr>
+<tr>
+<td>Riesgo de consistencia</td>
+<td>−1</td>
+<td>Sistema de tokens + clase base de panel lo mantienen coherente</td>
+</tr>
+<tr>
+<td><strong>DFII</strong></td>
+<td><strong>15 (Excelente)</strong></td>
+<td><strong>Ejecutar plenamente</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Ancla de diferenciación</strong> — <em>"Si le quitas el logo, lo reconoces por…"</em>:</p>
+<blockquote>
+<p>el <strong>panel de pipeline</strong> que se re-ejecuta y previsualiza al editar; el <strong>brushing
+ligado mapa↔curva</strong> (pasas el cursor por un píxel y ves su curva; pintas un rango de
+módulo y se resaltan los píxeles); y los <strong>readouts en monoespaciado tabular</strong> con
+acento teal sobre grafito casi negro. Se siente como un <strong>osciloscopio de
+laboratorio</strong>, no como un dashboard SaaS.</p>
+</blockquote>
+<p><strong>Anti-slop (lo que NO haremos):</strong> ni gradientes morados de SaaS, ni Material/Bootstrap
+por defecto, ni secciones simétricas predecibles, ni micro-animaciones decorativas por
+todos lados, ni fuentes genéricas. El dato manda; la decoración sirve a la lectura.</p>
+<p><strong>Qué se conserva del alma actual</strong> (bien elegida por el autor): grafito casi negro /
+papel cálido, <strong>un</strong> acento teal confiado, mono tabular para valores científicos,
+stacks de fuente nativos. Lo elevamos a clase mundial; no lo tiramos.</p>
+<hr />
+<h2 id="1-filosofia-y-principios">1. Filosofía y principios<a class="headerlink" href="#1-filosofia-y-principios" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>El dato es el héroe.</strong> El cromo (bordes, fondos, botones) retrocede; el heatmap,
+   la curva y los números avanzan. Máximo "data-ink".</li>
+<li><strong>Nada bloquea.</strong> Cero congelamientos: todo cómputo pesado corre fuera del hilo de
+   UI, con progreso cancelable. La app debe <em>sentirse</em> viva siempre.</li>
+<li><strong>Reproducibilidad visible.</strong> Cada resultado muestra la <strong>receta</strong> (<code>Recipe</code>) que lo
+   produjo. La GUI <em>graba</em> lo que haces como un pipeline compartible.</li>
+<li><strong>Teclado primero.</strong> Todo accionable desde el teclado y una <strong>paleta de comandos</strong>
+   (Cmd/Ctrl-K). El mouse es opcional, no obligatorio.</li>
+<li><strong>Configurable sin tocar código.</strong> Layouts, temas, atajos, colormaps y hasta paneles
+   nuevos (plugins) se cambian desde la UI o archivos de config.</li>
+<li><strong>Progresión suave.</strong> Simple por defecto, poder a un clic. Sin muros de opciones.</li>
+</ol>
+<hr />
+<h2 id="2-sistema-de-diseno-tokens">2. Sistema de diseño (tokens)<a class="headerlink" href="#2-sistema-de-diseno-tokens" title="Permanent link">&para;</a></h2>
+<p>Un único sistema de tokens alimenta QSS (Qt), pyqtgraph y matplotlib — así los gráficos
+se sienten <strong>nativos</strong> del tema, no incrustados. Vive en <code>gui/design/tokens.py</code>.</p>
+<h3 id="21-color">2.1 Color<a class="headerlink" href="#21-color" title="Permanent link">&para;</a></h3>
+<p>Historia de color dominante: <strong>grafito</strong> (superficie) + <strong>teal</strong> (señal) + <strong>neutrales</strong>.
+El teal se usa SOLO para: estado activo, foco, la traza de datos primaria, y acciones
+primarias. Nunca como relleno decorativo.</p>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Dark</th>
+<th>Light</th>
+<th>Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bg</code></td>
+<td><code>#0B0E13</code></td>
+<td><code>#F4F2EC</code></td>
+<td>Fondo raíz (grafito / papel cálido)</td>
+</tr>
+<tr>
+<td><code>surface</code></td>
+<td><code>#121821</code></td>
+<td><code>#FFFFFF</code></td>
+<td>Paneles</td>
+</tr>
+<tr>
+<td><code>surface-2</code></td>
+<td><code>#171F2A</code></td>
+<td><code>#ECE8DF</code></td>
+<td>Controles, barras, dock headers</td>
+</tr>
+<tr>
+<td><code>elevated</code></td>
+<td><code>#1E2733</code></td>
+<td><code>#E4DFD4</code></td>
+<td>Hover / menús / popovers</td>
+</tr>
+<tr>
+<td><code>overlay</code></td>
+<td><code>rgba(6,9,13,.66)</code></td>
+<td><code>rgba(20,18,12,.42)</code></td>
+<td>Modales, backdrop</td>
+</tr>
+<tr>
+<td><code>text</code></td>
+<td><code>#E8EEF5</code></td>
+<td><code>#181C22</code></td>
+<td>Texto primario</td>
+</tr>
+<tr>
+<td><code>text-muted</code></td>
+<td><code>#93A0AE</code></td>
+<td><code>#5A626B</code></td>
+<td>Secundario / hints</td>
+</tr>
+<tr>
+<td><code>text-faint</code></td>
+<td><code>#5C6875</code></td>
+<td><code>#8A8F98</code></td>
+<td>Deshabilitado / marcas de eje</td>
+</tr>
+<tr>
+<td><code>border</code></td>
+<td><code>#232C38</code></td>
+<td><code>#DBD6CB</code></td>
+<td>Divisorias hairline</td>
+</tr>
+<tr>
+<td><code>border-strong</code></td>
+<td><code>#33404F</code></td>
+<td><code>#C4BEB0</code></td>
+<td>Hover / activo</td>
+</tr>
+<tr>
+<td><code>accent</code></td>
+<td><code>#2DD4BF</code></td>
+<td><code>#0E9488</code></td>
+<td>Teal de señal</td>
+</tr>
+<tr>
+<td><code>accent-press</code></td>
+<td><code>#14B8A6</code></td>
+<td><code>#0B7C72</code></td>
+<td>Pressed</td>
+</tr>
+<tr>
+<td><code>accent-soft</code></td>
+<td><code>#0F3A37</code></td>
+<td><code>#CFEEE9</code></td>
+<td>Fondos de estado activo</td>
+</tr>
+<tr>
+<td><code>success</code></td>
+<td><code>#4ADE80</code></td>
+<td><code>#15803D</code></td>
+<td>R² bueno / OK</td>
+</tr>
+<tr>
+<td><code>warning</code></td>
+<td><code>#FBBF24</code></td>
+<td><code>#B45309</code></td>
+<td>Ajuste dudoso</td>
+</tr>
+<tr>
+<td><code>danger</code></td>
+<td><code>#F87171</code></td>
+<td><code>#B91C1C</code></td>
+<td>Error / fallo</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paleta de datos</strong> (colorblind-safe, compartida por pyqtgraph y matplotlib):
+- Secuencial (mapas): <strong>batlow</strong> (Crameri) por defecto; alternativas: viridis, roma,
+  y el "gold" NanoSurf para topografía por familiaridad.
+- Categórica (trazas): teal <code>#2DD4BF</code> (extend/primario), ámbar <code>#F59E0B</code> (retract),
+  violeta <code>#A78BFA</code>, coral <code>#FB7185</code> — 4 tonos distinguibles en ambos modos.
+- Divergente (residuos): vik (Crameri).</p>
+<h3 id="22-tipografia">2.2 Tipografía<a class="headerlink" href="#22-tipografia" title="Permanent link">&para;</a></h3>
+<p>Dos roles, contraste estructural:
+- <strong>UI</strong>: stack nativo refinado — <code>-apple-system, "SF Pro Text", "Segoe UI Variable",
+  "Inter Tight", system-ui</code>. (Distintivo por peso y tracking, no por novedad.)
+- <strong>Dato numérico</strong>: <strong>mono tabular</strong> — <code>"SF Mono", "JetBrains Mono", "Cascadia Code",
+  "Menlo"</code>. Todos los números científicos, ejes y readouts en mono con cifras de ancho
+  fijo: alinean en columnas como un instrumento real. <strong>Este es un ancla de identidad.</strong></p>
+<p>Escala (base 13px UI): <code>11 / 12 / 13 / 15 / 18 / 22 / 28</code>. Line-height 1.45 UI,
+1.2 en readouts densos. Pesos: 400 y 500 (nunca 700 — pesa demasiado sobre grafito).</p>
+<h3 id="23-espacio-radio-elevacion">2.3 Espacio, radio, elevación<a class="headerlink" href="#23-espacio-radio-elevacion" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Grilla de 4px. Espaciados: <code>4 / 8 / 12 / 16 / 24 / 32</code>.</li>
+<li>Radios: <code>6px</code> (controles), <code>10px</code> (paneles/cards), <code>14px</code> (modales). Sin radios en
+  bordes de un solo lado.</li>
+<li>Elevación por <strong>capa + borde</strong>, no por sombras dramáticas: <code>surface</code> → <code>elevated</code> con
+  <code>border</code> hairline; modales con <code>overlay</code> + sombra sutil <code>0 12px 40px rgba(0,0,0,.45)</code>.</li>
+<li>Densidad: dos modos, <strong>Cómodo</strong> (default) y <strong>Compacto</strong> (−2px en paddings, −1px
+  fuente) — alterna con <code>Ctrl+Shift+D</code>. El compacto es para pantallas de lab pequeñas.</li>
+</ul>
+<h3 id="24-movimiento">2.4 Movimiento<a class="headerlink" href="#24-movimiento" title="Permanent link">&para;</a></h3>
+<p>Con propósito, escaso, alto impacto. Nada de spam.
+- Duraciones: <code>120ms</code> (hover/estado), <code>200ms</code> (paneles/perspectivas), <code>260ms</code>
+  (entrada de vista). Easing: <code>cubic-bezier(.2,.8,.2,1)</code> (salida suave, "spring" leve).
+- <strong>Sí animan</strong>: transición entre perspectivas (fundido + leve slide), skeleton
+  shimmer mientras carga, el marcador de progreso, el resaltado de brushing.
+- <strong>NO animan</strong> (crítico): los datos científicos al re-ajustar — el cambio de la curva
+  o el mapa es <strong>instantáneo</strong> (verdad, no espectáculo). <code>prefers-reduced-motion</code>
+  respetado: todo cae a fundidos de 80ms o nada.</p>
+<h3 id="25-iconografia">2.5 Iconografía<a class="headerlink" href="#25-iconografia" title="Permanent link">&para;</a></h3>
+<p>Set lineal de 1.5px, esquinas redondeadas suaves, monocromo (heredan <code>text</code>/<code>accent</code>).
+Preferir SVG propios ligeros; consistencia sobre cantidad. Iconos solo donde aceleran el
+reconocimiento (herramientas, tipos de panel), nunca decorativos.</p>
+<hr />
+<h2 id="3-arquitectura-de-la-interfaz-workspace-de-paneles-perspectivas">3. Arquitectura de la interfaz — Workspace de paneles + Perspectivas<a class="headerlink" href="#3-arquitectura-de-la-interfaz-workspace-de-paneles-perspectivas" title="Permanent link">&para;</a></h2>
+<p>Muere el modelo de <strong>7 pestañas planas</strong>. Nace un <strong>workspace</strong> único, tipo estación de
+trabajo profesional (piensa Blender/DaVinci, pero calmo y científico):</p>
+<ul>
+<li><strong>Paneles acoplables</strong> (dock) que se arrastran, apilan, flotan y se cierran.</li>
+<li><strong>Perspectivas</strong>: presets de layout + paneles para una tarea. El usuario cambia de
+  tarea, no de "pestaña". Perspectivas base:</li>
+<li><strong>Imagen</strong> — topografía, rugosidad, perfiles, KPFM, granos, espectral, 3D.</li>
+<li><strong>Curva de fuerza</strong> — la joya: una curva, calibración, pipeline, ajuste, inspector.</li>
+<li><strong>Force-volume / Mapa</strong> — grilla de curvas → mapas de propiedades + brushing.</li>
+<li><strong>Batch</strong> — carpeta → tabla + distribuciones + provenance.</li>
+<li><strong>Figura</strong> — editor de figura de publicación.</li>
+<li><strong>Simulador / Enseñanza</strong> — gemelo digital del cantiléver (modo docente).</li>
+</ul>
+<h3 id="31-wireframe-del-shell">3.1 Wireframe del shell<a class="headerlink" href="#31-wireframe-del-shell" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌ spmkit ─────────────────────────────────────────────────────  ⌘K  ◐  ⚙ ─┐
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│ ◱ Imagen  ◈ Curva  ▦ Mapa  ▤ Batch  ✦ Figura  ◐ Simulador      [rec ●]  │  ← barra de perspectivas + grabación de receta
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├──────────────┬───────────────────────────────────────────────┬───────────┤
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│  NAVEGADOR   │                LIENZO PRINCIPAL                │ INSPECTOR │
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  (dock izq)  │                (área central)                  │ (dock der)│
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│              │                                                │           │
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│  ▸ archivos  │        [heatmap / curva / mapa según           │  contexto │
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  ▸ curvas    │             la perspectiva activa]             │  del      │
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  ▸ canales   │                                                │  objeto   │
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│              │                                                │  seleccio-│
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  [thumb map] │                                                │  nado     │
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>├──────────────┴───────────────────────────────────────────────┴───────────┤
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│  DOCK INFERIOR:  Pipeline · Consola de resultados · Histogramas · Log     │
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>├───────────────────────────────────────────────────────────────────────────┤
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│ status: archivo.jpk · k=0.043 N/m · 100 curvas · ▓▓▓▓░ 62% ajustando… ⨯   │  ← barra de estado + progreso cancelable
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>└───────────────────────────────────────────────────────────────────────────┘
+</code></pre></div>
+<p>Tres zonas de dock (izq/der/inferior) + centro. Todo redistribuible y <strong>guardable como
+layout con nombre</strong>. La barra de perspectivas arriba; el botón <code>[rec ●]</code> <strong>graba la
+receta</strong> de lo que haces.</p>
+<hr />
+<h2 id="4-el-pipeline-panel-la-columna-vertebral">4. El Pipeline Panel — la columna vertebral<a class="headerlink" href="#4-el-pipeline-panel-la-columna-vertebral" title="Permanent link">&para;</a></h2>
+<p>Es la traducción visual del <code>Recipe</code> reproducible del core. <strong>Lo que ves es lo que se
+guarda y se reproduce.</strong> Vive en el dock inferior o derecho.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>┌ Pipeline · standard_dmt.recipe ────────────────  ▶ Correr  ⤓ Exportar YAML ─┐
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>│ ⣿ 1  Calibrar          InVOLS 50 nm/V · k 0.043 N/m        [desde archivo] ▾│
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>│ ⣿ 2  Línea base        región: sin contacto                                 │
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>│ ⣿ 3  Punto de contacto método: RoV                                          │
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>│ ⣿ 4  Ajuste elasticidad  ⟨si contacto⟩  Hertz · R=20nm · ν=0.3      E=4.5kPa│
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>│ ┄┄ + Añadir paso ▾  (calibrar · base · contacto · ajustar · eventos · …)    │
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>└─────────────────────────────────────────────────────────────────────────────┘
+</code></pre></div>
+<ul>
+<li>Pasos <strong>arrastrables</strong> (reordenar), <strong>conmutables</strong> (on/off), con parámetros inline y
+  <strong>condiciones</strong> (<code>⟨si contacto⟩</code>) — el evaluador seguro del core, sin <code>eval</code>.</li>
+<li>Al editar un paso, el pipeline <strong>se re-ejecuta al instante</strong> sobre la curva activa y
+  el lienzo se actualiza (preview vivo). Si el volumen es grande, corre solo la curva
+  visible y ofrece "Aplicar a todo el mapa".</li>
+<li><code>⤓ Exportar YAML</code> guarda la receta; <code>▶ Correr</code> la aplica al mapa/batch.</li>
+<li><strong>Grabar receta</strong> (<code>[rec ●]</code> del shell): cada acción manual del usuario se registra
+  como paso, produciendo una receta editable — sin escribir YAML a mano.</li>
+</ul>
+<hr />
+<h2 id="5-perspectiva-curva-de-fuerza-el-flujo-joya">5. Perspectiva "Curva de fuerza" (el flujo joya)<a class="headerlink" href="#5-perspectiva-curva-de-fuerza-el-flujo-joya" title="Permanent link">&para;</a></h2>
+<p>Flujo end-to-end: <strong>cargar → navegar → calibrar → construir pipeline → ajustar →
+inspeccionar → (mapear) → exportar</strong>, todo sin cambiar de ventana.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>┌────────────┬──────────────────────────────────────────────┬──────────────────┐
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>│ NAVEGADOR  │              LIENZO DE CURVA                   │    INSPECTOR     │
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>│            │                                                │                  │
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>│ archivo ▸  │   fuerza(nN)                                   │  Ajuste          │
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>│  curva 0   │    ▲                          ╱ extend (teal)  │  ─────────────── │
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>│  curva 1◄  │    │           ╱fit─────      ╱                │  E   4.52 kPa    │
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>│  curva 2   │    │          ╱          ╲___╱ retract (ámbar) │  ± 0.11  R².998  │
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>│  ...       │    │   ● contacto                              │  adh   3.2 nN    │
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>│ [mapa QI]  │    │__╱________________________▶ separación    │  disip 2.8 fJ    │
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>│ (clic=curva)│   │  residuos: ░░▓░░▁▂▁░░  (banda 95%)        │  modelo Hertz    │
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>│            │   [◀ scrubber de curvas ▓▓▓░░░ 1/100 ▶]        │  ─────────────── │
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>│            │                                                │  provenance ▸    │
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>├────────────┴──────────────────────────────────────────────┴──────────────────┤
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>│  Pipeline: Calibrar · Base · Contacto(RoV) · Ajuste(Hertz)  ⟨preview vivo⟩    │
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>└───────────────────────────────────────────────────────────────────────────────┘
+</code></pre></div>
+<p>Detalles que dan comodidad:
+- <strong>Scrubber de curvas</strong>: recorres las 100 curvas del volumen a <strong>60 fps</strong> con flechas o
+  arrastrando; la curva y el ajuste se actualizan en vivo (pyqtgraph, sin lag).
+- <strong>Overlay de ajuste</strong> con <strong>residuos</strong> y <strong>banda de confianza 95%</strong> (de la
+  incertidumbre Monte Carlo del core). Ver el residuo es ver si el modelo miente.
+- <strong>Segmentos</strong> approach (teal) / retract (ámbar) con el punto de contacto marcado y los
+  eventos (ruptura) si los hay.
+- <strong>Inspector</strong> contextual: módulo ± σ, R², adhesión, disipación, modelo, y un
+  desplegable <strong>provenance</strong> con la receta exacta + hash de fuente (exportable RO-Crate).</p>
+<hr />
+<h2 id="6-perspectiva-force-volume-mapa-brushing-ligado">6. Perspectiva "Force-volume / Mapa" (brushing ligado)<a class="headerlink" href="#6-perspectiva-force-volume-mapa-brushing-ligado" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>┌───────────────────────────────┬───────────────────────────────────────────────┐
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>│         MAPA DE MÓDULO         │              CURVA DEL PÍXEL                   │
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>│   ▓▒░▒▓▓▒░ (batlow)  10×10     │   (la curva bajo el cursor del mapa, en vivo)  │
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>│   ░▒▓█▓▒░▒                     │   fuerza ╱fit                                 │
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>│   ▒▓█[·]█▒   ← cursor          │        ╱                                       │
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>│   ▓▒░▒▓▒░▒                     │   ────╱────────▶ sep                           │
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>├───────────────────────────────┼───────────────────────────────────────────────┤
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>│  HISTOGRAMA (E)                │  ESTADÍSTICA                                   │
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>│  ▁▂▅█▇▃▁   [brush 2–5 kPa]     │  n=97/100 · mediana 4.6 kPa · σ 1.2 · IQR …    │
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>│  ▲ al pintar un rango, se      │  [mapa: E | adhesión | disipación | R² | h0]  │
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>│    resaltan los píxeles ▲      │  [▶ Correr en paralelo]  [⤓ CSV] [⤓ PNG] [RO] │
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>└───────────────────────────────┴───────────────────────────────────────────────┘
+</code></pre></div>
+<ul>
+<li><strong>Linked brushing bidireccional</strong>: pasas el cursor por un píxel → su curva aparece;
+  pintas un rango en el histograma → se resaltan los píxeles correspondientes en el mapa.
+  Esto convierte un mapa en una herramienta de <em>exploración</em>, no una postal.</li>
+<li>Selector de propiedad (E / adhesión / disipación / R² / altura de contacto).</li>
+<li><strong>Correr en paralelo</strong> usa el <code>ProcessPoolExecutor</code> del core con barra de progreso
+  cancelable — nunca congela.</li>
+<li>Exportar mapa (PNG con colorbar), CSV, o <strong>paquete RO-Crate</strong> (datos + receta + hash).</li>
+</ul>
+<hr />
+<h2 id="7-paleta-de-comandos-y-teclado">7. Paleta de comandos y teclado<a class="headerlink" href="#7-paleta-de-comandos-y-teclado" title="Permanent link">&para;</a></h2>
+<p><code>Cmd/Ctrl-K</code> abre la <strong>paleta de comandos</strong> con búsqueda difusa de TODO: acciones,
+archivos, canales, curvas, perspectivas, ajustes, recetas.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>┌ ⌘K ─────────────────────────────────────────────────────────┐
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>│  › ajust                                                     │
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>│    Ajustar elasticidad (Hertz)                    ⏎          │
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>│    Ajustar todo el mapa                           ⇧⏎         │
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>│    Cambiar modelo → DMT                                      │
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>│    Ajuste: Monte Carlo (incertidumbre)                      │
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>└──────────────────────────────────────────────────────────────┘
+</code></pre></div>
+<p>Esquema de atajos (configurable, ver §9):</p>
+<table>
+<thead>
+<tr>
+<th>Acción</th>
+<th>Atajo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Paleta de comandos</td>
+<td><code>⌘K</code> / <code>Ctrl+K</code></td>
+</tr>
+<tr>
+<td>Abrir archivo / carpeta</td>
+<td><code>⌘O</code> / <code>⌘⇧O</code></td>
+</tr>
+<tr>
+<td>Perspectivas 1–6</td>
+<td><code>⌘1 … ⌘6</code></td>
+</tr>
+<tr>
+<td>Curva anterior / siguiente</td>
+<td><code>←</code> / <code>→</code> (o <code>,</code> <code>.</code>)</td>
+</tr>
+<tr>
+<td>Ajustar / ajustar todo</td>
+<td><code>F</code> / <code>⇧F</code></td>
+</tr>
+<tr>
+<td>Correr pipeline</td>
+<td><code>⌘⏎</code></td>
+</tr>
+<tr>
+<td>Grabar receta</td>
+<td><code>⌘R</code></td>
+</tr>
+<tr>
+<td>Deshacer / rehacer</td>
+<td><code>⌘Z</code> / <code>⌘⇧Z</code></td>
+</tr>
+<tr>
+<td>Guardar proyecto</td>
+<td><code>⌘S</code></td>
+</tr>
+<tr>
+<td>Exportar figura</td>
+<td><code>⌘E</code></td>
+</tr>
+<tr>
+<td>Tema claro/oscuro</td>
+<td><code>⌘⇧L</code></td>
+</tr>
+<tr>
+<td>Modo foco (zen)</td>
+<td><code>⌘.</code></td>
+</tr>
+<tr>
+<td>Densidad compacta</td>
+<td><code>Ctrl+Shift+D</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="8-arquitectura-tecnica-pyqt6">8. Arquitectura técnica (PyQt6)<a class="headerlink" href="#8-arquitectura-tecnica-pyqt6" title="Permanent link">&para;</a></h2>
+<p>Nueva estructura de <code>gui/</code>, reemplazando las 7 pestañas. <strong>El core sigue puro</strong>; la GUI
+solo orquesta y presenta.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>gui/
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>├── app.py                      # entrypoint (se conserva, adelgazado)
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>├── shell/
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>│   ├── workspace.py            # ventana + dock manager + barra de perspectivas
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>│   ├── dock_manager.py         # registro/persistencia de paneles y layouts
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>│   ├── command_palette.py      # ⌘K, índice difuso de comandos
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>│   ├── status_bar.py           # estado + progreso cancelable global
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>│   └── perspectives.py         # presets de layout por tarea
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>├── design/
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>│   ├── tokens.py               # tokens de color/tipografía/espacio (fuente única)
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>│   ├── theme.py                # tokens → QSS + pyqtgraph + matplotlib (motor de tema)
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>│   └── icons.py                # set de iconos SVG
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>├── panels/                     # cada panel es autocontenido y registrable
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>│   ├── base.py                 # Panel base (título, toolbar, estado, error, refresh)
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>│   ├── navigator.py            # árbol archivos/curvas/canales + thumbnail de mapa
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>│   ├── inspector.py            # propiedades contextuales del objeto activo
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>│   ├── image_canvas.py         # heatmap pyqtgraph (perspectiva Imagen)
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>│   ├── force_canvas.py         # curva de fuerza + overlay de ajuste + scrubber
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>│   ├── map_canvas.py           # force-volume + brushing ligado
+<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>│   ├── pipeline_panel.py       # el Recipe visual editable/grabable
+<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>│   ├── results_console.py      # readouts tabulares + histogramas + stats
+<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>│   ├── figure_editor.py        # editor de figura de publicación (migra el actual)
+<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>│   ├── simulator.py            # gemelo digital / enseñanza (migra el actual)
+<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>│   └── log_panel.py            # log estructurado (reproducibilidad/debug)
+<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a>├── viewmodels/                 # estado observable por perspectiva/panel (sin lógica de física)
+<a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a>│   ├── force_vm.py             # curva/volumen activos, receta, resultados
+<a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a>│   └── image_vm.py
+<a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a>├── runtime/
+<a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a>│   ├── tasks.py                # QThreadPool + Runnable + señal de progreso/cancel
+<a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a>│   ├── session.py              # proyecto .spmproj (guardar/restaurar todo)
+<a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a>│   └── settings.py             # QSettings + esquema de preferencias
+<a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a>└── plugins.py                  # descubrimiento de paneles/ops por entry-points
+</code></pre></div>
+<h3 id="81-modelo-de-presentacion-sin-fugas-al-core">8.1 Modelo de presentación (sin fugas al core)<a class="headerlink" href="#81-modelo-de-presentacion-sin-fugas-al-core" title="Permanent link">&para;</a></h3>
+<p>Vista (panel) ↔ <strong>ViewModel</strong> (estado observable, señales Qt) ↔ <strong>core</strong> (funciones
+puras). El panel nunca importa parsers ni implementa física; solo llama la API pública
+del core y refleja el ViewModel. Los ViewModels emiten <code>pyqtSignal</code> cuando cambian; los
+paneles se re-renderizan reactivamente. Esto elimina la duplicación actual entre tabs.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">ForceViewModel</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="n">curveChanged</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">resultsChanged</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>      <span class="c1"># ctx del pipeline</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="n">recipeChanged</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="n">Recipe</span><span class="p">)</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">set_curve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span> <span class="o">...</span>        <span class="c1"># cambia curva activa → curveChanged</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">run_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="o">...</span>            <span class="c1"># corre en un Task → resultsChanged</span>
+</code></pre></div>
+<h3 id="82-threading-nunca-congelar">8.2 Threading — nunca congelar<a class="headerlink" href="#82-threading-nunca-congelar" title="Permanent link">&para;</a></h3>
+<p>Contrato: <strong>nada pesado en el hilo de UI</strong>. Todo <code>fit_all</code>, mapa, reporte, carga o GIF
+va a un <code>Task</code> (QRunnable en un QThreadPool). El <strong>callback de progreso del core</strong>
+(<code>progress(fracción, msg)</code>) se conecta a un <code>pyqtSignal</code> que actualiza la barra de estado
+y permite <strong>Cancelar</strong>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Task</span><span class="p">(</span><span class="n">QRunnable</span><span class="p">):</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">on_progress</span><span class="p">,</span> <span class="n">on_done</span><span class="p">,</span> <span class="n">on_error</span><span class="p">):</span> <span class="o">...</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>        <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fn</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_emit_progress</span><span class="p">)</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">signals</span><span class="o">.</span><span class="n">done</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">signals</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>     <span class="c1"># → toast + log, nunca swallow silencioso</span>
+</code></pre></div>
+<p>Para mapas de force-volume, el core ya paraleliza con <code>ProcessPoolExecutor</code>; la GUI lo
+lanza dentro de un <code>Task</code> y el callback de progreso llega desde el proceso principal a
+medida que llegan resultados (as_completed). Cancelar detiene el pool.</p>
+<h3 id="83-motor-de-tema-un-token-tres-destinos">8.3 Motor de tema (un token, tres destinos)<a class="headerlink" href="#83-motor-de-tema-un-token-tres-destinos" title="Permanent link">&para;</a></h3>
+<p><code>design/theme.py</code> toma los tokens y genera: (a) el <strong>QSS</strong> de Qt (plantilla con
+sustitución), (b) el tema de <strong>pyqtgraph</strong> (<code>setConfigOption</code> background/foreground +
+pens/colormaps), y (c) el <strong>estilo de matplotlib</strong> (rcParams: face/edge/tick/grid/font).
+Cambiar de claro/oscuro es <strong>hot-swap</strong>: re-aplica QSS y re-pinta canvases. Esto arregla
+el bug actual de que los plots no siguen el tema.</p>
+<h3 id="84-estado-y-persistencia-spmproj">8.4 Estado y persistencia (<code>.spmproj</code>)<a class="headerlink" href="#84-estado-y-persistencia-spmproj" title="Permanent link">&para;</a></h3>
+<p>Un proyecto es un JSON que guarda: archivos cargados (rutas + hash), la receta, los
+parámetros por panel, el <strong>layout de docks</strong>, las anotaciones de figura, y la perspectiva
+activa. Reabrir un <code>.spmproj</code> deja el análisis <strong>exactamente</strong> donde estaba. <code>QSettings</code>
+guarda preferencias globales (tema, densidad, atajos, layouts con nombre).</p>
+<h3 id="85-paneles-como-plugins-entry-points">8.5 Paneles como plugins (entry-points)<a class="headerlink" href="#85-paneles-como-plugins-entry-points" title="Permanent link">&para;</a></h3>
+<p>Descubrimiento vía <code>importlib.metadata</code> sobre el grupo <code>spmkit.gui_panels</code>: un lab hace
+<code>pip install spmkit-mi-panel</code> y aparece en el menú "Añadir panel" sin forkear. El mismo
+mecanismo (<code>spmkit.analyses</code>) registra <strong>ops de pipeline</strong> custom. La UI es expandible por
+la comunidad, no solo por nosotros.</p>
+<h3 id="86-testing-de-gui">8.6 Testing de GUI<a class="headerlink" href="#86-testing-de-gui" title="Permanent link">&para;</a></h3>
+<p><code>pytest-qt</code> con <code>QT_QPA_PLATFORM=offscreen</code> en CI (hoy los tests de GUI ni corren).
+Smoke tests: cada panel monta sin datos; carga de archivo sintético; el pipeline corre y
+emite señales; snapshots de layout. Threading testeado con señales esperadas (no sleeps).</p>
+<hr />
+<h2 id="9-configurabilidad-y-extensibilidad-nivel-vs-code-blender">9. Configurabilidad y extensibilidad (nivel VS Code / Blender)<a class="headerlink" href="#9-configurabilidad-y-extensibilidad-nivel-vs-code-blender" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Layouts guardables</strong>: arrastra paneles a donde quieras, guarda "layouts con nombre".
+   Presets de fábrica: <em>Nanomecánica</em>, <em>Force-volume</em>, <em>Enseñanza</em>, <em>Póster/Revista</em>.</li>
+<li><strong>Preferencias por esquema</strong>: un panel de Ajustes generado desde un esquema
+   (tipos + defaults + descripciones). Precedencia: <strong>defaults &lt; usuario (<code>QSettings</code>) &lt;
+   proyecto (<code>.spmproj</code>)</strong>. Todo descubrible y buscable desde <code>⌘K</code>.</li>
+<li><strong>Editor de tema en vivo</strong>: edita tokens y ve el cambio al instante; crea colormaps,
+   importa Crameri. Exporta/importa temas como archivo.</li>
+<li><strong>Editor de atajos</strong>: reasigna cualquier atajo; detecta colisiones; export/import.</li>
+<li><strong>UI dirigida por recetas</strong>: el pipeline de análisis es YAML del usuario —
+   compartible, versionable, revisable en Git. Las recetas de <code>examples/recipes/</code> son
+   plantillas de arranque.</li>
+<li><strong>Plugins</strong>: paneles y ops de análisis por entry-points (§8.5).</li>
+<li><strong>Plantillas de figura/reporte</strong>: presets de revista/póster (tamaño, DPI, tipografía,
+   colormap) aplicables con un clic.</li>
+<li><strong>i18n (ES/EN)</strong>: strings de UI externalizados; identificadores/código en español
+   (elección UTFSM), interfaz conmutable a inglés para audiencia internacional.</li>
+</ol>
+<hr />
+<h2 id="10-features-de-firma-el-factor-wow">10. Features de firma (el factor wow)<a class="headerlink" href="#10-features-de-firma-el-factor-wow" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Qué es</th>
+<th>Por qué encanta</th>
+<th>Cómo se construye</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Scrubbing 60fps</strong></td>
+<td>Recorrer 10.000 curvas en vivo</td>
+<td>Se siente instantáneo, como un osciloscopio</td>
+<td>pyqtgraph <code>setData</code> + lazy loader del core + coalesce con QTimer</td>
+</tr>
+<tr>
+<td><strong>Brushing ligado</strong></td>
+<td>mapa↔curva↔histograma vinculados</td>
+<td>Convierte un mapa en exploración</td>
+<td>Selecciones compartidas en el ViewModel + señales</td>
+</tr>
+<tr>
+<td><strong>Pipeline vivo</strong></td>
+<td>Editar un paso re-ejecuta y previsualiza</td>
+<td>La ciencia se vuelve tangible</td>
+<td>Recipe del core + Task sobre la curva visible</td>
+</tr>
+<tr>
+<td><strong>Overlay de ajuste</strong></td>
+<td>Fit + residuos + banda 95%</td>
+<td>Ver si el modelo miente</td>
+<td>Monte Carlo del core → <code>FillBetweenItem</code></td>
+</tr>
+<tr>
+<td><strong>Paleta de comandos</strong></td>
+<td>⌘K difuso a todo</td>
+<td>Cero búsqueda en menús</td>
+<td>índice de comandos + rapidfuzz</td>
+</tr>
+<tr>
+<td><strong>Modo foco (zen)</strong></td>
+<td>Oculta docks, solo el dato</td>
+<td>Concentración total</td>
+<td>toggle de docks + fade</td>
+</tr>
+<tr>
+<td><strong>Modo enseñanza</strong></td>
+<td>Gemelo digital: cambias k/T/R y ves el ruido térmico y Hertz responder</td>
+<td>Un profe lo demuestra y lo recuerda</td>
+<td><code>simulation.py</code> del core + sliders + curva viva</td>
+</tr>
+<tr>
+<td><strong>Superficie de provenance</strong></td>
+<td>Cada resultado muestra su receta + hash; exporta RO-Crate</td>
+<td>Reproducibilidad FAIR, único frente a ANA/JPK</td>
+<td>receta del core + <code>trace_nid</code> + empaquetado</td>
+</tr>
+<tr>
+<td><strong>Primer arranque hermoso</strong></td>
+<td>Pantalla de bienvenida con drag&amp;drop, recientes, y una demo de 1 clic</td>
+<td>La primera impresión vende</td>
+<td>welcome panel + dataset demo empacado</td>
+</tr>
+<tr>
+<td><strong>Movimiento con gusto</strong></td>
+<td>Skeletons al cargar, transición spring entre perspectivas</td>
+<td>Se siente moderno sin distraer</td>
+<td>animaciones QSS/<code>QPropertyAnimation</code> ≤260ms</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="11-migracion-desde-las-7-pestanas-sin-romper-la-app">11. Migración desde las 7 pestañas (sin romper la app)<a class="headerlink" href="#11-migracion-desde-las-7-pestanas-sin-romper-la-app" title="Permanent link">&para;</a></h2>
+<p>Estrategia de bajo riesgo, incremental, siempre con la app funcionando:</p>
+<ul>
+<li><strong>Fase A — Cimientos</strong> ✅: <code>design/tokens.py</code> + motor de tema (QSS/pyqtgraph/matplotlib
+  sincronizados) + <code>runtime/tasks.py</code> (threading) + <code>panels/base.py</code>.</li>
+<li><strong>Fase B — Shell</strong> ✅: <code>shell/workspace.py</code> con dock manager + barra de perspectivas +
+  paleta de comandos (⌘K) + barra de estado con progreso cancelable.</li>
+<li><strong>Fase C — Perspectiva Curva de fuerza</strong> ✅: <code>force_canvas</code> (datos+ajuste+residuos+
+  indentación δ+región manual+fijar curvas) + <code>pipeline_panel</code> en vivo (modelo/geometría/
+  Poisson/suavizado/calibración) + <code>inspector</code> (E±σ, R², adhesión, disipación, F/δ máx).</li>
+<li><strong>Fase D — Perspectiva Mapa</strong> ✅ (brushing ligado, ImageView, histograma, export) y
+  <strong>Batch</strong> ✅ (carpeta→tabla→CSV, paralelo). Lanzable con <code>spmkit workspace [archivo]</code>.</li>
+<li><strong>Fase E — Migrar</strong> Imagen/Figura/Simulador a paneles nativos; retirar las tabs viejas
+  (pendiente).</li>
+<li><strong>Fase F — Extensibilidad</strong>: persistencia (tema/geometría/perspectiva) ✅; pendientes:
+  layouts guardables, editor de tema/atajos, plugins, <code>.spmproj</code>, i18n. Posible modelo JKR
+  (con validación previa; hoy están Hertz/paraboloide/Sneddon/DMT).</li>
+</ul>
+<p>Cada fase entró con smoke tests de GUI (pytest-qt offscreen) y dejó la app usable.
+Verificado end-to-end con datos reales (JPK y force-volume <code>.nid</code> 10×10).</p>
+<hr />
+<h2 id="12-definicion-de-listo-calidad-de-la-obra">12. Definición de "listo" (calidad de la obra)<a class="headerlink" href="#12-definicion-de-listo-calidad-de-la-obra" title="Permanent link">&para;</a></h2>
+<ul>
+<li>[ ] DFII ≥ 8 (aquí 15) y el <strong>ancla de diferenciación</strong> visible en pantalla.</li>
+<li>[ ] Cero congelamientos: toda operación pesada con progreso cancelable.</li>
+<li>[ ] Tema claro/oscuro hot-swap con gráficos que <strong>siguen</strong> el tema.</li>
+<li>[ ] Teclado-primero: todo accionable sin mouse; <code>⌘K</code> completa.</li>
+<li>[ ] Reproducibilidad visible: cada resultado muestra su receta; <code>.spmproj</code> restaura todo.</li>
+<li>[ ] Configurable sin código: layouts, tema, atajos, plugins.</li>
+<li>[ ] Accesible: contraste AA, foco visible, <code>prefers-reduced-motion</code>.</li>
+<li>[ ] Se ve como un <strong>instrumento</strong>, no como un template. Si dudas, reinicia.</li>
+</ul>
+<hr />
+<h2 id="13-refinamientos-tras-revision-senior-v2">13. Refinamientos tras revisión senior (v2)<a class="headerlink" href="#13-refinamientos-tras-revision-senior-v2" title="Permanent link">&para;</a></h2>
+<p>Ajustes que corrigen puntos ciegos arquitectónicos detectados en revisión. DFII
+recalibrado a <strong>14/15</strong> (−1 por el riesgo técnico de scrubbing 60fps + IPC, mitigado
+abajo).</p>
+<h3 id="131-jerarquia-de-color-de-trazas-critico-corrige-halation">13.1 Jerarquía de color de trazas (CRÍTICO — corrige <em>halation</em>)<a class="headerlink" href="#131-jerarquia-de-color-de-trazas-critico-corrige-halation" title="Permanent link">&para;</a></h3>
+<p>Un teal brillante sobre grafito casi negro produce <strong>halation</strong> (halo que difumina el
+borde de la curva) y arruina la precisión al localizar el punto de contacto. Regla nueva:
+- <strong>Datos crudos = neutral frío.</strong> Extend <code>#C9D3DE</code> (blanco desaturado), retract
+  <code>#B49A6E</code> (ámbar apagado, no saturado). Son el sustrato, no el foco.
+- <strong>Teal <code>#2DD4BF</code> RESERVADO</strong> al <strong>ajuste (fit)</strong>, la <strong>traza activa/seleccionada</strong> y el
+  marcador de <strong>contacto</strong>. El modelo es el héroe visual, no el ruido.
+- Jerarquía inmediata: <strong>gris = dato/ruido, teal = modelo/ajuste</strong>. (Actualiza §2.1 y §5.)</p>
+<h3 id="132-peso-600-en-modo-claro-legibilidad-aa">13.2 Peso 600 en modo claro (legibilidad AA)<a class="headerlink" href="#132-peso-600-en-modo-claro-legibilidad-aa" title="Permanent link">&para;</a></h3>
+<p>En modo claro, texto 400 sobre papel cálido puede sentirse "lavado". Se permite <strong>peso
+600 solo para labels de sección y headers críticos</strong> en modo claro; el resto sigue 400/500
+(en oscuro nunca &gt;500, para evitar halo). El peso no cambia el contraste (eso es color),
+pero sí la legibilidad a tamaños chicos.</p>
+<h3 id="133-scrubbing-sin-recomputar-rendimiento-real">13.3 Scrubbing sin recomputar (rendimiento real)<a class="headerlink" href="#133-scrubbing-sin-recomputar-rendimiento-real" title="Permanent link">&para;</a></h3>
+<p>El cuello de botella del scrubbing no es el render (pyqtgraph es C++/GPU) sino el <strong>I/O y
+el recálculo del pipeline</strong>. Solución:
+- Al <strong>hacer scrub, solo se re-renderiza la curva</strong> (lazy loader del core + caché <strong>LRU</strong>
+  de curvas en el ViewModel); NO se corre el pipeline.
+- El <strong>ajuste corre con debounce</strong> (<code>QTimer.singleShot(150ms)</code>) tras soltar el cursor.
+- Los resultados por curva se <strong>precalculan en background</strong> (Task) y se cachean; al pasar
+  por una curva ya calculada, el overlay aparece instantáneo.</p>
+<h3 id="134-optimistic-ui-en-el-pipeline-estados-transitorios">13.4 Optimistic UI en el pipeline (estados transitorios)<a class="headerlink" href="#134-optimistic-ui-en-el-pipeline-estados-transitorios" title="Permanent link">&para;</a></h3>
+<p>Editar un paso en vivo puede dejar el pipeline momentáneamente inválido. Regla: si un paso
+falla al evaluar, se marca con <strong>warning naranja</strong> en ese paso, <strong>se conserva en pantalla
+el último resultado válido</strong> y el scrubbing <strong>no se rompe</strong>. El usuario sigue trabajando;
+el error es reversible y localizado.</p>
+<h3 id="135-sandbox-de-panelesplugins-aislamiento-de-fallos">13.5 Sandbox de paneles/plugins (aislamiento de fallos)<a class="headerlink" href="#135-sandbox-de-panelesplugins-aislamiento-de-fallos" title="Permanent link">&para;</a></h3>
+<p>Un plugin de terceros que crashea <strong>no puede tumbar la app</strong>. El <code>Panel base</code> envuelve el
+render en un try/except: ante una excepción muestra un <strong>"Error Card"</strong> dentro del panel
+(mensaje + traceback plegable + <code>[Reiniciar panel]</code> <code>[Reportar]</code>), como VS Code con
+extensiones rotas. El resto del workspace sigue vivo.</p>
+<h3 id="136-ipc-seguro-poolqt-critico-nunca-emitir-desde-un-hijo">13.6 IPC seguro pool↔Qt (CRÍTICO — nunca emitir desde un hijo)<a class="headerlink" href="#136-ipc-seguro-poolqt-critico-nunca-emitir-desde-un-hijo" title="Permanent link">&para;</a></h3>
+<p>Fronteras explícitas para no crashear Qt:
+- Los <strong>procesos hijo</strong> del <code>ProcessPoolExecutor</code> son <strong>cómputo puro</strong>: jamás importan ni
+  tocan Qt ni emiten señales.
+- El pool corre dentro del <strong>hilo worker</strong> del <code>QThreadPool</code> (mismo proceso que la UI, pero
+  no el hilo principal). El callback de progreso se ejecuta ahí y <strong>emite un <code>pyqtSignal</code></strong>,
+  que Qt <strong>encola de forma segura</strong> al hilo principal (conexión cross-thread por defecto).
+- Alternativa aún más desacoplada (recomendada si el pool se vuelve complejo):
+  <code>multiprocessing.Queue</code> para el progreso + un <code>QTimer</code> en la UI que hace <strong>polling cada
+  50ms</strong> y emite la señal. Cero acoplamiento entre el pool y Qt.</p>
+<h3 id="137-spmproj-versionado-y-tolerante">13.7 <code>.spmproj</code> versionado y tolerante<a class="headerlink" href="#137-spmproj-versionado-y-tolerante" title="Permanent link">&para;</a></h3>
+<p>El JSON del proyecto lleva <code>schema_version</code> estricto y funciones <code>migrate_vN_a_vN1()</code>. Si
+al abrir un proyecto un panel del layout <strong>no existe</strong> (plugin desinstalado, panel
+renombrado), la app lo <strong>ignora con gracia</strong> y abre el resto — nunca falla la apertura.</p>
+<h3 id="138-abstraccion-de-canvas-a-prueba-de-futuro">13.8 Abstracción de <code>Canvas</code> (a prueba de futuro)<a class="headerlink" href="#138-abstraccion-de-canvas-a-prueba-de-futuro" title="Permanent link">&para;</a></h3>
+<p>Todos los objetos de pyqtgraph se envuelven en una clase propia <code>Canvas</code>
+(<code>draw_curve/draw_map/set_theme/...</code>). Los paneles hablan con <code>Canvas</code>, no con pyqtgraph
+directo. Así, si mañana migramos a <strong>vispy/pygfx</strong> (GPU puro) por rendimiento, se cambia
+<code>Canvas</code> sin reescribir un solo panel.</p>
+<h3 id="139-orden-de-ejecucion-y-spikes">13.9 Orden de ejecución y spikes<a class="headerlink" href="#139-orden-de-ejecucion-y-spikes" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Empezar por Fase A</strong> (tokens + threading). Si no se paraleliza un mapa 100×100 sin
+  congelar la UI, lo demás no importa.</li>
+<li><strong>Spike de brushing (2 días)</strong> antes de la Fase D: prototipo mínimo en pyqtgraph que
+  sincronice un heatmap y un histograma (selección bidireccional). Es lo más difícil de
+  sincronizar; validarlo temprano de-riesga la killer feature.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://kegouro.github.io" target="_blank" rel="noopener" title="Pharos Project — el ecosistema" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8 10V8h1V4H8V3l4-2 4 2v1h-1v4h1v2h-1.26l-6.3 3.64L9 10zm5-2V4h-2v4zM7 23l.04-.24 9.11-5.26.52 3.38L13 23zm1.05-6.83L15.31 12l.52 3.37-8.4 4.85z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate", "search.suggest", "navigation.top", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
