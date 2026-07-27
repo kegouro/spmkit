@@ -15,6 +15,13 @@ el versionado es [SemVer](https://semver.org/lang/es/).
   `LEVEL 2 NUMERICALLY_VERIFIED`; la confirmación externa prerregistrada no es un
   blind holdout por `ACCIDENTAL_PRE_FREEZE_UNBLINDING`.
 
+### Validación — Gwyddion cross-validation v0.1 (2026-07-27)
+- Publicada la evidencia de validación cruzada contra Gwyddion 2.71 para el wheel
+  congelado SPMKit 0.1.4: Sa, Sq y Sz obtuvieron 18/18 comparaciones conformes
+  sobre seis superficies sintéticas, con claims limitadas `LEVEL 3 CROSS_VALIDATED`.
+- Véase el [registro canónico externo](https://github.com/kegouro/spmkit-validation/blob/2a3d6c780722a79cb19c079cec0476969267b10b/evidence/phase01e-gwyddion/gate-results.json).
+  No constituye validación física.
+
 ### Documentación — Guía de extensión y guía de usuario Fathom (F5 del roadmap)
 - **Nueva guía "Extender spmkit y Fathom"** (`docs/extending.md`): los tres puntos de
   extensión (formatos/análisis por `spmkit.plugins.v1`, perspectivas/paneles por `ModuleSpec`
