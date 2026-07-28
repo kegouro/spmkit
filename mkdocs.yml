@@ -9,7 +9,6 @@ docs_dir: docs
 
 theme:
   name: material
-  custom_dir: overrides
   favicon: images/brand/fathom_mark.svg
   logo: images/brand/fathom_logo_light.png
   font:

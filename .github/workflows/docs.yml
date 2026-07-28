@@ -4,22 +4,44 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch: {}
 
 permissions:
   contents: write
+
+concurrency:
+  group: docs-deploy
+  cancel-in-progress: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
+          cache: pip
+          cache-dependency-path: docs/requirements.txt
 
-      - name: Install mkdocs-material
-        run: pip install mkdocs-material
+      - name: Install documentation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r docs/requirements.txt
+
+      - name: Build documentation strictly
+        run: mkdocs build --strict
+
+      - name: Run documentation checks
+        run: python scripts/check_docs_sync.py
+
+      - name: Configure git identity for gh-deploy
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Deploy to GitHub Pages
         run: mkdocs gh-deploy --force

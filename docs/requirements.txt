@@ -1,0 +1,5 @@
+# Documentation build dependencies for SPM-Kit / Fathom.
+# Pinned for reproducible CI builds of the MkDocs Material site.
+# See .github/workflows/docs.yml and scripts/check_docs_sync.py.
+mkdocs==1.6.1
+mkdocs-material==9.7.7

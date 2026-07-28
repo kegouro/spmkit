@@ -42,3 +42,14 @@ New reference material*/
 
 # MkDocs build output
 site/
+
+# LaTeX build artefacts for docs/user-guide.{tex,pdf}
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.toc
+*.xdv
+*.synctex.gz
+_minted-*/
