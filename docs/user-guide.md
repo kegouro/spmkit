@@ -1356,7 +1356,7 @@ MIT. See `LICENSE` in the repository root.
 
 ### 19.3 Contributing
 
-See [`CONTRIBUTING.md`](../CONTRIBUTING.md). Issues and pull requests are welcome at
+See [`CONTRIBUTING.md`](https://github.com/kegouro/spmkit/blob/main/CONTRIBUTING.md). Issues and pull requests are welcome at
 <https://github.com/kegouro/spmkit/issues>.
 
 ### 19.4 Funding

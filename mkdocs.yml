@@ -1,39 +1,65 @@
-site_name: spmkit
-site_description: Analizador open-source de datos AFM/KPFM para microscopía de sonda de barrido
+site_name: SPM-Kit · Fathom
+site_description: Open numerical engine and interactive workspace for Scanning Probe Microscopy (SPM)
 site_url: https://kegouro.github.io/spmkit
 repo_url: https://github.com/kegouro/spmkit
 repo_name: kegouro/spmkit
+edit_uri: edit/main/docs/
 
 docs_dir: docs
 
 theme:
   name: material
+  custom_dir: overrides
+  favicon: images/brand/fathom_mark.svg
+  logo: images/brand/fathom_logo_light.png
+  font:
+    text: Inter
+    code: JetBrains Mono
   palette:
     - scheme: slate
-      primary: teal
-      accent: teal
+      primary: custom
+      accent: custom
       toggle:
         icon: material/brightness-4
-        name: Cambiar a modo claro
+        name: Switch to light mode
     - scheme: default
-      primary: teal
-      accent: teal
+      primary: custom
+      accent: custom
       toggle:
         icon: material/brightness-7
-        name: Cambiar a modo oscuro
+        name: Switch to dark mode
   features:
     - navigation.tabs
+    - navigation.tabs.sticky
     - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - navigation.footer
     - toc.integrate
     - search.suggest
-    - navigation.top
+    - search.highlight
     - content.code.copy
+    - content.code.select
+    - content.tabs.link
+    - content.tooltips
+
+extra_css:
+  - stylesheets/fathom.css
+
+extra_javascript:
+  - javascripts/mathjax.js
 
 markdown_extensions:
   - admonition
   - tables
+  - attr_list
+  - md_in_html
+  - def_list
+  - footnotes
   - toc:
       permalink: true
+  - pymdownx.arithmatex:
+      generic: true
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
@@ -41,31 +67,61 @@ markdown_extensions:
           format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.highlight:
       anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.details
   - pymdownx.tabbed:
       alternate_style: true
+  - pymdownx.mark
+  - pymdownx.caret
+  - pymdownx.keys
 
 nav:
-  - Inicio: index.md
-  - Primeros pasos: getting-started.md
-  - Guía de usuario:
-      - Interfaz gráfica (GUI): user-guide.md
-      - Referencia CLI: cli.md
-  - API Python: api.md
-  - Guía de teoría: theory.md
-  - Referencia técnica:
-      - Arquitectura: ARCHITECTURE.md
-      - Extender spmkit y Fathom: extending.md
-      - Plan de competencia (JPK/ANA): design/COMPETITION_ROADMAP.md
-      - Validación científica: VALIDATION.md
-      - Trazabilidad del pipeline: TRACEABILITY.md
+  - Home: index.md
+  - Getting started: getting-started.md
+  - Theory:
+      - Overview: theory/index.md
+      - AFM principles: theory/afm-principles.md
+      - Operating modes: theory/operating-modes.md
+      - Force-distance curves: theory/force-distance.md
+      - Contact mechanics: theory/contact-mechanics.md
+      - KPFM: theory/kpfm.md
+      - Roughness & spectral analysis: theory/roughness.md
+      - Resonance & mass sensing: theory/resonance.md
+      - SPM-Kit workflows: theory/spmkit-workflows.md
+      - Glossary: theory/glossary.md
+      - References: theory/references.md
+  - Manual:
+      - Overview: manual/index.md
+      - Full guide: user-guide.md
+      - PDF reader: manual/reader.md
+      - Downloads: manual/downloads.md
+      - CLI reference: cli.md
+  - API: api.md
+  - Ecosystem:
+      - Overview: ecosystem/index.md
+      - SPM-Kit: ecosystem/spmkit.md
+      - Fathom: ecosystem/fathom.md
+      - Phantoms: ecosystem/phantoms.md
+      - Data Hunter: ecosystem/data-hunter.md
+      - Validation: ecosystem/validation.md
+      - Pharos: ecosystem/pharos.md
+  - Reference:
+      - Architecture: ARCHITECTURE.md
+      - Extending: extending.md
+      - Validation: VALIDATION.md
+      - Traceability: TRACEABILITY.md
       - Roadmap: ROADMAP.md
-      - Diseño de UI: UI_DESIGN.md
-  - ↗ Pharos Project: https://kegouro.github.io
+      - Brand: BRAND.md
 
 extra:
   social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/kegouro/spmkit
+      name: SPM-Kit on GitHub
     - icon: material/lighthouse
       link: https://kegouro.github.io
-      name: Pharos Project — el ecosistema
+      name: Pharos Project
+  status:
+    type: alpha

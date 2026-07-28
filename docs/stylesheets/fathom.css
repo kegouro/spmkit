@@ -1,0 +1,339 @@
+/*
+ * Fathom — SPM-Kit documentation theme
+ * "Instrument" aesthetic: graphite + signal teal + contact gold
+ * Tokens mirror src/spmkit/gui/design/tokens.py
+ */
+
+:root {
+  --fathom-bg: #0B0E13;
+  --fathom-surface: #121821;
+  --fathom-surface-2: #171F2A;
+  --fathom-elevated: #1E2733;
+  --fathom-text: #E8EEF5;
+  --fathom-text-muted: #93A0AE;
+  --fathom-text-faint: #5C6875;
+  --fathom-border: #232C38;
+  --fathom-border-strong: #33404F;
+  --fathom-accent: #2DD4BF;
+  --fathom-accent-press: #14B8A6;
+  --fathom-accent-soft: #0F3A37;
+  --fathom-gold: #E8A94B;
+  --fathom-gold-soft: #33280F;
+  --fathom-success: #4ADE80;
+  --fathom-warning: #FBBF24;
+  --fathom-danger: #F87171;
+}
+
+/* ---- Dark palette (default for slate) ---- */
+[data-md-color-scheme="slate"] {
+  --md-default-bg-color: var(--fathom-bg);
+  --md-default-fg-color: var(--fathom-text);
+  --md-default-fg-color--light: var(--fathom-text-muted);
+  --md-default-fg-color--lighter: var(--fathom-text-faint);
+
+  --md-primary-bg-color: var(--fathom-surface);
+  --md-primary-fg-color: var(--fathom-text);
+  --md-primary-fg-color--light: var(--fathom-text-muted);
+
+  --md-accent-bg-color: var(--fathom-accent);
+  --md-accent-fg-color: var(--fathom-bg);
+
+  --md-code-bg-color: var(--fathom-surface-2);
+  --md-code-fg-color: var(--fathom-text);
+
+  --md-typeset-color: var(--fathom-text);
+  --md-typeset-a-color: var(--fathom-accent);
+
+  --md-admonition-bg-color: var(--fathom-surface);
+  --md-admonition-fg-color: var(--fathom-text);
+
+  --md-footer-bg-color: var(--fathom-surface);
+  --md-footer-fg-color: var(--fathom-text-muted);
+}
+
+/* ---- Light palette ---- */
+[data-md-color-scheme="default"] {
+  --md-default-bg-color: #F4F2EC;
+  --md-default-fg-color: #1A1F28;
+  --md-default-fg-color--light: #4A5568;
+  --md-default-fg-color--lighter: #93A0AE;
+
+  --md-primary-bg-color: #0B0E13;
+  --md-primary-fg-color: #E8EEF5;
+  --md-primary-fg-color--light: #93A0AE;
+
+  --md-accent-bg-color: #2DD4BF;
+  --md-accent-fg-color: #04342C;
+
+  --md-code-bg-color: #ECE8DF;
+  --md-code-fg-color: #1A1F28;
+
+  --md-typeset-color: #1A1F28;
+  --md-typeset-a-color: #14B8A6;
+
+  --md-footer-bg-color: #0B0E13;
+  --md-footer-fg-color: #93A0AE;
+}
+
+/* ---- Typography ---- */
+.md-typeset {
+  font-size: 0.82rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.md-typeset h1 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  border-bottom: 1px solid var(--fathom-border);
+  padding-bottom: 0.4em;
+}
+
+.md-typeset h2 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-top: 2em;
+}
+
+/* ---- Hero block (portada) ---- */
+.fathom-hero {
+  text-align: center;
+  padding: 2.5rem 1rem 2rem;
+  margin: 0 -1rem 2rem;
+  border-bottom: 1px solid var(--fathom-border);
+}
+
+.fathom-hero img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+}
+
+.fathom-hero h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  border-bottom: none;
+  margin-bottom: 0.5rem;
+}
+
+.fathom-hero .tagline {
+  font-size: 1.1rem;
+  color: var(--fathom-text-muted);
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+.fathom-hero .status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--fathom-gold-soft);
+  color: var(--fathom-gold);
+  border: 1px solid var(--fathom-gold);
+  margin-bottom: 1.5rem;
+}
+
+/* ---- CTA buttons ---- */
+.fathom-cta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+
+.fathom-cta a {
+  display: inline-block;
+  padding: 0.6rem 1.4rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+}
+
+.fathom-cta a.primary {
+  background: var(--fathom-accent);
+  color: var(--fathom-bg);
+}
+
+.fathom-cta a.primary:hover {
+  background: var(--fathom-accent-press);
+}
+
+.fathom-cta a.secondary {
+  background: var(--fathom-surface-2);
+  color: var(--fathom-text);
+  border-color: var(--fathom-border);
+}
+
+.fathom-cta a.secondary:hover {
+  border-color: var(--fathom-accent);
+  color: var(--fathom-accent);
+}
+
+[data-md-color-scheme="default"] .fathom-cta a.secondary {
+  background: #ECE8DF;
+  color: #1A1F28;
+  border-color: #D0CCC0;
+}
+
+/* ---- Ecosystem cards ---- */
+.fathom-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.fathom-card {
+  background: var(--fathom-surface);
+  border: 1px solid var(--fathom-border);
+  border-radius: 8px;
+  padding: 1.2rem;
+  transition: border-color 0.15s ease;
+}
+
+.fathom-card:hover {
+  border-color: var(--fathom-accent);
+}
+
+.fathom-card h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.fathom-card h3 a {
+  color: var(--fathom-text) !important;
+  text-decoration: none;
+}
+
+.fathom-card .card-role {
+  font-size: 0.8rem;
+  color: var(--fathom-accent);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.5rem;
+}
+
+.fathom-card .card-desc {
+  font-size: 0.85rem;
+  color: var(--fathom-text-muted);
+  line-height: 1.5;
+}
+
+[data-md-color-scheme="default"] .fathom-card {
+  background: #FFFFFF;
+  border-color: #E2DDD0;
+}
+
+/* ---- Evidence table ---- */
+.fathom-evidence {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.85rem;
+}
+
+.fathom-evidence th {
+  background: var(--fathom-surface-2);
+  color: var(--fathom-text);
+  font-weight: 600;
+  text-align: left;
+  padding: 0.6rem 0.8rem;
+  border-bottom: 2px solid var(--fathom-border-strong);
+}
+
+.fathom-evidence td {
+  padding: 0.5rem 0.8rem;
+  border-bottom: 1px solid var(--fathom-border);
+  color: var(--fathom-text-muted);
+}
+
+.fathom-evidence tr:hover td {
+  color: var(--fathom-text);
+}
+
+[data-md-color-scheme="default"] .fathom-evidence th {
+  background: #ECE8DF;
+  color: #1A1F28;
+}
+
+[data-md-color-scheme="default"] .fathom-evidence td {
+  border-color: #E2DDD0;
+  color: #4A5568;
+}
+
+/* ---- Level badges ---- */
+.level-badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  font-family: monospace;
+  white-space: nowrap;
+}
+
+.level-0 { background: #33280F; color: #E8A94B; }
+.level-1 { background: #0F3A37; color: #2DD4BF; }
+.level-2 { background: #0F3A37; color: #2DD4BF; }
+.level-3 { background: #0F3A37; color: #2DD4BF; border: 1px solid #2DD4BF; }
+.level-exp { background: #2A2118; color: #93A0AE; }
+
+/* ---- Admonition custom styling ---- */
+.md-typeset .admonition.definition,
+.md-typeset .admonition.assumptions,
+.md-typeset .admonition.implementation,
+.md-typeset .admonition.evidence {
+  border-radius: 6px;
+  border-left: 3px solid var(--fathom-accent);
+}
+
+/* ---- Nav cleanup ---- */
+.md-header {
+  box-shadow: 0 1px 0 var(--fathom-border);
+}
+
+.md-tabs {
+  border-bottom: 1px solid var(--fathom-border);
+}
+
+/* ---- Mobile adjustments ---- */
+@media (max-width: 768px) {
+  .fathom-hero h1 {
+    font-size: 1.6rem;
+  }
+  .fathom-hero .tagline {
+    font-size: 0.95rem;
+  }
+  .fathom-cta {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .fathom-cta a {
+    text-align: center;
+  }
+  .fathom-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- Print ---- */
+@media print {
+  .fathom-hero,
+  .fathom-cta,
+  .md-header,
+  .md-tabs,
+  .md-sidebar {
+    display: none !important;
+  }
+}
