@@ -1,15 +1,20 @@
 # SPM-Kit &middot; Fathom — Usage Guide
 
-**Version 0.1.2 (Alpha) &mdash; 2026-07-14**
+**Version 0.1.4 (Alpha) &mdash; in-tree `0.1.5.dev0` &mdash; 2026-07-27**
 
 ---
 
-*Canonical documentation: This Markdown file is the authoritative reference for SPM‑Kit 0.1.2.
-A printable companion PDF is available at `docs/user-guide.pdf`. Both are verified against
-the current codebase.*
+*Canonical documentation: This Markdown file is the authoritative reference for SPM‑Kit 0.1.4
+(development tree `0.1.5.dev0`). A printable companion PDF is available at
+`docs/user-guide.pdf` and in the embedded [PDF reader](manual/reader.md). Both are verified
+against the current codebase.*
 
-**Authors:** José Labarca & Tomás Corrales
-**License:** MIT &bull; **Repository:** <https://github.com/kegouro/spmkit>
+**Author:** José Labarca Baeza &mdash; Universidad Técnica Federico Santa María (UTFSM), Valparaíso, Chile.
+**Acknowledgements:** Tomás Corrales and the SPM Lab at UTFSM provided selected experimental
+datasets and laboratory context during development and evaluation. María Saavedra Fredes and
+Benjamin Schleyer helped locate and share candidate datasets for the validation campaign.
+Released under the MIT license, without dedicated institutional funding.
+**License:** MIT &bull; **Repository:** <https://github.com/kegouro/spmkit> &bull; **Site:** <https://kegouro.github.io/spmkit>
 
 ---
 
@@ -23,7 +28,7 @@ produces publication‑ready results: roughness parameters, line profiles, KPFM 
 statistics, nanomechanical property maps, thermal‑tune cantilever calibration, grain detection,
 spectral analysis, and single‑molecule force spectroscopy.
 
-SPM‑Kit was developed independently by physics students at **Universidad Técnica Federico Santa María (UTFSM)**, informed by practical work with AFM/SPM data, and is released under the MIT license.
+SPM‑Kit was developed independently by **José Labarca Baeza** at the Universidad Técnica Federico Santa María (UTFSM), informed by practical work with AFM/SPM data, and is released under the MIT license.
 
 ### 1.2 What is Fathom?
 
@@ -63,11 +68,16 @@ for exact reproducibility. Byte‑level traceability (`.nid` files) is implement
 
 ### 1.6 Status
 
-SPM‑Kit is **alpha‑stage** software (`Development Status :: 3 - Alpha`). Core image analysis
-(roughness, KPFM, spectral) is validated against Gwyddion at machine precision. Force‑spectroscopy
-workflows are tested on synthetic and lab data but have not been independently cross‑validated.
-Some readers (`afmformats`, `jpk`, Bruker SPM) are experimental. See [§13](#13-scientific-validation-philosophy)
-for details.
+SPM‑Kit is **alpha‑stage** software (`Development Status :: 3 - Alpha`). The `.nid` image
+parsers are cross‑checked against Gwyddion at machine precision — this is *parser parity*
+with another implementation of the same formula, not physical‑model validation. The roughness
+parameters Sa, Sq and Sz are independently **cross‑validated** against Gwyddion 2.71
+(`LEVEL 3`, 18/18 comparisons over six synthetic surfaces); KPFM, spectral and the remaining
+image analyses are exercised by unit and synthetic‑recovery tests (`LEVEL 1/2`). Nanoscope III
+`.spm` image reading is numerically verified against Gwyddion 2.71 at matrix precision
+(`LEVEL 2`, partial). Force‑spectroscopy workflows are tested on synthetic and lab data but
+have **not** been independently cross‑validated. Some readers (`afmformats`, JPK TIFF, Bruker
+`.00N`) remain experimental. See [§13](#13-scientific-validation-philosophy) for details.
 
 ---
 
@@ -151,10 +161,10 @@ for tests; Fathom itself requires a display.
 
 ```bash
 spmkit --version
-# spmkit 0.1.2
+# spmkit 0.1.4   (an editable/in-tree install prints 0.1.5.dev0)
 
 python -c "import spmkit; print(spmkit.__version__)"
-# 0.1.2
+# 0.1.4   (or 0.1.5.dev0 in the development tree)
 
 python -c "from spmkit.gui.app import run; print('GUI import OK')"
 # GUI import OK (does not launch; no Qt display needed)
@@ -221,30 +231,37 @@ Every analysis function returns an immutable dataclass (e.g. `RoughnessResult`,
 
 | Extension | Source | Data type | Access | Extra | Status |
 |-----------|--------|-----------|--------|-------|--------|
-| `.nid` | NanoSurf | Images + force‑volume | Read | — | **Validated** (machine‑precision vs Gwyddion) |
+| `.nid` | NanoSurf | Images + force‑volume | Read | — | **Cross‑checked** (parser parity vs Gwyddion, corr 1.000000) |
 | `.nhf` | NanoSurf HDF5 | Images | Read | `hdf5` or `nanosurf` | Tested (generic HDF5 walker) |
 | `.gwy` | Gwyddion | Images | Read + Write | `gwy` | Tested (round‑trip) |
 | `.nid` (spectroscopy) | NanoSurf | Force‑volume | Read | — | Tested |
 | `.jpk-force` | JPK / Bruker | Single force curve | Read | — | Tested |
 | `.jpk` (TIFF) | JPK / Bruker | Force‑map / QI | Read | `jpk` | Experimental |
 | `.001` / `.002` | Bruker SPM | Images | Read | `afm` | Experimental |
+| `.spm` | Bruker / Nanoscope III | Images | Read | — | **Partial (LEVEL 2)** — 6 files vs Gwyddion 2.71 at matrix precision; scaling unresolved returns raw |
 | `.ibw` | Asylum Research | Force curves | Read | `afm` | Experimental |
 
 ### 5.1 Maturity vocabulary
 
 | Label | Meaning |
 |-------|---------|
-| **Validated** | Numerical output cross‑checked against independent reference at defined tolerance. |
+| **Cross‑validated (L3)** | Derived quantities compared to an independent reference in an externally registered, frozen campaign at defined tolerance. |
+| **Numerically verified (L2)** | Matrix‑precision agreement with an independent reference on a declared set of files. |
+| **Cross‑checked** | Parser/conversion parity with another implementation of the same formula (software‑level, not physical validation). |
 | **Tested** | Unit and synthetic‑recovery tests pass; format loads without errors. |
 | **Experimental** | Reader exists but has not been tested with diverse real data. |
 | **Partial** | Some metadata or channel types may be misread; use with caution. |
 
 ### 5.2 What "validated" means for `.nid`
 
-The physical conversion `phys = Dim2Min + (raw + 2³¹) / 2³² · Dim2Range` has been verified
-against Gwyddion exports for real lab data at **correlation 1.000000** for topography,
-phase, and sensor channels. Orientation (`flipud` for `Dim1Name=Y*`), byte budget, and
-8 integrity checks are verified by `spmkit verify`. See `docs/TRACEABILITY.md`.
+The physical conversion `phys = Dim2Min + (raw + 2³¹) / 2³² · Dim2Range` has been cross‑checked
+against Gwyddion exports for real lab data at **correlation 1.000000** for topography, phase,
+and sensor channels. This is *parser/conversion parity* — agreement between two implementations
+of the same formula — and does not, by itself, validate a physical model. The independently
+cross‑validated quantities at defined tolerance are the ISO 25178 roughness parameters
+**Sa, Sq, Sz** (`LEVEL 3`, vs Gwyddion 2.71, 18/18 over six synthetic surfaces). Orientation
+(`flipud` for `Dim1Name=Y*`), byte budget, and 8 integrity checks are verified by
+`spmkit verify`. See `docs/TRACEABILITY.md` and the external validation register.
 
 ---
 
@@ -1086,7 +1103,9 @@ present and should be checked before comparing values.
 
 ## 13. Scientific validation philosophy
 
-SPM‑Kit uses a layered approach to correctness:
+SPM‑Kit uses a layered approach to correctness and reports evidence with an explicit
+level vocabulary. **Validated is not used as a blanket label**: a capability is described
+by the strongest evidence that actually applies to it.
 
 1. **Unit tests** (`tests/core/`) — verify that functions produce expected output for
    synthetic input.
@@ -1094,22 +1113,39 @@ SPM‑Kit uses a layered approach to correctness:
    that analysis recovers them (e.g. roughness of a synthetic surface with known
    &sigma;, modulus from a synthetic Hertz curve).
 3. **Cross‑checks against external software** — compare SPM‑Kit output with
-   independent software (Gwyddion) for the same input data.
+   independent software (Gwyddion) for the same input data, asserting
+   *parser/conversion parity* rather than physical‑model validation.
 4. **Instrument‑file loading tests** — verify that real lab files load without errors
    and produce finite, physically plausible values.
-5. **Validation** — numerical agreement with an independent reference at a defined
-   tolerance. Currently only `.nid` image channels are validated.
-6. **Experimental** — functionality that exists but has not been validated or
+5. **Numerical verification (LEVEL 2)** — matrix‑precision agreement with an
+   independent reference on a declared set of files (e.g. Nanoscope III `.spm`,
+   6 files vs Gwyddion 2.71).
+6. **Cross‑validation (LEVEL 3)** — externally registered campaign comparing derived
+   quantities at a defined tolerance with a frozen script and frozen data set
+   (currently Sa, Sq, Sz vs Gwyddion 2.71, 18/18 over six synthetic surfaces).
+7. **Experimental** — functionality that exists but has not been validated or
    extensively tested.
+
+### Evidence‑level vocabulary
+
+| Level | Meaning |
+|-------|---------|
+| **LEVEL 1 (Unit tested)** | Function‑level tests pass on synthetic input. |
+| **LEVEL 2 (Numerically verified)** | Matrix‑precision agreement with an independent reference on a declared file set. |
+| **LEVEL 3 (Cross‑validated)** | Externally registered campaign comparing derived quantities at a defined tolerance, frozen script and data. |
+| **Cross‑checked** | Parser/conversion parity with another implementation of the same formula (software‑level, not physical validation). |
+| **Experimental** | Reader or analysis exists without independent cross‑check. |
 
 ### 13.1 Status table
 
 | Capability | Evidence | Status | Limitations |
 |-----------|----------|--------|-------------|
-| `.nid` image parsing | `tests/validation/test_nid_vs_gwyddion.py` — corr 1.000000 | **Validated** | Signed 32‑bit int LE; other dtypes not tested with real data |
-| `.nid` physical conversion | `tests/validation/test_traceability.py` — 8 integrity checks | **Validated** | Assumes Dim2Range linear mapping |
-| `.nid` orientation | `tests/validation/test_nid_vs_gwyddion.py` — flipud for Y channels | **Validated** | Non‑image channels preserved as‑is |
-| Roughness ISO 25178 | `tests/core/test_roughness.py` — recovery of &sigma; | **Tested** | Validated for plane‑levelled data only |
+| `.nid` image parsing | `tests/validation/test_nid_vs_gwyddion.py` — corr 1.000000 | **Cross‑checked** | Parser parity; signed 32‑bit int LE; other dtypes not tested with real data |
+| `.nid` physical conversion | `tests/validation/test_traceability.py` — 8 integrity checks | **Cross‑checked** | Parser/conversion parity; assumes Dim2Range linear mapping |
+| `.nid` orientation | `tests/validation/test_nid_vs_gwyddion.py` — flipud for Y channels | **Cross‑checked** | Parser parity; non‑image channels preserved as‑is |
+| Roughness Sa/Sq/Sz (synthetic) | vs Gwyddion 2.71, 18/18, 6 surfaces | **Cross‑validated (L3)** | Synthetic surfaces, plane‑levelled only |
+| Roughness ISO 25178 (general) | `tests/core/test_roughness.py` — recovery of &sigma; | **Tested** | Ssk/Sku and general surfaces: synthetic‑recovery only |
+| Nanoscope III `.spm` | vs Gwyddion 2.71, 6 files | **Numerically verified (L2)** | Partial; scaling unresolved returns raw |
 | KPFM CPD statistics | `tests/core/test_kpfm.py` | **Tested** | Work function depends on tip calibration |
 | Hertz/DMT force fit | `tests/core/test_mechanics.py` — synthetic recovery | **Tested** | Tip radius uncertainty dominates modulus |
 | Sneddon (paraboloid/cone) | `tests/core/test_mechanics.py` | **Tested** | Same as Hertz |
@@ -1126,15 +1162,18 @@ SPM‑Kit uses a layered approach to correctness:
 | Bruker SPM (`.001`) | `tests/core/test_bruker_spm.py` | **Experimental** | Requires `afm` extra |
 | afmformats readers | `tests/core/test_afmformats_reader.py` | **Experimental** | Many formats; quality varies |
 | SMFS polymer fits | `tests/core/test_forcecurve.py` | **Tested** | Model choice critical; prominence detection may miss events |
-| Fathom GUI | `tests/gui/` — 37 tests | **Tested** | Qt version and platform dependent |
+| Fathom GUI | `tests/gui/` headless | **Tested** | Qt version and platform dependent |
 | Architecture | `tests/test_architecture.py` | **Enforced** | AST‑level check; no runtime enforcement |
 
 ### 13.2 Gwyddion as reference
 
 Where Gwyddion is used for cross‑checks, it serves as an *independent reference
 implementation*, not as a universal ground truth. Both SPM‑Kit and Gwyddion implement
-their own physical‑unit conversion from the same raw byte stream. Agreement between
-them increases confidence but does not guarantee absolute correctness.
+their own physical‑unit conversion from the same raw byte stream. The cross‑validated
+campaign (LEVEL 3, Sa/Sq/Sz) is externally registered with a frozen script and frozen
+data set at
+<https://github.com/kegouro/spmkit-validation/blob/2a3d6c780722a79cb19c079cec0476969267b10b/evidence/phase01e-gwyddion/gate-results.json>;
+it does not constitute physical‑model validation.
 
 ### 13.3 Simulator
 
@@ -1342,10 +1381,11 @@ Future integration between the two is planned but not currently implemented.
 
 ```bibtex
 @software{spmkit2026,
-  author = {José Labarca and Tomás Corrales},
+  author = {José Labarca Baeza},
   title = {spmkit: Open-source AFM/KPFM analyser for scanning probe microscopy},
   year = {2026},
-  version = {0.1.2},
+  version = {0.1.4},
+  doi = {10.5281/zenodo.21303280},
   url = {https://github.com/kegouro/spmkit},
 }
 ```
@@ -1365,8 +1405,8 @@ This open‑source project has been developed without dedicated institutional fu
 
 ### 19.5 Project status
 
-**Alpha (0.1.2).** Core functionality is stable and tested. APIs may change before 1.0.
-New contributors, format readers, and analysis modules are welcome.
+**Alpha (released `0.1.4`; in-tree `0.1.5.dev0`).** Core functionality is stable and tested.
+APIs may change before 1.0. New contributors, format readers, and analysis modules are welcome.
 
 ---
 
@@ -1521,4 +1561,4 @@ spmkit gui --legacy
 
 ---
 
-*End of SPM‑Kit &middot; Fathom Usage Guide &mdash; version 0.1.2*
+*End of SPM‑Kit &middot; Fathom Usage Guide &mdash; version 0.1.4 (dev 0.1.5.dev0)*
