@@ -13,6 +13,23 @@ capillarity, and electrostatic forces. These forces *bend* the cantilever. The
 cantilever behaves as a spring of constant $k$ (Hooke's law, $F = -k \cdot z$),
 so measuring its deflection is equivalent to measuring the force.
 
+```text
+                 laser ──►  ┌─── photodiode (4 quadrants)
+              ╲            │      A ── B
+               ╲           │      C ── D   (A+B) − (C+D) = deflection
+                ╲          │
+                 ╲         │   feedback loop: Z-piezo keeps
+                  ●─ ─ ─ ─●   (A+B)−(C+D) = setpoint → topography
+            ╱╲ cantilever          ▲
+           ╱  ╲ (spring k)         │  Z-piezo
+          ●    tip                  │
+    ───── ──── sample ─────────────►│
+```
+
+*migrated from `docs/assets/legacy/theory-standalone.html` §01 (AFM setup SVG);
+reproduced here as a static ASCII diagram so the figure survives in the native
+build without shipping a binary asset.*
+
 ## The optical lever trick
 
 The deflection is minuscule (fractions of a nanometer), so it is amplified

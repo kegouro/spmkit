@@ -1,7 +1,7 @@
 # SPM-Kit Data Hunter
 
 <p align="center">
-  <img src="../assets/ecosystem/data-hunter-banner.png" alt="spmkit-data-hunter banner" width="100%">
+  <img src="../../assets/ecosystem/data-hunter-banner.png" alt="spmkit-data-hunter banner" width="100%">
 </p>
 
 **Discover, catalog, and triage public AFM/SPM datasets.**

@@ -1,7 +1,7 @@
 # SPM-Kit Validation
 
 <p align="center">
-  <img src="../assets/ecosystem/validation-banner.png" alt="spmkit-validation banner" width="100%">
+  <img src="../../assets/ecosystem/validation-banner.png" alt="spmkit-validation banner" width="100%">
 </p>
 
 **External black-box validation harness.**

@@ -308,6 +308,13 @@
 }
 
 /* ---- Mobile adjustments ---- */
+@media (max-width: 1024px) {
+  .fathom-hero {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
 @media (max-width: 768px) {
   .fathom-hero h1 {
     font-size: 1.6rem;

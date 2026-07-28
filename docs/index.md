@@ -33,8 +33,9 @@ transformations were applied to your data. Researchers need to separate
 back to its source.
 
 SPM-Kit solves this by providing an open numerical engine with a transparent
-pipeline: every step is inspectable, every format reader is traceable, and every
-physical model is validated against known ground truth.
+pipeline: every step is inspectable, every format reader is traceable, physical models
+are tested through declared synthetic-recovery protocols, while independent
+cross-validation is reported separately where available (Sa, Sq, Sz vs Gwyddion 2.71).
 
 ---
 

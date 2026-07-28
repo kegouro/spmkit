@@ -12,6 +12,30 @@ $$
 f_0 = \frac{1}{2\pi} \sqrt{\frac{k}{m_{\text{eff}}}}
 $$
 
+```text
+   cantilever (spring k, mass m_eff)
+              ●(loaded with mass Δm on the tip)
+            ╱│
+           ╱ │ ← flexural mode
+          ╱  │
+    ══════●   ●══════
+              f_0  lowers as Δm grows
+        ┌─────────────────────┐
+   amp  │     ●bare           │
+        │    ╱│╲               │
+        │   ╱ │ ╲     ●loaded  │
+        │  ╱  │  ╲   ╱│╲       │
+        │ ╱   │   ╲ ╱ │  ╲     │
+        │╱    │    ●   │   ╲   │
+        └─────┴───┴───┴────┴──► f
+              f_bare    f_loaded
+              ◄── Δf ──►
+```
+
+*migrated from `docs/assets/legacy/theory-standalone.html` §07 (loaded cantilever
+and resonance-shift SVGs); combined here as a single static ASCII figure showing
+both the loaded oscillator and the resulting downward frequency shift.*
+
 $k$ is the spring constant (N/m), $m_{\text{eff}}$ is the effective mass of
 the mode. More mass → lower frequency.
 

@@ -7,6 +7,23 @@ sample.
 
 ## Regions of the curve
 
+```text
+  F
+  ▲
+  │      approach (teal)
+  │        ╱── contact slope → modulus
+  │       ╱
+  │  ╲   ╱
+  │   ╲ ╱      snap-in
+  │    ●            ←────────── retract (gold)
+  │   ╱           ╲
+  │  ╱             ╲      pull-off
+  │ ╱               ●─────● (adhesion)
+  │/                    ↑
+  └───────────────────────► z (tip-sample separation)
+   non-contact   contact   contact  non-contact
+```
+
 **Approach** (teal): the tip first feels nothing; as the attractive gradient
 enters, it snaps into contact (**snap-in**) and then rises through the
 repulsive region with a **contact slope** that encodes stiffness.
@@ -14,6 +31,10 @@ repulsive region with a **contact slope** that encodes stiffness.
 **Retract** (gold): adhesion retains the tip until the **pull-off**: the depth
 of that minimum measures the adhesion force. The area between both branches is
 the hysteresis (dissipated energy).
+
+*migrated from `docs/assets/legacy/theory-standalone.html` §03 (F-d curve
+regions SVG); the static ASCII version preserves the annotated regions in the
+native build.*
 
 ## Analysis
 

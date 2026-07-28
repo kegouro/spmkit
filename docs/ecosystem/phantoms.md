@@ -1,7 +1,7 @@
 # SPM-Kit Phantoms
 
 <p align="center">
-  <img src="../assets/ecosystem/phantoms-banner.png" alt="spmkit-phantoms banner" width="100%">
+  <img src="../../assets/ecosystem/phantoms-banner.png" alt="spmkit-phantoms banner" width="100%">
 </p>
 
 **Deterministic synthetic surfaces with known ground truth.**
