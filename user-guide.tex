@@ -1,4 +1,4 @@
-% SPM-Kit {\textperiodcentered} Fathom Usage Guide --- v0.1.2
+% SPM-Kit {\textperiodcentered} Fathom Usage Guide --- v0.1.4 (released) | dev 0.1.5.dev0
 \documentclass[a4paper,11pt]{article}
 
 % == Packages ==
@@ -66,7 +66,7 @@
 % == Page style ==
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\small SPM-Kit {\textperiodcentered} Fathom --- Usage Guide v0.1.2}
+\fancyhead[L]{\small SPM-Kit {\textperiodcentered} Fathom --- Usage Guide v0.1.4 / dev 0.1.5.dev0}
 \fancyhead[R]{\small\thepage/\pageref{LastPage}}
 \renewcommand{\headrulewidth}{0.4pt}
 
@@ -86,17 +86,25 @@
 
 {\Huge\bfseries SPM-Kit {\textperiodcentered} Fathom}\\[0.4cm]
 {\LARGE Usage Guide}\\[1.5cm]
-{\large Version 0.1.2 (Alpha)}\\[0.3cm]
-{\large 2026-07-14}\\[2cm]
+{\large Version 0.1.4 \,(Alpha) {\normalsize\,---\,in-tree \texttt{0.1.5.dev0}}}\\[0.3cm]
+{\large 2026-07-27}\\[0.3cm]
+{\large Released wheel: \texttt{0.1.4} \,(DOI \texttt{10.5281/zenodo.21303280})}\\[2cm]
 
 {\normalsize
-  \textbf{Authors:} Jos\'e Labarca \& Tom\'as Corrales\\
+  \textbf{Author:} Jos\'e Labarca Baeza\\
   \textbf{License:} MIT\\
-  \textbf{Repository:} \url{https://github.com/kegouro/spmkit}\\[1cm]
+  \textbf{Repository:} \url{https://github.com/kegouro/spmkit}\\
+  \textbf{Site:} \url{https://kegouro.github.io/spmkit}\\[1cm]
 
   \emph{Canonical documentation: This PDF is a printable companion. The Markdown
   version at \texttt{docs/user-guide.md} is the authoritative reference and may
-  contain additional detail. Both are verified against SPM-Kit~0.1.2.}
+  contain additional detail. Both are verified against SPM-Kit~0.1.4 (development tree
+  \texttt{0.1.5.dev0}).}
+  \\[0.6cm]
+  \emph{Acknowledgements:} Tom\'as Corrales and the SPM Lab at UTFSM provided selected
+  experimental datasets and laboratory context during development and evaluation.
+  Mar\'ia Saavedra Fredes and Benjamin Schleyer helped locate and share candidate
+  datasets for the validation campaign. Developed without dedicated institutional funding.
 }
 
 \vspace{1cm}
@@ -130,8 +138,7 @@ It reads raw instrument files and produces publication-ready results: roughness
 thermal-tune cantilever calibration, grain detection, spectral/fractal analysis, and
 single-molecule force spectroscopy.
 
-SPM-Kit was developed independently by physics students at Universidad T\'ecnica Federico Santa Mar\'ia (UTFSM), informed by practical work with AFM/SPM data, and is released under the MIT license.
-and is released under the MIT license.
+SPM-Kit was developed independently by Jos\'e Labarca Baeza at Universidad T\'ecnica Federico Santa Mar\'ia (UTFSM), informed by practical work with AFM/SPM data, and is released under the MIT license.
 
 \subsection{What is Fathom?}
 
@@ -163,10 +170,16 @@ spmkit (Python package)
 \end{itemize}
 
 \subsection{Status}
-SPM-Kit is \textbf{alpha-stage} (Development Status~3). Core image analysis
-(roughness, KPFM, spectral) is validated against Gwyddion at machine precision.
-Force-spectroscopy workflows are tested on synthetic and lab data. Some readers
-are experimental (see \S\ref{sec:validation}).
+SPM-Kit is \textbf{alpha-stage} (Development Status~3). The \texttt{.nid} image parsers are
+cross-checked against Gwyddion at machine precision --- this is \emph{parser parity} with
+another implementation of the same formula, not physical-model validation. The roughness
+parameters Sa, Sq and Sz are independently \textbf{cross-validated} against Gwyddion~2.71
+(\textbf{LEVEL~3}, 18/18 comparisons over six synthetic surfaces); KPFM, spectral and the
+remaining image analyses are exercised by unit and synthetic-recovery tests (\textbf{LEVEL~1/2}).
+Force-spectroscopy workflows are tested on synthetic and lab data but have \emph{not} been
+independently cross-validated. Nanoscope~III \texttt{.spm} image reading is numerically verified
+against Gwyddion~2.71 at matrix precision (\textbf{LEVEL~2}, partial). Some readers
+(\texttt{afmformats}, JPK TIFF, Bruker \texttt{.00N}) remain experimental (see \S\ref{sec:validation}).
 
 % ===========================================================
 % 2. INSTALLATION
@@ -239,7 +252,7 @@ Fathom requires a display; set \texttt{QT\_QPA\_PLATFORM=offscreen} for headless
 \section{Verifying the installation}
 
 \begin{lstlisting}[language=bash]
-spmkit --version          # spmkit 0.1.2
+spmkit --version          # spmkit 0.1.4 (in-tree install reports 0.1.5.dev0)
 python -c "import spmkit; print(spmkit.__version__)"
 \end{lstlisting}
 
@@ -298,6 +311,7 @@ Extension & Source & Type & Access & Status \\
 .jpk-force & JPK/Bruker & Single curve & Read & Tested \\
 .jpk (TIFF) & JPK/Bruker & Force-map/QI & Read & Experimental \\
 .001/.002 & Bruker SPM & Images & Read & Experimental \\
+.spm & Bruker/Nanoscope III & Images & Read & \textbf{Partial (LEVEL 2)} \\
 .ibw & Asylum & Force curves & Read & Experimental \\
 \bottomrule
 \end{longtable}
@@ -310,9 +324,13 @@ Extension & Source & Type & Access & Status \\
 \end{description}
 
 \subsection{What ``validated'' means for .nid}
-The physical conversion has been verified against Gwyddion exports at
-\textbf{correlation~1.000000} for topography, phase, and sensor channels. See
-\texttt{docs/TRACEABILITY.md}.
+The physical conversion $\mathit{phys} = \mathrm{Dim2Min} + (raw + 2^{31})/2^{32}\cdot\mathrm{Dim2Range}$
+has been cross-checked against Gwyddion exports at \textbf{correlation~1.000000} for
+topography, phase, and sensor channels. This is \emph{parser/conversion parity} with
+another implementation of the same formula --- it does not, by itself, validate a physical
+model. The independently cross-validated quantities at defined tolerance are the ISO~25178
+roughness parameters Sa, Sq and Sz (LEVEL~3, vs Gwyddion~2.71, 18/18 over six synthetic
+surfaces). See \texttt{docs/TRACEABILITY.md} and the external validation register.
 
 % ===========================================================
 % 6. QUICK START
@@ -695,16 +713,33 @@ YAML & \texttt{core.pipeline} & Reproducible pipeline recipe \\
 \section{Scientific validation}
 \label{sec:validation}
 
-SPM-Kit uses a layered approach:
+SPM-Kit uses a layered approach and reports evidence with an explicit level vocabulary.
+``Validated'' is not used as a blanket label: a capability is described by the strongest
+evidence that actually applies to it.
 
 \begin{enumerate}[nosep]
   \item \textbf{Unit tests} --- function correctness on synthetic input.
   \item \textbf{Synthetic recovery} --- known-property data $\rightarrow$ verify recovery.
-  \item \textbf{Cross-checks} --- compare against Gwyddion for the same input.
+  \item \textbf{Cross-checks} --- compare against Gwyddion for the same input (parser/conversion parity).
   \item \textbf{Instrument-file loading} --- real lab files load without errors.
-  \item \textbf{Validation} --- numerical agreement at defined tolerance (only .nid image channels).
-  \item \textbf{Experimental} --- exists but not validated or extensively tested.
+  \item \textbf{Numerical verification (LEVEL~2)} --- matrix-precision agreement with an
+        independent reference on a declared set of files (e.g.\ Nanoscope~III \texttt{.spm},
+        6 files vs Gwyddion~2.71).
+  \item \textbf{Cross-validation (LEVEL~3)} --- externally registered campaign comparing
+        derived quantities at defined tolerance (currently Sa, Sq, Sz vs Gwyddion~2.71;
+        18/18 over six synthetic surfaces).
+  \item \textbf{Experimental} --- exists but lacks thorough testing or independent cross-check.
 \end{enumerate}
+
+\subsection{Evidence-level vocabulary}
+\begin{description}[nosep]
+  \item[LEVEL 1 (Unit tested)] Function-level tests pass on synthetic input.
+  \item[LEVEL 2 (Numerically verified)] Matrix-precision agreement with an independent
+        reference on a declared file set.
+  \item[LEVEL 3 (Cross-validated)] Externally registered campaign comparing derived
+        quantities at a defined tolerance, with a frozen script and frozen data set.
+  \item[Experimental] Reader or analysis exists without independent cross-check.
+\end{description}
 
 \subsection{Status summary}
 
@@ -712,10 +747,12 @@ SPM-Kit uses a layered approach:
 \toprule
 Capability & Evidence & Status & Limitations \\
 \midrule
-.nid image parsing & vs Gwyddion: corr 1.000000 & \textbf{Validated} & Signed 32-bit LE; other dtypes untested \\
-.nid physical conv. & 8 integrity checks & \textbf{Validated} & Assumes Dim2Range linear \\
-.nid orientation & flipud for Y channels & \textbf{Validated} & Non-image channels as-is \\
-Roughness ISO 25178 & Synthetic $\sigma$ recovery & Tested & Plane-levelled data only \\
+.nid image parsing & vs Gwyddion: corr 1.000000 & \textbf{Cross-checked} & Parser parity; signed 32-bit LE; other dtypes untested \\
+.nid physical conv. & 8 integrity checks & \textbf{Cross-checked} & Parser/conversion parity; assumes Dim2Range linear \\
+.nid orientation & flipud for Y channels & \textbf{Cross-checked} & Parser parity; non-image channels as-is \\
+Roughness Sa/Sq/Sz (synth.) & vs Gwyddion 2.71, 18/18, 6 surfaces & \textbf{Cross-validated (L3)} & Synthetic surfaces, plane-levelled \\
+Roughness ISO 25178 (general) & Synthetic $\sigma$ recovery & Tested & Ssk/Sku and general surfaces: synthetic-recovery only \\
+Nanoscope III .spm & vs Gwyddion 2.71, 6 files & \textbf{Numerically verified (L2)} & Partial; scaling unresolved returns raw \\
 KPFM CPD statistics & Unit tests & Tested & Work function: tip calibration \\
 Hertz/DMT force fit & Synthetic recovery & Tested & Tip radius uncertainty dominant \\
 Force-volume maps & Unit + synthetic tests & Tested & Grid regularity assumed \\
@@ -731,14 +768,17 @@ JPK QI (.jpk TIFF) & Limited testing & \textbf{Experimental} & Requires jpk extr
 Bruker SPM (.001) & Limited testing & \textbf{Experimental} & Requires afm extra \\
 afmformats readers & Limited testing & \textbf{Experimental} & Quality varies by format \\
 SMFS polymer fits & Unit tests & Tested & Model choice critical \\
-Fathom GUI & 37 GUI tests & Tested & Qt version/platform dependent \\
+Fathom GUI & Headless GUI tests (\texttt{tests/gui}) & Tested & Qt version/platform dependent \\
 Architecture & AST test & Enforced & No runtime enforcement \\
 \bottomrule
 \end{longtable}
 
 \subsection{Gwyddion as reference}
 Gwyddion serves as an \emph{independent reference implementation}, not universal ground
-truth. Both tools implement their own conversion from the same byte stream.
+truth. Both tools implement their own conversion from the same byte stream. The cross-validated
+campaign (LEVEL~3, Sa/Sq/Sz) is externally registered with a frozen script and frozen data set
+at \url{https://github.com/kegouro/spmkit-validation}; it does not constitute physical-model
+validation.
 
 \subsection{Simulator}
 The cantilever simulator is \textbf{educational only}. It models a damped harmonic
@@ -855,11 +895,12 @@ validate SPM-Kit output.
 
 \begin{lstlisting}[language=bash]
 @software{spmkit2026,
-  author       = {Jos\'e Labarca and Tom\'as Corrales},
+  author       = {Jos\'e Labarca Baeza},
   title        = {spmkit: Open-source AFM/KPFM analyser
                   for scanning probe microscopy},
   year         = {2026},
-  version      = {0.1.2},
+  version      = {0.1.4},
+  doi          = {10.5281/zenodo.21303280},
   url          = {https://github.com/kegouro/spmkit},
 }
 \end{lstlisting}
@@ -875,8 +916,8 @@ See \texttt{CONTRIBUTING.md}.
 This open-source project has been developed without dedicated institutional funding.
 
 \subsection{Project status}
-\textbf{Alpha (0.1.2).} Core functionality is stable and tested. APIs may change before
-1.0. New contributors and format readers are welcome.
+\textbf{Alpha (released \texttt{0.1.4}; in-tree \texttt{0.1.5.dev0}).} Core functionality is
+stable and tested. APIs may change before 1.0. New contributors and format readers are welcome.
 
 % ===========================================================
 % APPENDICES
@@ -985,6 +1026,7 @@ Extension & Source & Type & Access & Status \\
 .jpk-force & JPK/Bruker & Single curve & Read & Tested \\
 .jpk (TIFF) & JPK/Bruker & Force-map/QI & Read & Experimental \\
 .001/.002 & Bruker SPM & Images & Read & Experimental \\
+.spm & Bruker/Nanoscope III & Images & Read & \textbf{Partial (LEVEL 2)} \\
 .ibw & Asylum & Force curves & Read & Experimental \\
 \bottomrule
 \end{longtable}
@@ -1010,7 +1052,7 @@ Ctrl+1 ... Ctrl+5 & Tab switch (legacy app) \\
 \vfill
 
 \begin{center}
-{\small --- End of SPM-Kit {\textperiodcentered} Fathom Usage Guide v0.1.2 ---}
+{\small --- End of SPM-Kit {\textperiodcentered} Fathom Usage Guide v0.1.4 (dev 0.1.5.dev0) ---}
 \end{center}
 
 \end{document}

@@ -1,0 +1,37 @@
+SPM-Kit · Fathom — embedded PDF reader assets
+=================================================
+
+This directory ships a self-contained PDF reader used by
+`docs/manual/reader.md` and served at `/assets/pdf-viewer/viewer.html`.
+
+Files
+-----
+- viewer.html .................. Fathom-styled reader UI (project code, MIT).
+- vendor/pdf.min.mjs .......... PDF.js core library, vendored.
+- vendor/pdf.worker.min.mjs ... PDF.js worker, vendored.
+
+Provenance
+----------
+The vendored `vendor/*.mjs` files are unmodified copies of the official
+**pdfjs-dist** npm package, used under its Apache License 2.0 (header
+preserved inside each file).
+
+  package : pdfjs-dist
+  version : 5.4.296
+  source  : https://www.npmjs.com/package/pdfjs-dist
+  home    : https://mozilla.github.io/pdf.js/
+  license : Apache-2.0
+
+Reproducibility
+---------------
+To regenerate the vendored files pin the same version and download the two
+ESM build artefacts:
+
+  V=5.4.296
+  curl -fsSL -o vendor/pdf.min.mjs         https://cdn.jsdelivr.net/npm/pdfjs-dist@$V/build/pdf.min.mjs
+  curl -fsSL -o vendor/pdf.worker.min.mjs  https://cdn.jsdelivr.net/npm/pdfjs-dist@$V/build/pdf.worker.min.mjs
+
+The reader resolves the PDF path from its own URL fragment, so it works
+under the GitHub Pages sub-path `/spmkit/` without absolute paths.
+
+Project code in `viewer.html` is covered by the SPM-Kit MIT license.
