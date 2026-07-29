@@ -24,7 +24,7 @@
 
 [Sinopsis](#sinopsis) · [Características](#características) · [Perspectivas](#galería-de-perspectivas) · [Instalación](#instalación) · [Tutoriales](#tutoriales) · [Arquitectura](#arquitectura) · [Extender](#extensibilidad) · [Validación](#validación-científica)
 
-<img src="docs/images/brand/fathom_banner_final.png" alt="Fathom Workspace" width="100%">
+<img src="docs/images/brand/fathom_banner_new.jpg" alt="Fathom Workspace" width="100%">
 <br><br>
 <img src="docs/images/fathom_tour.gif" alt="Recorrido por las perspectivas de Fathom" width="90%">
 
