@@ -10,7 +10,7 @@ after sensitivity and cantilever-stiffness calibration; the commanded scanner
 position becomes indentation only after contact and cantilever bending are
 accounted for.
 
-<figure class="science-figure">
+<figure class="spm-science-figure">
   <img src="../../assets/theory/force-distance.svg" alt="Annotated approach and retract force-distance curve showing baseline, snap-in, contact, loading, pull-off, adhesion and hysteresis" width="960" height="480">
   <figcaption>Idealized force-distance regions. Real sign and axis directions depend on the instrument export, so SPM-Kit normalizes them before display and fitting.</figcaption>
 </figure>

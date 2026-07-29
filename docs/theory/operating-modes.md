@@ -4,7 +4,7 @@ An operating mode is defined by how the tip is driven, what signal is measured
 and what the feedback loop holds constant. The same array shape can therefore
 represent different physical observables.
 
-<figure class="science-figure">
+<figure class="spm-science-figure">
   <img src="../../assets/theory/operating-modes.svg" alt="Comparison of contact, tapping, non-contact, force-volume and KPFM operation with their measured control signals" width="1120" height="300">
   <figcaption>Each mode changes the interaction regime and measured signal. SPM-Kit analyzes resulting files; it does not control these acquisition loops.</figcaption>
 </figure>

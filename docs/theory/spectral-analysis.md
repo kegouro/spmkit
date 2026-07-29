@@ -23,7 +23,7 @@ depends on the discrete convention; comparisons require the same convention.
 For an approximately isotropic surface, bins of equal
 $q=\sqrt{q_x^2+q_y^2}$ are averaged to obtain a one-dimensional radial PSD.
 
-<figure class="science-figure">
+<figure class="spm-science-figure">
   <img src="../../assets/theory/psd-interpretation.svg" alt="Log-log radial power spectral density with a finite-size plateau, roll-off frequency and self-affine power-law regime" width="960" height="400">
   <figcaption>A roll-off separates a long-wavelength plateau from the fitted self-affine band. Only the declared frequency interval contributes to the slope.</figcaption>
 </figure>

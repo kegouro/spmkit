@@ -3,11 +3,11 @@ title: SPM-Kit Data Hunter
 description: Public AFM/SPM dataset discovery, evidence classification, provenance, campaign checkpoints, and safe human review.
 ---
 
-<section class="component-section" data-component="hunter">
-  <picture><source type="image/webp" srcset="../../assets/ecosystem/data-hunter/banner-640.webp 640w, ../../assets/ecosystem/data-hunter/banner-1280.webp 1280w" sizes="(max-width: 1280px) 100vw, 1280px"><img class="brand-banner" src="../../assets/ecosystem/data-hunter/banner.png" width="1280" height="640" alt="SPM-Kit Data Hunter public evidence discovery banner" loading="eager" fetchpriority="high"></picture>
-  <div class="component-copy">
-    <div><p class="component-role">SPM-Kit Data Hunter · Evidence discovery</p><h1>Find candidate evidence without calling it truth</h1><p>Data Hunter queries supported public repository APIs, inventories files, normalizes metadata, deduplicates records and classifies possible scientific utility.</p></div>
-    <div><span class="status-ribbon">Alpha · source 2.2.0</span><div class="io-strip"><span><b>Input</b>queries, APIs, campaign policy</span><span aria-hidden="true">→</span><span><b>Output</b>candidate catalog and provenance</span></div></div>
+<section class="spm-component" data-component="hunter">
+  <picture><source type="image/webp" srcset="../../assets/ecosystem/data-hunter/banner-640.webp 640w, ../../assets/ecosystem/data-hunter/banner-1280.webp 1280w" sizes="(max-width: 1280px) 100vw, 1280px"><img class="spm-component__banner" src="../../assets/ecosystem/data-hunter/banner.png" width="1280" height="640" alt="SPM-Kit Data Hunter public evidence discovery banner" loading="eager" fetchpriority="high"></picture>
+  <div class="spm-component__body">
+    <div><p class="spm-component__role">SPM-Kit Data Hunter · Evidence discovery</p><h1>Find candidate evidence without calling it truth</h1><p>Data Hunter queries supported public repository APIs, inventories files, normalizes metadata, deduplicates records and classifies possible scientific utility.</p></div>
+    <div><span class="spm-status">Alpha · source 2.2.0</span><div class="spm-io"><span><b>Input</b>queries, APIs, campaign policy</span><span aria-hidden="true">→</span><span><b>Output</b>candidate catalog and provenance</span></div></div>
   </div>
 </section>
 
@@ -90,9 +90,9 @@ spmkit-data-hunter campaign export afm-1h --output spm_benchmarks
 with `campaign resume`. A completed search says the configured sources/budgets
 were traversed; it says nothing about scientific truth.
 
-<div class="intent-grid">
-  <figure class="media-frame"><img src="../../assets/ecosystem/data-hunter/campaign-run.svg" width="680" height="280" alt="Example Data Hunter campaign create and run terminal output" loading="lazy"><figcaption class="media-caption">Campaign creation/run example maintained by the Data Hunter repository.</figcaption></figure>
-  <figure class="media-frame"><img src="../../assets/ecosystem/data-hunter/campaign-status.svg" width="680" height="280" alt="Example Data Hunter campaign status terminal output" loading="lazy"><figcaption class="media-caption">Campaign status exposes progress and checkpoint state.</figcaption></figure>
+<div class="spm-capability-grid">
+  <figure class="spm-media-frame"><img src="../../assets/ecosystem/data-hunter/campaign-run.svg" width="680" height="280" alt="Example Data Hunter campaign create and run terminal output" loading="lazy"><figcaption class="spm-media-caption">Campaign creation/run example maintained by the Data Hunter repository.</figcaption></figure>
+  <figure class="spm-media-frame"><img src="../../assets/ecosystem/data-hunter/campaign-status.svg" width="680" height="280" alt="Example Data Hunter campaign status terminal output" loading="lazy"><figcaption class="spm-media-caption">Campaign status exposes progress and checkpoint state.</figcaption></figure>
 </div>
 
 ## Detailed workflow
@@ -200,9 +200,9 @@ a transfer risk only; it is not a scientific filter.
 
 ## Architecture and integration
 
-<figure class="media-frame">
+<figure class="spm-media-frame">
   <img src="../../assets/ecosystem/data-hunter/architecture.png" width="1672" height="941" alt="Data Hunter architecture: CLI, campaign engine, source adapters, persistent stores, verification and exports" loading="lazy">
-  <figcaption class="media-caption">Repository-maintained architecture asset. The portal text above is the authoritative accessible description.</figcaption>
+  <figcaption class="spm-media-caption">Repository-maintained architecture asset. The portal text above is the authoritative accessible description.</figcaption>
 </figure>
 
 - **Data Hunter → human review:** implemented output and required decision gate.

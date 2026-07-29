@@ -1,6 +1,6 @@
 # SPM-Kit implementation map
 
-<figure class="science-figure">
+<figure class="spm-science-figure">
   <img src="../../assets/theory/software-architecture.svg" alt="SPM-Kit architecture from instrument files through readers, domain models, pure analysis and typed results to Python, CLI, Fathom and exports" width="960" height="340">
   <figcaption>Core owns computation. Python, the CLI and Fathom orchestrate the same public numerical paths.</figcaption>
 </figure>

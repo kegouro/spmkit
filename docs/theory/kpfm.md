@@ -9,7 +9,7 @@ topographic experiment. The instrument adjusts a DC bias until a selected
 electrostatic-force component is nulled, producing a spatial map associated
 with the tip-sample contact-potential difference (CPD).
 
-<figure class="science-figure">
+<figure class="spm-science-figure">
   <img src="../../assets/theory/kpfm-energy.svg" alt="Tip and sample vacuum levels and Fermi levels before electrical contact, followed by aligned Fermi levels and a contact potential difference" width="960" height="460">
   <figcaption>Idealized work-function relation. Surface dipoles, adsorbates, geometry, environment, and transfer function can all alter the measured contrast.</figcaption>
 </figure>

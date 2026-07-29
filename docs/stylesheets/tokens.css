@@ -1,0 +1,136 @@
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../assets/vendor/fonts/inter-latin-variable.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Fraunces";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../assets/vendor/fonts/fraunces-latin-variable.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/vendor/fonts/ibm-plex-mono-latin-400.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../assets/vendor/fonts/ibm-plex-mono-latin-600.woff2") format("woff2");
+}
+
+:root,
+[data-md-color-scheme="slate"] {
+  color-scheme: dark;
+
+  --spm-night: #0a0908;
+  --spm-coal: #15110d;
+  --spm-umber: #1c1712;
+  --spm-rule: #2a2118;
+  --spm-rule-strong: #493723;
+  --spm-ink: #efe7d8;
+  --spm-ink-muted: #c8bba8;
+  --spm-ink-faint: #9a8a76;
+  --spm-amber: #f5a72c;
+  --spm-ember: #ff7a3c;
+  --spm-glow: #ffd690;
+  --spm-beam: #fb923c;
+  --spm-beam-ink: #20150a;
+  --spm-signal: #2dd4bf;
+  --spm-success: #86efac;
+  --spm-warning: #ffd690;
+  --spm-danger: #fca5a5;
+  --spm-shadow: rgb(0 0 0 / 34%);
+
+  --spm-canvas: var(--spm-night);
+  --spm-surface: var(--spm-coal);
+  --spm-surface-raised: var(--spm-umber);
+  --spm-action: var(--spm-amber);
+  --spm-action-hover: var(--spm-ember);
+  --spm-action-ink: #20150a;
+  --spm-link: var(--spm-glow);
+  --spm-focus: var(--spm-glow);
+
+  --md-default-bg-color: var(--spm-canvas);
+  --md-default-fg-color: var(--spm-ink);
+  --md-default-fg-color--light: var(--spm-ink-muted);
+  --md-default-fg-color--lighter: var(--spm-ink-faint);
+  --md-primary-bg-color: var(--spm-surface);
+  --md-primary-fg-color: var(--spm-ink);
+  --md-primary-fg-color--light: var(--spm-ink-muted);
+  --md-accent-bg-color: var(--spm-action);
+  --md-accent-fg-color: var(--spm-action-ink);
+  --md-code-bg-color: var(--spm-surface-raised);
+  --md-code-fg-color: var(--spm-ink);
+  --md-typeset-color: var(--spm-ink);
+  --md-typeset-a-color: var(--spm-link);
+  --md-admonition-bg-color: var(--spm-surface);
+  --md-admonition-fg-color: var(--spm-ink);
+  --md-footer-bg-color: var(--spm-coal);
+  --md-footer-bg-color--dark: var(--spm-night);
+  --md-footer-fg-color: var(--spm-ink-muted);
+  --md-text-font: "Inter";
+  --md-code-font: "IBM Plex Mono";
+}
+
+[data-md-color-scheme="default"] {
+  color-scheme: light;
+
+  --spm-night: #201a15;
+  --spm-coal: #fffdf8;
+  --spm-umber: #ebe3d6;
+  --spm-rule: #d8cdbd;
+  --spm-rule-strong: #a89275;
+  --spm-ink: #201a15;
+  --spm-ink-muted: #5f5143;
+  --spm-ink-faint: #756552;
+  --spm-amber: #8a4b00;
+  --spm-ember: #6f3900;
+  --spm-glow: #6f3900;
+  --spm-beam: #b74f13;
+  --spm-beam-ink: #fffdf8;
+  --spm-signal: #0f766e;
+  --spm-success: #166534;
+  --spm-warning: #7c4a03;
+  --spm-danger: #991b1b;
+  --spm-shadow: rgb(70 45 20 / 14%);
+
+  --spm-canvas: #f4f0e7;
+  --spm-surface: #fffdf8;
+  --spm-surface-raised: #ebe3d6;
+  --spm-action: #8a4b00;
+  --spm-action-hover: #6f3900;
+  --spm-action-ink: #fffdf8;
+  --spm-link: #8a4b00;
+  --spm-focus: #8a4b00;
+
+  --md-default-bg-color: var(--spm-canvas);
+  --md-default-fg-color: var(--spm-ink);
+  --md-default-fg-color--light: var(--spm-ink-muted);
+  --md-default-fg-color--lighter: var(--spm-ink-faint);
+  --md-primary-bg-color: var(--spm-surface);
+  --md-primary-fg-color: var(--spm-ink);
+  --md-primary-fg-color--light: var(--spm-ink-muted);
+  --md-accent-bg-color: var(--spm-action);
+  --md-accent-fg-color: var(--spm-action-ink);
+  --md-code-bg-color: var(--spm-surface-raised);
+  --md-code-fg-color: var(--spm-ink);
+  --md-typeset-color: var(--spm-ink);
+  --md-typeset-a-color: var(--spm-link);
+  --md-admonition-bg-color: var(--spm-surface);
+  --md-admonition-fg-color: var(--spm-ink);
+  --md-footer-bg-color: #201a15;
+  --md-footer-bg-color--dark: #17120e;
+  --md-footer-fg-color: #c8bba8;
+}

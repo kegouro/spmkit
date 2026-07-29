@@ -1,0 +1,7 @@
+<a href="{{ config.repo_url }}" class="md-source" title="Open the SPM-Kit source repository">
+  <div class="md-source__icon md-icon">
+    {% set icon = config.theme.icon.repo or "fontawesome/brands/github" %}
+    {% include ".icons/" ~ icon ~ ".svg" %}
+  </div>
+  <div class="md-source__repository">{{ config.repo_name }}</div>
+</a>

@@ -6,7 +6,11 @@
   {% set meta_description = page.meta.description if page and page.meta and page.meta.description else config.site_description %}
   {% set meta_url = page.canonical_url if page else config.site_url %}
   <meta name="author" content="José Labarca Baeza">
+  <meta name="theme-color" content="#0a0908" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f4f0e7" media="(prefers-color-scheme: light)">
   <meta name="keywords" content="AFM, SPM, KPFM, force spectroscopy, nanomechanics, scientific Python, reproducible microscopy">
+  <link rel="preload" href="{{ 'assets/vendor/fonts/inter-latin-variable.woff2' | url }}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{{ 'assets/vendor/fonts/fraunces-latin-variable.woff2' | url }}" as="font" type="font/woff2" crossorigin>
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="SPM-Kit ecosystem">
   <meta property="og:title" content="{{ meta_title | striptags }} · SPM-Kit ecosystem">

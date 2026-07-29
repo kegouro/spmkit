@@ -10,7 +10,7 @@ mass sensing also depends on mode shape, load position, added-mass distribution,
 fluid damping, temperature, detector calibration, and the definition of the
 bare state.
 
-<figure class="science-figure">
+<figure class="spm-science-figure">
   <img src="../../assets/theory/resonance-response.svg" alt="Bare and mass-loaded damped harmonic oscillator amplitude responses, showing a lower loaded resonance and the full width at half maximum" width="960" height="430">
   <figcaption>Added mass lowers the idealized resonance. Peak shape and width carry damping information; a real spectrum can contain backgrounds and multiple modes.</figcaption>
 </figure>

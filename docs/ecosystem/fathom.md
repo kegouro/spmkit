@@ -3,11 +3,11 @@ title: Fathom
 description: Complete tour of the interactive SPM-Kit scientific workspace, its current perspectives, project model, shortcuts, exports, and limitations.
 ---
 
-<section class="component-section" data-component="fathom">
-  <picture><source type="image/webp" srcset="../../assets/ecosystem/fathom/banner-640.webp 640w, ../../assets/ecosystem/fathom/banner-1280.webp 1280w" sizes="(max-width: 1280px) 100vw, 1280px"><img class="brand-banner" src="../../assets/ecosystem/fathom/banner.jpeg" width="1600" height="900" alt="Fathom, the SPM-Kit scientific workspace" loading="eager" fetchpriority="high"></picture>
-  <div class="component-copy">
-    <div><p class="component-role">Fathom · Interactive scientific workspace</p><h1>Operate the computation without losing sight of it</h1><p>Fathom provides perspective-based exploration, parameter configuration, fitting, maps, figures and reports over SPM-Kit Core.</p></div>
-    <div><span class="status-ribbon">Bundled with SPM-Kit · Alpha</span><div class="io-strip"><span><b>Input</b>files, parameters, projects</span><span aria-hidden="true">→</span><span><b>Output</b>Core results, figures, reports</span></div></div>
+<section class="spm-component" data-component="fathom">
+  <picture><source type="image/webp" srcset="../../assets/ecosystem/fathom/banner-640.webp 640w, ../../assets/ecosystem/fathom/banner-1280.webp 1280w" sizes="(max-width: 1280px) 100vw, 1280px"><img class="spm-component__banner" src="../../assets/ecosystem/fathom/banner.jpeg" width="1600" height="900" alt="Fathom, the SPM-Kit scientific workspace" loading="eager" fetchpriority="high"></picture>
+  <div class="spm-component__body">
+    <div><p class="spm-component__role">Fathom · Interactive scientific workspace</p><h1>Operate the computation without losing sight of it</h1><p>Fathom provides perspective-based exploration, parameter configuration, fitting, maps, figures and reports over SPM-Kit Core.</p></div>
+    <div><span class="spm-status">Bundled with SPM-Kit · Alpha</span><div class="spm-io"><span><b>Input</b>files, parameters, projects</span><span aria-hidden="true">→</span><span><b>Output</b>Core results, figures, reports</span></div></div>
   </div>
 </section>
 
@@ -94,19 +94,19 @@ stable lawful location.
 The labels below are taken from the current built-in module declarations. The
 English intent is followed by the current display label and internal key.
 
-<div class="perspective-grid">
-  <article class="perspective-card"><h3>Topography and roughness</h3><p><strong>Imagen</strong> · `image`</p><p>Image canvas, navigator and image-analysis panel for channel inspection, leveling, roughness and KPFM.</p></article>
-  <article class="perspective-card"><h3>Particle segmentation</h3><p><strong>Granos</strong> · `grains`</p><p>Thresholded particles and grain statistics over the current image route.</p></article>
-  <article class="perspective-card"><h3>PSD and self-affinity</h3><p><strong>Espectral</strong> · `spectral`</p><p>Radial PSD, Hurst/fractal fit and correlation-length inspection.</p></article>
-  <article class="perspective-card"><h3>Cantilever spectrum</h3><p><strong>Sintonía térmica</strong> · `resonance`</p><p>Thermal spectrum extraction and resonance analysis.</p></article>
-  <article class="perspective-card"><h3>Time-dependent resonance</h3><p><strong>Evaporación</strong> · `evaporation`</p><p>Frequency, derived mass and declared evaporation-law analysis.</p></article>
-  <article class="perspective-card"><h3>One force curve</h3><p><strong>Curva de fuerza</strong> · `force`</p><p>Contact mechanics, visible pipeline parameters, fit and quality indicators.</p></article>
-  <article class="perspective-card"><h3>Molecule pulling</h3><p><strong>SMFS</strong> · `smfs`</p><p>Retract events and WLC/FJC-oriented single-molecule analysis.</p></article>
-  <article class="perspective-card"><h3>Force-volume properties</h3><p><strong>Mapa</strong> · `map`</p><p>Computed property maps with inspector and histogram.</p></article>
-  <article class="perspective-card"><h3>Multiple files</h3><p><strong>Batch</strong> · `batch`</p><p>Batch table and log for repeated processing.</p></article>
-  <article class="perspective-card"><h3>Publication output</h3><p><strong>Figura</strong> · `figure`</p><p>Figure composition and scientific image export.</p></article>
-  <article class="perspective-card"><h3>Surface rendering</h3><p><strong>Vista 3D</strong> · `view3d`</p><p>Three-dimensional presentation of the active image surface.</p></article>
-  <article class="perspective-card"><h3>Educational modeling</h3><p><strong>Simulador</strong> · `simulator`</p><p>Cantilever simulation. Treat as educational/numerical, not a validated measurement.</p></article>
+<div class="spm-perspective-grid">
+  <article class="spm-panel spm-panel--perspective"><h3>Topography and roughness</h3><p><strong>Imagen</strong> · `image`</p><p>Image canvas, navigator and image-analysis panel for channel inspection, leveling, roughness and KPFM.</p></article>
+  <article class="spm-panel spm-panel--perspective"><h3>Particle segmentation</h3><p><strong>Granos</strong> · `grains`</p><p>Thresholded particles and grain statistics over the current image route.</p></article>
+  <article class="spm-panel spm-panel--perspective"><h3>PSD and self-affinity</h3><p><strong>Espectral</strong> · `spectral`</p><p>Radial PSD, Hurst/fractal fit and correlation-length inspection.</p></article>
+  <article class="spm-panel spm-panel--perspective"><h3>Cantilever spectrum</h3><p><strong>Sintonía térmica</strong> · `resonance`</p><p>Thermal spectrum extraction and resonance analysis.</p></article>
+  <article class="spm-panel spm-panel--perspective"><h3>Time-dependent resonance</h3><p><strong>Evaporación</strong> · `evaporation`</p><p>Frequency, derived mass and declared evaporation-law analysis.</p></article>
+  <article class="spm-panel spm-panel--perspective"><h3>One force curve</h3><p><strong>Curva de fuerza</strong> · `force`</p><p>Contact mechanics, visible pipeline parameters, fit and quality indicators.</p></article>
+  <article class="spm-panel spm-panel--perspective"><h3>Molecule pulling</h3><p><strong>SMFS</strong> · `smfs`</p><p>Retract events and WLC/FJC-oriented single-molecule analysis.</p></article>
+  <article class="spm-panel spm-panel--perspective"><h3>Force-volume properties</h3><p><strong>Mapa</strong> · `map`</p><p>Computed property maps with inspector and histogram.</p></article>
+  <article class="spm-panel spm-panel--perspective"><h3>Multiple files</h3><p><strong>Batch</strong> · `batch`</p><p>Batch table and log for repeated processing.</p></article>
+  <article class="spm-panel spm-panel--perspective"><h3>Publication output</h3><p><strong>Figura</strong> · `figure`</p><p>Figure composition and scientific image export.</p></article>
+  <article class="spm-panel spm-panel--perspective"><h3>Surface rendering</h3><p><strong>Vista 3D</strong> · `view3d`</p><p>Three-dimensional presentation of the active image surface.</p></article>
+  <article class="spm-panel spm-panel--perspective"><h3>Educational modeling</h3><p><strong>Simulador</strong> · `simulator`</p><p>Cantilever simulation. Treat as educational/numerical, not a validated measurement.</p></article>
 </div>
 
 ## Current interface gallery
@@ -114,13 +114,13 @@ English intent is followed by the current display label and internal key.
 All images below are generated from deterministic synthetic data by
 `scripts/gen_docs_media.py`. They demonstrate the interface and routing only.
 
-<div class="intent-grid">
-  <figure class="media-frame"><img src="../../assets/ecosystem/fathom/image.png" width="1426" height="1244" alt="Fathom Image perspective with synthetic topography" loading="lazy"><figcaption class="media-caption">Image: synthetic topography and analysis controls.</figcaption></figure>
-  <figure class="media-frame"><img src="../../assets/ecosystem/fathom/grains.png" width="1592" height="1244" alt="Fathom Grains perspective with synthetic particles" loading="lazy"><figcaption class="media-caption">Grains: segmentation on synthetic morphology.</figcaption></figure>
-  <figure class="media-frame"><img src="../../assets/ecosystem/fathom/force.png" width="1592" height="1244" alt="Fathom Force Curve perspective with a synthetic Hertz curve" loading="lazy"><figcaption class="media-caption">Force Curve: deterministic synthetic Hertz-like data and fit.</figcaption></figure>
-  <figure class="media-frame"><img src="../../assets/ecosystem/fathom/map.png" width="1592" height="1244" alt="Fathom Map perspective with a synthetic modulus field" loading="lazy"><figcaption class="media-caption">Map: synthetic soft/hard domains in a force volume.</figcaption></figure>
-  <figure class="media-frame"><img src="../../assets/ecosystem/fathom/resonance.png" width="1592" height="1244" alt="Fathom Thermal Tune perspective with a synthetic resonance spectrum" loading="lazy"><figcaption class="media-caption">Thermal Tune: generated resonance spectrum.</figcaption></figure>
-  <figure class="media-frame"><img src="../../assets/ecosystem/fathom/evaporation.png" width="1592" height="1244" alt="Fathom Evaporation perspective with a synthetic time series" loading="lazy"><figcaption class="media-caption">Evaporation: generated frequency/mass series.</figcaption></figure>
+<div class="spm-capability-grid">
+  <figure class="spm-media-frame"><img src="../../assets/ecosystem/fathom/image.png" width="1426" height="1244" alt="Fathom Image perspective with synthetic topography" loading="lazy"><figcaption class="spm-media-caption">Image: synthetic topography and analysis controls.</figcaption></figure>
+  <figure class="spm-media-frame"><img src="../../assets/ecosystem/fathom/grains.png" width="1592" height="1244" alt="Fathom Grains perspective with synthetic particles" loading="lazy"><figcaption class="spm-media-caption">Grains: segmentation on synthetic morphology.</figcaption></figure>
+  <figure class="spm-media-frame"><img src="../../assets/ecosystem/fathom/force.png" width="1592" height="1244" alt="Fathom Force Curve perspective with a synthetic Hertz curve" loading="lazy"><figcaption class="spm-media-caption">Force Curve: deterministic synthetic Hertz-like data and fit.</figcaption></figure>
+  <figure class="spm-media-frame"><img src="../../assets/ecosystem/fathom/map.png" width="1592" height="1244" alt="Fathom Map perspective with a synthetic modulus field" loading="lazy"><figcaption class="spm-media-caption">Map: synthetic soft/hard domains in a force volume.</figcaption></figure>
+  <figure class="spm-media-frame"><img src="../../assets/ecosystem/fathom/resonance.png" width="1592" height="1244" alt="Fathom Thermal Tune perspective with a synthetic resonance spectrum" loading="lazy"><figcaption class="spm-media-caption">Thermal Tune: generated resonance spectrum.</figcaption></figure>
+  <figure class="spm-media-frame"><img src="../../assets/ecosystem/fathom/evaporation.png" width="1592" height="1244" alt="Fathom Evaporation perspective with a synthetic time series" loading="lazy"><figcaption class="spm-media-caption">Evaporation: generated frequency/mass series.</figcaption></figure>
 </div>
 
 ## Shortcuts and command palette

@@ -9,7 +9,7 @@ as reduced or sample modulus. They are conditional physical models, not generic
 curve shapes: geometry, elasticity, adhesion, substrate effects, contact-point
 choice, and fit depth all determine whether a fitted number is meaningful.
 
-<figure class="science-figure">
+<figure class="spm-science-figure">
   <img src="../../assets/theory/contact-geometries.svg" alt="Sphere or paraboloid and cone indenting elastic half-spaces, with radius, half-angle and indentation labeled" width="960" height="440">
   <figcaption>SPM-Kit implements spherical/paraboloidal and conical elastic laws. The geometry parameters are measured inputs, not fit decorations.</figcaption>
 </figure>

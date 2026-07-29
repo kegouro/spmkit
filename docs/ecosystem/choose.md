@@ -8,7 +8,7 @@ description: An accessible decision guide for selecting SPM-Kit Core, Fathom, Da
 Start with the scientific task. Repositories are boundaries of responsibility,
 not five interchangeable products.
 
-<div class="decision-tree">
+<div class="spm-decision-tree">
   <details open><summary>I want to analyze data</summary><div><p><strong>Interactively:</strong> start with <a href="../fathom/">Fathom</a>. It operates SPM-Kit Core through visual perspectives.</p><p><strong>Programmatically, in notebooks, batch jobs, CI or HPC:</strong> start with <a href="../spmkit/">SPM-Kit Core</a>.</p></div></details>
   <details><summary>I want to test an algorithm</summary><div><p><strong>Against a known numerical surface:</strong> generate truth with <a href="../phantoms/">Phantoms</a>, then execute the comparison through <a href="../validation/">Validation</a>.</p><p><strong>Against external software or a published reference:</strong> start with Validation and freeze reference independence, parameters and tolerance before execution.</p></div></details>
   <details><summary>I need a native-format fixture</summary><div><p>Use <a href="../data-hunter/">Data Hunter</a> to find candidates, then manually review format, rights and content. A raw-only file can exercise a Core reader; it cannot validate an analysis result.</p></div></details>
@@ -19,7 +19,7 @@ not five interchangeable products.
   <details><summary>I want to propose physical validation</summary><div><p>Start in Validation. Define the mensurand, calibrated reference, uncertainty, traceability, lawful data handling, blinded or independent design and pass/fail policy. Data Hunter may locate leads but cannot certify them.</p></div></details>
 </div>
 
-<div class="decision-fallback">
+<div class="spm-decision-fallback">
   <strong>No JavaScript required.</strong> The branches above are native HTML
   disclosure controls. If they are unavailable, use the complete table below.
 </div>

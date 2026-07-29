@@ -13,8 +13,8 @@ theme:
   name: material
   custom_dir: docs/overrides
   language: en
-  favicon: images/brand/fathom_mark.svg
-  logo: images/brand/fathom_logo_light.png
+  favicon: assets/brand/pharos.svg
+  logo: assets/brand/pharos.svg
   font: false
   palette:
     - scheme: slate
@@ -45,10 +45,15 @@ theme:
     - content.tooltips
 
 extra_css:
-  - stylesheets/fathom.css
+  - stylesheets/tokens.css
+  - stylesheets/shell.css
+  - stylesheets/components.css
+  - stylesheets/scientific.css
+  - stylesheets/responsive.css
 
 extra_javascript:
   - javascripts/mathjax.js
+  - javascripts/accessibility.js
 
 markdown_extensions:
   - admonition
