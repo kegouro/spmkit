@@ -9,6 +9,9 @@
 **Documented source:** `0.1.5.dev0` · **GitHub release:** `0.1.4` ·
 **PyPI distribution:** `0.1.2` · **Build date:** 2026-07-29
 
+**Source commit:**
+[`06da8895ef9d7dfb5978f97f8283695deb02f870`](https://github.com/kegouro/spmkit/commit/06da8895ef9d7dfb5978f97f8283695deb02f870)
+
 **PDF SHA-256:**
 `1ec76b89c84151b2f75621bf3f37eb0b86c887430130835fc7bffd2d796b79e9`
 

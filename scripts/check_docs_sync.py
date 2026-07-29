@@ -272,6 +272,45 @@ def main() -> int:
         bool(published_hash and published_hash.group(1) == actual_pdf_hash),
         "download metadata matches committed PDF SHA-256",
     )
+    source_match = re.search(
+        r"Source commit:\*\*\s*\n\[`([0-9a-f]{40})`\]"
+        r"\(https://github\.com/kegouro/spmkit/commit/([0-9a-f]{40})\)",
+        downloads,
+    )
+    source_commit_ok = False
+    if source_match and source_match.group(1) == source_match.group(2):
+        source_commit = source_match.group(1)
+        ancestor = subprocess.run(
+            ["git", "merge-base", "--is-ancestor", source_commit, "HEAD"],
+            cwd=REPO,
+            check=False,
+        )
+        source_commit_ok = ancestor.returncode == 0
+        for manual in required_manual_files:
+            relative = manual.relative_to(REPO).as_posix()
+            committed = subprocess.run(
+                ["git", "rev-parse", f"{source_commit}:{relative}"],
+                cwd=REPO,
+                capture_output=True,
+                check=False,
+                text=True,
+            )
+            current = subprocess.run(
+                ["git", "hash-object", relative],
+                cwd=REPO,
+                capture_output=True,
+                check=False,
+                text=True,
+            )
+            source_commit_ok = source_commit_ok and (
+                committed.returncode == 0
+                and current.returncode == 0
+                and committed.stdout.strip() == current.stdout.strip()
+            )
+    checks.require(
+        source_commit_ok,
+        "source commit is an ancestor containing the published manual artifacts",
+    )
     checks.require("115 KiB" in downloads and "19-page" in downloads, "PDF size/page metadata")
 
     viewer_dir = DOCS / "assets/pdf-viewer"
