@@ -7,7 +7,7 @@ description: Public AFM/SPM dataset discovery, evidence classification, provenan
   <picture><source type="image/webp" srcset="../../assets/ecosystem/data-hunter/banner-640.webp 640w, ../../assets/ecosystem/data-hunter/banner-1280.webp 1280w" sizes="(max-width: 1280px) 100vw, 1280px"><img class="spm-component__banner" src="../../assets/ecosystem/data-hunter/banner.png" width="1280" height="640" alt="SPM-Kit Data Hunter public evidence discovery banner" loading="eager" fetchpriority="high"></picture>
   <div class="spm-component__body">
     <div><p class="spm-component__role">SPM-Kit Data Hunter · Evidence discovery</p><h1>Find candidate evidence without calling it truth</h1><p>Data Hunter queries supported public repository APIs, inventories files, normalizes metadata, deduplicates records and classifies possible scientific utility.</p></div>
-    <div><span class="spm-status">Alpha · source 2.2.0</span><div class="spm-io"><span><b>Input</b>queries, APIs, campaign policy</span><span aria-hidden="true">→</span><span><b>Output</b>candidate catalog and provenance</span></div></div>
+    <div><span class="spm-status spm-status--experimental">Alpha · source 2.2.0</span><div class="spm-io"><span><b>Input</b>queries, APIs, campaign policy</span><span aria-hidden="true">→</span><span><b>Output</b>candidate catalog and provenance</span></div></div>
   </div>
 </section>
 

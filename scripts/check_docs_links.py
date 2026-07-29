@@ -82,8 +82,6 @@ def main() -> int:
         parser = References()
         parser.feed(source.read_text(encoding="utf-8"))
         for attribute, reference in parser.values:
-            if "{{" in reference or "{%" in reference:
-                continue
             target = resolve_target(site, source, reference, site_url)
             if target is None:
                 continue
@@ -97,6 +95,28 @@ def main() -> int:
                 continue
             if not target.is_file():
                 failures.append(f"{source.relative_to(site)}: missing {attribute}: {reference}")
+    if (site / "overrides").exists():
+        failures.append("theme source templates were copied into the published site")
+
+    redirects = {
+        "SCIENTIFIC_STATUS/index.html": "../scientific-status/",
+        "VALIDATION/index.html": "../validation/",
+    }
+    for relative, destination in redirects.items():
+        redirect = site / relative
+        canonical = site / destination.removeprefix("../") / "index.html"
+        if redirect.exists() and canonical.exists() and redirect.samefile(canonical):
+            print(f"COMPATIBILITY REDIRECT CASE CHECK DEFERRED: {relative}")
+            continue
+        if not redirect.is_file():
+            failures.append(f"missing compatibility redirect: {relative}")
+            continue
+        redirect_source = redirect.read_text(encoding="utf-8")
+        if (
+            f'http-equiv="refresh" content="0; url={destination}"' not in redirect_source
+            or f'rel="canonical" href="{destination}"' not in redirect_source
+        ):
+            failures.append(f"invalid compatibility redirect metadata: {relative}")
     if failures:
         print(f"BROKEN INTERNAL LINKS: {len(failures)}")
         for failure in failures:

@@ -70,9 +70,16 @@
   --spm-beam: #fb923c;
   --spm-beam-ink: var(--spm-fixed-beam-ink);
   --spm-signal: #2dd4bf;
-  --spm-success: #86efac;
-  --spm-warning: #ffd690;
-  --spm-danger: #fca5a5;
+  --spm-status-success: #86efac;
+  --spm-status-warning: #ffd690;
+  --spm-status-error: #fca5a5;
+  --spm-status-informational: #93c5fd;
+  --spm-status-blocked: #d8b4fe;
+  --spm-status-experimental: #f9a8d4;
+  --spm-status-neutral: #c8bba8;
+  --spm-success: var(--spm-status-success);
+  --spm-warning: var(--spm-status-warning);
+  --spm-danger: var(--spm-status-error);
   --spm-shadow: rgb(0 0 0 / 34%);
 
   --spm-canvas: var(--spm-night);
@@ -123,9 +130,16 @@
   --spm-beam: #b74f13;
   --spm-beam-ink: #fffdf8;
   --spm-signal: #0f766e;
-  --spm-success: #166534;
-  --spm-warning: #7c4a03;
-  --spm-danger: #991b1b;
+  --spm-status-success: #166534;
+  --spm-status-warning: #7c4a03;
+  --spm-status-error: #991b1b;
+  --spm-status-informational: #1e40af;
+  --spm-status-blocked: #6b21a8;
+  --spm-status-experimental: #9d174d;
+  --spm-status-neutral: #5f5143;
+  --spm-success: var(--spm-status-success);
+  --spm-warning: var(--spm-status-warning);
+  --spm-danger: var(--spm-status-error);
   --spm-shadow: rgb(70 45 20 / 14%);
 
   --spm-canvas: #f4f0e7;

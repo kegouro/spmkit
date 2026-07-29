@@ -7,7 +7,7 @@ description: Complete tour of the interactive SPM-Kit scientific workspace, its 
   <picture><source type="image/webp" srcset="../../assets/ecosystem/fathom/banner-640.webp 640w, ../../assets/ecosystem/fathom/banner-1280.webp 1280w" sizes="(max-width: 1280px) 100vw, 1280px"><img class="spm-component__banner" src="../../assets/ecosystem/fathom/banner.jpeg" width="1600" height="900" alt="Fathom, the SPM-Kit scientific workspace" loading="eager" fetchpriority="high"></picture>
   <div class="spm-component__body">
     <div><p class="spm-component__role">Fathom · Interactive scientific workspace</p><h1>Operate the computation without losing sight of it</h1><p>Fathom provides perspective-based exploration, parameter configuration, fitting, maps, figures and reports over SPM-Kit Core.</p></div>
-    <div><span class="spm-status">Bundled with SPM-Kit · Alpha</span><div class="spm-io"><span><b>Input</b>files, parameters, projects</span><span aria-hidden="true">→</span><span><b>Output</b>Core results, figures, reports</span></div></div>
+    <div><span class="spm-status spm-status--experimental">Bundled with SPM-Kit · Alpha</span><div class="spm-io"><span><b>Input</b>files, parameters, projects</span><span aria-hidden="true">→</span><span><b>Output</b>Core results, figures, reports</span></div></div>
   </div>
 </section>
 

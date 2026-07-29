@@ -53,6 +53,14 @@ semantic roles instead of declaring parallel palettes.
 - Buttons use one of three explicit roles: primary, secondary or quiet.
 - Status never depends on color alone; every state has a visible text label.
 
+The status grammar has seven independent semantic roles: **success** for a
+declared passing check, **warning** for caution, **error** for a failed check,
+**informational** for non-evaluative context, **blocked** for work that cannot
+proceed, **experimental** for alpha or research-stage capabilities, and
+**neutral** for unevaluated state. Each role has a distinct dark/light token and
+text label. Component accents and scientific signal colors are never substituted
+for these status tokens.
+
 The footer uses the canonical Pharos signature:
 
 ```text

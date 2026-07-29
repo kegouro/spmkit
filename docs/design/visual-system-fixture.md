@@ -35,10 +35,12 @@ checks without turning the documentation into a style-guide destination.
 
 <div class="spm-fixture-row">
   <span class="spm-status spm-status--pass">PASS</span>
-  <span class="spm-status spm-status--fail">FAIL</span>
+  <span class="spm-status spm-status--warning">WARNING</span>
+  <span class="spm-status spm-status--error">ERROR</span>
+  <span class="spm-status spm-status--informational">INFORMATIONAL</span>
   <span class="spm-status spm-status--blocked">BLOCKED</span>
-  <span class="spm-status spm-status--not-run">NOT_RUN</span>
-  <span class="spm-status">ALPHA</span>
+  <span class="spm-status spm-status--experimental">EXPERIMENTAL</span>
+  <span class="spm-status spm-status--neutral">NEUTRAL</span>
 </div>
 
 ## Editorial and evidence panels

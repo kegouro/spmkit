@@ -7,7 +7,7 @@ description: Deterministic analytical surfaces, declared SPM-like corruptions, c
   <picture><source type="image/webp" srcset="../../assets/ecosystem/phantoms/banner-640.webp 640w, ../../assets/ecosystem/phantoms/banner-1280.webp 1280w" sizes="(max-width: 1280px) 100vw, 1280px"><img class="spm-component__banner" src="../../assets/ecosystem/phantoms/banner.png" width="1774" height="887" alt="SPM-Kit Phantoms synthetic truth banner" loading="eager" fetchpriority="high"></picture>
   <div class="spm-component__body">
     <div><p class="spm-component__role">SPM-Kit Phantoms · Synthetic truth</p><h1>Truth → corruption → observation → evidence</h1><p>Phantoms creates analytical surfaces with known parameters, applies explicit corruption sequences and exports the clean truth and observed data as separate scientific objects.</p></div>
-    <div><span class="spm-status">Alpha · source 0.1.0</span><div class="spm-io"><span><b>Input</b>model, field of view, seed</span><span aria-hidden="true">→</span><span><b>Output</b>arrays, masks, hashes, manifests</span></div></div>
+    <div><span class="spm-status spm-status--experimental">Alpha · source 0.1.0</span><div class="spm-io"><span><b>Input</b>model, field of view, seed</span><span aria-hidden="true">→</span><span><b>Output</b>arrays, masks, hashes, manifests</span></div></div>
   </div>
 </section>
 

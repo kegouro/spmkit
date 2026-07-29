@@ -180,7 +180,7 @@ canvas.spm-reader-canvas {
   right: .5rem;
   padding: .12rem .4rem;
   border-radius: 999px;
-  background: rgb(10 9 8 / 70%);
+  background: color-mix(in srgb, var(--spm-fixed-night) 70%, transparent);
   color: var(--spm-fixed-ink);
   font-family: "IBM Plex Mono", ui-monospace, monospace;
   font-size: .56rem;

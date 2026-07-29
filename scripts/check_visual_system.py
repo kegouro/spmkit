@@ -108,7 +108,7 @@ def main() -> int:
         "legacy global theme selectors removed",
     )
     checks.require(
-        re.search(r"#[0-9a-fA-F]{3,8}\b", runtime_css) is None,
+        re.search(r"#[0-9a-fA-F]{3,8}\b|\b(?:rgb|hsl)a?\(", runtime_css) is None,
         "runtime colors are centralized in tokens.css",
     )
 
@@ -119,9 +119,12 @@ def main() -> int:
         ".spm-button--quiet",
         ".spm-panel--evidence",
         ".spm-status--pass",
-        ".spm-status--fail",
+        ".spm-status--warning",
+        ".spm-status--error",
+        ".spm-status--informational",
         ".spm-status--blocked",
-        ".spm-status--not-run",
+        ".spm-status--experimental",
+        ".spm-status--neutral",
         ".spm-workflow-ladder",
         ".spm-evidence-ladder",
         ".spm-evidence-level--unclaimed",
@@ -150,16 +153,28 @@ def main() -> int:
         "dark muted / canvas": (dark, "--spm-ink-muted", "--spm-canvas", 4.5),
         "dark link / canvas": (dark, "--spm-link", "--spm-canvas", 4.5),
         "dark primary label / action": (dark, "--spm-action-ink", "--spm-action", 4.5),
-        "dark success / canvas": (dark, "--spm-success", "--spm-canvas", 4.5),
-        "dark danger / canvas": (dark, "--spm-danger", "--spm-canvas", 4.5),
         "light ink / canvas": (light, "--spm-ink", "--spm-canvas", 4.5),
         "light muted / canvas": (light, "--spm-ink-muted", "--spm-canvas", 4.5),
         "light link / canvas": (light, "--spm-link", "--spm-canvas", 4.5),
         "light primary label / action": (light, "--spm-action-ink", "--spm-action", 4.5),
         "light signal / canvas": (light, "--spm-signal", "--spm-canvas", 4.5),
-        "light success / canvas": (light, "--spm-success", "--spm-canvas", 4.5),
-        "light danger / canvas": (light, "--spm-danger", "--spm-canvas", 4.5),
     }
+    for scheme, properties in (("dark", dark), ("light", light)):
+        for state in (
+            "success",
+            "warning",
+            "error",
+            "informational",
+            "blocked",
+            "experimental",
+            "neutral",
+        ):
+            token_contract[f"{scheme} {state} / canvas"] = (
+                properties,
+                f"--spm-status-{state}",
+                "--spm-canvas",
+                4.5,
+            )
     for label, (properties, foreground_token, background_token, minimum) in token_contract.items():
         foreground = resolved_hex(foreground_token, properties)
         background = resolved_hex(background_token, properties)
@@ -226,11 +241,21 @@ def main() -> int:
         and "Validation campaigns: validation/index.md" in config,
         "canonical lowercase evidence routes",
     )
+    checks.require(
+        "exclude_docs: |\n  overrides/" in config
+        and (DOCS / "overrides/redirect.html").is_file()
+        and all(
+            "template: redirect.html" in (DOCS / legacy).read_text(encoding="utf-8")
+            and "redirect_to:" in (DOCS / legacy).read_text(encoding="utf-8")
+            for legacy in ("SCIENTIFIC_STATUS.md", "VALIDATION.md")
+        ),
+        "theme sources are excluded and compatibility routes use valid redirect templates",
+    )
 
-    class_pattern = re.compile(r'class="([^"]+)"')
     used_classes: set[str] = set()
+    class_pattern = re.compile(r'(?:class|className)\s*=\s*["\']([^"\']+)')
     for path in DOCS.rglob("*"):
-        if path.suffix not in {".md", ".html"} or "assets/legacy" in path.as_posix():
+        if path.suffix not in {".md", ".html", ".js"} or "assets/legacy" in path.as_posix():
             continue
         for match in class_pattern.finditer(path.read_text(encoding="utf-8")):
             used_classes.update(
@@ -239,9 +264,30 @@ def main() -> int:
     all_css = css + (DOCS / "assets/pdf-viewer/viewer.css").read_text(encoding="utf-8")
     for class_name in sorted(used_classes):
         checks.require(f".{class_name}" in all_css, f"styled consumer class: {class_name}")
+    defined_classes = set(re.findall(r"\.([sS][pP][mM]-[\w-]+)", all_css))
+    checks.require(
+        not (defined_classes - used_classes),
+        "no unused SPM component selectors",
+    )
 
     fixture = DOCS / "design/visual-system-fixture.md"
     checks.require(fixture.is_file(), "internal visual-system fixture")
+    fixture_source = fixture.read_text(encoding="utf-8")
+    checks.require(
+        all(
+            f"spm-status--{state}" in fixture_source
+            for state in (
+                "pass",
+                "warning",
+                "error",
+                "informational",
+                "blocked",
+                "experimental",
+                "neutral",
+            )
+        ),
+        "fixture covers every semantic status role",
+    )
     checks.require(
         "design/visual-system-fixture.md" not in config,
         "fixture remains outside public navigation",

@@ -8,6 +8,8 @@ repo_name: kegouro/spmkit
 edit_uri: edit/main/docs/
 
 docs_dir: docs
+exclude_docs: |
+  overrides/
 
 theme:
   name: material

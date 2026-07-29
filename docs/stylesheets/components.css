@@ -29,7 +29,7 @@
   right: -8%;
   width: min(45rem, 56vw);
   height: 150%;
-  background: linear-gradient(90deg, rgb(245 167 44 / 0%), rgb(245 167 44 / 12%));
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--spm-fixed-amber) 12%, transparent));
   clip-path: polygon(100% 0, 100% 100%, 0 52%);
   content: "";
 }
@@ -41,7 +41,7 @@
   bottom: -3rem;
   width: 11rem;
   height: 11rem;
-  border: 1px solid rgb(245 167 44 / 28%);
+  border: 1px solid color-mix(in srgb, var(--spm-fixed-amber) 28%, transparent);
   border-radius: 50%;
   content: "";
 }
@@ -182,7 +182,6 @@
   text-transform: uppercase;
 }
 
-.spm-panel-grid,
 .spm-capability-grid,
 .spm-surface-grid,
 .spm-perspective-grid {
@@ -293,7 +292,7 @@
   padding: .22rem .52rem;
   border: 1px solid currentColor;
   border-radius: 999px;
-  color: var(--spm-warning);
+  color: var(--spm-status-neutral);
   font-family: "IBM Plex Mono", ui-monospace, monospace;
   font-size: .56rem;
   font-weight: 600;
@@ -303,16 +302,31 @@
 }
 
 .spm-status--pass {
-  color: var(--spm-success);
+  color: var(--spm-status-success);
 }
 
-.spm-status--fail,
+.spm-status--warning {
+  color: var(--spm-status-warning);
+}
+
+.spm-status--error {
+  color: var(--spm-status-error);
+}
+
+.spm-status--informational {
+  color: var(--spm-status-informational);
+}
+
 .spm-status--blocked {
-  color: var(--spm-danger);
+  color: var(--spm-status-blocked);
 }
 
-.spm-status--not-run {
-  color: var(--spm-ink-faint);
+.spm-status--experimental {
+  color: var(--spm-status-experimental);
+}
+
+.spm-status--neutral {
+  color: var(--spm-status-neutral);
 }
 
 .spm-evidence-ladder {
