@@ -82,6 +82,8 @@ def main() -> int:
         parser = References()
         parser.feed(source.read_text(encoding="utf-8"))
         for attribute, reference in parser.values:
+            if "{{" in reference or "{%" in reference:
+                continue
             target = resolve_target(site, source, reference, site_url)
             if target is None:
                 continue

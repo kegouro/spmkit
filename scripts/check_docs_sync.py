@@ -361,8 +361,18 @@ def main() -> int:
         "assets/theory/psd-interpretation.svg",
         "assets/theory/resonance-response.svg",
         "assets/theory/software-architecture.svg",
+        "assets/brand/pharos.svg",
+        "assets/brand/pharos-mono.svg",
         "assets/vendor/fonts/inter-latin-variable.woff2",
-        "assets/vendor/fonts/jetbrains-mono-latin-variable.woff2",
+        "assets/vendor/fonts/fraunces-latin-variable.woff2",
+        "assets/vendor/fonts/ibm-plex-mono-latin-400.woff2",
+        "assets/vendor/fonts/ibm-plex-mono-latin-600.woff2",
+        "stylesheets/tokens.css",
+        "stylesheets/shell.css",
+        "stylesheets/components.css",
+        "stylesheets/scientific.css",
+        "stylesheets/responsive.css",
+        "assets/pdf-viewer/viewer.css",
         "assets/vendor/mathjax/tex-mml-chtml.js",
         "assets/vendor/mathjax/LICENSE",
     )
@@ -372,8 +382,24 @@ def main() -> int:
 
     config_scripts = config.get("extra_javascript", [])
     checks.require(
-        config_scripts == ["javascripts/mathjax.js"],
-        "MathJax engine is demand-loaded instead of globally blocking every page",
+        config_scripts == ["javascripts/mathjax.js", "javascripts/accessibility.js"],
+        "MathJax stays demand-loaded and scroll regions receive keyboard access",
+    )
+    checks.require(
+        config.get("extra_css")
+        == [
+            "stylesheets/tokens.css",
+            "stylesheets/shell.css",
+            "stylesheets/components.css",
+            "stylesheets/scientific.css",
+            "stylesheets/responsive.css",
+        ],
+        "Pharos visual system loads in canonical layer order",
+    )
+    checks.require(
+        config.get("theme", {}).get("logo") == "assets/brand/pharos.svg"
+        and config.get("theme", {}).get("favicon") == "assets/brand/pharos.svg",
+        "global logo and favicon use the canonical Pharos parent mark",
     )
     banner_pages = (
         DOCS / "ecosystem/index.md",
