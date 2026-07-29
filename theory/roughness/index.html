@@ -6,8 +6,10 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Open numerical engine and interactive workspace for Scanning Probe Microscopy (SPM)">
+        <meta name="description" content="Areal roughness parameters, reference surfaces, leveling, sampling, filtering, implementation scope, and cross-validation limits.">
       
+      
+        <meta name="author" content="José Labarca Baeza">
       
       
         <link rel="canonical" href="https://kegouro.github.io/spmkit/theory/roughness/">
@@ -16,7 +18,7 @@
         <link rel="prev" href="../kpfm/">
       
       
-        <link rel="next" href="../resonance/">
+        <link rel="next" href="../spectral-analysis/">
       
       
         
@@ -27,7 +29,7 @@
     
     
       
-        <title>Roughness & spectral analysis - SPM-Kit · Fathom</title>
+        <title>Roughness - SPM-Kit ecosystem</title>
       
     
     
@@ -45,12 +47,6 @@
     
     
       
-        
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
-      
     
     
       <link rel="stylesheet" href="../../stylesheets/fathom.css">
@@ -61,6 +57,24 @@
 
     
     
+  
+  
+  
+  
+  <meta name="author" content="José Labarca Baeza">
+  <meta name="keywords" content="AFM, SPM, KPFM, force spectroscopy, nanomechanics, scientific Python, reproducible microscopy">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SPM-Kit ecosystem">
+  <meta property="og:title" content="Roughness · SPM-Kit ecosystem">
+  <meta property="og:description" content="Areal roughness parameters, reference surfaces, leveling, sampling, filtering, implementation scope, and cross-validation limits.">
+  <meta property="og:url" content="https://kegouro.github.io/spmkit/theory/roughness/">
+  <meta property="og:image" content="https://kegouro.github.io/spmkit/assets/ecosystem/core/banner.png">
+  <meta property="og:image:alt" content="SPM-Kit open AFM and SPM numerical engine">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Roughness · SPM-Kit ecosystem">
+  <meta name="twitter:description" content="Areal roughness parameters, reference surfaces, leveling, sampling, filtering, implementation scope, and cross-validation limits.">
+  <meta name="twitter:image" content="https://kegouro.github.io/spmkit/assets/ecosystem/core/banner.png">
+
   </head>
   
   
@@ -80,7 +94,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#roughness-spectral-analysis" class="md-skip">
+        <a href="#roughness-and-surface-metrology" class="md-skip">
           Skip to content
         </a>
       
@@ -96,7 +110,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="SPM-Kit · Fathom" class="md-header__button md-logo" aria-label="SPM-Kit · Fathom" data-md-component="logo">
+    <a href="../.." title="SPM-Kit ecosystem" class="md-header__button md-logo" aria-label="SPM-Kit ecosystem" data-md-component="logo">
       
   <img src="../../images/brand/fathom_logo_light.png" alt="logo">
 
@@ -109,13 +123,13 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            SPM-Kit · Fathom
+            SPM-Kit ecosystem
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Roughness & spectral analysis
+              Roughness
             
           </span>
         </div>
@@ -240,17 +254,20 @@
   
   
   
-    <li class="md-tabs__item">
-      <a href="../../getting-started/" class="md-tabs__link">
-        
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
   
   
     
   
   Getting started
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -292,7 +309,7 @@
   
     
   
-  Manual
+  User manual
 
         </a>
       </li>
@@ -349,6 +366,28 @@
     
     
       <li class="md-tabs__item">
+        <a href="../../SCIENTIFIC_STATUS/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Scientific evidence
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
         <a href="../../ARCHITECTURE/" class="md-tabs__link">
           
   
@@ -360,6 +399,44 @@
         </a>
       </li>
     
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CONTRIBUTING/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Contributing
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CITATION/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Citation
+
+      </a>
+    </li>
   
 
       
@@ -393,12 +470,12 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="SPM-Kit · Fathom" class="md-nav__button md-logo" aria-label="SPM-Kit · Fathom" data-md-component="logo">
+    <a href="../.." title="SPM-Kit ecosystem" class="md-nav__button md-logo" aria-label="SPM-Kit ecosystem" data-md-component="logo">
       
   <img src="../../images/brand/fathom_logo_light.png" alt="logo">
 
     </a>
-    SPM-Kit · Fathom
+    SPM-Kit ecosystem
   </label>
   
     <div class="md-nav__source">
@@ -448,9 +525,40 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../getting-started/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../ecosystem/workflows/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -464,7 +572,143 @@
   
   
 
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/first-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    First analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/fathom-quick-start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fathom quick start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -482,6 +726,8 @@
       
         
           
+        
+      
         
       
         
@@ -724,7 +970,7 @@
   <span class="md-ellipsis">
     
   
-    Roughness & spectral analysis
+    Roughness
   
 
     
@@ -742,7 +988,7 @@
   <span class="md-ellipsis">
     
   
-    Roughness & spectral analysis
+    Roughness
   
 
     
@@ -768,10 +1014,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#area-parameters-iso-25178" class="md-nav__link">
+  <a href="#reference-field" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Area parameters (ISO 25178)
+        Reference field
       
     </span>
   </a>
@@ -779,10 +1025,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#radial-psd-hurst-and-fractal-dimension" class="md-nav__link">
+  <a href="#implemented-areal-parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Radial PSD, Hurst and fractal dimension
+        Implemented areal parameters
       
     </span>
   </a>
@@ -790,10 +1036,43 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#evidence-status" class="md-nav__link">
+  <a href="#leveling-and-filtering" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Evidence status
+        Leveling and filtering
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sampling-and-scale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sampling and scale
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#iso-terminology-and-implementation-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ISO terminology and implementation scope
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evidence-boundary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evidence boundary
       
     </span>
   </a>
@@ -804,6 +1083,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spectral-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -851,7 +1158,7 @@
   <span class="md-ellipsis">
     
   
-    SPM-Kit workflows
+    Implementation map
   
 
     
@@ -973,7 +1280,7 @@
   <span class="md-ellipsis">
     
   
-    Manual
+    User manual
   
 
     
@@ -995,7 +1302,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Manual
+    User manual
   
 
           </label>
@@ -1174,6 +1481,16 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1226,6 +1543,118 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/choose/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Choose a component
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Install matrix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Artifact contracts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Example workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -1291,14 +1720,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../ecosystem/phantoms/" class="md-nav__link">
+      <a href="../../ecosystem/data-hunter/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Phantoms
+    Data Hunter
   
 
     
@@ -1319,14 +1748,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../ecosystem/data-hunter/" class="md-nav__link">
+      <a href="../../ecosystem/phantoms/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Data Hunter
+    Phantoms
   
 
     
@@ -1396,6 +1825,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/brand/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Brand governance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1423,6 +1880,8 @@
         
       
         
+          
+        
       
     
     
@@ -1440,7 +1899,227 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
         
           
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+          <div class="md-nav__link md-nav__container">
+            <a href="../../ecosystem/workflows/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific evidence
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Scientific evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SCIENTIFIC_STATUS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific status
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VALIDATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation campaigns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../TRACEABILITY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Traceability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../FILE_FORMATS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Format maturity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../KNOWN_LIMITATIONS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Known limitations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
             
   
   
@@ -1458,8 +2137,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1532,62 +2211,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../VALIDATION/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Validation
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../TRACEABILITY/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Traceability
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../ROADMAP/" class="md-nav__link">
         
   
@@ -1637,9 +2260,91 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ACKNOWLEDGEMENTS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Acknowledgements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CITATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Citation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1664,102 +2369,99 @@
   
 
 
-<h1 id="roughness-spectral-analysis">Roughness &amp; spectral analysis<a class="headerlink" href="#roughness-spectral-analysis" title="Permanent link">&para;</a></h1>
-<p>Once the image is leveled, its <strong>texture</strong> is summarized with statistical
-parameters (ISO 25178) and with its <strong>spatial spectrum</strong>, which reveals how
-roughness is distributed across scales.</p>
-<h2 id="area-parameters-iso-25178">Area parameters (ISO 25178)<a class="headerlink" href="#area-parameters-iso-25178" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Parameter</th>
-<th>Definition</th>
-<th>What it tells you</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>Sa</code></td>
-<td>mean of |height|</td>
-<td>average roughness (robust)</td>
-</tr>
-<tr>
-<td><code>Sq</code></td>
-<td>root mean square (RMS)</td>
-<td>RMS roughness; weights peaks more</td>
-</tr>
-<tr>
-<td><code>Sz</code></td>
-<td>max peak + max valley</td>
-<td>extreme amplitude</td>
-</tr>
-<tr>
-<td><code>Ssk</code></td>
-<td>skewness</td>
-<td>&gt;0 peaks dominate; &lt;0 valleys dominate</td>
-</tr>
-<tr>
-<td><code>Sku</code></td>
-<td>kurtosis</td>
-<td>&gt;3 "peaked" distribution; &lt;3 flat</td>
-</tr>
-</tbody>
-</table>
-<h2 id="radial-psd-hurst-and-fractal-dimension">Radial PSD, Hurst and fractal dimension<a class="headerlink" href="#radial-psd-hurst-and-fractal-dimension" title="Permanent link">&para;</a></h2>
-<p>The power spectral density (<strong>PSD</strong>) radially averaged shows how power decays
-with spatial frequency <span class="arithmatex">\(q\)</span>. Many surfaces are <strong>self-affine</strong>: their PSD
-follows a power law <span class="arithmatex">\(\text{PSD}(q) \propto q^{-\beta}\)</span>. The exponent <span class="arithmatex">\(\beta\)</span>
-relates to the <strong>Hurst exponent</strong> <span class="arithmatex">\(H\)</span> and the <strong>fractal dimension</strong> <span class="arithmatex">\(D\)</span>:</p>
+<h1 id="roughness-and-surface-metrology">Roughness and surface metrology<a class="headerlink" href="#roughness-and-surface-metrology" title="Permanent link">&para;</a></h1>
+<p>Roughness parameters summarize deviations from a chosen reference surface.
+They do not discover that surface automatically, and they do not preserve where
+features occur. Two physically different surfaces can share the same Sa or Sq.</p>
+<figure class="science-figure">
+  <img src="../../assets/theory/roughness-flow.svg" alt="Roughness workflow from calibrated height field through masking and leveling to deviations, parameters, plots and provenance" width="960" height="430">
+  <figcaption>Every preprocessing decision changes the field over which the statistics are defined. Preserve the raw channel and report the transformation.</figcaption>
+</figure>
+
+<h2 id="reference-field">Reference field<a class="headerlink" href="#reference-field" title="Permanent link">&para;</a></h2>
+<p>Let <span class="arithmatex">\(z_i\)</span> be the <span class="arithmatex">\(N\)</span> finite sampled heights after declared masking and
+preprocessing, and let</p>
 <div class="arithmatex">\[
-\beta = 2H + 2
+\bar z=\frac{1}{N}\sum_{i=1}^{N}z_i,\qquad \eta_i=z_i-\bar z.
 \]</div>
+<p><span class="arithmatex">\(z_i\)</span>, <span class="arithmatex">\(\bar z\)</span>, and <span class="arithmatex">\(\eta_i\)</span> share the channel's length unit (usually m or
+nm). SPM-Kit removes non-finite samples, subtracts the arithmetic mean, and
+computes the following discrete quantities.</p>
+<h2 id="implemented-areal-parameters">Implemented areal parameters<a class="headerlink" href="#implemented-areal-parameters" title="Permanent link">&para;</a></h2>
 <div class="arithmatex">\[
-D = 3 - H
+S_a=\frac{1}{N}\sum_{i=1}^{N}|\eta_i|,
+\qquad
+S_q=\sqrt{\frac{1}{N}\sum_{i=1}^{N}\eta_i^2}.
 \]</div>
-<p><span class="arithmatex">\(H \to 1\)</span>: smooth surface (<span class="arithmatex">\(D \to 2\)</span>) · <span class="arithmatex">\(H \to 0\)</span>: very rough (<span class="arithmatex">\(D \to 3\)</span>).</p>
-<p>Additionally, the <strong>correlation length</strong> marks the scale beyond which heights
-are no longer correlated: it separates the self-affine regime (short scales)
-from the saturated regime (long scales). Together, these descriptors
-characterize texture in a way that is independent of image size.</p>
-<div class="admonition implementation">
-<p class="admonition-title">In SPM-Kit</p>
-<p>The roughness module computes Sa/Sq/Sz/Ssk/Sku after leveling (plane,
-polynomial, or per-row); the spectral module delivers radial PSD, Hurst
-exponent, fractal dimension, and correlation length. All accessible from
-the <strong>Viewer</strong> perspective.</p>
-</div>
-<hr />
-<h2 id="evidence-status">Evidence status<a class="headerlink" href="#evidence-status" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Concept</th>
-<th>Where</th>
-<th>Status</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>ISO 25178 roughness</td>
-<td><code>spmkit.core.analysis.roughness</code></td>
-<td><span class="level-badge level-3">LEVEL 3 CROSS_VALIDATED</span></td>
-</tr>
-<tr>
-<td>PSD / Hurst / fractal dimension</td>
-<td><code>spmkit.core.analysis.spectral</code></td>
-<td><span class="level-badge level-1">LEVEL 1 SOFTWARE_VERIFIED</span></td>
-</tr>
-</tbody>
-</table>
-<p>Sa, Sq and Sz were externally cross-validated against Gwyddion 2.71 on 6
-synthetic surfaces: <strong>18/18 conforming comparisons</strong>.</p>
-<p><a href="../kpfm/">:material-arrow-left: KPFM</a> · <a href="../resonance/">:material-arrow-right: Resonance &amp; mass sensing</a></p>
+<p><span class="arithmatex">\(S_a\)</span> and <span class="arithmatex">\(S_q\)</span> are heights. <span class="arithmatex">\(S_q\)</span> gives greater weight to large deviations;
+that does not make it more or less correct than <span class="arithmatex">\(S_a\)</span>.</p>
+<div class="arithmatex">\[
+S_p=\max_i\eta_i,\qquad S_v=\min_i\eta_i,
+\qquad S_z=S_p-S_v.
+\]</div>
+<p>In the result object, <code>Sv</code> is the signed minimum and <code>Sz = Sp - Sv</code>; all have
+height units. A single spike or dropout can dominate <span class="arithmatex">\(S_z\)</span>.</p>
+<div class="arithmatex">\[
+S_{sk}=\frac{N^{-1}\sum_i\eta_i^3}{S_q^3},
+\qquad
+S_{ku}=\frac{N^{-1}\sum_i\eta_i^4}{S_q^4}.
+\]</div>
+<p><span class="arithmatex">\(S_{sk}\)</span> and <span class="arithmatex">\(S_{ku}\)</span> are dimensionless. This is kurtosis, not excess
+kurtosis, so a Gaussian distribution tends toward 3. For an exactly flat field,
+the implementation returns zero for both normalized moments to avoid division
+by zero; mathematically those ratios are undefined.</p>
+<h2 id="leveling-and-filtering">Leveling and filtering<a class="headerlink" href="#leveling-and-filtering" title="Permanent link">&para;</a></h2>
+<p><code>spmkit.core.analysis.leveling</code> provides plane, polynomial, and per-row paths.
+Plane subtraction can remove sample tilt; it can also remove a real long-scale
+slope. Per-row alignment can suppress scanner offsets; it can also erase real
+line-to-line structure. Filtering and masks similarly redefine the measured
+surface. Report method, order, mask, and processing sequence.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>spmkit<span class="w"> </span>roughness<span class="w"> </span>scan.nid<span class="w"> </span>--channel<span class="w"> </span>Z-Axis<span class="w"> </span>--level<span class="w"> </span>plane
+</span></code></pre></div>
+<p><code>spmkit.core.analysis.roughness.statistics</code> expects the chosen channel already
+leveled. The CLI applies <code>plane</code>, <code>poly</code>, or <code>none</code>; Fathom's <strong>Imagen</strong>
+perspective applies user-selected preprocessing before displaying statistics.</p>
+<h2 id="sampling-and-scale">Sampling and scale<a class="headerlink" href="#sampling-and-scale" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Pixel pitch is lateral range divided by sample count under the stored grid
+  convention. Incorrect range metadata corrupts physical spatial scales.</li>
+<li>Field of view controls which long-wavelength form and rare extrema enter the
+  statistics.</li>
+<li>Pixel spacing, tip radius, feedback bandwidth, and filtering limit the
+  smallest observable structure.</li>
+<li>Resampling changes <span class="arithmatex">\(N\)</span> and correlation, but does not add instrument bandwidth.</li>
+<li>Compare results only when channel, area, mask, leveling, filtering, and units
+  are compatible.</li>
+</ul>
+<h2 id="iso-terminology-and-implementation-scope">ISO terminology and implementation scope<a class="headerlink" href="#iso-terminology-and-implementation-scope" title="Permanent link">&para;</a></h2>
+<p>SPM-Kit uses ISO 25178 areal names and discrete formulas for the parameters
+above. It does not claim a complete ISO 25178 filtering, nesting-index,
+uncertainty, or metrological-traceability implementation. Standards terminology
+must not be read as certification.</p>
+<h2 id="evidence-boundary">Evidence boundary<a class="headerlink" href="#evidence-boundary" title="Permanent link">&para;</a></h2>
+<p>The strongest current evidence is restricted to Sa, Sq, and Sz:</p>
+<ul>
+<li>48 frozen synthetic shared matrices, 144/144 SPM-Kit/Gwyddion 2.71
+  comparisons within <code>1e-6 nm + 1e-6 relative</code>;</li>
+<li>12 public experimental GWY records, 36/36 shared-matrix comparisons within
+  the same declared tolerance;</li>
+<li>the real-data parser track separately retained ten equivalences and two
+  channel-count differences.</li>
+</ul>
+<p>This supports <code>LEVEL 3 — CROSS_VALIDATED</code> for those metrics and campaign
+conditions. It does not transfer to Ssk, Sku, preprocessing equivalence,
+universal parser behavior, or physical validation.</p>
+<p><a href="../kpfm/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg></span> KPFM</a> ·
+<a href="../spectral-analysis/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Spectral analysis</a></p>
 
 
 
 
 
 
+
+  
+  
 
 
 
@@ -1808,13 +2510,13 @@ synthetic surfaces: <strong>18/18 conforming comparisons</strong>.</p>
         
         
           
-          <a href="../resonance/" class="md-footer__link md-footer__link--next" aria-label="Next: Resonance &amp; mass sensing">
+          <a href="../spectral-analysis/" class="md-footer__link md-footer__link--next" aria-label="Next: Spectral analysis">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Resonance & mass sensing
+                Spectral analysis
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -1830,11 +2532,10 @@ synthetic surfaces: <strong>18/18 conforming comparisons</strong>.</p>
     <div class="md-footer-meta__inner md-grid">
       <div class="md-copyright">
   
+    <div class="md-copyright__highlight">
+      Copyright © José Labarca Baeza · MIT-licensed software and documentation
+    </div>
   
-    Made with
-    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-      Material for MkDocs
-    </a>
   
 </div>
       

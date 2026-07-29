@@ -6,8 +6,10 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Open numerical engine and interactive workspace for Scanning Probe Microscopy (SPM)">
+        <meta name="description" content="Open numerical analysis, interactive workflows, theory, and inspectable validation evidence for AFM, KPFM, and force spectroscopy">
       
+      
+        <meta name="author" content="José Labarca Baeza">
       
       
         <link rel="canonical" href="https://kegouro.github.io/spmkit/theory/operating-modes/">
@@ -27,7 +29,7 @@
     
     
       
-        <title>Operating modes - SPM-Kit · Fathom</title>
+        <title>Operating modes - SPM-Kit ecosystem</title>
       
     
     
@@ -45,12 +47,6 @@
     
     
       
-        
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
-      
     
     
       <link rel="stylesheet" href="../../stylesheets/fathom.css">
@@ -61,6 +57,24 @@
 
     
     
+  
+  
+  
+  
+  <meta name="author" content="José Labarca Baeza">
+  <meta name="keywords" content="AFM, SPM, KPFM, force spectroscopy, nanomechanics, scientific Python, reproducible microscopy">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SPM-Kit ecosystem">
+  <meta property="og:title" content="Operating modes · SPM-Kit ecosystem">
+  <meta property="og:description" content="Open numerical analysis, interactive workflows, theory, and inspectable validation evidence for AFM, KPFM, and force spectroscopy">
+  <meta property="og:url" content="https://kegouro.github.io/spmkit/theory/operating-modes/">
+  <meta property="og:image" content="https://kegouro.github.io/spmkit/assets/ecosystem/core/banner.png">
+  <meta property="og:image:alt" content="SPM-Kit open AFM and SPM numerical engine">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Operating modes · SPM-Kit ecosystem">
+  <meta name="twitter:description" content="Open numerical analysis, interactive workflows, theory, and inspectable validation evidence for AFM, KPFM, and force spectroscopy">
+  <meta name="twitter:image" content="https://kegouro.github.io/spmkit/assets/ecosystem/core/banner.png">
+
   </head>
   
   
@@ -80,7 +94,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#operating-modes" class="md-skip">
+        <a href="#afm-operating-modes" class="md-skip">
           Skip to content
         </a>
       
@@ -96,7 +110,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="SPM-Kit · Fathom" class="md-header__button md-logo" aria-label="SPM-Kit · Fathom" data-md-component="logo">
+    <a href="../.." title="SPM-Kit ecosystem" class="md-header__button md-logo" aria-label="SPM-Kit ecosystem" data-md-component="logo">
       
   <img src="../../images/brand/fathom_logo_light.png" alt="logo">
 
@@ -109,7 +123,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            SPM-Kit · Fathom
+            SPM-Kit ecosystem
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -240,17 +254,20 @@
   
   
   
-    <li class="md-tabs__item">
-      <a href="../../getting-started/" class="md-tabs__link">
-        
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
   
   
     
   
   Getting started
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -292,7 +309,7 @@
   
     
   
-  Manual
+  User manual
 
         </a>
       </li>
@@ -349,6 +366,28 @@
     
     
       <li class="md-tabs__item">
+        <a href="../../SCIENTIFIC_STATUS/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Scientific evidence
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
         <a href="../../ARCHITECTURE/" class="md-tabs__link">
           
   
@@ -360,6 +399,44 @@
         </a>
       </li>
     
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CONTRIBUTING/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Contributing
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CITATION/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Citation
+
+      </a>
+    </li>
   
 
       
@@ -393,12 +470,12 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="SPM-Kit · Fathom" class="md-nav__button md-logo" aria-label="SPM-Kit · Fathom" data-md-component="logo">
+    <a href="../.." title="SPM-Kit ecosystem" class="md-nav__button md-logo" aria-label="SPM-Kit ecosystem" data-md-component="logo">
       
   <img src="../../images/brand/fathom_logo_light.png" alt="logo">
 
     </a>
-    SPM-Kit · Fathom
+    SPM-Kit ecosystem
   </label>
   
     <div class="md-nav__source">
@@ -448,9 +525,40 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../getting-started/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../ecosystem/workflows/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -464,7 +572,143 @@
   
   
 
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/first-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    First analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/fathom-quick-start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fathom quick start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -482,6 +726,8 @@
       
         
           
+        
+      
         
       
         
@@ -656,6 +902,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#mode-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mode comparison
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#contact-mode" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -667,10 +924,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dynamic-tapping-intermittent-contact" class="md-nav__link">
+  <a href="#tapping-and-non-contact-modes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Dynamic / tapping (intermittent contact)
+        Tapping and non-contact modes
       
     </span>
   </a>
@@ -678,10 +935,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#non-contact" class="md-nav__link">
+  <a href="#force-volume-and-quantitative-maps" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Non-contact
+        Force volume and quantitative maps
       
     </span>
   </a>
@@ -689,10 +946,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#implementation-in-spm-kit" class="md-nav__link">
+  <a href="#implementation-boundary" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Implementation in SPM-Kit
+        Implementation boundary
       
     </span>
   </a>
@@ -806,7 +1063,35 @@
   <span class="md-ellipsis">
     
   
-    Roughness & spectral analysis
+    Roughness
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spectral-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral analysis
   
 
     
@@ -862,7 +1147,7 @@
   <span class="md-ellipsis">
     
   
-    SPM-Kit workflows
+    Implementation map
   
 
     
@@ -984,7 +1269,7 @@
   <span class="md-ellipsis">
     
   
-    Manual
+    User manual
   
 
     
@@ -1006,7 +1291,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Manual
+    User manual
   
 
           </label>
@@ -1185,6 +1470,16 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1237,6 +1532,118 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/choose/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Choose a component
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Install matrix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Artifact contracts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Example workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -1302,14 +1709,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../ecosystem/phantoms/" class="md-nav__link">
+      <a href="../../ecosystem/data-hunter/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Phantoms
+    Data Hunter
   
 
     
@@ -1330,14 +1737,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../ecosystem/data-hunter/" class="md-nav__link">
+      <a href="../../ecosystem/phantoms/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Data Hunter
+    Phantoms
   
 
     
@@ -1407,6 +1814,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/brand/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Brand governance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1434,6 +1869,8 @@
         
       
         
+          
+        
       
     
     
@@ -1451,7 +1888,227 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
         
           
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+          <div class="md-nav__link md-nav__container">
+            <a href="../../ecosystem/workflows/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific evidence
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Scientific evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SCIENTIFIC_STATUS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific status
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VALIDATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation campaigns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../TRACEABILITY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Traceability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../FILE_FORMATS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Format maturity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../KNOWN_LIMITATIONS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Known limitations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
             
   
   
@@ -1469,8 +2126,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1543,62 +2200,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../VALIDATION/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Validation
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../TRACEABILITY/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Traceability
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../ROADMAP/" class="md-nav__link">
         
   
@@ -1648,9 +2249,91 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ACKNOWLEDGEMENTS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Acknowledgements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CITATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Citation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1675,90 +2358,136 @@
   
 
 
-<h1 id="operating-modes">Operating modes<a class="headerlink" href="#operating-modes" title="Permanent link">&para;</a></h1>
-<p>Depending on what quantity the feedback loop keeps constant, the AFM operates
-in different regimes. The choice balances <strong>resolution</strong>, <strong>gentleness</strong> with
-the sample, and <strong>speed</strong>.</p>
-<h2 id="contact-mode">Contact mode<a class="headerlink" href="#contact-mode" title="Permanent link">&para;</a></h2>
-<p>The tip "touches" the sample and the loop keeps the <strong>deflection</strong> (normal
-force) constant. It is simple and fast, but lateral forces can scratch soft
-samples or wear the tip.</p>
-<h2 id="dynamic-tapping-intermittent-contact">Dynamic / tapping (intermittent contact)<a class="headerlink" href="#dynamic-tapping-intermittent-contact" title="Permanent link">&para;</a></h2>
-<p>The cantilever is excited near its resonance frequency <span class="arithmatex">\(f_0\)</span> and oscillates;
-as it approaches the surface, the interaction <strong>reduces the amplitude</strong>. The
-loop keeps that amplitude constant. Since the tip only "taps" briefly, it
-nearly eliminates lateral forces: ideal for polymers, cells, and fragile
-samples.</p>
-<h2 id="non-contact">Non-contact<a class="headerlink" href="#non-contact" title="Permanent link">&para;</a></h2>
-<p>The cantilever oscillates in the <em>attractive</em> regime without touching the
-surface; the <strong>frequency shift</strong> due to the force gradient is detected.
-Maximum gentleness and, in ultra-high vacuum, atomic resolution, at the cost
-of environmental sensitivity.</p>
+<h1 id="afm-operating-modes">AFM operating modes<a class="headerlink" href="#afm-operating-modes" title="Permanent link">&para;</a></h1>
+<p>An operating mode is defined by how the tip is driven, what signal is measured
+and what the feedback loop holds constant. The same array shape can therefore
+represent different physical observables.</p>
+<figure class="science-figure">
+  <img src="../../assets/theory/operating-modes.svg" alt="Comparison of contact, tapping, non-contact, force-volume and KPFM operation with their measured control signals" width="1120" height="300">
+  <figcaption>Each mode changes the interaction regime and measured signal. SPM-Kit analyzes resulting files; it does not control these acquisition loops.</figcaption>
+</figure>
+
+<h2 id="mode-comparison">Mode comparison<a class="headerlink" href="#mode-comparison" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
 <th>Mode</th>
-<th>Control signal</th>
-<th>Force regime</th>
+<th>Physical interaction</th>
+<th>Measured/control signal</th>
 <th>Advantage</th>
-<th>Risk / cost</th>
+<th>Common limitation/artifact</th>
+<th>SPM-Kit scope</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Contact</strong></td>
-<td><code>deflection = const</code></td>
-<td>repulsive</td>
-<td>simple, fast, high z-resolution</td>
-<td>lateral forces; wear</td>
+<td>contact</td>
+<td>repulsive contact, tip remains on surface</td>
+<td>deflection or force setpoint</td>
+<td>direct, fast, strong signal</td>
+<td>lateral drag, wear, sample deformation</td>
+<td>reads/analyzes resulting topography and force channels</td>
 </tr>
 <tr>
-<td><strong>Tapping</strong></td>
-<td><code>amplitude = const</code></td>
-<td>attract.↔repuls.</td>
-<td>low damage; standard in air</td>
-<td>slower; fine tuning</td>
+<td>tapping / intermittent contact</td>
+<td>driven oscillation briefly interacts each cycle</td>
+<td>amplitude/phase setpoint</td>
+<td>lower lateral force; common in air</td>
+<td>setpoint/gain artifacts, phase ambiguity, tip convolution</td>
+<td>image metrology on resulting channels; no acquisition controller</td>
 </tr>
 <tr>
-<td><strong>Non-contact</strong></td>
-<td><code>Δf = const</code></td>
-<td>attractive</td>
-<td>very gentle; atomic resolution (UHV)</td>
-<td>environment-sensitive</td>
+<td>non-contact / frequency modulation</td>
+<td>attractive force gradient shifts resonance</td>
+<td>frequency shift or amplitude</td>
+<td>gentle; high sensitivity in controlled environments</td>
+<td>water layer/environment, long-range-force mixing</td>
+<td>reads compatible exported channels; no FM controller</td>
+</tr>
+<tr>
+<td>force volume</td>
+<td>approach/retract curve at each grid point</td>
+<td>force curve per pixel</td>
+<td>spatial mechanics/adhesion maps</td>
+<td>slow, drift, calibration and fit failures</td>
+<td><code>ForceVolume</code>, force fitting and property maps</td>
+</tr>
+<tr>
+<td>quantitative imaging / fast force mapping</td>
+<td>rapid force curves at each pixel</td>
+<td>peak force/indentation/adhesion route</td>
+<td>image + mechanical observables</td>
+<td>vendor-specific timing and calibration</td>
+<td>limited to demonstrated containers/readers; not universal QI support</td>
+</tr>
+<tr>
+<td>KPFM</td>
+<td>electrostatic force/force-gradient nulling</td>
+<td>DC compensation voltage</td>
+<td>surface-potential contrast</td>
+<td>sign, capacitive averaging, tip calibration</td>
+<td>CPD statistics and work-function calculation from a supplied channel</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="admonition-title">Connection</p>
-<p>Tapping and non-contact share the same physical root — an oscillating
-cantilever — formalized in <a href="../resonance/">Resonance &amp; mass sensing</a>. The
-difference is only <em>which observable</em> of the resonance is fed back:
-amplitude or frequency.</p>
-</div>
-<hr />
-<h2 id="implementation-in-spm-kit">Implementation in SPM-Kit<a class="headerlink" href="#implementation-in-spm-kit" title="Permanent link">&para;</a></h2>
+<h2 id="contact-mode">Contact mode<a class="headerlink" href="#contact-mode" title="Permanent link">&para;</a></h2>
+<p>The controller keeps cantilever deflection near a setpoint. Because the tip is
+dragged laterally, friction and tip/sample damage can dominate soft materials.
+Reported height combines scanner response with any residual feedback error.</p>
+<h2 id="tapping-and-non-contact-modes">Tapping and non-contact modes<a class="headerlink" href="#tapping-and-non-contact-modes" title="Permanent link">&para;</a></h2>
+<p>For a driven damped oscillator, tip–sample forces change amplitude, phase and
+resonance frequency. Tapping typically uses amplitude feedback and intermittent
+contact; frequency-modulation non-contact uses a frequency-shift observable.
+They share oscillator physics but do not produce interchangeable channels.</p>
+<h2 id="force-volume-and-quantitative-maps">Force volume and quantitative maps<a class="headerlink" href="#force-volume-and-quantitative-maps" title="Permanent link">&para;</a></h2>
+<p>A force-volume acquisition records approach/retract segments at each grid
+location. SPM-Kit preserves curve segments and grid shape, then derives maps
+from per-curve fits. Failed fits, missing lines and calibration uncertainty
+should remain visible rather than being interpolated into apparent material
+contrast without disclosure.</p>
+<h2 id="implementation-boundary">Implementation boundary<a class="headerlink" href="#implementation-boundary" title="Permanent link">&para;</a></h2>
+<p>SPM-Kit is an analyzer, not an instrument controller. The current readers
+interpret demonstrated exported files. The Core path cannot reconstruct missing
+feedback settings or decide whether acquisition was physically appropriate.</p>
 <table>
 <thead>
 <tr>
-<th>Concept</th>
-<th>Where</th>
-<th>Status</th>
+<th>Route</th>
+<th>Core</th>
+<th>Fathom</th>
+<th>CLI</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>.nid</code> topography (contact/tapping)</td>
-<td><code>spmkit.core.io.nanosurf</code></td>
-<td><span class="level-badge level-1">LEVEL 1 SOFTWARE_VERIFIED</span></td>
+<td>image/topography</td>
+<td><code>SPMData</code> / image readers</td>
+<td>Imagen</td>
+<td><code>info</code>, <code>roughness</code>, <code>analyze</code></td>
 </tr>
 <tr>
-<td><code>.gwy</code> multi-channel (topography + KPFM)</td>
-<td><code>spmkit.core.io.gwyddion</code></td>
-<td><span class="level-badge level-1">LEVEL 1 SOFTWARE_VERIFIED</span></td>
+<td>force curve</td>
+<td><code>ForceCurve</code> / force readers</td>
+<td>Curva de fuerza</td>
+<td><code>forcecurve</code>, <code>nanomech</code></td>
+</tr>
+<tr>
+<td>force volume</td>
+<td><code>ForceVolume</code></td>
+<td>Mapa</td>
+<td><code>forcemap</code>, <code>forceexport</code></td>
+</tr>
+<tr>
+<td>KPFM channel</td>
+<td><code>kpfm.statistics</code></td>
+<td>Imagen</td>
+<td><code>analyze --tip-wf</code></td>
 </tr>
 </tbody>
 </table>
-<p><a href="../afm-principles/">:material-arrow-left: AFM principles</a> · <a href="../force-distance/">:material-arrow-right: Force-distance curves</a></p>
+<p>Evidence follows the reader and analysis path, not the acquisition-mode label.</p>
+<p><a href="../afm-principles/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg></span> AFM principles</a> ·
+<a href="../force-distance/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Force-distance curves</a></p>
 
 
 
@@ -1835,11 +2564,10 @@ amplitude or frequency.</p>
     <div class="md-footer-meta__inner md-grid">
       <div class="md-copyright">
   
+    <div class="md-copyright__highlight">
+      Copyright © José Labarca Baeza · MIT-licensed software and documentation
+    </div>
   
-    Made with
-    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-      Material for MkDocs
-    </a>
   
 </div>
       

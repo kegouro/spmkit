@@ -6,14 +6,16 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Open numerical engine and interactive workspace for Scanning Probe Microscopy (SPM)">
+        <meta name="description" content="External black-box campaigns, frozen contracts, retained evidence, exact tolerances, failures, blockers, and reproduction guidance.">
       
+      
+        <meta name="author" content="José Labarca Baeza">
       
       
         <link rel="canonical" href="https://kegouro.github.io/spmkit/ecosystem/validation/">
       
       
-        <link rel="prev" href="../data-hunter/">
+        <link rel="prev" href="../phantoms/">
       
       
         <link rel="next" href="../pharos/">
@@ -27,7 +29,7 @@
     
     
       
-        <title>Validation - SPM-Kit · Fathom</title>
+        <title>SPM-Kit Validation - SPM-Kit ecosystem</title>
       
     
     
@@ -45,12 +47,6 @@
     
     
       
-        
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
-      
     
     
       <link rel="stylesheet" href="../../stylesheets/fathom.css">
@@ -61,6 +57,24 @@
 
     
     
+  
+  
+  
+  
+  <meta name="author" content="José Labarca Baeza">
+  <meta name="keywords" content="AFM, SPM, KPFM, force spectroscopy, nanomechanics, scientific Python, reproducible microscopy">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SPM-Kit ecosystem">
+  <meta property="og:title" content="Validation · SPM-Kit ecosystem">
+  <meta property="og:description" content="External black-box campaigns, frozen contracts, retained evidence, exact tolerances, failures, blockers, and reproduction guidance.">
+  <meta property="og:url" content="https://kegouro.github.io/spmkit/ecosystem/validation/">
+  <meta property="og:image" content="https://kegouro.github.io/spmkit/assets/ecosystem/core/banner.png">
+  <meta property="og:image:alt" content="SPM-Kit open AFM and SPM numerical engine">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Validation · SPM-Kit ecosystem">
+  <meta name="twitter:description" content="External black-box campaigns, frozen contracts, retained evidence, exact tolerances, failures, blockers, and reproduction guidance.">
+  <meta name="twitter:image" content="https://kegouro.github.io/spmkit/assets/ecosystem/core/banner.png">
+
   </head>
   
   
@@ -80,7 +94,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#spm-kit-validation" class="md-skip">
+        <a href="#role-in-one-sentence" class="md-skip">
           Skip to content
         </a>
       
@@ -96,7 +110,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="SPM-Kit · Fathom" class="md-header__button md-logo" aria-label="SPM-Kit · Fathom" data-md-component="logo">
+    <a href="../.." title="SPM-Kit ecosystem" class="md-header__button md-logo" aria-label="SPM-Kit ecosystem" data-md-component="logo">
       
   <img src="../../images/brand/fathom_logo_light.png" alt="logo">
 
@@ -109,13 +123,13 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            SPM-Kit · Fathom
+            SPM-Kit ecosystem
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Validation
+              SPM-Kit Validation
             
           </span>
         </div>
@@ -240,17 +254,20 @@
   
   
   
-    <li class="md-tabs__item">
-      <a href="../../getting-started/" class="md-tabs__link">
-        
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
   
   
     
   
   Getting started
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -290,7 +307,7 @@
   
     
   
-  Manual
+  User manual
 
         </a>
       </li>
@@ -349,6 +366,28 @@
     
     
       <li class="md-tabs__item">
+        <a href="../../SCIENTIFIC_STATUS/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Scientific evidence
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
         <a href="../../ARCHITECTURE/" class="md-tabs__link">
           
   
@@ -360,6 +399,44 @@
         </a>
       </li>
     
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CONTRIBUTING/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Contributing
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CITATION/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Citation
+
+      </a>
+    </li>
   
 
       
@@ -393,12 +470,12 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="SPM-Kit · Fathom" class="md-nav__button md-logo" aria-label="SPM-Kit · Fathom" data-md-component="logo">
+    <a href="../.." title="SPM-Kit ecosystem" class="md-nav__button md-logo" aria-label="SPM-Kit ecosystem" data-md-component="logo">
       
   <img src="../../images/brand/fathom_logo_light.png" alt="logo">
 
     </a>
-    SPM-Kit · Fathom
+    SPM-Kit ecosystem
   </label>
   
     <div class="md-nav__source">
@@ -448,9 +525,40 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../getting-started/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../workflows/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -464,7 +572,143 @@
   
   
 
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/first-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    First analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/fathom-quick-start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fathom quick start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -480,6 +724,8 @@
       
         
           
+        
+      
         
       
         
@@ -710,7 +956,35 @@
   <span class="md-ellipsis">
     
   
-    Roughness & spectral analysis
+    Roughness
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/spectral-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral analysis
   
 
     
@@ -766,7 +1040,7 @@
   <span class="md-ellipsis">
     
   
-    SPM-Kit workflows
+    Implementation map
   
 
     
@@ -888,7 +1162,7 @@
   <span class="md-ellipsis">
     
   
-    Manual
+    User manual
   
 
     
@@ -910,7 +1184,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Manual
+    User manual
   
 
           </label>
@@ -1091,6 +1365,16 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1146,6 +1430,118 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../choose/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Choose a component
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Install matrix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Artifact contracts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Example workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -1211,34 +1607,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../phantoms/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Phantoms
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../data-hunter/" class="md-nav__link">
         
   
@@ -1264,6 +1632,34 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../phantoms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Phantoms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -1272,8 +1668,6 @@
       
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
-      
-        
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
@@ -1317,8 +1711,6 @@
   
   
   
-    
-  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -1327,10 +1719,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#campaigns" class="md-nav__link">
+  <a href="#role-in-one-sentence" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Campaigns
+        Role in one sentence
       
     </span>
   </a>
@@ -1338,10 +1730,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-it-does-not-demonstrate" class="md-nav__link">
+  <a href="#problem-it-solves" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What it does not demonstrate
+        Problem it solves
       
     </span>
   </a>
@@ -1349,10 +1741,203 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#links" class="md-nav__link">
+  <a href="#what-it-does" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Links
+        What it does
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-it-deliberately-does-not-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it deliberately does not do
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#black-box-execution-boundary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Black-box execution boundary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#first-successful-command" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        First successful command
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#campaign-browser" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Campaign browser
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-a-pass-means" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a PASS means
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-a-pass-does-not-mean" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a PASS does not mean
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#failures-and-blockers-are-evidence-too" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Failures and blockers are evidence too
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#complete-reproduction-walkthrough-current-smoke-campaign" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complete reproduction walkthrough: current smoke campaign
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Complete reproduction walkthrough: current smoke campaign">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-prepare-isolated-checkouts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Prepare isolated checkouts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-run-through-the-public-installed-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Run through the public installed CLI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-inspect-the-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Inspect the run
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-generate-the-descriptive-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Generate the descriptive report
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inputs-outputs-and-audit-trail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inputs, outputs and audit trail
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-and-integrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture and integrations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scientific-status-and-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scientific status and limitations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#contribute" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Contribute
       
     </span>
   </a>
@@ -1396,6 +1981,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../brand/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Brand governance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1423,6 +2036,8 @@
         
       
         
+          
+        
       
     
     
@@ -1440,7 +2055,227 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
         
           
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+          <div class="md-nav__link md-nav__container">
+            <a href="../workflows/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific evidence
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Scientific evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SCIENTIFIC_STATUS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific status
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VALIDATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation campaigns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../TRACEABILITY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Traceability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../FILE_FORMATS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Format maturity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../KNOWN_LIMITATIONS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Known limitations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
             
   
   
@@ -1458,8 +2293,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1532,62 +2367,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../VALIDATION/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Validation
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../TRACEABILITY/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Traceability
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../ROADMAP/" class="md-nav__link">
         
   
@@ -1637,9 +2416,91 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ACKNOWLEDGEMENTS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Acknowledgements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CITATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Citation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1664,72 +2525,308 @@
   
 
 
-<h1 id="spm-kit-validation">SPM-Kit Validation<a class="headerlink" href="#spm-kit-validation" title="Permanent link">&para;</a></h1>
-<p align="center">
-  <img src="../../assets/ecosystem/validation-banner.png" alt="spmkit-validation banner" width="100%">
-</p>
+<section class="component-section" data-component="validation">
+  <picture><source type="image/webp" srcset="../../assets/ecosystem/validation/banner-640.webp 640w, ../../assets/ecosystem/validation/banner-1280.webp 1280w" sizes="(max-width: 1280px) 100vw, 1280px"><img class="brand-banner" src="../../assets/ecosystem/validation/banner.png" width="1983" height="793" alt="SPM-Kit Validation external black-box evidence banner" loading="eager" fetchpriority="high"></picture>
+  <div class="component-copy">
+    <div><p class="component-role">SPM-Kit Validation · External evidence</p><h1>Test what the installed package actually does</h1><p>Validation freezes campaign inputs, executable identity, reference route and tolerances, invokes public interfaces in a separate process and preserves the result with its limitations.</p></div>
+    <div><span class="status-ribbon">Alpha · source 0.1.0</span><div class="io-strip"><span><b>Input</b>campaign, SUT, reference, tolerance</span><span aria-hidden="true">→</span><span><b>Output</b>records, reports, blockers, audit trail</span></div></div>
+  </div>
+</section>
 
-<p><strong>External black-box validation harness.</strong></p>
-<p>spmkit-validation runs SPM-Kit through <code>subprocess</code> — never importing its
-Python code — and preserves reproducible evidence with frozen tolerances,
-receipts, and canonical hashes.</p>
-<h2 id="campaigns">Campaigns<a class="headerlink" href="#campaigns" title="Permanent link">&para;</a></h2>
+<h2 id="role-in-one-sentence">Role in one sentence<a class="headerlink" href="#role-in-one-sentence" title="Permanent link">&para;</a></h2>
+<p><strong>Validation tests what SPM-Kit actually does from outside.</strong> It is not merely
+another internal unit-test directory.</p>
+<h2 id="problem-it-solves">Problem it solves<a class="headerlink" href="#problem-it-solves" title="Permanent link">&para;</a></h2>
+<p>An internal function can pass tests while packaging, CLI defaults, optional
+dependencies or public execution behave differently. The validation repository
+treats the installed <code>spmkit</code> executable as the system under test (SUT), captures
+what it emits and compares only against a declared, frozen contract.</p>
+<h2 id="what-it-does">What it does<a class="headerlink" href="#what-it-does" title="Permanent link">&para;</a></h2>
+<ul>
+<li>runs SPM-Kit with <code>subprocess</code> rather than importing its internals;</li>
+<li>freezes SUT/reference identities, data design, preprocessing, metrics and tolerances;</li>
+<li>records stdout, stderr, return code, timestamps and produced artifacts;</li>
+<li>retains manifests, result rows, summaries, locks, protocols and incident records;</li>
+<li>classifies reference independence separately from process isolation;</li>
+<li>preserves failures, blockers and limitations alongside passing results;</li>
+<li>publishes scoped campaign evidence without promoting it to universal validity.</li>
+</ul>
+<h2 id="what-it-deliberately-does-not-do">What it deliberately does not do<a class="headerlink" href="#what-it-deliberately-does-not-do" title="Permanent link">&para;</a></h2>
+<ul>
+<li>change a tolerance after observing the result;</li>
+<li>infer a PASS where the campaign says <code>TODO-SCIENTIFIC-DECISION</code>;</li>
+<li>hide failed or inconclusive cases;</li>
+<li>call public experimental data physical ground truth;</li>
+<li>treat Gwyddion as an oracle for every AFM/SPM domain;</li>
+<li>establish reference independence merely by spawning another process.</li>
+</ul>
+<h2 id="black-box-execution-boundary">Black-box execution boundary<a class="headerlink" href="#black-box-execution-boundary" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>frozen campaign
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>      ↓
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>isolated environment
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>      ↓
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>installed SPM-Kit package (system under test)
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>      ↓
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>public CLI / executable
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>      ↓
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>captured stdout, stderr and artifacts
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>      ↓
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>declared reference comparison
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>      ↓
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>evidence report + limitations + audit trail
+</span></code></pre></div>
+<p>The runner constructs <code>[executable, command, *arguments]</code>, applies the timeout,
+and records the process outcome. Reference generation/comparison remains a
+separate campaign concern.</p>
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
+<p>The package is not on PyPI. Its basic runner currently needs the source checkout;
+synthetic campaigns also need the separate Phantoms checkout available to Python.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/kegouro/spmkit-validation.git
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">cd</span><span class="w"> </span>spmkit-validation
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>spmkit-validation<span class="w"> </span>--help
+</span></code></pre></div>
+<h2 id="first-successful-command">First successful command<a class="headerlink" href="#first-successful-command" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>spmkit-validation<span class="w"> </span>--help
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>spmkit-validation<span class="w"> </span>report<span class="w"> </span>--help
+</span></code></pre></div>
+<p>The current CLI exposes <code>campaign</code> and <code>report</code>. A campaign run writes data, so
+choose an explicit output directory and preserve it as evidence only after review.</p>
+<h2 id="campaign-browser">Campaign browser<a class="headerlink" href="#campaign-browser" title="Permanent link">&para;</a></h2>
+<p>The date shown is the first retained-summary commit date, not an inferred
+experimental acquisition date.</p>
 <table>
 <thead>
 <tr>
 <th>Campaign</th>
-<th>Measurands</th>
+<th>Retained</th>
+<th>Tested identity</th>
+<th>Reference / independence</th>
+<th>Cases and metrics</th>
+<th>Frozen tolerance</th>
+<th>Result</th>
 <th>Level</th>
-<th>Status</th>
+<th>Limitation / evidence</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Synthetic roughness v0.1</td>
-<td>Sa, Sq, Sz</td>
-<td><span class="level-badge level-3">LEVEL 3</span></td>
-<td>18/18 PASS</td>
+<td><code>gwyddion-roughness-48-v0.1</code></td>
+<td>2026-07-19</td>
+<td>SPM-Kit <code>5a704d6</code>; Phantoms <code>622a888</code></td>
+<td>Gwyddion 2.71 native GSF/libgwyprocess route; external software with harness-authored execution</td>
+<td>48 float32-nm matrices; Sa, Sq, Sz; 144 comparisons</td>
+<td><code>abs(a-b) &lt;= 1e-6 nm + 1e-6*max(abs(a),abs(b))</code>; no preprocessing</td>
+<td><strong>144/144 within threshold</strong></td>
+<td><code>LEVEL 3</code></td>
+<td>shared matrices, not physical acquisition; <a href="https://github.com/kegouro/spmkit-validation/blob/main/evidence/campaigns/gwyddion_roughness_48_v0.1_summary.json">summary</a></td>
 </tr>
 <tr>
-<td>Nanoscope SPM v0.1</td>
-<td>Matrices, Sa/Sq/Sz</td>
-<td><span class="level-badge level-2">LEVEL 2</span></td>
-<td>18/18 within tolerance</td>
+<td><code>real-data-roughness-pilot-v0.1</code></td>
+<td>2026-07-19</td>
+<td>SPM-Kit <code>5a704d6</code></td>
+<td>Gwyddion 2.71; shared-matrix route cross-compared, parser routes observational</td>
+<td>12 public GWY records; 36 metric comparisons; 10 parser equivalences, 2 differences</td>
+<td>same frozen metric threshold; no preprocessing</td>
+<td><strong>36/36 shared-matrix</strong></td>
+<td><code>LEVEL 3</code> for metric route</td>
+<td>public real data are not physical truth; <a href="https://github.com/kegouro/spmkit-validation/blob/main/evidence/campaigns/real_data_roughness_pilot_v0.1_summary.json">summary</a></td>
 </tr>
 <tr>
-<td>Gwyddion roughness 48 v0.1</td>
-<td>Sa</td>
-<td><span class="level-badge level-1">LEVEL 1</span></td>
-<td>Reported</td>
+<td><code>nanoscope-spm-parser-pilot-v0.1</code></td>
+<td>2026-07-19</td>
+<td>limited parser implementation <code>06b0044</code> after freeze <code>5e22104</code></td>
+<td>Gwyddion 2.71; external confirmation was not blind after incident</td>
+<td>6 demonstrated Nanoscope III files; matrices + 18 Sa/Sq/Sz comparisons</td>
+<td>frozen roughness threshold; matrix deltas observed</td>
+<td>zero reported pixel delta; <strong>18/18 within threshold</strong></td>
+<td><code>LEVEL 2</code> limited parser claim</td>
+<td><code>ACCIDENTAL_PRE_FREEZE_UNBLINDING</code>; <a href="https://github.com/kegouro/spmkit-validation/blob/main/docs/campaigns/nanoscope_spm_parser_pilot_v0.1_audit.md">audit</a></td>
 </tr>
 <tr>
-<td>Real data roughness pilot v0.1</td>
-<td>Sa</td>
-<td><span class="level-badge level-1">LEVEL 1</span></td>
-<td>Reported</td>
+<td><code>gwyddion-cross-validation-v0.1</code> release milestone</td>
+<td>2026-07-27</td>
+<td>published SPM-Kit 0.1.4 wheel</td>
+<td>installed Gwyddion 2.71 libraries; wrapper contains harness-authored Sa accumulation</td>
+<td>6 synthetic binary64 surfaces; 18 metric comparisons</td>
+<td>published frozen budget</td>
+<td><strong>18/18 conforming</strong>; 8/8 independence-negative and 7/7 tamper tests retained</td>
+<td><code>LEVEL 3</code></td>
+<td>synthetic only; <a href="https://github.com/kegouro/spmkit-validation/tree/gwyddion-cross-validation-v0.1">tag</a></td>
 </tr>
 </tbody>
 </table>
-<h2 id="what-it-does-not-demonstrate">What it does not demonstrate<a class="headerlink" href="#what-it-does-not-demonstrate" title="Permanent link">&para;</a></h2>
+<p>The 20-case threshold calibration retained 60/60 comparisons under the accepted
+candidate policy. It calibrates the policy; it is not another independent
+physical campaign and is not added to the totals above.</p>
+<h2 id="what-a-pass-means">What a PASS means<a class="headerlink" href="#what-a-pass-means" title="Permanent link">&para;</a></h2>
+<p>A PASS means that, for the frozen SUT, inputs, command, preprocessing, metric,
+reference route and tolerance, the recorded comparison met the campaign rule.
+It enables only the narrow claim written in that campaign.</p>
+<h2 id="what-a-pass-does-not-mean">What a PASS does not mean<a class="headerlink" href="#what-a-pass-does-not-mean" title="Permanent link">&para;</a></h2>
+<p>A PASS does not establish:</p>
 <ul>
-<li>No physical validation (LEVEL 4) or interlaboratory reproducibility (LEVEL 5)</li>
-<li>No blind holdout (Nanoscope had <code>ACCIDENTAL_PRE_FREEZE_UNBLINDING</code>)</li>
-<li>No universal equivalence with Gwyddion</li>
+<li>correctness of every SPM-Kit capability or every metric;</li>
+<li>parser support for every instrument variant;</li>
+<li>physical calibration or traceability;</li>
+<li>independence of a reference implementation unless separately argued;</li>
+<li>equivalence under different preprocessing/defaults;</li>
+<li>blind confirmation when an incident exposed the expected values;</li>
+<li>future-version behavior.</li>
 </ul>
-<h2 id="links">Links<a class="headerlink" href="#links" title="Permanent link">&para;</a></h2>
+<h2 id="failures-and-blockers-are-evidence-too">Failures and blockers are evidence too<a class="headerlink" href="#failures-and-blockers-are-evidence-too" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Record</th>
+<th>Public status</th>
+<th>Why it remains visible</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Smoke/full YAML definitions without promoted summaries</td>
+<td><code>LEVEL 0 — CLAIMED</code> as campaign results</td>
+<td>executable configuration is not a retained validated outcome</td>
+</tr>
+<tr>
+<td>Nanoscope external confirmation</td>
+<td><code>ACCIDENTAL_PRE_FREEZE_UNBLINDING</code></td>
+<td>the incident prevents a blind-holdout claim despite numerical agreement</td>
+</tr>
+<tr>
+<td>Real-data parser track</td>
+<td>observational, including two channel-count differences</td>
+<td>no parser threshold was frozen; differences cannot be relabeled as passes</td>
+</tr>
+<tr>
+<td>Missing physical and interlaboratory campaigns</td>
+<td>blocker for general <code>LEVEL 4</code>/<code>LEVEL 5</code></td>
+<td>software and cross-reference evidence cannot substitute for them</td>
+</tr>
+</tbody>
+</table>
+<h2 id="complete-reproduction-walkthrough-current-smoke-campaign">Complete reproduction walkthrough: current smoke campaign<a class="headerlink" href="#complete-reproduction-walkthrough-current-smoke-campaign" title="Permanent link">&para;</a></h2>
+<p>This walkthrough verifies the public campaign plumbing and produces a
+descriptive report. It does <strong>not</strong> reproduce the retained Gwyddion evidence and
+does not assign a scientific PASS.</p>
+<h3 id="1-prepare-isolated-checkouts">1. Prepare isolated checkouts<a class="headerlink" href="#1-prepare-isolated-checkouts" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/kegouro/spmkit.git
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/kegouro/spmkit-phantoms.git
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/kegouro/spmkit-validation.git
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>validation-env
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="nb">source</span><span class="w"> </span>validation-env/bin/activate
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>./spmkit
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>./spmkit-phantoms
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>./spmkit-validation
+</span></code></pre></div>
+<p>Record all three commits and <code>spmkit --version</code> before execution.</p>
+<h3 id="2-run-through-the-public-installed-cli">2. Run through the public installed CLI<a class="headerlink" href="#2-run-through-the-public-installed-cli" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>spmkit-validation<span class="w"> </span>campaign<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span>spmkit-validation/campaigns/smoke_v0.1.yaml<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span>validation-runs/<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span>--spmkit<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">command</span><span class="w"> </span>-v<span class="w"> </span>spmkit<span class="k">)</span><span class="s2">&quot;</span>
+</span></code></pre></div>
+<p>Expected high-level output: six cases from inclined, sine and step surfaces,
+each clean and with low Gaussian noise.</p>
+<h3 id="3-inspect-the-run">3. Inspect the run<a class="headerlink" href="#3-inspect-the-run" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>validation-runs/smoke_v0.1/
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>├── phantoms/          clean/observed bundles and manifests
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>├── runs/              captured stdout/stderr and SPM-Kit outputs
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>└── cases.csv          ground truth, observed values and differences
+</span></code></pre></div>
+<p><code>cases.csv</code> deliberately labels evaluated rows <code>TODO-SCIENTIFIC-DECISION</code>. The
+campaign definition does not contain a promoted tolerance policy.</p>
+<h3 id="4-generate-the-descriptive-report">4. Generate the descriptive report<a class="headerlink" href="#4-generate-the-descriptive-report" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>spmkit-validation<span class="w"> </span>report<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span>validation-runs/smoke_v0.1/cases.csv<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span>validation-runs/smoke-report/
+</span></code></pre></div>
+<p>This creates <code>report.md</code> and diagnostic figures. Review the captured streams,
+manifests and numerical differences before preserving the directory. Do not
+rename the descriptive report as cross-validation evidence.</p>
+<h2 id="inputs-outputs-and-audit-trail">Inputs, outputs and audit trail<a class="headerlink" href="#inputs-outputs-and-audit-trail" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Captured output</th>
+<th>Audit value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>campaign YAML/protocol</td>
+<td>resolved cases and generated inputs</td>
+<td>exact scope and parameter intent</td>
+</tr>
+<tr>
+<td>installed executable path/identity</td>
+<td>command vectors, stdout, stderr, return codes</td>
+<td>public behavior and environment failure evidence</td>
+</tr>
+<tr>
+<td>reference route</td>
+<td>reference outputs and independence classification</td>
+<td>basis of comparison</td>
+</tr>
+<tr>
+<td>frozen tolerance</td>
+<td>per-metric comparison rows</td>
+<td>makes PASS/FAIL reviewable</td>
+</tr>
+<tr>
+<td>lock/manifest/checksums</td>
+<td>retained identities</td>
+<td>detects later drift or tampering</td>
+</tr>
+<tr>
+<td>limitation/incident record</td>
+<td>visible caveat beside result</td>
+<td>prevents overpromotion</td>
+</tr>
+</tbody>
+</table>
+<h2 id="architecture-and-integrations">Architecture and integrations<a class="headerlink" href="#architecture-and-integrations" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Repository:</strong> <a href="https://github.com/kegouro/spmkit-validation">github.com/kegouro/spmkit-validation</a></li>
-<li><strong>Canonical tag:</strong> <a href="https://github.com/kegouro/spmkit-validation/releases/tag/gwyddion-cross-validation-v0.1">gwyddion-cross-validation-v0.1</a></li>
-<li><strong>Citation:</strong> <a href="https://github.com/kegouro/spmkit-validation/blob/main/CITATION.cff">CITATION.cff</a></li>
+<li><strong>Validation → Core:</strong> implemented subprocess boundary using public CLI behavior.</li>
+<li><strong>Phantoms → Validation:</strong> implemented for synthetic YAML campaigns; the
+  exact Phantoms revision must be frozen.</li>
+<li><strong>Data Hunter → Validation:</strong> human-reviewed manual handoff only.</li>
+<li><strong>Gwyddion → Validation:</strong> present only in declared protocols/campaigns.</li>
+<li><strong>Fathom → Validation:</strong> no general GUI automation claim; numerical campaigns
+  test public package surfaces instead.</li>
 </ul>
-<hr />
-<p><a href="../data-hunter/">:material-arrow-left: Data Hunter</a> · <a href="../pharos/">:material-arrow-right: Pharos</a></p>
+<h2 id="scientific-status-and-limitations">Scientific status and limitations<a class="headerlink" href="#scientific-status-and-limitations" title="Permanent link">&para;</a></h2>
+<p>The repository contains scoped <code>LEVEL 2</code> and <code>LEVEL 3</code> evidence described above.
+No current record establishes a general <code>LEVEL 4</code> or <code>LEVEL 5</code> claim.</p>
+<ul>
+<li>Process isolation is not proof of conceptual or implementation independence.</li>
+<li>Synthetic matrices do not include physical acquisition uncertainty.</li>
+<li>The reusable package CLI is young and not the only path used by historical retained campaigns.</li>
+<li>Full campaigns write evidence and require explicit review/retention policy.</li>
+<li>Tolerances, references and software identities must remain immutable after freeze.</li>
+</ul>
+<h2 id="contribute">Contribute<a class="headerlink" href="#contribute" title="Permanent link">&para;</a></h2>
+<p>High-value proposals define one mensurand, lawful/frozen inputs, reference
+independence, tolerance before execution, failure handling and an honest limit.
+Use the repository's campaign and independent-comparison issue forms.</p>
+<p><a href="https://github.com/kegouro/spmkit-validation">Repository</a> ·
+<a href="https://github.com/kegouro/spmkit-validation/blob/main/docs/CAMPAIGNS.md">Authoritative campaign matrix</a> ·
+<a href="../workflows/#workflow-d-build-an-independent-cross-comparison">Workflow: independent cross-comparison</a> ·
+<a href="../contracts/">Next: artifact contracts</a></p>
 
 
 
 
 
 
+
+  
+  
 
 
 
@@ -1761,7 +2858,7 @@ receipts, and canonical hashes.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../data-hunter/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Data Hunter">
+          <a href="../phantoms/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Phantoms">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1771,7 +2868,7 @@ receipts, and canonical hashes.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Data Hunter
+                Phantoms
               </div>
             </div>
           </a>
@@ -1800,11 +2897,10 @@ receipts, and canonical hashes.</p>
     <div class="md-footer-meta__inner md-grid">
       <div class="md-copyright">
   
+    <div class="md-copyright__highlight">
+      Copyright © José Labarca Baeza · MIT-licensed software and documentation
+    </div>
   
-    Made with
-    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-      Material for MkDocs
-    </a>
   
 </div>
       

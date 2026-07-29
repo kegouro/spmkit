@@ -6,8 +6,10 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Open numerical engine and interactive workspace for Scanning Probe Microscopy (SPM)">
+        <meta name="description" content="Open numerical analysis, interactive workflows, theory, and inspectable validation evidence for AFM, KPFM, and force spectroscopy">
       
+      
+        <meta name="author" content="José Labarca Baeza">
       
       
         <link rel="canonical" href="https://kegouro.github.io/spmkit/user-guide/">
@@ -27,7 +29,7 @@
     
     
       
-        <title>Full guide - SPM-Kit · Fathom</title>
+        <title>Full guide - SPM-Kit ecosystem</title>
       
     
     
@@ -45,12 +47,6 @@
     
     
       
-        
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
-      
     
     
       <link rel="stylesheet" href="../stylesheets/fathom.css">
@@ -61,6 +57,24 @@
 
     
     
+  
+  
+  
+  
+  <meta name="author" content="José Labarca Baeza">
+  <meta name="keywords" content="AFM, SPM, KPFM, force spectroscopy, nanomechanics, scientific Python, reproducible microscopy">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SPM-Kit ecosystem">
+  <meta property="og:title" content="Full guide · SPM-Kit ecosystem">
+  <meta property="og:description" content="Open numerical analysis, interactive workflows, theory, and inspectable validation evidence for AFM, KPFM, and force spectroscopy">
+  <meta property="og:url" content="https://kegouro.github.io/spmkit/user-guide/">
+  <meta property="og:image" content="https://kegouro.github.io/spmkit/assets/ecosystem/core/banner.png">
+  <meta property="og:image:alt" content="SPM-Kit open AFM and SPM numerical engine">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Full guide · SPM-Kit ecosystem">
+  <meta name="twitter:description" content="Open numerical analysis, interactive workflows, theory, and inspectable validation evidence for AFM, KPFM, and force spectroscopy">
+  <meta name="twitter:image" content="https://kegouro.github.io/spmkit/assets/ecosystem/core/banner.png">
+
   </head>
   
   
@@ -96,7 +110,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="SPM-Kit · Fathom" class="md-header__button md-logo" aria-label="SPM-Kit · Fathom" data-md-component="logo">
+    <a href=".." title="SPM-Kit ecosystem" class="md-header__button md-logo" aria-label="SPM-Kit ecosystem" data-md-component="logo">
       
   <img src="../images/brand/fathom_logo_light.png" alt="logo">
 
@@ -109,7 +123,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            SPM-Kit · Fathom
+            SPM-Kit ecosystem
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -240,17 +254,20 @@
   
   
   
-    <li class="md-tabs__item">
-      <a href="../getting-started/" class="md-tabs__link">
-        
+    
+    
+      <li class="md-tabs__item">
+        <a href="../getting-started/" class="md-tabs__link">
+          
   
   
     
   
   Getting started
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -292,7 +309,7 @@
   
     
   
-  Manual
+  User manual
 
         </a>
       </li>
@@ -349,6 +366,28 @@
     
     
       <li class="md-tabs__item">
+        <a href="../SCIENTIFIC_STATUS/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Scientific evidence
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
         <a href="../ARCHITECTURE/" class="md-tabs__link">
           
   
@@ -360,6 +399,44 @@
         </a>
       </li>
     
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../CONTRIBUTING/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Contributing
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../CITATION/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Citation
+
+      </a>
+    </li>
   
 
       
@@ -393,12 +470,12 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="SPM-Kit · Fathom" class="md-nav__button md-logo" aria-label="SPM-Kit · Fathom" data-md-component="logo">
+    <a href=".." title="SPM-Kit ecosystem" class="md-nav__button md-logo" aria-label="SPM-Kit ecosystem" data-md-component="logo">
       
   <img src="../images/brand/fathom_logo_light.png" alt="logo">
 
     </a>
-    SPM-Kit · Fathom
+    SPM-Kit ecosystem
   </label>
   
     <div class="md-nav__source">
@@ -448,9 +525,40 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../getting-started/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../ecosystem/workflows/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -464,7 +572,143 @@
   
   
 
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/first-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    First analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/fathom-quick-start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fathom quick start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -480,6 +724,8 @@
       
         
           
+        
+      
         
       
         
@@ -710,7 +956,35 @@
   <span class="md-ellipsis">
     
   
-    Roughness & spectral analysis
+    Roughness
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../theory/spectral-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral analysis
   
 
     
@@ -766,7 +1040,7 @@
   <span class="md-ellipsis">
     
   
-    SPM-Kit workflows
+    Implementation map
   
 
     
@@ -893,7 +1167,7 @@
   <span class="md-ellipsis">
     
   
-    Manual
+    User manual
   
 
     
@@ -915,7 +1189,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Manual
+    User manual
   
 
           </label>
@@ -2554,10 +2828,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#18-relationship-to-spmkit-data-hunter" class="md-nav__link">
+  <a href="#18-spm-kit-ecosystem-relationship" class="md-nav__link">
     <span class="md-ellipsis">
       
-        18. Relationship to SPM‑Kit Data Hunter
+        18. SPM-Kit ecosystem relationship
       
     </span>
   </a>
@@ -2625,6 +2899,45 @@
     <span class="md-ellipsis">
       
         19.5 Project status
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#20-acknowledgements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        20. Acknowledgements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="20. Acknowledgements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#english" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        English
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#espanol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Español
       
     </span>
   </a>
@@ -2882,6 +3195,16 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -2934,6 +3257,118 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ecosystem/choose/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Choose a component
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ecosystem/install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Install matrix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ecosystem/contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Artifact contracts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ecosystem/workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Example workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -2999,14 +3434,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../ecosystem/phantoms/" class="md-nav__link">
+      <a href="../ecosystem/data-hunter/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Phantoms
+    Data Hunter
   
 
     
@@ -3027,14 +3462,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../ecosystem/data-hunter/" class="md-nav__link">
+      <a href="../ecosystem/phantoms/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Data Hunter
+    Phantoms
   
 
     
@@ -3104,6 +3539,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ecosystem/brand/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Brand governance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3131,6 +3594,8 @@
         
       
         
+          
+        
       
     
     
@@ -3148,7 +3613,227 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
         
           
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+          <div class="md-nav__link md-nav__container">
+            <a href="../ecosystem/workflows/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific evidence
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Scientific evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SCIENTIFIC_STATUS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific status
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../VALIDATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation campaigns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../TRACEABILITY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Traceability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../FILE_FORMATS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Format maturity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../KNOWN_LIMITATIONS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Known limitations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
             
   
   
@@ -3166,8 +3851,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3240,62 +3925,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../VALIDATION/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Validation
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../TRACEABILITY/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Traceability
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../ROADMAP/" class="md-nav__link">
         
   
@@ -3345,9 +3974,91 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ACKNOWLEDGEMENTS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Acknowledgements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CONTRIBUTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CITATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Citation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -3373,27 +4084,29 @@
 
 
 <h1 id="spm-kit-fathom-usage-guide">SPM-Kit &middot; Fathom — Usage Guide<a class="headerlink" href="#spm-kit-fathom-usage-guide" title="Permanent link">&para;</a></h1>
-<p><strong>Version 0.1.4 (Alpha) &mdash; in-tree <code>0.1.5.dev0</code> &mdash; 2026-07-27</strong></p>
+<p><strong>Source manual <code>0.1.5.dev0</code> (Alpha) &mdash; GitHub release <code>0.1.4</code> &mdash; PyPI <code>0.1.2</code> &mdash; 2026-07-29</strong></p>
 <hr />
-<p><em>Canonical documentation: This Markdown file is the authoritative reference for SPM‑Kit 0.1.4
-(development tree <code>0.1.5.dev0</code>). A printable companion PDF is available at
+<p><em>Canonical documentation: This Markdown file is the authoritative reference for the SPM‑Kit
+development tree <code>0.1.5.dev0</code>. A printable companion PDF is available at
 <code>docs/user-guide.pdf</code> and in the embedded <a href="../manual/reader/">PDF reader</a>. Both are verified
-against the current codebase.</em></p>
-<p><strong>Author:</strong> José Labarca Baeza &mdash; Universidad Técnica Federico Santa María (UTFSM), Valparaíso, Chile.
-<strong>Acknowledgements:</strong> Tomás Corrales and the SPM Lab at UTFSM provided selected experimental
-datasets and laboratory context during development and evaluation. María Saavedra Fredes and
-Benjamin Schleyer helped locate and share candidate datasets for the validation campaign.
-Released under the MIT license, without dedicated institutional funding.
+against the current source tree. The latest tagged source release is <code>0.1.4</code>; the latest
+PyPI distribution is <code>0.1.2</code>.</em></p>
+<p><strong>Creator, author, and lead developer:</strong> José Labarca Baeza.</p>
+<p>Tomás Corrales and the SPM Lab at Universidad Técnica Federico Santa María provided selected experimental datasets and laboratory context during the development and evaluation of SPM-Kit.</p>
+<p>María Saavedra Fredes and Benjamin Schleyer helped locate and share candidate datasets for the validation campaigns.</p>
+<p>Released under the MIT license, without dedicated institutional funding.
 <strong>License:</strong> MIT &bull; <strong>Repository:</strong> <a href="https://github.com/kegouro/spmkit">https://github.com/kegouro/spmkit</a> &bull; <strong>Site:</strong> <a href="https://kegouro.github.io/spmkit">https://kegouro.github.io/spmkit</a></p>
 <hr />
 <h2 id="1-introduction">1. Introduction<a class="headerlink" href="#1-introduction" title="Permanent link">&para;</a></h2>
 <h3 id="11-what-is-spm-kit">1.1 What is SPM-Kit?<a class="headerlink" href="#11-what-is-spm-kit" title="Permanent link">&para;</a></h3>
 <p>SPM‑Kit is an <strong>open‑source Python toolkit for analysing AFM/KPFM scanning‑probe‑microscopy data</strong>.
-It reads raw instrument files (NanoSurf <code>.nid</code> / <code>.nhf</code>, Gwyddion <code>.gwy</code>, JPK force curves) and
-produces publication‑ready results: roughness parameters, line profiles, KPFM contact‑potential
+It reads demonstrated variants of NanoSurf <code>.nid</code> / <code>.nhf</code>, Gwyddion <code>.gwy</code>, Bruker/Nanoscope
+<code>.spm</code>, and JPK force data, then exports inspectable results: roughness parameters, line profiles, KPFM contact‑potential
 statistics, nanomechanical property maps, thermal‑tune cantilever calibration, grain detection,
 spectral analysis, and single‑molecule force spectroscopy.</p>
-<p>SPM‑Kit was developed independently by <strong>José Labarca Baeza</strong> at the Universidad Técnica Federico Santa María (UTFSM), informed by practical work with AFM/SPM data, and is released under the MIT license.</p>
+<p>SPM‑Kit was created and is authored and led by <strong>José Labarca Baeza</strong> as an independent
+software project. Acknowledged dataset and laboratory-context contributions do not create
+software authorship or institutional ownership.</p>
 <h3 id="12-what-is-fathom">1.2 What is Fathom?<a class="headerlink" href="#12-what-is-fathom" title="Permanent link">&para;</a></h3>
 <p><strong>Fathom</strong> is the desktop workspace application bundled with SPM‑Kit. It is a PyQt6 + pyqtgraph
 GUI organised into <em>perspectives</em> (task‑oriented views) rather than flat tabs. Each perspective
@@ -3422,34 +4135,63 @@ keyboard access to everything.</p>
 <h3 id="15-reproducibility">1.5 Reproducibility<a class="headerlink" href="#15-reproducibility" title="Permanent link">&para;</a></h3>
 <p>SPM‑Kit enforces strict separation between computation and presentation (verified by
 <code>tests/test_architecture.py</code>). Analysis pipelines can be saved as YAML recipes (<code>core.pipeline</code>)
-for exact reproducibility. Byte‑level traceability (<code>.nid</code> files) is implemented through
+to preserve declared operations and parameters. Byte‑level tracing for demonstrated <code>.nid</code> paths is available through
 <code>spmkit verify</code>.</p>
 <h3 id="16-status">1.6 Status<a class="headerlink" href="#16-status" title="Permanent link">&para;</a></h3>
-<p>SPM‑Kit is <strong>alpha‑stage</strong> software (<code>Development Status :: 3 - Alpha</code>). The <code>.nid</code> image
-parsers are cross‑checked against Gwyddion at machine precision — this is <em>parser parity</em>
-with another implementation of the same formula, not physical‑model validation. The roughness
-parameters Sa, Sq and Sz are independently <strong>cross‑validated</strong> against Gwyddion 2.71
-(<code>LEVEL 3</code>, 18/18 comparisons over six synthetic surfaces); KPFM, spectral and the remaining
-image analyses are exercised by unit and synthetic‑recovery tests (<code>LEVEL 1/2</code>). Nanoscope III
-<code>.spm</code> image reading is numerically verified against Gwyddion 2.71 at matrix precision
-(<code>LEVEL 2</code>, partial). Force‑spectroscopy workflows are tested on synthetic and lab data but
-have <strong>not</strong> been independently cross‑validated. Some readers (<code>afmformats</code>, JPK TIFF, Bruker
-<code>.00N</code>) remain experimental. See <a href="#13-scientific-validation-philosophy">§13</a> for details.</p>
+<p>SPM‑Kit is <strong>alpha‑stage</strong> software (<code>Development Status :: 3 - Alpha</code>). Its strongest
+retained evidence is <code>LEVEL 3 — CROSS_VALIDATED</code> for Sa, Sq, and Sz under frozen campaign
+conditions: 48 synthetic matrices produced 144/144 conforming comparisons and 12 public
+experimental GWY records produced 36/36 shared‑matrix comparisons against Gwyddion 2.71.
+The parser/end‑to‑end observations remain separate. Six Nanoscope III <code>.spm</code> files support a
+partial <code>LEVEL 2</code> claim with a documented pre‑freeze unblinding incident. KPFM, spectra,
+grains, and resonance remain at Level 1; contact and chain models have claim‑scoped synthetic
+Level 2 evidence. No general Level 4 or Level 5 claim is made. See
+<a href="#13-scientific-validation-philosophy">§13</a>.</p>
 <hr />
 <h2 id="2-installation">2. Installation<a class="headerlink" href="#2-installation" title="Permanent link">&para;</a></h2>
 <p>Requirements: <strong>Python &ge; 3.11</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Distribution</th>
+<th>Version documented on 2026-07-29</th>
+<th>Use when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PyPI</td>
+<td><code>0.1.2</code></td>
+<td>you need the published package snapshot</td>
+</tr>
+<tr>
+<td>GitHub release</td>
+<td><code>0.1.4</code></td>
+<td>you need the latest tagged source release</td>
+</tr>
+<tr>
+<td><code>main</code> source tree</td>
+<td><code>0.1.5.dev0</code></td>
+<td>you need the behavior documented by this manual</td>
+</tr>
+</tbody>
+</table>
+<p>Choose the source explicitly. <code>pip install spmkit</code> currently installs the PyPI
+snapshot, not the latest GitHub release.</p>
 <h3 id="21-core-only">2.1 Core only<a class="headerlink" href="#21-core-only" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pip<span class="w"> </span>install<span class="w"> </span>spmkit
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;spmkit @ git+https://github.com/kegouro/spmkit@v0.1.4&quot;</span>
 </span></code></pre></div>
-<p>Installs: <code>numpy</code>, <code>typer</code>, <code>rich</code>, <code>pyyaml</code>. Enough for CLI, Python API, and all image analysis
-(.nid, .nhf, .gwy).</p>
+<p>Installs the numerical core and CLI. Optional format dependencies are still required for
+<code>.nhf</code>, <code>.gwy</code>, and adapter-backed formats.</p>
 <h3 id="22-gui-fathom">2.2 GUI / Fathom<a class="headerlink" href="#22-gui-fathom" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;spmkit[gui]&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;spmkit[gui] @ git+https://github.com/kegouro/spmkit@v0.1.4&quot;</span>
 </span></code></pre></div>
 <p>Adds: PyQt6, pyqtgraph, matplotlib, Crameri colormaps, matplotlib‑scalebar.</p>
 <h3 id="23-all-features">2.3 All features<a class="headerlink" href="#23-all-features" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;spmkit[all]&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;spmkit[all] @ git+https://github.com/kegouro/spmkit@v0.1.4&quot;</span>
 </span></code></pre></div>
+<p><code>all</code> includes the declared reader, visualization, reporting, and GUI extras. It does not
+include developer, GUI-test, parallel, or pandas extras.</p>
 <h3 id="24-extras-matrix">2.4 Extras matrix<a class="headerlink" href="#24-extras-matrix" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -3492,7 +4234,7 @@ have <strong>not</strong> been independently cross‑validated. Some readers (<c
 </tr>
 <tr>
 <td><code>nanosurf</code></td>
-<td>Validated <code>.nhf</code> reader (NSFopen)</td>
+<td>Optional NSFopen dependency</td>
 <td>NSFopen</td>
 </tr>
 <tr>
@@ -3538,8 +4280,8 @@ have <strong>not</strong> been independently cross‑validated. Some readers (<c
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[all,dev]&quot;</span>
 </span></code></pre></div>
 <h3 id="26-headless-hpc">2.6 Headless / HPC<a class="headerlink" href="#26-headless-hpc" title="Permanent link">&para;</a></h3>
-<p>For headless or cluster use, install the core package only:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>pip<span class="w"> </span>install<span class="w"> </span>spmkit
+<p>For headless or cluster use, install the tagged core package only:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;spmkit @ git+https://github.com/kegouro/spmkit@v0.1.4&quot;</span>
 </span></code></pre></div>
 <p>All analysis code (<code>core.*</code>) has no GUI dependencies. For headless figure generation, add <code>viz</code>:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;spmkit[viz]&quot;</span>
@@ -3551,10 +4293,10 @@ for tests; Fathom itself requires a display.</p>
 <hr />
 <h2 id="3-verifying-the-installation">3. Verifying the installation<a class="headerlink" href="#3-verifying-the-installation" title="Permanent link">&para;</a></h2>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>spmkit<span class="w"> </span>--version
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1"># spmkit 0.1.4   (an editable/in-tree install prints 0.1.5.dev0)</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1"># spmkit 0.1.4 for the tagged install above</span>
 </span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
 </span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import spmkit; print(spmkit.__version__)&quot;</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="c1"># 0.1.4   (or 0.1.5.dev0 in the development tree)</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="c1"># 0.1.4 for the tag, 0.1.2 from PyPI, or 0.1.5.dev0 from main</span>
 </span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
 </span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;from spmkit.gui.app import run; print(&#39;GUI import OK&#39;)&quot;</span>
 </span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="c1"># GUI import OK (does not launch; no Qt display needed)</span>
@@ -3620,19 +4362,19 @@ for tests; Fathom itself requires a display.</p>
 <tbody>
 <tr>
 <td><code>.nid</code></td>
-<td>NanoSurf</td>
-<td>Images + force‑volume</td>
+<td>NanoSurf classic</td>
+<td>Images + spectroscopy</td>
 <td>Read</td>
 <td>—</td>
-<td><strong>Cross‑checked</strong> (parser parity vs Gwyddion, corr 1.000000)</td>
+<td>Implemented; selected comparisons, synthetic byte/orientation tests; variants remain scoped</td>
 </tr>
 <tr>
 <td><code>.nhf</code></td>
 <td>NanoSurf HDF5</td>
 <td>Images</td>
 <td>Read</td>
-<td><code>hdf5</code> or <code>nanosurf</code></td>
-<td>Tested (generic HDF5 walker)</td>
+<td><code>hdf5</code></td>
+<td>Experimental generic HDF5 traversal</td>
 </tr>
 <tr>
 <td><code>.gwy</code></td>
@@ -3640,55 +4382,55 @@ for tests; Fathom itself requires a display.</p>
 <td>Images</td>
 <td>Read + Write</td>
 <td><code>gwy</code></td>
-<td>Tested (round‑trip)</td>
+<td>Implemented interoperability; no universal Gwyddion equivalence</td>
 </tr>
 <tr>
-<td><code>.nid</code> (spectroscopy)</td>
-<td>NanoSurf</td>
-<td>Force‑volume</td>
+<td><code>.spm</code> and detected numbered Nanoscope files</td>
+<td>Bruker / Digital Instruments</td>
+<td>Images</td>
 <td>Read</td>
 <td>—</td>
-<td>Tested</td>
+<td>Partial <code>LEVEL 2</code>; six demonstrated files; pre-freeze unblinding incident</td>
 </tr>
 <tr>
-<td><code>.jpk-force</code></td>
-<td>JPK / Bruker</td>
+<td><code>.jpk-force</code>, <code>.jpk</code></td>
+<td>JPK</td>
 <td>Single force curve</td>
 <td>Read</td>
 <td>—</td>
-<td>Tested</td>
+<td>Implemented with synthetic fixtures; vendor variants remain scoped</td>
 </tr>
 <tr>
-<td><code>.jpk</code> (TIFF)</td>
-<td>JPK / Bruker</td>
-<td>Force‑map / QI</td>
+<td>JPK tagged TIFF</td>
+<td>JPK export</td>
+<td>Force data</td>
 <td>Read</td>
 <td><code>jpk</code></td>
-<td>Experimental</td>
+<td>Experimental content-detected route</td>
 </tr>
 <tr>
-<td><code>.001</code> / <code>.002</code></td>
-<td>Bruker SPM</td>
-<td>Images</td>
+<td><code>.jpk-qi-data</code>, <code>.jpk-force-map</code>, <code>.jpk-qi-series</code></td>
+<td>JPK</td>
+<td>Force data</td>
 <td>Read</td>
 <td><code>afm</code></td>
-<td>Experimental</td>
+<td>Experimental adapter path</td>
 </tr>
 <tr>
-<td><code>.spm</code></td>
-<td>Bruker / Nanoscope III</td>
+<td><code>.ibw</code>, <code>.h5</code>, <code>.tab</code></td>
+<td>afmformats-supported sources</td>
+<td>Force data</td>
+<td>Read</td>
+<td><code>afm</code></td>
+<td>Experimental adapter path; behavior follows installed afmformats</td>
+</tr>
+<tr>
+<td><code>.npz</code></td>
+<td>SPM-Kit Phantoms</td>
 <td>Images</td>
 <td>Read</td>
 <td>—</td>
-<td><strong>Partial (LEVEL 2)</strong> — 6 files vs Gwyddion 2.71 at matrix precision; scaling unresolved returns raw</td>
-</tr>
-<tr>
-<td><code>.ibw</code></td>
-<td>Asylum Research</td>
-<td>Force curves</td>
-<td>Read</td>
-<td><code>afm</code></td>
-<td>Experimental</td>
+<td>Implemented for declared bundle keys, not generic NumPy archives</td>
 </tr>
 </tbody>
 </table>
@@ -3702,40 +4444,38 @@ for tests; Fathom itself requires a display.</p>
 </thead>
 <tbody>
 <tr>
-<td><strong>Cross‑validated (L3)</strong></td>
-<td>Derived quantities compared to an independent reference in an externally registered, frozen campaign at defined tolerance.</td>
+<td><strong>LEVEL 0 — CLAIMED</strong></td>
+<td>Intended behavior is documented without retained executable evidence.</td>
 </tr>
 <tr>
-<td><strong>Numerically verified (L2)</strong></td>
-<td>Matrix‑precision agreement with an independent reference on a declared set of files.</td>
+<td><strong>LEVEL 1 — SOFTWARE_VERIFIED</strong></td>
+<td>Automated software tests exercise the declared path.</td>
 </tr>
 <tr>
-<td><strong>Cross‑checked</strong></td>
-<td>Parser/conversion parity with another implementation of the same formula (software‑level, not physical validation).</td>
+<td><strong>LEVEL 2 — NUMERICALLY_VERIFIED</strong></td>
+<td>A known value is recovered within a stated numerical scope and tolerance.</td>
 </tr>
 <tr>
-<td><strong>Tested</strong></td>
-<td>Unit and synthetic‑recovery tests pass; format loads without errors.</td>
+<td><strong>LEVEL 3 — CROSS_VALIDATED</strong></td>
+<td>A frozen external comparison supports a claim under declared versions, data, preprocessing, and tolerance.</td>
 </tr>
 <tr>
-<td><strong>Experimental</strong></td>
-<td>Reader exists but has not been tested with diverse real data.</td>
+<td><strong>LEVEL 4 — PHYSICALLY_VALIDATED</strong></td>
+<td>A calibrated physical reference supports the scoped capability.</td>
 </tr>
 <tr>
-<td><strong>Partial</strong></td>
-<td>Some metadata or channel types may be misread; use with caution.</td>
+<td><strong>LEVEL 5 — REPRODUCIBILITY_VALIDATED</strong></td>
+<td>An independent party reproduced the declared result.</td>
 </tr>
 </tbody>
 </table>
 <h3 id="52-what-validated-means-for-nid">5.2 What "validated" means for <code>.nid</code><a class="headerlink" href="#52-what-validated-means-for-nid" title="Permanent link">&para;</a></h3>
-<p>The physical conversion <code>phys = Dim2Min + (raw + 2³¹) / 2³² · Dim2Range</code> has been cross‑checked
-against Gwyddion exports for real lab data at <strong>correlation 1.000000</strong> for topography, phase,
-and sensor channels. This is <em>parser/conversion parity</em> — agreement between two implementations
-of the same formula — and does not, by itself, validate a physical model. The independently
-cross‑validated quantities at defined tolerance are the ISO 25178 roughness parameters
-<strong>Sa, Sq, Sz</strong> (<code>LEVEL 3</code>, vs Gwyddion 2.71, 18/18 over six synthetic surfaces). Orientation
-(<code>flipud</code> for <code>Dim1Name=Y*</code>), byte budget, and 8 integrity checks are verified by
-<code>spmkit verify</code>. See <code>docs/TRACEABILITY.md</code> and the external validation register.</p>
+<p>The NanoSurf parser implements header-directed integer decoding, physical conversion, channel
+ordering, and orientation. Synthetic byte-budget and orientation tests provide Level 1 evidence;
+selected laboratory-context comparisons do not establish universal NanoSurf coverage. The
+private instrument corpus is not distributed. Separately, the Sa/Sq/Sz shared-matrix campaigns
+provide scoped Level 3 evidence. Keep parser, algorithm, and physical-validation claims separate;
+see <code>docs/TRACEABILITY.md</code>, <code>docs/SCIENTIFIC_STATUS.md</code>, and SPM-Kit Validation.</p>
 <hr />
 <h2 id="6-quick-start">6. Quick start<a class="headerlink" href="#6-quick-start" title="Permanent link">&para;</a></h2>
 <h3 id="61-cli-inspect-a-file">6.1 CLI: inspect a file<a class="headerlink" href="#61-cli-inspect-a-file" title="Permanent link">&para;</a></h3>
@@ -3751,7 +4491,7 @@ cross‑validated quantities at defined tolerance are the ISO 25178 roughness pa
 </span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="n">data</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s2">&quot;scan.nid&quot;</span><span class="p">)</span>
 </span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="n">flat</span> <span class="o">=</span> <span class="n">leveling</span><span class="o">.</span><span class="n">plane_fit</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;Z-Axis&quot;</span><span class="p">])</span>
 </span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="n">stats</span> <span class="o">=</span> <span class="n">roughness</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">flat</span><span class="p">)</span>
-</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sa = </span><span class="si">{</span><span class="n">stats</span><span class="o">.</span><span class="n">sa</span><span class="si">:</span><span class="s2">.3g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">stats</span><span class="o">.</span><span class="n">unit</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sa = </span><span class="si">{</span><span class="n">stats</span><span class="o">.</span><span class="n">Sa</span><span class="si">:</span><span class="s2">.3g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">stats</span><span class="o">.</span><span class="n">unit</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <h3 id="64-fathom-open-a-file">6.4 Fathom: open a file<a class="headerlink" href="#64-fathom-open-a-file" title="Permanent link">&para;</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>spmkit<span class="w"> </span>gui<span class="w"> </span>scan.nid
@@ -4528,8 +5268,9 @@ format is determined by extension.</p>
 <h3 id="912-spmkit-verify-nid-integrity-check">9.12 <code>spmkit verify</code> — <code>.nid</code> integrity check<a class="headerlink" href="#912-spmkit-verify-nid-integrity-check" title="Permanent link">&para;</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>spmkit<span class="w"> </span>verify<span class="w"> </span>FILE
 </span></code></pre></div>
-<p>Performs 8 byte‑level integrity checks and reports pass/fail per check. Exit code 1
-if any check fails.</p>
+<p>Performs up to eight structural and numeric integrity checks over the <code>.nid</code> header,
+declared binary layout, channel ranges, and image axes. Malformed files can stop the
+sequence early; exit code 1 is returned if any completed check fails.</p>
 <h3 id="913-spmkit-gui-launch-fathom">9.13 <code>spmkit gui</code> — Launch Fathom<a class="headerlink" href="#913-spmkit-gui-launch-fathom" title="Permanent link">&para;</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a>spmkit<span class="w"> </span>gui<span class="w"> </span><span class="o">[</span>FILE<span class="o">]</span><span class="w"> </span><span class="o">[</span>--legacy<span class="o">]</span>
 </span></code></pre></div>
@@ -4598,14 +5339,14 @@ Do not use for publishable results without re‑validation.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-52-1"><a id="__codelineno-52-1" name="__codelineno-52-1" href="#__codelineno-52-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">roughness</span>
 </span><span id="__span-52-2"><a id="__codelineno-52-2" name="__codelineno-52-2" href="#__codelineno-52-2"></a>
 </span><span id="__span-52-3"><a id="__codelineno-52-3" name="__codelineno-52-3" href="#__codelineno-52-3"></a><span class="n">result</span> <span class="o">=</span> <span class="n">roughness</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">flat</span><span class="p">)</span>
-</span><span id="__span-52-4"><a id="__codelineno-52-4" name="__codelineno-52-4" href="#__codelineno-52-4"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">sa</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">sq</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">sz</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">ssk</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">sku</span><span class="p">)</span>
+</span><span id="__span-52-4"><a id="__codelineno-52-4" name="__codelineno-52-4" href="#__codelineno-52-4"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">Sa</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">Sq</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">Sz</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">Ssk</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">Sku</span><span class="p">)</span>
 </span><span id="__span-52-5"><a id="__codelineno-52-5" name="__codelineno-52-5" href="#__codelineno-52-5"></a><span class="n">d</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
 </span></code></pre></div>
 <h3 id="106-kpfm">10.6 KPFM<a class="headerlink" href="#106-kpfm" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-53-1"><a id="__codelineno-53-1" name="__codelineno-53-1" href="#__codelineno-53-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">kpfm</span>
 </span><span id="__span-53-2"><a id="__codelineno-53-2" name="__codelineno-53-2" href="#__codelineno-53-2"></a>
 </span><span id="__span-53-3"><a id="__codelineno-53-3" name="__codelineno-53-3" href="#__codelineno-53-3"></a><span class="n">result</span> <span class="o">=</span> <span class="n">kpfm</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;CPD&quot;</span><span class="p">],</span> <span class="n">tip_work_function</span><span class="o">=</span><span class="mf">4.8</span><span class="p">)</span>
-</span><span id="__span-53-4"><a id="__codelineno-53-4" name="__codelineno-53-4" href="#__codelineno-53-4"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">mean_cpd</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">work_function</span><span class="p">)</span>
+</span><span id="__span-53-4"><a id="__codelineno-53-4" name="__codelineno-53-4" href="#__codelineno-53-4"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">work_function</span><span class="p">)</span>
 </span></code></pre></div>
 <h3 id="107-force-spectroscopy">10.7 Force spectroscopy<a class="headerlink" href="#107-force-spectroscopy" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-54-1"><a id="__codelineno-54-1" name="__codelineno-54-1" href="#__codelineno-54-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core.analysis.mechanics</span><span class="w"> </span><span class="kn">import</span> <span class="n">fit_hertz</span>
@@ -4812,41 +5553,25 @@ present and should be checked before comparing values.</p>
 <ul>
 <li><code>SPMData.source_path</code> records the original file path.</li>
 <li><code>SPMData.metadata</code> preserves all instrument parameters from the file header.</li>
-<li><code>.nid</code> files can be audited byte‑by‑byte with <code>spmkit verify</code>.</li>
+<li><code>.nid</code> files can be audited against their declared header and binary layout with
+  <code>spmkit verify</code>.</li>
 <li>YAML recipes capture the exact pipeline parameters used.</li>
 <li>Export files include metadata when the format supports it (HDF5, JSON).</li>
 </ul>
 <h3 id="125-roundtrip-integrity">12.5 Round‑trip integrity<a class="headerlink" href="#125-roundtrip-integrity" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>.nid</code> → <code>.gwy</code> → read back: exact round‑trip for image channels.</li>
-<li><code>.nid</code> → <code>.h5</code> → read back: exact for data arrays; metadata may differ in encoding.</li>
+<li><code>.nid</code> → <code>.gwy</code>: the current automated tests verify that the file is written and,
+  separately, that representative in-memory GWY image data reload within numerical
+  tolerance. They do not establish lossless round-trip fidelity for every <code>.nid</code> variant.</li>
+<li><code>.nid</code> → <code>.h5</code>: the current automated tests verify that the exported HDF5 hierarchy
+  is non-empty; full data-and-metadata round-trip equivalence is not yet claimed.</li>
 <li>CSV export is lossy (floating‑point formatting); use HDF5 for archival.</li>
 </ul>
 <hr />
 <h2 id="13-scientific-validation-philosophy">13. Scientific validation philosophy<a class="headerlink" href="#13-scientific-validation-philosophy" title="Permanent link">&para;</a></h2>
-<p>SPM‑Kit uses a layered approach to correctness and reports evidence with an explicit
-level vocabulary. <strong>Validated is not used as a blanket label</strong>: a capability is described
-by the strongest evidence that actually applies to it.</p>
-<ol>
-<li><strong>Unit tests</strong> (<code>tests/core/</code>) — verify that functions produce expected output for
-   synthetic input.</li>
-<li><strong>Synthetic recovery tests</strong> — generate data with known properties and confirm
-   that analysis recovers them (e.g. roughness of a synthetic surface with known
-   &sigma;, modulus from a synthetic Hertz curve).</li>
-<li><strong>Cross‑checks against external software</strong> — compare SPM‑Kit output with
-   independent software (Gwyddion) for the same input data, asserting
-   <em>parser/conversion parity</em> rather than physical‑model validation.</li>
-<li><strong>Instrument‑file loading tests</strong> — verify that real lab files load without errors
-   and produce finite, physically plausible values.</li>
-<li><strong>Numerical verification (LEVEL 2)</strong> — matrix‑precision agreement with an
-   independent reference on a declared set of files (e.g. Nanoscope III <code>.spm</code>,
-   6 files vs Gwyddion 2.71).</li>
-<li><strong>Cross‑validation (LEVEL 3)</strong> — externally registered campaign comparing derived
-   quantities at a defined tolerance with a frozen script and frozen data set
-   (currently Sa, Sq, Sz vs Gwyddion 2.71, 18/18 over six synthetic surfaces).</li>
-<li><strong>Experimental</strong> — functionality that exists but has not been validated or
-   extensively tested.</li>
-</ol>
+<p>Evidence belongs to a claim, data family, version, preprocessing path, tolerance,
+and campaign. A high level for one metric never transfers automatically to an adjacent
+reader, model, or sample.</p>
 <h3 id="evidencelevel-vocabulary">Evidence‑level vocabulary<a class="headerlink" href="#evidencelevel-vocabulary" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -4857,24 +5582,28 @@ by the strongest evidence that actually applies to it.</p>
 </thead>
 <tbody>
 <tr>
-<td><strong>LEVEL 1 (Unit tested)</strong></td>
-<td>Function‑level tests pass on synthetic input.</td>
+<td><strong>LEVEL 0 — CLAIMED</strong></td>
+<td>Intended behavior is documented without retained executable evidence.</td>
 </tr>
 <tr>
-<td><strong>LEVEL 2 (Numerically verified)</strong></td>
-<td>Matrix‑precision agreement with an independent reference on a declared file set.</td>
+<td><strong>LEVEL 1 — SOFTWARE_VERIFIED</strong></td>
+<td>Automated tests exercise the declared behavior.</td>
 </tr>
 <tr>
-<td><strong>LEVEL 3 (Cross‑validated)</strong></td>
-<td>Externally registered campaign comparing derived quantities at a defined tolerance, frozen script and data.</td>
+<td><strong>LEVEL 2 — NUMERICALLY_VERIFIED</strong></td>
+<td>Known values are recovered within a stated numerical scope and tolerance.</td>
 </tr>
 <tr>
-<td><strong>Cross‑checked</strong></td>
-<td>Parser/conversion parity with another implementation of the same formula (software‑level, not physical validation).</td>
+<td><strong>LEVEL 3 — CROSS_VALIDATED</strong></td>
+<td>An external software or reference route is compared under a frozen protocol.</td>
 </tr>
 <tr>
-<td><strong>Experimental</strong></td>
-<td>Reader or analysis exists without independent cross‑check.</td>
+<td><strong>LEVEL 4 — PHYSICALLY_VALIDATED</strong></td>
+<td>A physical reference or calibrated experiment supports the scoped capability.</td>
+</tr>
+<tr>
+<td><strong>LEVEL 5 — REPRODUCIBILITY_VALIDATED</strong></td>
+<td>An independent party reproduced the declared result.</td>
 </tr>
 </tbody>
 </table>
@@ -4890,159 +5619,61 @@ by the strongest evidence that actually applies to it.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>.nid</code> image parsing</td>
-<td><code>tests/validation/test_nid_vs_gwyddion.py</code> — corr 1.000000</td>
-<td><strong>Cross‑checked</strong></td>
-<td>Parser parity; signed 32‑bit int LE; other dtypes not tested with real data</td>
+<td>Sa/Sq/Sz, frozen synthetic matrices</td>
+<td>48 cases, 144/144 within <code>1e-6 nm + 1e-6 relative</code> vs Gwyddion 2.71</td>
+<td><strong>LEVEL 3</strong></td>
+<td>shared matrices, no preprocessing, three metrics only</td>
 </tr>
 <tr>
-<td><code>.nid</code> physical conversion</td>
-<td><code>tests/validation/test_traceability.py</code> — 8 integrity checks</td>
-<td><strong>Cross‑checked</strong></td>
-<td>Parser/conversion parity; assumes Dim2Range linear mapping</td>
-</tr>
-<tr>
-<td><code>.nid</code> orientation</td>
-<td><code>tests/validation/test_nid_vs_gwyddion.py</code> — flipud for Y channels</td>
-<td><strong>Cross‑checked</strong></td>
-<td>Parser parity; non‑image channels preserved as‑is</td>
-</tr>
-<tr>
-<td>Roughness Sa/Sq/Sz (synthetic)</td>
-<td>vs Gwyddion 2.71, 18/18, 6 surfaces</td>
-<td><strong>Cross‑validated (L3)</strong></td>
-<td>Synthetic surfaces, plane‑levelled only</td>
-</tr>
-<tr>
-<td>Roughness ISO 25178 (general)</td>
-<td><code>tests/core/test_roughness.py</code> — recovery of &sigma;</td>
-<td><strong>Tested</strong></td>
-<td>Ssk/Sku and general surfaces: synthetic‑recovery only</td>
+<td>Sa/Sq/Sz, public experimental GWY</td>
+<td>12 records, 36/36 shared‑matrix comparisons</td>
+<td><strong>LEVEL 3</strong> for algorithm track</td>
+<td>parser track separately retained ten equivalences and two channel-count differences</td>
 </tr>
 <tr>
 <td>Nanoscope III <code>.spm</code></td>
-<td>vs Gwyddion 2.71, 6 files</td>
-<td><strong>Numerically verified (L2)</strong></td>
-<td>Partial; scaling unresolved returns raw</td>
+<td>six files, 18/18 Sa/Sq/Sz and zero reported pixel delta</td>
+<td><strong>LEVEL 2</strong></td>
+<td>partial variants; <code>ACCIDENTAL_PRE_FREEZE_UNBLINDING</code>; no blind holdout</td>
 </tr>
 <tr>
-<td>KPFM CPD statistics</td>
-<td><code>tests/core/test_kpfm.py</code></td>
-<td><strong>Tested</strong></td>
-<td>Work function depends on tip calibration</td>
+<td>NanoSurf <code>.nid</code> mapping/orientation</td>
+<td>synthetic byte/orientation tests and selected context comparisons</td>
+<td><strong>LEVEL 1</strong></td>
+<td>private corpus not distributed; no universal format coverage</td>
 </tr>
 <tr>
-<td>Hertz/DMT force fit</td>
-<td><code>tests/core/test_mechanics.py</code> — synthetic recovery</td>
-<td><strong>Tested</strong></td>
-<td>Tip radius uncertainty dominates modulus</td>
+<td>Hertz/cone/DMT and force maps</td>
+<td>analytical construction and synthetic recovery</td>
+<td><strong>LEVEL 2</strong> within synthetic scope</td>
+<td>no certified tip/cantilever calibration or broad experimental campaign</td>
 </tr>
 <tr>
-<td>Sneddon (paraboloid/cone)</td>
-<td><code>tests/core/test_mechanics.py</code></td>
-<td><strong>Tested</strong></td>
-<td>Same as Hertz</td>
+<td>Experimental JKR, WLC/FJC, SLS</td>
+<td>analytical construction and synthetic recovery</td>
+<td><strong>LEVEL 2</strong> within synthetic scope</td>
+<td>no physical-reference campaign; JKR and SLS remain explicitly experimental</td>
 </tr>
 <tr>
-<td>Force‑volume maps</td>
-<td><code>tests/core/test_forcevolume.py</code></td>
-<td><strong>Tested</strong></td>
-<td>Grid regularity assumed</td>
+<td>KPFM, PSD/fractal, grains, resonance</td>
+<td>unit and controlled software tests</td>
+<td><strong>LEVEL 1</strong></td>
+<td>no frozen public physical-reference campaign</td>
 </tr>
 <tr>
-<td>Thermal tune</td>
-<td><code>tests/core/test_calibration.py</code></td>
-<td><strong>Tested</strong></td>
-<td>Equipartition assumption; clean spectrum required</td>
-</tr>
-<tr>
-<td>Evaporation</td>
-<td><code>tests/core/test_resonance.py</code></td>
-<td><strong>Tested</strong></td>
-<td>Spherical droplet; diffusion‑limited regime</td>
-</tr>
-<tr>
-<td>Grain detection</td>
-<td><code>tests/core/test_grains.py</code></td>
-<td><strong>Tested</strong></td>
-<td>Threshold‑based; no shape metrics</td>
-</tr>
-<tr>
-<td>Fractal/PSD</td>
-<td><code>tests/core/test_spectral.py</code></td>
-<td><strong>Tested</strong></td>
-<td>Self‑affine model; finite bandwidth</td>
-</tr>
-<tr>
-<td>JKR adhesive contact</td>
-<td><code>tests/core/test_experimental.py</code></td>
-<td><strong>Experimental</strong></td>
-<td>Not validated; use <code>spmkit jkr</code> with caution</td>
-</tr>
-<tr>
-<td><code>.nhf</code> reader</td>
-<td><code>tests/core/test_io_nid.py</code></td>
-<td><strong>Tested</strong></td>
-<td>Generic HDF5 walker; metadata may differ</td>
-</tr>
-<tr>
-<td><code>.gwy</code> reader/writer</td>
-<td><code>tests/core/test_gwy.py</code></td>
-<td><strong>Tested</strong></td>
-<td>Round‑trip verified</td>
-</tr>
-<tr>
-<td><code>.jpk-force</code> reader</td>
-<td><code>tests/core/test_io_jpk.py</code></td>
-<td><strong>Tested</strong></td>
-<td>Calibration from metadata</td>
-</tr>
-<tr>
-<td>JPK QI (<code>.jpk</code> TIFF)</td>
-<td><code>tests/core/test_io_jpk.py</code></td>
-<td><strong>Experimental</strong></td>
-<td>Requires <code>jpk</code> extra</td>
-</tr>
-<tr>
-<td>Bruker SPM (<code>.001</code>)</td>
-<td><code>tests/core/test_bruker_spm.py</code></td>
-<td><strong>Experimental</strong></td>
-<td>Requires <code>afm</code> extra</td>
-</tr>
-<tr>
-<td>afmformats readers</td>
-<td><code>tests/core/test_afmformats_reader.py</code></td>
-<td><strong>Experimental</strong></td>
-<td>Many formats; quality varies</td>
-</tr>
-<tr>
-<td>SMFS polymer fits</td>
-<td><code>tests/core/test_forcecurve.py</code></td>
-<td><strong>Tested</strong></td>
-<td>Model choice critical; prominence detection may miss events</td>
-</tr>
-<tr>
-<td>Fathom GUI</td>
-<td><code>tests/gui/</code> headless</td>
-<td><strong>Tested</strong></td>
-<td>Qt version and platform dependent</td>
-</tr>
-<tr>
-<td>Architecture</td>
-<td><code>tests/test_architecture.py</code></td>
-<td><strong>Enforced</strong></td>
-<td>AST‑level check; no runtime enforcement</td>
+<td>Fathom workspace</td>
+<td>offscreen GUI and architecture tests</td>
+<td><strong>LEVEL 1</strong></td>
+<td>platform and Qt behavior vary; GUI evidence does not upgrade numerical maturity</td>
 </tr>
 </tbody>
 </table>
 <h3 id="132-gwyddion-as-reference">13.2 Gwyddion as reference<a class="headerlink" href="#132-gwyddion-as-reference" title="Permanent link">&para;</a></h3>
-<p>Where Gwyddion is used for cross‑checks, it serves as an <em>independent reference
-implementation</em>, not as a universal ground truth. Both SPM‑Kit and Gwyddion implement
-their own physical‑unit conversion from the same raw byte stream. The cross‑validated
-campaign (LEVEL 3, Sa/Sq/Sz) is externally registered with a frozen script and frozen
-data set at
-<a href="https://github.com/kegouro/spmkit-validation/blob/2a3d6c780722a79cb19c079cec0476969267b10b/evidence/phase01e-gwyddion/gate-results.json">https://github.com/kegouro/spmkit-validation/blob/2a3d6c780722a79cb19c079cec0476969267b10b/evidence/phase01e-gwyddion/gate-results.json</a>;
-it does not constitute physical‑model validation.</p>
+<p>Gwyddion is an external software route only where a campaign declares its version,
+matrix handoff, wrapper, preprocessing, and tolerance. It is not universal ground truth.
+The retained summaries live in
+<a href="https://github.com/kegouro/spmkit-validation/tree/main/evidence/campaigns">https://github.com/kegouro/spmkit-validation/tree/main/evidence/campaigns</a>.
+Passing those campaigns does not constitute physical validation or feature parity.</p>
 <h3 id="133-simulator">13.3 Simulator<a class="headerlink" href="#133-simulator" title="Permanent link">&para;</a></h3>
 <p>The cantilever simulator is <strong>educational only</strong>. It models a damped harmonic
 oscillator with additive white noise. It does not account for higher flexural modes,
@@ -5185,18 +5816,21 @@ typically works without special configuration.</p>
 <p>GitHub Actions workflow <code>.github/workflows/ci.yml</code> runs <code>make check</code> on push.
 GUI tests are skipped in CI (no display), but unit and architecture tests always run.</p>
 <hr />
-<h2 id="18-relationship-to-spmkit-data-hunter">18. Relationship to SPM‑Kit Data Hunter<a class="headerlink" href="#18-relationship-to-spmkit-data-hunter" title="Permanent link">&para;</a></h2>
-<p><strong>SPM‑Kit Data Hunter</strong> is a companion project that <strong>discovers and curates public data
-candidates for validation</strong>. It does <strong>not</strong> analyse data and does <strong>not</strong> validate SPM‑Kit
-output. Its role is to find open‑access AFM/KPFM datasets that can be used as potential
-reference material.</p>
+<h2 id="18-spm-kit-ecosystem-relationship">18. SPM-Kit ecosystem relationship<a class="headerlink" href="#18-spm-kit-ecosystem-relationship" title="Permanent link">&para;</a></h2>
+<p>The ecosystem has five identities with distinct responsibilities:</p>
 <ul>
-<li><strong>SPM‑Kit / Fathom</strong> — analyse data.</li>
-<li><strong>SPM‑Kit Data Hunter</strong> — discover data for validation.</li>
-<li><strong>Discovery is not validation.</strong> Datasets found by Data Hunter must still be
-  independently screened and compared.</li>
+<li><strong>SPM‑Kit Core</strong> reads demonstrated data variants and performs numerical analysis.</li>
+<li><strong>Fathom</strong> invokes Core through an interactive scientific workspace.</li>
+<li><strong>SPM‑Kit Data Hunter</strong> records public candidate datasets and provenance. Discovery is
+  not validation, and not every located candidate is usable, redistributable, or suitable.</li>
+<li><strong>SPM‑Kit Phantoms</strong> generates deterministic truth-bearing synthetic fixtures and
+  declared corruptions without importing the analyzer under test.</li>
+<li><strong>SPM‑Kit Validation</strong> runs frozen black-box campaigns against installed public SPM‑Kit
+  interfaces and preserves evidence.</li>
 </ul>
-<p>Future integration between the two is planned but not currently implemented.</p>
+<p>Artifacts move between repositories through declared files, manifests, hashes, and commands;
+there is no automatic pipeline from every Data Hunter record into Validation. See the
+<a href="../ecosystem/">ecosystem portal</a> and <a href="../ecosystem/contracts/">artifact contracts</a>.</p>
 <hr />
 <h2 id="19-citation-license-and-contributions">19. Citation, license, and contributions<a class="headerlink" href="#19-citation-license-and-contributions" title="Permanent link">&para;</a></h2>
 <h3 id="191-how-to-cite">19.1 How to cite<a class="headerlink" href="#191-how-to-cite" title="Permanent link">&para;</a></h3>
@@ -5217,13 +5851,25 @@ reference material.</p>
 <h3 id="194-funding">19.4 Funding<a class="headerlink" href="#194-funding" title="Permanent link">&para;</a></h3>
 <p>This open‑source project has been developed without dedicated institutional funding.</p>
 <h3 id="195-project-status">19.5 Project status<a class="headerlink" href="#195-project-status" title="Permanent link">&para;</a></h3>
-<p><strong>Alpha (released <code>0.1.4</code>; in-tree <code>0.1.5.dev0</code>).</strong> Core functionality is stable and tested.
-APIs may change before 1.0. New contributors, format readers, and analysis modules are welcome.</p>
+<p><strong>Alpha (source <code>0.1.5.dev0</code>; GitHub release <code>0.1.4</code>; PyPI <code>0.1.2</code>).</strong> APIs may change
+before 1.0. Evidence and compatibility remain capability- and format-specific.</p>
+<hr />
+<h2 id="20-acknowledgements">20. Acknowledgements<a class="headerlink" href="#20-acknowledgements" title="Permanent link">&para;</a></h2>
+<p>José Labarca Baeza is the creator, author, and lead developer of SPM-Kit.</p>
+<h3 id="english">English<a class="headerlink" href="#english" title="Permanent link">&para;</a></h3>
+<p>Tomás Corrales and the SPM Lab at Universidad Técnica Federico Santa María provided selected experimental datasets and laboratory context during the development and evaluation of SPM-Kit.</p>
+<p>María Saavedra Fredes and Benjamin Schleyer helped locate and share candidate datasets for the validation campaigns.</p>
+<h3 id="espanol">Español<a class="headerlink" href="#espanol" title="Permanent link">&para;</a></h3>
+<p>Tomás Corrales y el SPM Lab de la Universidad Técnica Federico Santa María proporcionaron datasets experimentales seleccionados y contexto de laboratorio durante el desarrollo y la evaluación de SPM-Kit.</p>
+<p>María Saavedra Fredes y Benjamin Schleyer ayudaron a localizar y compartir datasets candidatos para las campañas de validación.</p>
+<p>These acknowledgements do not imply that every located dataset was used, accepted,
+redistributable, or scientifically suitable. They do not constitute software authorship,
+institutional ownership, or endorsement.</p>
 <hr />
 <h2 id="appendices">Appendices<a class="headerlink" href="#appendices" title="Permanent link">&para;</a></h2>
 <h3 id="a-quick-reference">A. Quick reference<a class="headerlink" href="#a-quick-reference" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-76-1"><a id="__codelineno-76-1" name="__codelineno-76-1" href="#__codelineno-76-1"></a><span class="c1"># Install</span>
-</span><span id="__span-76-2"><a id="__codelineno-76-2" name="__codelineno-76-2" href="#__codelineno-76-2"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;spmkit[gui]&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-76-1"><a id="__codelineno-76-1" name="__codelineno-76-1" href="#__codelineno-76-1"></a><span class="c1"># Install the current source documented here</span>
+</span><span id="__span-76-2"><a id="__codelineno-76-2" name="__codelineno-76-2" href="#__codelineno-76-2"></a>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;spmkit[gui] @ git+https://github.com/kegouro/spmkit@main&quot;</span>
 </span><span id="__span-76-3"><a id="__codelineno-76-3" name="__codelineno-76-3" href="#__codelineno-76-3"></a>
 </span><span id="__span-76-4"><a id="__codelineno-76-4" name="__codelineno-76-4" href="#__codelineno-76-4"></a><span class="c1"># Inspect</span>
 </span><span id="__span-76-5"><a id="__codelineno-76-5" name="__codelineno-76-5" href="#__codelineno-76-5"></a>spmkit<span class="w"> </span>info<span class="w"> </span>scan.nid
@@ -5270,7 +5916,7 @@ APIs may change before 1.0. New contributors, format readers, and analysis modul
 <tbody>
 <tr>
 <td>(none)</td>
-<td>Core: CLI, Python API, <code>.nid</code>/<code>.nhf</code>/<code>.gwy</code> image analysis</td>
+<td>Core CLI/Python API and dependency-free built-in paths; some formats need extras</td>
 </tr>
 <tr>
 <td><code>gui</code></td>
@@ -5298,7 +5944,7 @@ APIs may change before 1.0. New contributors, format readers, and analysis modul
 </tr>
 <tr>
 <td><code>nanosurf</code></td>
-<td>NSFopen <code>.nhf</code> reader</td>
+<td>Optional NSFopen dependency</td>
 </tr>
 <tr>
 <td><code>afm</code></td>
@@ -5318,7 +5964,7 @@ APIs may change before 1.0. New contributors, format readers, and analysis modul
 </tr>
 <tr>
 <td><code>all</code></td>
-<td>All of the above</td>
+<td>Reader, GUI, visualization, report, grain, HDF5, and GWY extras declared by the package</td>
 </tr>
 <tr>
 <td><code>dev</code></td>
@@ -5536,24 +6182,28 @@ APIs may change before 1.0. New contributors, format readers, and analysis modul
 </thead>
 <tbody>
 <tr>
-<td><strong>Validated</strong></td>
-<td>Numerical output matches an independent reference at a defined tolerance</td>
+<td><strong>Level 0</strong></td>
+<td>Claim documented without retained executable evidence</td>
 </tr>
 <tr>
-<td><strong>Tested</strong></td>
-<td>Unit and synthetic‑recovery tests pass; format loads without errors</td>
+<td><strong>Level 1</strong></td>
+<td>Automated software verification within declared scope</td>
 </tr>
 <tr>
-<td><strong>Experimental</strong></td>
-<td>Reader or analysis exists but lacks thorough testing or validation</td>
+<td><strong>Level 2</strong></td>
+<td>Known-value numerical recovery within declared scope and tolerance</td>
 </tr>
 <tr>
-<td><strong>Partial</strong></td>
-<td>Some features work; known gaps in metadata or channel type support</td>
+<td><strong>Level 3</strong></td>
+<td>Frozen external cross-validation under declared conditions</td>
 </tr>
 <tr>
-<td><strong>Enforced</strong></td>
-<td>Verified automatically (e.g. architecture test)</td>
+<td><strong>Level 4</strong></td>
+<td>Scoped physical-reference validation</td>
+</tr>
+<tr>
+<td><strong>Level 5</strong></td>
+<td>Independent reproduction of the declared result</td>
 </tr>
 </tbody>
 </table>
@@ -5688,7 +6338,7 @@ APIs may change before 1.0. New contributors, format readers, and analysis modul
 </tbody>
 </table>
 <hr />
-<p><em>End of SPM‑Kit &middot; Fathom Usage Guide &mdash; version 0.1.4 (dev 0.1.5.dev0)</em></p>
+<p><em>End of SPM‑Kit &middot; Fathom Usage Guide &mdash; source 0.1.5.dev0 · GitHub 0.1.4 · PyPI 0.1.2</em></p>
 
 
 
@@ -5765,11 +6415,10 @@ APIs may change before 1.0. New contributors, format readers, and analysis modul
     <div class="md-footer-meta__inner md-grid">
       <div class="md-copyright">
   
+    <div class="md-copyright__highlight">
+      Copyright © José Labarca Baeza · MIT-licensed software and documentation
+    </div>
   
-    Made with
-    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-      Material for MkDocs
-    </a>
   
 </div>
       

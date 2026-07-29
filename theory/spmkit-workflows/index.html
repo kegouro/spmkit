@@ -6,8 +6,10 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Open numerical engine and interactive workspace for Scanning Probe Microscopy (SPM)">
+        <meta name="description" content="Open numerical analysis, interactive workflows, theory, and inspectable validation evidence for AFM, KPFM, and force spectroscopy">
       
+      
+        <meta name="author" content="José Labarca Baeza">
       
       
         <link rel="canonical" href="https://kegouro.github.io/spmkit/theory/spmkit-workflows/">
@@ -27,7 +29,7 @@
     
     
       
-        <title>SPM-Kit workflows - SPM-Kit · Fathom</title>
+        <title>Implementation map - SPM-Kit ecosystem</title>
       
     
     
@@ -45,12 +47,6 @@
     
     
       
-        
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
-      
     
     
       <link rel="stylesheet" href="../../stylesheets/fathom.css">
@@ -61,6 +57,24 @@
 
     
     
+  
+  
+  
+  
+  <meta name="author" content="José Labarca Baeza">
+  <meta name="keywords" content="AFM, SPM, KPFM, force spectroscopy, nanomechanics, scientific Python, reproducible microscopy">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SPM-Kit ecosystem">
+  <meta property="og:title" content="Implementation map · SPM-Kit ecosystem">
+  <meta property="og:description" content="Open numerical analysis, interactive workflows, theory, and inspectable validation evidence for AFM, KPFM, and force spectroscopy">
+  <meta property="og:url" content="https://kegouro.github.io/spmkit/theory/spmkit-workflows/">
+  <meta property="og:image" content="https://kegouro.github.io/spmkit/assets/ecosystem/core/banner.png">
+  <meta property="og:image:alt" content="SPM-Kit open AFM and SPM numerical engine">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Implementation map · SPM-Kit ecosystem">
+  <meta name="twitter:description" content="Open numerical analysis, interactive workflows, theory, and inspectable validation evidence for AFM, KPFM, and force spectroscopy">
+  <meta name="twitter:image" content="https://kegouro.github.io/spmkit/assets/ecosystem/core/banner.png">
+
   </head>
   
   
@@ -80,7 +94,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#spm-kit-from-concept-to-software" class="md-skip">
+        <a href="#spm-kit-implementation-map" class="md-skip">
           Skip to content
         </a>
       
@@ -96,7 +110,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="SPM-Kit · Fathom" class="md-header__button md-logo" aria-label="SPM-Kit · Fathom" data-md-component="logo">
+    <a href="../.." title="SPM-Kit ecosystem" class="md-header__button md-logo" aria-label="SPM-Kit ecosystem" data-md-component="logo">
       
   <img src="../../images/brand/fathom_logo_light.png" alt="logo">
 
@@ -109,13 +123,13 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            SPM-Kit · Fathom
+            SPM-Kit ecosystem
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              SPM-Kit workflows
+              Implementation map
             
           </span>
         </div>
@@ -240,17 +254,20 @@
   
   
   
-    <li class="md-tabs__item">
-      <a href="../../getting-started/" class="md-tabs__link">
-        
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
   
   
     
   
   Getting started
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -292,7 +309,7 @@
   
     
   
-  Manual
+  User manual
 
         </a>
       </li>
@@ -349,6 +366,28 @@
     
     
       <li class="md-tabs__item">
+        <a href="../../SCIENTIFIC_STATUS/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Scientific evidence
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
         <a href="../../ARCHITECTURE/" class="md-tabs__link">
           
   
@@ -360,6 +399,44 @@
         </a>
       </li>
     
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CONTRIBUTING/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Contributing
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CITATION/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Citation
+
+      </a>
+    </li>
   
 
       
@@ -393,12 +470,12 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="SPM-Kit · Fathom" class="md-nav__button md-logo" aria-label="SPM-Kit · Fathom" data-md-component="logo">
+    <a href="../.." title="SPM-Kit ecosystem" class="md-nav__button md-logo" aria-label="SPM-Kit ecosystem" data-md-component="logo">
       
   <img src="../../images/brand/fathom_logo_light.png" alt="logo">
 
     </a>
-    SPM-Kit · Fathom
+    SPM-Kit ecosystem
   </label>
   
     <div class="md-nav__source">
@@ -448,9 +525,40 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../getting-started/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../ecosystem/workflows/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -464,7 +572,143 @@
   
   
 
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/first-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    First analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/fathom-quick-start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fathom quick start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -482,6 +726,8 @@
       
         
           
+        
+      
         
       
         
@@ -715,7 +961,35 @@
   <span class="md-ellipsis">
     
   
-    Roughness & spectral analysis
+    Roughness
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spectral-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral analysis
   
 
     
@@ -780,7 +1054,7 @@
   <span class="md-ellipsis">
     
   
-    SPM-Kit workflows
+    Implementation map
   
 
     
@@ -798,7 +1072,7 @@
   <span class="md-ellipsis">
     
   
-    SPM-Kit workflows
+    Implementation map
   
 
     
@@ -824,10 +1098,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#perspectives-and-theory" class="md-nav__link">
+  <a href="#concept-to-code-map" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Perspectives and theory
+        Concept-to-code map
       
     </span>
   </a>
@@ -835,10 +1109,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#architecture" class="md-nav__link">
+  <a href="#public-boundary" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Architecture
+        Public boundary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-maturity-advances" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How maturity advances
       
     </span>
   </a>
@@ -962,7 +1247,7 @@
   <span class="md-ellipsis">
     
   
-    Manual
+    User manual
   
 
     
@@ -984,7 +1269,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Manual
+    User manual
   
 
           </label>
@@ -1163,6 +1448,16 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1215,6 +1510,118 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/choose/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Choose a component
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Install matrix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Artifact contracts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Example workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -1280,14 +1687,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../ecosystem/phantoms/" class="md-nav__link">
+      <a href="../../ecosystem/data-hunter/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Phantoms
+    Data Hunter
   
 
     
@@ -1308,14 +1715,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../ecosystem/data-hunter/" class="md-nav__link">
+      <a href="../../ecosystem/phantoms/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Data Hunter
+    Phantoms
   
 
     
@@ -1385,6 +1792,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/brand/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Brand governance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1412,6 +1847,8 @@
         
       
         
+          
+        
       
     
     
@@ -1429,7 +1866,227 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
         
           
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+          <div class="md-nav__link md-nav__container">
+            <a href="../../ecosystem/workflows/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific evidence
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Scientific evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SCIENTIFIC_STATUS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific status
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VALIDATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation campaigns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../TRACEABILITY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Traceability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../FILE_FORMATS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Format maturity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../KNOWN_LIMITATIONS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Known limitations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
             
   
   
@@ -1447,8 +2104,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1521,62 +2178,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../VALIDATION/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Validation
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../TRACEABILITY/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Traceability
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../ROADMAP/" class="md-nav__link">
         
   
@@ -1626,9 +2227,91 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ACKNOWLEDGEMENTS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Acknowledgements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CITATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Citation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1653,71 +2336,184 @@
   
 
 
-<h1 id="spm-kit-from-concept-to-software">SPM-Kit — from concept to software<a class="headerlink" href="#spm-kit-from-concept-to-software" title="Permanent link">&para;</a></h1>
-<p>Each theoretical idea has a concrete place in the application. SPM-Kit reads
-NanoSurf (<code>.nid</code>, <code>.nhf</code>) and Gwyddion (<code>.gwy</code>) formats, and strictly separates
-the analysis <em>core</em> from the interface. The GUI organizes work into
-perspectives.</p>
-<h2 id="perspectives-and-theory">Perspectives and theory<a class="headerlink" href="#perspectives-and-theory" title="Permanent link">&para;</a></h2>
+<h1 id="spm-kit-implementation-map">SPM-Kit implementation map<a class="headerlink" href="#spm-kit-implementation-map" title="Permanent link">&para;</a></h1>
+<figure class="science-figure">
+  <img src="../../assets/theory/software-architecture.svg" alt="SPM-Kit architecture from instrument files through readers, domain models, pure analysis and typed results to Python, CLI, Fathom and exports" width="960" height="340">
+  <figcaption>Core owns computation. Python, the CLI and Fathom orchestrate the same public numerical paths.</figcaption>
+</figure>
+
+<h2 id="concept-to-code-map">Concept-to-code map<a class="headerlink" href="#concept-to-code-map" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Perspective</th>
-<th>What it does</th>
-<th>Theory it materializes</th>
+<th>Concept</th>
+<th>Current implementation</th>
+<th>Fathom</th>
+<th>CLI/public route</th>
+<th>Strongest retained evidence</th>
+<th>Known limitation</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Viewer</strong></td>
-<td>topography, leveling, roughness, line profiles, KPFM</td>
-<td><a href="../roughness/">Roughness/spectral</a> · <a href="../kpfm/">KPFM</a></td>
+<td>file inspection/routing</td>
+<td><code>core.io.load_any</code>, <code>core.plugins</code>, built-in readers</td>
+<td>automatic open route</td>
+<td><code>spmkit info</code></td>
+<td>format-specific Level 1/2</td>
+<td>support is variant-specific</td>
 </tr>
 <tr>
-<td><strong>Nanomechanics</strong></td>
-<td>Hertz/Sneddon fit, Young's modulus, adhesion, modulus maps</td>
-<td><a href="../contact-mechanics/">Contact mechanics</a> · <a href="../force-distance/">F-d curves</a></td>
+<td>leveling</td>
+<td><code>core.analysis.leveling</code></td>
+<td>Imagen (<code>image</code>)</td>
+<td><code>roughness --level</code>, <code>analyze --level</code></td>
+<td>Level 1 + synthetic cases</td>
+<td>changes the reference surface</td>
 </tr>
 <tr>
-<td><strong>3D view</strong></td>
-<td>3D surface with hillshade illumination</td>
-<td><a href="../afm-principles/">AFM principles</a></td>
+<td>Sa/Sq/Sz/Ssk/Sku</td>
+<td><code>core.analysis.roughness.statistics</code></td>
+<td>Imagen (<code>image</code>)</td>
+<td><code>spmkit roughness</code>, <code>analyze</code></td>
+<td>scoped Level 3 for Sa/Sq/Sz</td>
+<td>external campaigns do not cover Ssk/Sku or every preprocessing route</td>
 </tr>
 <tr>
-<td><strong>Resonance</strong></td>
-<td>thermal tuning, mass sensing, evaporation, d² law</td>
-<td><a href="../resonance/">Resonance &amp; mass sensing</a></td>
+<td>line profile</td>
+<td><code>core.analysis.profiles.line</code></td>
+<td>Imagen (<code>image</code>)</td>
+<td>Python API</td>
+<td>Level 1</td>
+<td>interpolation and coordinate choice matter</td>
 </tr>
 <tr>
-<td><strong>Simulator</strong></td>
-<td>digital twin of the cantilever: thermal noise and mass shift</td>
-<td><a href="../resonance/">Equipartition / m_eff</a></td>
+<td>grain segmentation</td>
+<td><code>core.analysis.grains.detect</code></td>
+<td>Granos (<code>grains</code>)</td>
+<td><code>spmkit grains</code></td>
+<td>Level 1 + synthetic tests</td>
+<td>threshold/overlap/tip effects</td>
 </tr>
 <tr>
-<td><strong>Figure editor</strong></td>
-<td>publication figures: colormaps, scale bar, PNG/SVG/PDF export</td>
-<td>result communication</td>
+<td>radial PSD/fractal fit</td>
+<td><code>core.analysis.spectral</code></td>
+<td>Espectral (<code>spectral</code>)</td>
+<td><code>spmkit psd</code></td>
+<td>Level 1/path-specific numerical tests</td>
+<td>bandwidth and fit-band dependence</td>
 </tr>
 <tr>
-<td><strong>Compare</strong></td>
-<td>merge 2–4 files with shared colorbar and scale</td>
-<td>comparative analysis</td>
+<td>KPFM statistics/work function</td>
+<td><code>core.analysis.kpfm.statistics</code></td>
+<td>Imagen (<code>image</code>)</td>
+<td><code>analyze --tip-wf</code>, Python</td>
+<td>Level 1</td>
+<td>sign convention and tip calibration</td>
+</tr>
+<tr>
+<td>baseline/contact/elastic fit</td>
+<td><code>core.analysis.forcecurve</code>, <code>mechanics</code></td>
+<td>Curva de fuerza (<code>force</code>)</td>
+<td><code>forcecurve</code>, <code>nanomech</code></td>
+<td>model-specific Level 2</td>
+<td>contact, geometry and material assumptions</td>
+</tr>
+<tr>
+<td>JKR</td>
+<td><code>core.analysis.experimental</code></td>
+<td>Curva de fuerza (<code>force</code>) where exposed</td>
+<td><code>spmkit jkr</code></td>
+<td>experimental synthetic recovery</td>
+<td>adhesive-contact assumptions; CLI marks experimental</td>
+</tr>
+<tr>
+<td>SMFS WLC/FJC/events</td>
+<td><code>core.analysis.chain</code></td>
+<td>SMFS (<code>smfs</code>)</td>
+<td>Python API</td>
+<td>Level 2 synthetic recovery</td>
+<td>polymer model and event-window dependence</td>
+</tr>
+<tr>
+<td>force-volume maps</td>
+<td><code>core.analysis.forcevolume</code>, <code>forcevolume_fast</code></td>
+<td>Mapa (<code>map</code>)</td>
+<td><code>spmkit forcemap</code></td>
+<td>Level 2 synthetic recovery</td>
+<td>invalid curves/calibration propagate spatially</td>
+</tr>
+<tr>
+<td>batch analysis</td>
+<td><code>core.batch</code>, <code>core.forcebatch</code></td>
+<td>Batch (<code>batch</code>)</td>
+<td><code>batch</code>, <code>fbatch</code></td>
+<td>Level 1</td>
+<td>homogeneous channel/parameter assumptions</td>
+</tr>
+<tr>
+<td>SHO and thermal spectrum</td>
+<td><code>core.analysis.resonance</code></td>
+<td>Sintonía térmica (<code>resonance</code>)</td>
+<td>Python API</td>
+<td>Level 1 software tests and controlled numerical cases</td>
+<td>no frozen calibrated physical-reference campaign</td>
+</tr>
+<tr>
+<td>frequency-shift mass model</td>
+<td><code>core.analysis.resonance</code></td>
+<td>Evaporación (<code>evaporation</code>)</td>
+<td><code>spmkit evaporation</code></td>
+<td>Level 1 software tests and controlled numerical cases</td>
+<td>point-mass/effective-mode assumptions</td>
+</tr>
+<tr>
+<td>publication figure</td>
+<td><code>core.viz</code></td>
+<td>Figura (<code>figure</code>)</td>
+<td><code>spmkit figure</code></td>
+<td>Level 1</td>
+<td>figure quality is not scientific validation</td>
+</tr>
+<tr>
+<td>3D rendering</td>
+<td>GUI panel over image domain</td>
+<td>Vista 3D (<code>view3d</code>)</td>
+<td>none</td>
+<td>GUI/software tested</td>
+<td>display transform is not analysis</td>
+</tr>
+<tr>
+<td>educational simulation</td>
+<td><code>core.analysis.simulation</code></td>
+<td>Simulador (<code>simulator</code>)</td>
+<td>Python API</td>
+<td>software-tested analytical construction</td>
+<td>not a calibrated instrument simulator or physical evidence</td>
 </tr>
 </tbody>
 </table>
-<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
-<p>Three layers: <code>core/</code> (pure Python: io · analysis · viz), <code>cli/</code> and <code>gui/</code>.
-The presentation only calls the core's public API. The <code>.nid</code> reading has
-<strong>machine-precision correlation</strong> with Gwyddion: the theory relies on
-trustworthy data.</p>
-<div class="admonition implementation">
-<p class="admonition-title">Core principle</p>
-<p>All numerical analysis lives in <code>src/spmkit/core/</code>. The CLI and Fathom only
-orchestrate it — they never implement analysis or touch parsers directly.
-See <a href="../../ARCHITECTURE/">Architecture</a> for module details.</p>
-</div>
-<hr />
-<p><a href="../resonance/">:material-arrow-left: Resonance &amp; mass sensing</a> · <a href="../glossary/">:material-arrow-right: Glossary</a></p>
+<h2 id="public-boundary">Public boundary<a class="headerlink" href="#public-boundary" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>core/  ← numerical truth and domain objects
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  ↑
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  ├── cli/  arguments, files and terminal output
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  └── gui/  Fathom routing, parameters, views and reports
+</span></code></pre></div>
+<p>Validation invokes the installed public package from another process. Phantoms
+does not import Core. Those two separations are necessary for useful evidence,
+but reference independence is still assessed per campaign.</p>
+<h2 id="how-maturity-advances">How maturity advances<a class="headerlink" href="#how-maturity-advances" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Define units, assumptions and failure behavior in Core.</li>
+<li>Add deterministic software tests.</li>
+<li>Recover a known numerical case, preferably from independent Phantoms logic.</li>
+<li>Freeze an external comparison/reference and tolerance in Validation.</li>
+<li>Add calibrated physical and interlaboratory evidence when it exists.</li>
+<li>Expose the stable result in Fathom without changing the equation.</li>
+</ol>
+<p><a href="../../SCIENTIFIC_STATUS/">Scientific status</a> ·
+<a href="../../ARCHITECTURE/">Architecture</a> ·
+<a href="../../ecosystem/workflows/#workflow-e-add-an-ecosystem-capability">Ecosystem workflow E</a></p>
 
 
 
@@ -1794,11 +2590,10 @@ See <a href="../../ARCHITECTURE/">Architecture</a> for module details.</p>
     <div class="md-footer-meta__inner md-grid">
       <div class="md-copyright">
   
+    <div class="md-copyright__highlight">
+      Copyright © José Labarca Baeza · MIT-licensed software and documentation
+    </div>
   
-    Made with
-    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-      Material for MkDocs
-    </a>
   
 </div>
       

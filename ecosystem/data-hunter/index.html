@@ -6,17 +6,19 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Open numerical engine and interactive workspace for Scanning Probe Microscopy (SPM)">
+        <meta name="description" content="Public AFM/SPM dataset discovery, evidence classification, provenance, campaign checkpoints, and safe human review.">
       
+      
+        <meta name="author" content="José Labarca Baeza">
       
       
         <link rel="canonical" href="https://kegouro.github.io/spmkit/ecosystem/data-hunter/">
       
       
-        <link rel="prev" href="../phantoms/">
+        <link rel="prev" href="../fathom/">
       
       
-        <link rel="next" href="../validation/">
+        <link rel="next" href="../phantoms/">
       
       
         
@@ -27,7 +29,7 @@
     
     
       
-        <title>Data Hunter - SPM-Kit · Fathom</title>
+        <title>SPM-Kit Data Hunter - SPM-Kit ecosystem</title>
       
     
     
@@ -45,12 +47,6 @@
     
     
       
-        
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
-      
     
     
       <link rel="stylesheet" href="../../stylesheets/fathom.css">
@@ -61,6 +57,24 @@
 
     
     
+  
+  
+  
+  
+  <meta name="author" content="José Labarca Baeza">
+  <meta name="keywords" content="AFM, SPM, KPFM, force spectroscopy, nanomechanics, scientific Python, reproducible microscopy">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SPM-Kit ecosystem">
+  <meta property="og:title" content="Data Hunter · SPM-Kit ecosystem">
+  <meta property="og:description" content="Public AFM/SPM dataset discovery, evidence classification, provenance, campaign checkpoints, and safe human review.">
+  <meta property="og:url" content="https://kegouro.github.io/spmkit/ecosystem/data-hunter/">
+  <meta property="og:image" content="https://kegouro.github.io/spmkit/assets/ecosystem/core/banner.png">
+  <meta property="og:image:alt" content="SPM-Kit open AFM and SPM numerical engine">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Data Hunter · SPM-Kit ecosystem">
+  <meta name="twitter:description" content="Public AFM/SPM dataset discovery, evidence classification, provenance, campaign checkpoints, and safe human review.">
+  <meta name="twitter:image" content="https://kegouro.github.io/spmkit/assets/ecosystem/core/banner.png">
+
   </head>
   
   
@@ -80,7 +94,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#spm-kit-data-hunter" class="md-skip">
+        <a href="#role-in-one-sentence" class="md-skip">
           Skip to content
         </a>
       
@@ -96,7 +110,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="SPM-Kit · Fathom" class="md-header__button md-logo" aria-label="SPM-Kit · Fathom" data-md-component="logo">
+    <a href="../.." title="SPM-Kit ecosystem" class="md-header__button md-logo" aria-label="SPM-Kit ecosystem" data-md-component="logo">
       
   <img src="../../images/brand/fathom_logo_light.png" alt="logo">
 
@@ -109,13 +123,13 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            SPM-Kit · Fathom
+            SPM-Kit ecosystem
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Data Hunter
+              SPM-Kit Data Hunter
             
           </span>
         </div>
@@ -240,17 +254,20 @@
   
   
   
-    <li class="md-tabs__item">
-      <a href="../../getting-started/" class="md-tabs__link">
-        
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
   
   
     
   
   Getting started
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -290,7 +307,7 @@
   
     
   
-  Manual
+  User manual
 
         </a>
       </li>
@@ -349,6 +366,28 @@
     
     
       <li class="md-tabs__item">
+        <a href="../../SCIENTIFIC_STATUS/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Scientific evidence
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
         <a href="../../ARCHITECTURE/" class="md-tabs__link">
           
   
@@ -360,6 +399,44 @@
         </a>
       </li>
     
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CONTRIBUTING/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Contributing
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CITATION/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Citation
+
+      </a>
+    </li>
   
 
       
@@ -393,12 +470,12 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="SPM-Kit · Fathom" class="md-nav__button md-logo" aria-label="SPM-Kit · Fathom" data-md-component="logo">
+    <a href="../.." title="SPM-Kit ecosystem" class="md-nav__button md-logo" aria-label="SPM-Kit ecosystem" data-md-component="logo">
       
   <img src="../../images/brand/fathom_logo_light.png" alt="logo">
 
     </a>
-    SPM-Kit · Fathom
+    SPM-Kit ecosystem
   </label>
   
     <div class="md-nav__source">
@@ -448,9 +525,40 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../getting-started/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../workflows/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -464,7 +572,143 @@
   
   
 
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/first-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    First analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/fathom-quick-start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fathom quick start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -480,6 +724,8 @@
       
         
           
+        
+      
         
       
         
@@ -710,7 +956,35 @@
   <span class="md-ellipsis">
     
   
-    Roughness & spectral analysis
+    Roughness
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/spectral-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral analysis
   
 
     
@@ -766,7 +1040,7 @@
   <span class="md-ellipsis">
     
   
-    SPM-Kit workflows
+    Implementation map
   
 
     
@@ -888,7 +1162,7 @@
   <span class="md-ellipsis">
     
   
-    Manual
+    User manual
   
 
     
@@ -910,7 +1184,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Manual
+    User manual
   
 
           </label>
@@ -1091,6 +1365,16 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1155,6 +1439,118 @@
   
   
     <li class="md-nav__item">
+      <a href="../choose/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Choose a component
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Install matrix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Artifact contracts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Example workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../spmkit/" class="md-nav__link">
         
   
@@ -1208,34 +1604,6 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../phantoms/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Phantoms
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -1244,8 +1612,6 @@
       
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
-      
-        
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
@@ -1289,14 +1655,34 @@
   
   
   
-    
-  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#role-in-one-sentence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Role in one sentence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#problem-it-solves" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Problem it solves
+      
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#what-it-does" class="md-nav__link">
@@ -1310,10 +1696,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-it-does-not-do" class="md-nav__link">
+  <a href="#what-it-deliberately-does-not-do" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What it does not do
+        What it deliberately does not do
       
     </span>
   </a>
@@ -1321,10 +1707,131 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#links" class="md-nav__link">
+  <a href="#installation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Links
+        Installation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#first-successful-offline-command" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        First successful offline command
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verified-campaign-command-sequence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verified campaign command sequence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detailed-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detailed workflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#outputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outputs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supported-public-sources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported public sources
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evidence-categories" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evidence categories
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-makes-a-dataset-useful" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What makes a dataset useful?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#safe-download-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Safe download path
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-and-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture and integration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scientific-status-and-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scientific status and limitations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#contribute" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Contribute
       
     </span>
   </a>
@@ -1335,6 +1842,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../phantoms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Phantoms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1396,6 +1931,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../brand/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Brand governance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1423,6 +1986,8 @@
         
       
         
+          
+        
       
     
     
@@ -1440,7 +2005,227 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
         
           
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+          <div class="md-nav__link md-nav__container">
+            <a href="../workflows/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific evidence
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Scientific evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SCIENTIFIC_STATUS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific status
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VALIDATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation campaigns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../TRACEABILITY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Traceability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../FILE_FORMATS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Format maturity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../KNOWN_LIMITATIONS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Known limitations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
             
   
   
@@ -1458,8 +2243,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1532,62 +2317,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../VALIDATION/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Validation
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../TRACEABILITY/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Traceability
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../ROADMAP/" class="md-nav__link">
         
   
@@ -1637,9 +2366,91 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ACKNOWLEDGEMENTS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Acknowledgements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CITATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Citation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1664,44 +2475,300 @@
   
 
 
-<h1 id="spm-kit-data-hunter">SPM-Kit Data Hunter<a class="headerlink" href="#spm-kit-data-hunter" title="Permanent link">&para;</a></h1>
-<p align="center">
-  <img src="../../assets/ecosystem/data-hunter-banner.png" alt="spmkit-data-hunter banner" width="100%">
-</p>
+<section class="component-section" data-component="hunter">
+  <picture><source type="image/webp" srcset="../../assets/ecosystem/data-hunter/banner-640.webp 640w, ../../assets/ecosystem/data-hunter/banner-1280.webp 1280w" sizes="(max-width: 1280px) 100vw, 1280px"><img class="brand-banner" src="../../assets/ecosystem/data-hunter/banner.png" width="1280" height="640" alt="SPM-Kit Data Hunter public evidence discovery banner" loading="eager" fetchpriority="high"></picture>
+  <div class="component-copy">
+    <div><p class="component-role">SPM-Kit Data Hunter · Evidence discovery</p><h1>Find candidate evidence without calling it truth</h1><p>Data Hunter queries supported public repository APIs, inventories files, normalizes metadata, deduplicates records and classifies possible scientific utility.</p></div>
+    <div><span class="status-ribbon">Alpha · source 2.2.0</span><div class="io-strip"><span><b>Input</b>queries, APIs, campaign policy</span><span aria-hidden="true">→</span><span><b>Output</b>candidate catalog and provenance</span></div></div>
+  </div>
+</section>
 
-<p><strong>Discover, catalog, and triage public AFM/SPM datasets.</strong></p>
-<p>Data Hunter searches public scientific repositories (Zenodo, Figshare,
-DataCite) for AFM/SPM datasets, catalogs them with structural metadata, and
-classifies their scientific utility for validation campaigns.</p>
+<h2 id="role-in-one-sentence">Role in one sentence<a class="headerlink" href="#role-in-one-sentence" title="Permanent link">&para;</a></h2>
+<p><strong>Data Hunter finds and classifies possible evidence. It does not validate
+SPM-Kit and does not certify datasets.</strong></p>
+<h2 id="problem-it-solves">Problem it solves<a class="headerlink" href="#problem-it-solves" title="Permanent link">&para;</a></h2>
+<p>Public records vary from well-described raw/processed/code packages to a DOI
+with no files. Searching by keyword alone cannot tell a parser fixture from a
+possible cross-check or a calibrated reference. Data Hunter makes that triage
+explicit and resumable while leaving the final scientific decision to a human.</p>
 <h2 id="what-it-does">What it does<a class="headerlink" href="#what-it-does" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Searches public APIs (no scraping)</li>
-<li>Persistent SQLite catalog with file inventories</li>
-<li>Evidence-chain scoring (Gold/Silver/Bronze)</li>
-<li>Utility classification: <code>benchmark_ready</code>, <code>reader_fixture</code>, <code>crosscheck_candidate</code>, etc.</li>
-<li>Durable campaigns with page-granular checkpoints</li>
-<li>Selective downloads with checksum verification</li>
+<li>queries Zenodo and Figshare file-capable APIs and DataCite metadata;</li>
+<li>normalizes source records and file inventories into a persistent catalog;</li>
+<li>deduplicates records and applies an AFM/SPM relevance gate;</li>
+<li>classifies file types and evidence utility with token-aware rules;</li>
+<li>runs named campaigns with page/cursor checkpoints and duration/record budgets;</li>
+<li>probes remote files without executing content;</li>
+<li>plans and performs selected downloads with explicit size/safety limits;</li>
+<li>preserves source, query, identifiers, license metadata, checksums and events;</li>
+<li>exports JSON, JSONL, CSV and Markdown views from SQLite.</li>
 </ul>
-<h2 id="what-it-does-not-do">What it does not do<a class="headerlink" href="#what-it-does-not-do" title="Permanent link">&para;</a></h2>
+<h2 id="what-it-deliberately-does-not-do">What it deliberately does not do<a class="headerlink" href="#what-it-deliberately-does-not-do" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Not a validator (discovery ≠ validation)</li>
-<li>Not an AFM analyzer</li>
-<li>Not a claim of dataset correctness</li>
-<li>"Gold" means the evidence chain <em>appears</em> complete, not that the data is correct</li>
+<li>scrape arbitrary websites or bypass repository APIs;</li>
+<li>execute downloaded code or trust archives;</li>
+<li>make a DOI, score or Gold label into ground truth;</li>
+<li>infer redistribution rights from public visibility alone;</li>
+<li>compare SPM-Kit numerical results;</li>
+<li>automatically feed every discovery into Validation.</li>
 </ul>
-<h2 id="links">Links<a class="headerlink" href="#links" title="Permanent link">&para;</a></h2>
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
+<p>The package is not on PyPI. Install the separate repository:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/kegouro/spmkit-data-hunter.git
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>spmkit-data-hunter
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>spmkit-data-hunter<span class="w"> </span>doctor
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>spmkit-data-hunter<span class="w"> </span>sources<span class="w"> </span>list
+</span></code></pre></div>
+<p><code>doctor</code> reports configured capabilities without printing token values. Live
+campaigns use network APIs and should be run only with the intended time,
+record and download budgets.</p>
+<h2 id="first-successful-offline-command">First successful offline command<a class="headerlink" href="#first-successful-offline-command" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>spmkit-data-hunter<span class="w"> </span>--self-test
+</span></code></pre></div>
+<p>This exercises deterministic internal behavior without querying public
+services or downloading data.</p>
+<h2 id="verified-campaign-command-sequence">Verified campaign command sequence<a class="headerlink" href="#verified-campaign-command-sequence" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>spmkit-data-hunter<span class="w"> </span>campaign<span class="w"> </span>create<span class="w"> </span>afm-1h<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span>--preset<span class="w"> </span>all<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span>--source<span class="w"> </span>all<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span>--max-runtime<span class="w"> </span>1h<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span>--max-records<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span>--output<span class="w"> </span>spm_benchmarks
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>spmkit-data-hunter<span class="w"> </span>campaign<span class="w"> </span>run<span class="w"> </span>afm-1h<span class="w"> </span>--output<span class="w"> </span>spm_benchmarks
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>spmkit-data-hunter<span class="w"> </span>campaign<span class="w"> </span>status<span class="w"> </span>afm-1h<span class="w"> </span>--output<span class="w"> </span>spm_benchmarks
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>spmkit-data-hunter<span class="w"> </span>campaign<span class="w"> </span><span class="nb">export</span><span class="w"> </span>afm-1h<span class="w"> </span>--output<span class="w"> </span>spm_benchmarks
+</span></code></pre></div>
+<p><code>Ctrl+C</code> requests a safe pause at the last committed page checkpoint. Resume
+with <code>campaign resume</code>. A completed search says the configured sources/budgets
+were traversed; it says nothing about scientific truth.</p>
+<div class="intent-grid">
+  <figure class="media-frame"><img src="../../assets/ecosystem/data-hunter/campaign-run.svg" width="680" height="280" alt="Example Data Hunter campaign create and run terminal output" loading="lazy"><figcaption class="media-caption">Campaign creation/run example maintained by the Data Hunter repository.</figcaption></figure>
+  <figure class="media-frame"><img src="../../assets/ecosystem/data-hunter/campaign-status.svg" width="680" height="280" alt="Example Data Hunter campaign status terminal output" loading="lazy"><figcaption class="media-caption">Campaign status exposes progress and checkpoint state.</figcaption></figure>
+</div>
+
+<h2 id="detailed-workflow">Detailed workflow<a class="headerlink" href="#detailed-workflow" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>define campaign
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    ↓
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>query public repository APIs
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    ↓
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>normalize records and file inventories
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    ↓
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>deduplicate + AFM/SPM relevance gate
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    ↓
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>classify evidence utility
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    ↓
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>human review of files, methods, license and role
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>    ↓
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>download only selected records
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    ↓
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>transfer an accepted case to fixture or validation design
+</span></code></pre></div>
+<p>The transfer after human review is manual and documented. A rejected or
+incomplete candidate remains useful provenance; it should not disappear merely
+because it failed to become a benchmark.</p>
+<h2 id="outputs">Outputs<a class="headerlink" href="#outputs" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>spm_benchmarks/
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>├── catalog.sqlite3       normalized records and file inventories
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>├── campaigns.sqlite3     configurations, page checkpoints, events and stats
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>├── catalog.json          replaceable export view
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>├── catalog.jsonl         one normalized record per line
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>├── catalog.csv           compact tabular review view
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>├── REPORT.md             human-readable campaign/catalog summary
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>└── datasets/             only files explicitly selected for download
+</span></code></pre></div>
+<p><code>catalog.sqlite3</code> is the record/file source of truth. <code>campaigns.sqlite3</code>
+stores progress and control state. JSON/JSONL/CSV/Markdown are regenerated
+views. Stop the process before copying SQLite databases and include <code>-wal</code> and
+<code>-shm</code> files when they exist.</p>
+<h2 id="supported-public-sources">Supported public sources<a class="headerlink" href="#supported-public-sources" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Current role</th>
+<th style="text-align: right;">File inventory</th>
+<th>Checkpoint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Zenodo</td>
+<td>direct repository</td>
+<td style="text-align: right;">yes</td>
+<td>page</td>
+</tr>
+<tr>
+<td>Figshare</td>
+<td>direct repository</td>
+<td style="text-align: right;">yes</td>
+<td>page</td>
+</tr>
+<tr>
+<td>DataCite</td>
+<td>metadata index</td>
+<td style="text-align: right;">usually no</td>
+<td>cursor</td>
+</tr>
+</tbody>
+</table>
+<p>DataCite records are metadata evidence and are not represented as fully
+hydrated dataset packages. OSF, Dataverse, Dryad and other adapters are planned,
+not current support.</p>
+<h2 id="evidence-categories">Evidence categories<a class="headerlink" href="#evidence-categories" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Utility class</th>
+<th>Plain-language meaning</th>
+<th>Possible next use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>benchmark_ready</code></td>
+<td>raw plus distinct processed/reference material and method/code signals</td>
+<td>strong candidate for human-designed analysis comparison</td>
+</tr>
+<tr>
+<td><code>crosscheck_candidate</code></td>
+<td>raw and processed assets exist but method/code is incomplete</td>
+<td>preliminary comparison and follow-up</td>
+</tr>
+<tr>
+<td><code>reader_fixture</code></td>
+<td>native raw material without a matched numerical reference</td>
+<td>parser, channel and robustness testing</td>
+</tr>
+<tr>
+<td><code>processed_reference_only</code></td>
+<td>processed output exists without recoverable raw input</td>
+<td>context, examples or literature tracing</td>
+</tr>
+<tr>
+<td><code>documentation_only</code></td>
+<td>method/code/docs without a usable data pair</td>
+<td>implementation or protocol context</td>
+</tr>
+<tr>
+<td><code>incomplete</code></td>
+<td>relevance or evidence chain is insufficient</td>
+<td>retain provenance; do not promote</td>
+</tr>
+</tbody>
+</table>
+<p>A score or utility class prioritizes review. It does not establish calibration,
+method equivalence or scientific truth.</p>
+<h2 id="what-makes-a-dataset-useful">What makes a dataset useful?<a class="headerlink" href="#what-makes-a-dataset-useful" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Package contents</th>
+<th>What it can support</th>
+<th>What remains missing</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>raw file only</td>
+<td>reader and metadata fixture</td>
+<td>expected scientific output</td>
+</tr>
+<tr>
+<td>raw + processed output</td>
+<td>candidate numerical cross-check</td>
+<td>matched method, units and parameters may be absent</td>
+</tr>
+<tr>
+<td>raw + code</td>
+<td>reproducible implementation candidate</td>
+<td>external independence and calibration still need review</td>
+</tr>
+<tr>
+<td>raw + methods</td>
+<td>interpretable campaign design</td>
+<td>executable reference may be absent</td>
+</tr>
+<tr>
+<td>linked publication</td>
+<td>provenance and experimental context</td>
+<td>paper values may not map to downloadable arrays</td>
+</tr>
+<tr>
+<td>calibrated reference</td>
+<td>possible physical-validation proposal</td>
+<td>traceability, uncertainty and lawful access require audit</td>
+</tr>
+<tr>
+<td>possible blind holdout</td>
+<td>future confirmation design</td>
+<td>must remain unexposed and preregistered before use</td>
+</tr>
+</tbody>
+</table>
+<p>More metadata can make a record easier to assess. It cannot make a weak physical
+reference strong by itself.</p>
+<h2 id="safe-download-path">Safe download path<a class="headerlink" href="#safe-download-path" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>spmkit-data-hunter<span class="w"> </span>download<span class="w"> </span>plan<span class="w"> </span>afm-1h<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span>--output<span class="w"> </span>spm_benchmarks<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span>--level<span class="w"> </span>gold<span class="w"> </span>silver<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span>--category<span class="w"> </span>raw<span class="w"> </span>processed
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>spmkit-data-hunter<span class="w"> </span>download<span class="w"> </span>run<span class="w"> </span>afm-1h<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">  </span>--output<span class="w"> </span>spm_benchmarks<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">  </span>--level<span class="w"> </span>gold<span class="w"> </span>silver<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">  </span>--category<span class="w"> </span>raw<span class="w"> </span>processed<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">  </span>--max-file-gb<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">  </span>--max-record-gb<span class="w"> </span><span class="m">20</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">  </span>--inspect-archives
+</span></code></pre></div>
+<p>Planning downloads writes no files. <code>--accept-unbounded-downloads</code> acknowledges
+a transfer risk only; it is not a scientific filter.</p>
+<h2 id="architecture-and-integration">Architecture and integration<a class="headerlink" href="#architecture-and-integration" title="Permanent link">&para;</a></h2>
+<figure class="media-frame">
+  <img src="../../assets/ecosystem/data-hunter/architecture.png" width="1672" height="941" alt="Data Hunter architecture: CLI, campaign engine, source adapters, persistent stores, verification and exports" loading="lazy">
+  <figcaption class="media-caption">Repository-maintained architecture asset. The portal text above is the authoritative accessible description.</figcaption>
+</figure>
+
 <ul>
-<li><strong>Repository:</strong> <a href="https://github.com/kegouro/spmkit-data-hunter">github.com/kegouro/spmkit-data-hunter</a></li>
-<li><strong>Citation:</strong> <a href="https://github.com/kegouro/spmkit-data-hunter/blob/main/CITATION.cff">CITATION.cff</a></li>
+<li><strong>Data Hunter → human review:</strong> implemented output and required decision gate.</li>
+<li><strong>Human review → Core fixture:</strong> documented manual handoff; requires lawful
+  redistribution or a private test arrangement.</li>
+<li><strong>Human review → Validation design:</strong> documented manual handoff; mensurand,
+  reference, independence and tolerance must be frozen separately.</li>
+<li><strong>Automatic Data Hunter → Validation pipeline:</strong> not implemented and not implied.</li>
 </ul>
-<hr />
-<p><a href="../phantoms/">:material-arrow-left: Phantoms</a> · <a href="../validation/">:material-arrow-right: Validation</a></p>
+<h2 id="scientific-status-and-limitations">Scientific status and limitations<a class="headerlink" href="#scientific-status-and-limitations" title="Permanent link">&para;</a></h2>
+<p>Data Hunter's offline classification/campaign machinery is software-tested.
+Live source completeness depends on public APIs, query wording, metadata and
+campaign bounds. Discovery does not grant <code>LEVEL 2</code>, <code>LEVEL 3</code> or higher evidence
+to a dataset or SPM-Kit capability.</p>
+<ul>
+<li>External input is untrusted; URL, payload, archive and metadata safety matter.</li>
+<li>Repository licenses and record rights can be incomplete or ambiguous.</li>
+<li>A raw native file can validate a parser route only within its demonstrated scope.</li>
+<li>Public records may change or disappear; preserve identifiers and checksums.</li>
+<li>Human scientific review remains mandatory.</li>
+</ul>
+<h2 id="contribute">Contribute<a class="headerlink" href="#contribute" title="Permanent link">&para;</a></h2>
+<p>Useful contributions include official-API adapters, offline fixtures for source
+schemas, file-category rules that avoid false positives, evidence-taxonomy
+clarifications and human-reviewed dataset proposals with explicit rights.</p>
+<p><a href="https://github.com/kegouro/spmkit-data-hunter">Repository</a> ·
+<a href="../workflows/#workflow-c-find-a-public-format-fixture">Workflow: find a format fixture</a> ·
+<a href="../phantoms/">Next: Phantoms</a></p>
 
 
 
 
 
 
+
+  
+  
 
 
 
@@ -1733,7 +2800,7 @@ classifies their scientific utility for validation campaigns.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../phantoms/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Phantoms">
+          <a href="../fathom/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Fathom">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1743,20 +2810,20 @@ classifies their scientific utility for validation campaigns.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Phantoms
+                Fathom
               </div>
             </div>
           </a>
         
         
           
-          <a href="../validation/" class="md-footer__link md-footer__link--next" aria-label="Next: Validation">
+          <a href="../phantoms/" class="md-footer__link md-footer__link--next" aria-label="Next: Phantoms">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Validation
+                Phantoms
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -1772,11 +2839,10 @@ classifies their scientific utility for validation campaigns.</p>
     <div class="md-footer-meta__inner md-grid">
       <div class="md-copyright">
   
+    <div class="md-copyright__highlight">
+      Copyright © José Labarca Baeza · MIT-licensed software and documentation
+    </div>
   
-    Made with
-    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-      Material for MkDocs
-    </a>
   
 </div>
       

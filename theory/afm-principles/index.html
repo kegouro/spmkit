@@ -6,8 +6,10 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Open numerical engine and interactive workspace for Scanning Probe Microscopy (SPM)">
+        <meta name="description" content="Open numerical analysis, interactive workflows, theory, and inspectable validation evidence for AFM, KPFM, and force spectroscopy">
       
+      
+        <meta name="author" content="José Labarca Baeza">
       
       
         <link rel="canonical" href="https://kegouro.github.io/spmkit/theory/afm-principles/">
@@ -27,7 +29,7 @@
     
     
       
-        <title>AFM principles - SPM-Kit · Fathom</title>
+        <title>AFM principles - SPM-Kit ecosystem</title>
       
     
     
@@ -45,12 +47,6 @@
     
     
       
-        
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
-      
     
     
       <link rel="stylesheet" href="../../stylesheets/fathom.css">
@@ -61,6 +57,24 @@
 
     
     
+  
+  
+  
+  
+  <meta name="author" content="José Labarca Baeza">
+  <meta name="keywords" content="AFM, SPM, KPFM, force spectroscopy, nanomechanics, scientific Python, reproducible microscopy">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SPM-Kit ecosystem">
+  <meta property="og:title" content="AFM principles · SPM-Kit ecosystem">
+  <meta property="og:description" content="Open numerical analysis, interactive workflows, theory, and inspectable validation evidence for AFM, KPFM, and force spectroscopy">
+  <meta property="og:url" content="https://kegouro.github.io/spmkit/theory/afm-principles/">
+  <meta property="og:image" content="https://kegouro.github.io/spmkit/assets/ecosystem/core/banner.png">
+  <meta property="og:image:alt" content="SPM-Kit open AFM and SPM numerical engine">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AFM principles · SPM-Kit ecosystem">
+  <meta name="twitter:description" content="Open numerical analysis, interactive workflows, theory, and inspectable validation evidence for AFM, KPFM, and force spectroscopy">
+  <meta name="twitter:image" content="https://kegouro.github.io/spmkit/assets/ecosystem/core/banner.png">
+
   </head>
   
   
@@ -96,7 +110,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="SPM-Kit · Fathom" class="md-header__button md-logo" aria-label="SPM-Kit · Fathom" data-md-component="logo">
+    <a href="../.." title="SPM-Kit ecosystem" class="md-header__button md-logo" aria-label="SPM-Kit ecosystem" data-md-component="logo">
       
   <img src="../../images/brand/fathom_logo_light.png" alt="logo">
 
@@ -109,7 +123,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            SPM-Kit · Fathom
+            SPM-Kit ecosystem
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -240,17 +254,20 @@
   
   
   
-    <li class="md-tabs__item">
-      <a href="../../getting-started/" class="md-tabs__link">
-        
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
   
   
     
   
   Getting started
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -292,7 +309,7 @@
   
     
   
-  Manual
+  User manual
 
         </a>
       </li>
@@ -349,6 +366,28 @@
     
     
       <li class="md-tabs__item">
+        <a href="../../SCIENTIFIC_STATUS/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Scientific evidence
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
         <a href="../../ARCHITECTURE/" class="md-tabs__link">
           
   
@@ -360,6 +399,44 @@
         </a>
       </li>
     
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CONTRIBUTING/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Contributing
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CITATION/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Citation
+
+      </a>
+    </li>
   
 
       
@@ -393,12 +470,12 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="SPM-Kit · Fathom" class="md-nav__button md-logo" aria-label="SPM-Kit · Fathom" data-md-component="logo">
+    <a href="../.." title="SPM-Kit ecosystem" class="md-nav__button md-logo" aria-label="SPM-Kit ecosystem" data-md-component="logo">
       
   <img src="../../images/brand/fathom_logo_light.png" alt="logo">
 
     </a>
-    SPM-Kit · Fathom
+    SPM-Kit ecosystem
   </label>
   
     <div class="md-nav__source">
@@ -448,9 +525,40 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../getting-started/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../ecosystem/workflows/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -464,7 +572,143 @@
   
   
 
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/first-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    First analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/fathom-quick-start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fathom quick start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -482,6 +726,8 @@
       
         
           
+        
+      
         
       
         
@@ -628,10 +874,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-is-the-afm" class="md-nav__link">
+  <a href="#tip-cantilever-and-interaction" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What is the AFM?
+        Tip, cantilever and interaction
       
     </span>
   </a>
@@ -639,10 +885,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-optical-lever-trick" class="md-nav__link">
+  <a href="#optical-lever-and-detector" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The optical lever trick
+        Optical lever and detector
       
     </span>
   </a>
@@ -650,10 +896,43 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#implementation-in-spm-kit" class="md-nav__link">
+  <a href="#feedback-and-scanner" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Implementation in SPM-Kit
+        Feedback and scanner
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#coordinates-and-physical-scale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coordinates and physical scale
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#raw-signal-versus-calibrated-quantity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raw signal versus calibrated quantity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#spm-kit-implementation-and-evidence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SPM-Kit implementation and evidence
       
     </span>
   </a>
@@ -795,7 +1074,35 @@
   <span class="md-ellipsis">
     
   
-    Roughness & spectral analysis
+    Roughness
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spectral-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral analysis
   
 
     
@@ -851,7 +1158,7 @@
   <span class="md-ellipsis">
     
   
-    SPM-Kit workflows
+    Implementation map
   
 
     
@@ -973,7 +1280,7 @@
   <span class="md-ellipsis">
     
   
-    Manual
+    User manual
   
 
     
@@ -995,7 +1302,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Manual
+    User manual
   
 
           </label>
@@ -1174,6 +1481,16 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1226,6 +1543,118 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/choose/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Choose a component
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Install matrix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Artifact contracts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Example workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -1291,14 +1720,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../ecosystem/phantoms/" class="md-nav__link">
+      <a href="../../ecosystem/data-hunter/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Phantoms
+    Data Hunter
   
 
     
@@ -1319,14 +1748,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../ecosystem/data-hunter/" class="md-nav__link">
+      <a href="../../ecosystem/phantoms/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Data Hunter
+    Phantoms
   
 
     
@@ -1396,6 +1825,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/brand/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Brand governance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1423,6 +1880,8 @@
         
       
         
+          
+        
       
     
     
@@ -1440,7 +1899,227 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
         
           
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+          <div class="md-nav__link md-nav__container">
+            <a href="../../ecosystem/workflows/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific evidence
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Scientific evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SCIENTIFIC_STATUS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific status
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VALIDATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation campaigns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../TRACEABILITY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Traceability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../FILE_FORMATS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Format maturity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../KNOWN_LIMITATIONS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Known limitations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
             
   
   
@@ -1458,8 +2137,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1532,62 +2211,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../VALIDATION/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Validation
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../TRACEABILITY/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Traceability
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../ROADMAP/" class="md-nav__link">
         
   
@@ -1637,9 +2260,91 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ACKNOWLEDGEMENTS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Acknowledgements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CITATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Citation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1665,75 +2370,128 @@
 
 
 <h1 id="afm-principles">AFM principles<a class="headerlink" href="#afm-principles" title="Permanent link">&para;</a></h1>
-<h2 id="what-is-the-afm">What is the AFM?<a class="headerlink" href="#what-is-the-afm" title="Permanent link">&para;</a></h2>
-<p>The atomic force microscope (AFM) is, in essence, a nanometric finger. Instead
-of lenses and light, it uses a <strong>sharp tip</strong> — with a radius of just a few
-nanometers — mounted on the end of a flexible <strong>cantilever</strong> that scans the
-surface line by line.</p>
-<p>When the tip approaches the sample, <strong>tip-sample forces</strong> appear: van der Waals
-attraction at medium distances, Pauli repulsion on contact, plus adhesion,
-capillarity, and electrostatic forces. These forces <em>bend</em> the cantilever. The
-cantilever behaves as a spring of constant <span class="arithmatex">\(k\)</span> (Hooke's law, <span class="arithmatex">\(F = -k \cdot z\)</span>),
-so measuring its deflection is equivalent to measuring the force.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>                 laser ──►  ┌─── photodiode (4 quadrants)
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>              ╲            │      A ── B
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>               ╲           │      C ── D   (A+B) − (C+D) = deflection
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                ╲          │
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>                 ╲         │   feedback loop: Z-piezo keeps
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>                  ●─ ─ ─ ─●   (A+B)−(C+D) = setpoint → topography
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>            ╱╲ cantilever          ▲
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>           ╱  ╲ (spring k)         │  Z-piezo
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>          ●    tip                  │
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    ───── ──── sample ─────────────►│
-</span></code></pre></div>
-<p><em>migrated from <code>docs/assets/legacy/theory-standalone.html</code> §01 (AFM setup SVG);
-reproduced here as a static ASCII diagram so the figure survives in the native
-build without shipping a binary asset.</em></p>
-<h2 id="the-optical-lever-trick">The optical lever trick<a class="headerlink" href="#the-optical-lever-trick" title="Permanent link">&para;</a></h2>
-<p>The deflection is minuscule (fractions of a nanometer), so it is amplified
-optically: a <strong>laser</strong> strikes the back of the cantilever and reflects onto a
-<strong>four-quadrant photodiode</strong>. A tiny tilt of the lever displaces the laser spot
-by several millimeters on the photodiode: geometric gain for free.</p>
-<p>A <strong>feedback loop</strong> compares the photodiode signal with a setpoint value and
-commands the <strong>piezoelectric scanner</strong> to raise or lower the sample to keep
-the interaction constant. The correction signal, point by point, <em>is</em> the
-topography.</p>
-<div class="admonition definition">
-<p class="admonition-title">Key physics</p>
-<p>The AFM does not require the sample to conduct (unlike STM). It resolves
-<strong>sub-nanometric heights</strong> and <strong>piconewton forces</strong> because it converts a
-tiny mechanical deflection into a large optical signal, and because a fast
-loop prevents the tip from "crashing" into the surface.</p>
-</div>
-<hr />
-<h2 id="implementation-in-spm-kit">Implementation in SPM-Kit<a class="headerlink" href="#implementation-in-spm-kit" title="Permanent link">&para;</a></h2>
+<p>An atomic force microscope converts tip–sample interaction into a calibrated
+height or force signal. The image is not a direct photograph: it is the output
+of a sensor, feedback controller, scanner and reconstruction convention.</p>
+<figure class="science-figure">
+  <img src="../../assets/theory/afm-instrument.svg" alt="AFM instrument path from sample and tip through cantilever, laser, quadrant photodiode, feedback and scanner correction" width="960" height="340">
+  <figcaption>The optical lever amplifies cantilever angle. Feedback turns the detector error into a scanner Z command that is recorded as topography in constant-interaction modes.</figcaption>
+</figure>
+
+<h2 id="tip-cantilever-and-interaction">Tip, cantilever and interaction<a class="headerlink" href="#tip-cantilever-and-interaction" title="Permanent link">&para;</a></h2>
+<p>A sharp tip sits at the end of a compliant cantilever. When the interaction
+force <span class="arithmatex">\(F\)</span> is small enough for a linear cantilever model,</p>
+<div class="arithmatex">\[
+F=-k\,d,
+\]</div>
+<p>where <span class="arithmatex">\(k\)</span> is spring constant in N m<span class="arithmatex">\(^{-1}\)</span> and <span class="arithmatex">\(d\)</span> is cantilever deflection in
+metres. The sign depends on the detector and coordinate convention. Van der
+Waals, capillary, electrostatic, chemical and repulsive contact forces can all
+contribute; “height” is therefore inferred through an operating-mode-specific
+control law, not read by a camera.</p>
+<h2 id="optical-lever-and-detector">Optical lever and detector<a class="headerlink" href="#optical-lever-and-detector" title="Permanent link">&para;</a></h2>
+<p>A laser reflected from the back of the cantilever moves across a quadrant
+photodiode. A vertical difference signal such as <span class="arithmatex">\((A+B)-(C+D)\)</span> is converted
+from volts to deflection with a deflection-sensitivity calibration. Multiplying
+by <span class="arithmatex">\(k\)</span> converts deflection to force. Detector saturation, laser drift, cross-talk
+and an incorrect sensitivity propagate into force results.</p>
+<h2 id="feedback-and-scanner">Feedback and scanner<a class="headerlink" href="#feedback-and-scanner" title="Permanent link">&para;</a></h2>
+<p>The controller compares the measured interaction signal with a setpoint and
+commands the Z piezo. The reported topography can correspond to this correction,
+the residual/error signal, or another vendor-defined channel. Feedback gains,
+line speed and bandwidth determine whether steep features are tracked or
+distorted.</p>
+<h2 id="coordinates-and-physical-scale">Coordinates and physical scale<a class="headerlink" href="#coordinates-and-physical-scale" title="Permanent link">&para;</a></h2>
+<p>SPM arrays have at least four coordinate choices:</p>
+<ul>
+<li>array row/column indexing;</li>
+<li>physical X/Y coordinates derived from field of view and pixel count;</li>
+<li>fast/slow scan axes and forward/backward direction;</li>
+<li>Z/force sign and unit conventions.</li>
+</ul>
+<p>A transpose or vertical flip can preserve roughness statistics while changing
+spatial interpretation. A unit error can change a modulus by orders of
+magnitude. SPM-Kit domain objects therefore keep array shape, X/Y range, unit,
+direction and source metadata where the reader can recover them.</p>
+<h2 id="raw-signal-versus-calibrated-quantity">Raw signal versus calibrated quantity<a class="headerlink" href="#raw-signal-versus-calibrated-quantity" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Concept</th>
-<th>Where</th>
-<th>Status</th>
+<th>Raw/near-raw signal</th>
+<th>Required context</th>
+<th>Calibrated/derived quantity</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Topography reading</td>
-<td><code>spmkit.core.io</code> (<code>.nid</code>, <code>.nhf</code>, <code>.gwy</code> readers)</td>
-<td><span class="level-badge level-1">LEVEL 1 SOFTWARE_VERIFIED</span></td>
+<td>detector voltage</td>
+<td>deflection sensitivity</td>
+<td>cantilever deflection (m)</td>
 </tr>
 <tr>
-<td>Leveling (plane, polynomial, per-row)</td>
-<td><code>spmkit.core.analysis</code></td>
-<td><span class="level-badge level-1">LEVEL 1 SOFTWARE_VERIFIED</span></td>
+<td>cantilever deflection</td>
+<td>spring constant</td>
+<td>force (N)</td>
 </tr>
 <tr>
-<td>Line profiles (bilinear interpolation)</td>
-<td><code>spmkit.core.analysis</code></td>
-<td><span class="level-badge level-1">LEVEL 1 SOFTWARE_VERIFIED</span></td>
+<td>scanner command/counts</td>
+<td>scanner calibration and axis convention</td>
+<td>topography (m)</td>
+</tr>
+<tr>
+<td>force and ramp coordinate</td>
+<td>tip/sample geometry, contact point, Poisson ratio</td>
+<td>indentation and modulus</td>
+</tr>
+<tr>
+<td>electrostatic null voltage</td>
+<td>sign convention and calibrated tip work function</td>
+<td>CPD/work function</td>
 </tr>
 </tbody>
 </table>
-<p><a href="../">:material-arrow-left: Theory overview</a> · <a href="../operating-modes/">:material-arrow-right: Operating modes</a></p>
+<p>Calibration metadata are inputs to a result, not decorative labels.</p>
+<h2 id="spm-kit-implementation-and-evidence">SPM-Kit implementation and evidence<a class="headerlink" href="#spm-kit-implementation-and-evidence" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Current path</th>
+<th>Evidence</th>
+<th>Limitation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>image/force inspection</td>
+<td><code>spmkit.core.io.load_any</code>, reader contracts</td>
+<td>format-specific Level 1/2</td>
+<td>not every variant is demonstrated</td>
+</tr>
+<tr>
+<td>image domain model</td>
+<td><code>spmkit.core.models.SPMData</code> / <code>SPMChannel</code></td>
+<td>Level 1</td>
+<td>metadata depend on source availability</td>
+</tr>
+<tr>
+<td>force calibration functions</td>
+<td><code>spmkit.core.analysis.calibration</code></td>
+<td>Level 1/2 paths</td>
+<td>calibration constants must be externally defensible</td>
+</tr>
+<tr>
+<td>file inspection CLI</td>
+<td><code>spmkit info</code></td>
+<td>Level 1</td>
+<td>inspection does not validate an analysis</td>
+</tr>
+</tbody>
+</table>
+<p>Fathom routes image data to <strong>Imagen</strong> and force data to <strong>Curva de fuerza</strong> or
+<strong>Mapa</strong>. It uses the same Core reader/domain objects.</p>
+<p><a href="../"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg></span> Theory overview</a> ·
+<a href="../operating-modes/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Operating modes</a></p>
 
 
 
@@ -1810,11 +2568,10 @@ loop prevents the tip from "crashing" into the surface.</p>
     <div class="md-footer-meta__inner md-grid">
       <div class="md-copyright">
   
+    <div class="md-copyright__highlight">
+      Copyright © José Labarca Baeza · MIT-licensed software and documentation
+    </div>
   
-    Made with
-    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-      Material for MkDocs
-    </a>
   
 </div>
       

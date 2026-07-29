@@ -6,8 +6,10 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Open numerical engine and interactive workspace for Scanning Probe Microscopy (SPM)">
+        <meta name="description" content="Hertz, paraboloid, Sneddon, DMT, and experimental JKR contact models with assumptions, units, implementation paths, and evidence limits.">
       
+      
+        <meta name="author" content="José Labarca Baeza">
       
       
         <link rel="canonical" href="https://kegouro.github.io/spmkit/theory/contact-mechanics/">
@@ -27,7 +29,7 @@
     
     
       
-        <title>Contact mechanics - SPM-Kit · Fathom</title>
+        <title>Contact mechanics - SPM-Kit ecosystem</title>
       
     
     
@@ -45,12 +47,6 @@
     
     
       
-        
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
-      
     
     
       <link rel="stylesheet" href="../../stylesheets/fathom.css">
@@ -61,6 +57,24 @@
 
     
     
+  
+  
+  
+  
+  <meta name="author" content="José Labarca Baeza">
+  <meta name="keywords" content="AFM, SPM, KPFM, force spectroscopy, nanomechanics, scientific Python, reproducible microscopy">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SPM-Kit ecosystem">
+  <meta property="og:title" content="Contact mechanics · SPM-Kit ecosystem">
+  <meta property="og:description" content="Hertz, paraboloid, Sneddon, DMT, and experimental JKR contact models with assumptions, units, implementation paths, and evidence limits.">
+  <meta property="og:url" content="https://kegouro.github.io/spmkit/theory/contact-mechanics/">
+  <meta property="og:image" content="https://kegouro.github.io/spmkit/assets/ecosystem/core/banner.png">
+  <meta property="og:image:alt" content="SPM-Kit open AFM and SPM numerical engine">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Contact mechanics · SPM-Kit ecosystem">
+  <meta name="twitter:description" content="Hertz, paraboloid, Sneddon, DMT, and experimental JKR contact models with assumptions, units, implementation paths, and evidence limits.">
+  <meta name="twitter:image" content="https://kegouro.github.io/spmkit/assets/ecosystem/core/banner.png">
+
   </head>
   
   
@@ -96,7 +110,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="SPM-Kit · Fathom" class="md-header__button md-logo" aria-label="SPM-Kit · Fathom" data-md-component="logo">
+    <a href="../.." title="SPM-Kit ecosystem" class="md-header__button md-logo" aria-label="SPM-Kit ecosystem" data-md-component="logo">
       
   <img src="../../images/brand/fathom_logo_light.png" alt="logo">
 
@@ -109,7 +123,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            SPM-Kit · Fathom
+            SPM-Kit ecosystem
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -240,17 +254,20 @@
   
   
   
-    <li class="md-tabs__item">
-      <a href="../../getting-started/" class="md-tabs__link">
-        
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
   
   
     
   
   Getting started
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -292,7 +309,7 @@
   
     
   
-  Manual
+  User manual
 
         </a>
       </li>
@@ -349,6 +366,28 @@
     
     
       <li class="md-tabs__item">
+        <a href="../../SCIENTIFIC_STATUS/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Scientific evidence
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
         <a href="../../ARCHITECTURE/" class="md-tabs__link">
           
   
@@ -360,6 +399,44 @@
         </a>
       </li>
     
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CONTRIBUTING/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Contributing
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CITATION/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Citation
+
+      </a>
+    </li>
   
 
       
@@ -393,12 +470,12 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="SPM-Kit · Fathom" class="md-nav__button md-logo" aria-label="SPM-Kit · Fathom" data-md-component="logo">
+    <a href="../.." title="SPM-Kit ecosystem" class="md-nav__button md-logo" aria-label="SPM-Kit ecosystem" data-md-component="logo">
       
   <img src="../../images/brand/fathom_logo_light.png" alt="logo">
 
     </a>
-    SPM-Kit · Fathom
+    SPM-Kit ecosystem
   </label>
   
     <div class="md-nav__source">
@@ -448,9 +525,40 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../getting-started/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../ecosystem/workflows/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -464,7 +572,143 @@
   
   
 
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/first-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    First analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/fathom-quick-start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fathom quick start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -482,6 +726,8 @@
       
         
           
+        
+      
         
       
         
@@ -712,10 +958,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#hertz-contact-spherical-paraboloid-tip" class="md-nav__link">
+  <a href="#reduced-modulus" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Hertz contact (spherical / paraboloid tip)
+        Reduced modulus
       
     </span>
   </a>
@@ -723,10 +969,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sneddon-contact-conical-tip" class="md-nav__link">
+  <a href="#hertz-sphere-and-paraboloid" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Sneddon contact (conical tip)
+        Hertz sphere and paraboloid
       
     </span>
   </a>
@@ -734,10 +980,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#reduced-modulus-and-youngs-modulus" class="md-nav__link">
+  <a href="#sneddon-cone" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Reduced modulus and Young's modulus
+        Sneddon cone
       
     </span>
   </a>
@@ -745,10 +991,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#evidence-status" class="md-nav__link">
+  <a href="#dmt-offset-path" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Evidence status
+        DMT offset path
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#experimental-jkr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Experimental JKR
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fit-window-discipline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fit-window discipline
       
     </span>
   </a>
@@ -806,7 +1074,35 @@
   <span class="md-ellipsis">
     
   
-    Roughness & spectral analysis
+    Roughness
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spectral-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral analysis
   
 
     
@@ -862,7 +1158,7 @@
   <span class="md-ellipsis">
     
   
-    SPM-Kit workflows
+    Implementation map
   
 
     
@@ -984,7 +1280,7 @@
   <span class="md-ellipsis">
     
   
-    Manual
+    User manual
   
 
     
@@ -1006,7 +1302,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Manual
+    User manual
   
 
           </label>
@@ -1185,6 +1481,16 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1237,6 +1543,118 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/choose/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Choose a component
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Install matrix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Artifact contracts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Example workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -1302,14 +1720,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../ecosystem/phantoms/" class="md-nav__link">
+      <a href="../../ecosystem/data-hunter/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Phantoms
+    Data Hunter
   
 
     
@@ -1330,14 +1748,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../ecosystem/data-hunter/" class="md-nav__link">
+      <a href="../../ecosystem/phantoms/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Data Hunter
+    Phantoms
   
 
     
@@ -1407,6 +1825,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/brand/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Brand governance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1434,6 +1880,8 @@
         
       
         
+          
+        
       
     
     
@@ -1451,7 +1899,227 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
         
           
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+          <div class="md-nav__link md-nav__container">
+            <a href="../../ecosystem/workflows/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific evidence
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Scientific evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SCIENTIFIC_STATUS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific status
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VALIDATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation campaigns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../TRACEABILITY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Traceability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../FILE_FORMATS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Format maturity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../KNOWN_LIMITATIONS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Known limitations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
             
   
   
@@ -1469,8 +2137,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1543,62 +2211,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../VALIDATION/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Validation
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../TRACEABILITY/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Traceability
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../ROADMAP/" class="md-nav__link">
         
   
@@ -1648,9 +2260,91 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ACKNOWLEDGEMENTS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Acknowledgements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CITATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Citation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1676,79 +2370,91 @@
 
 
 <h1 id="contact-mechanics">Contact mechanics<a class="headerlink" href="#contact-mechanics" title="Permanent link">&para;</a></h1>
-<p>Once in contact, the F-δ curve (force vs. <em>indentation</em>) is fit to a contact
-mechanics model to extract the local <strong>Young's modulus</strong>. The model depends on
-the tip geometry.</p>
-<h2 id="hertz-contact-spherical-paraboloid-tip">Hertz contact (spherical / paraboloid tip)<a class="headerlink" href="#hertz-contact-spherical-paraboloid-tip" title="Permanent link">&para;</a></h2>
+<p>Contact models turn a calibrated force-indentation segment into parameters such
+as reduced or sample modulus. They are conditional physical models, not generic
+curve shapes: geometry, elasticity, adhesion, substrate effects, contact-point
+choice, and fit depth all determine whether a fitted number is meaningful.</p>
+<figure class="science-figure">
+  <img src="../../assets/theory/contact-geometries.svg" alt="Sphere or paraboloid and cone indenting elastic half-spaces, with radius, half-angle and indentation labeled" width="960" height="440">
+  <figcaption>SPM-Kit implements spherical/paraboloidal and conical elastic laws. The geometry parameters are measured inputs, not fit decorations.</figcaption>
+</figure>
+
+<h2 id="reduced-modulus">Reduced modulus<a class="headerlink" href="#reduced-modulus" title="Permanent link">&para;</a></h2>
+<p>For sample modulus <span class="arithmatex">\(E_s\)</span> (Pa), sample Poisson ratio <span class="arithmatex">\(\nu_s\)</span>, tip modulus <span class="arithmatex">\(E_t\)</span>
+(Pa), and tip Poisson ratio <span class="arithmatex">\(\nu_t\)</span>,</p>
 <div class="arithmatex">\[
-F = \frac{4}{3} E^* \sqrt{R} \cdot \delta^{3/2}
+\frac{1}{E^*}=\frac{1-\nu_s^2}{E_s}+\frac{1-\nu_t^2}{E_t}.
 \]</div>
-<p>with <span class="arithmatex">\(R\)</span> the tip radius, <span class="arithmatex">\(\delta\)</span> the indentation, <span class="arithmatex">\(E^*\)</span> the reduced modulus.
-The characteristic <strong>3/2 exponent</strong> identifies the sphere.</p>
-<h2 id="sneddon-contact-conical-tip">Sneddon contact (conical tip)<a class="headerlink" href="#sneddon-contact-conical-tip" title="Permanent link">&para;</a></h2>
+<p><span class="arithmatex">\(E^*\)</span> is the reduced modulus (Pa). SPM-Kit's main elastic fitter assumes a rigid
+tip, so <span class="arithmatex">\(E_s=E^*(1-\nu_s^2)\)</span>. This approximation fails when tip compliance is
+not negligible.</p>
+<h2 id="hertz-sphere-and-paraboloid">Hertz sphere and paraboloid<a class="headerlink" href="#hertz-sphere-and-paraboloid" title="Permanent link">&para;</a></h2>
 <div class="arithmatex">\[
-F = \frac{2}{\pi} E^* \tan(\alpha) \cdot \delta^2
+F=\frac{4}{3}E^*\sqrt{R}\,\delta^{3/2}.
 \]</div>
-<p>with <span class="arithmatex">\(\alpha\)</span> the cone half-angle. The geometric footprint changes the
-exponent to <strong>2</strong>.</p>
-<h2 id="reduced-modulus-and-youngs-modulus">Reduced modulus and Young's modulus<a class="headerlink" href="#reduced-modulus-and-youngs-modulus" title="Permanent link">&para;</a></h2>
+<p><span class="arithmatex">\(F\)</span> is normal load (N), <span class="arithmatex">\(R\)</span> tip radius (m), and <span class="arithmatex">\(\delta\)</span> indentation (m).
+Assumptions include small-strain elastic, frictionless, non-adhesive contact
+between smooth bodies; an isotropic homogeneous half-space; and contact radius
+small relative to sample thickness and relevant curvature. In
+<code>spmkit.core.analysis.mechanics.fit_hertz</code>, <code>sphere</code> and <code>paraboloid</code> use this
+same local law. Current evidence is <code>LEVEL 2 — NUMERICALLY_VERIFIED</code> for the
+declared synthetic-recovery cases, not physical validation.</p>
+<h2 id="sneddon-cone">Sneddon cone<a class="headerlink" href="#sneddon-cone" title="Permanent link">&para;</a></h2>
 <div class="arithmatex">\[
-E^* = \frac{E}{1 - \nu^2}
+F=\frac{2}{\pi}E^*\tan(\alpha)\,\delta^2.
 \]</div>
-<p>(rigid tip) · <span class="arithmatex">\(E\)</span> is the sample's Young's modulus, <span class="arithmatex">\(\nu\)</span> is Poisson's ratio.
-In general:</p>
+<p><span class="arithmatex">\(\alpha\)</span> is cone half-angle (rad). The other symbols and units are as above.
+The ideal cone is singular at its apex, so a real rounded tip may behave
+spherically at shallow indentation and conically only over a later interval.
+<code>mechanics.fit_hertz(..., model="cone", half_angle=...)</code> implements this law.
+It has synthetic recovery evidence at <code>LEVEL 2</code> within the tested interval.</p>
+<h2 id="dmt-offset-path">DMT offset path<a class="headerlink" href="#dmt-offset-path" title="Permanent link">&para;</a></h2>
+<p>The implemented DMT path uses a spherical elastic term plus a constant adhesive
+offset:</p>
 <div class="arithmatex">\[
-\frac{1}{E^*} = \frac{1-\nu_1^2}{E_1} + \frac{1-\nu_2^2}{E_2}
+F=\frac{4}{3}E^*\sqrt{R}\,\delta^{3/2}-F_{\mathrm{adh}}.
 \]</div>
-<p>The fit returns <span class="arithmatex">\(E\)</span> (in Pa), the contact point, the <strong>adhesion</strong>, and the fit
-error (RMSE). Repeating this on a grid of points — <strong>force-volume
-spectroscopy</strong> — produces a <strong>modulus map</strong>: an image where each pixel is the
-local stiffness. This distinguishes hard and soft domains in a composite
-material, with the same lateral resolution as the topography.</p>
-<div class="admonition implementation">
-<p class="admonition-title">In SPM-Kit</p>
-<p>The mechanics module supports <code>sphere</code>/<code>paraboloid</code> (exponent 1.5) and
-<code>cone</code> (exponent 2.0) models, corrects the baseline, detects the contact
-point, and fits by least squares. The <strong>Nanomechanics</strong> perspective shows
-the Hertz fit and builds modulus maps.</p>
-</div>
-<hr />
-<h2 id="evidence-status">Evidence status<a class="headerlink" href="#evidence-status" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Model</th>
-<th>Recovery test</th>
-<th>Tolerance</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Hertz / DMT</td>
-<td>Young's modulus from synthetic curves</td>
-<td>&lt; 2% with 1% noise</td>
-</tr>
-<tr>
-<td>JKR (adhesive)</td>
-<td><span class="arithmatex">\(E^*\)</span>, adhesion work</td>
-<td>&lt; 2% (<span class="arithmatex">\(E^*\)</span>), Hertz limit <span class="arithmatex">\(w=0\)</span></td>
-</tr>
-<tr>
-<td>Sneddon (cone)</td>
-<td>Young's modulus</td>
-<td>&lt; 2%</td>
-</tr>
-</tbody>
-</table>
-<p>All models pass <strong>synthetic recovery tests</strong> in
-<a href="https://github.com/kegouro/spmkit/blob/main/tests/validation/test_recovery.py"><code>tests/validation/test_recovery.py</code></a>.</p>
-<p><a href="../force-distance/">:material-arrow-left: Force-distance curves</a> · <a href="../kpfm/">:material-arrow-right: KPFM</a></p>
+<p><span class="arithmatex">\(F_{\mathrm{adh}}\)</span> is the measured pull-off magnitude (N). This is a specific
+operational approximation in <code>mechanics.fit_hertz(..., model="dmt")</code>, suitable
+for testing the declared offset model. It is not a complete material-selection
+rule for the DMT adhesion regime. Synthetic modulus/adhesion recovery supports
+<code>LEVEL 2</code>; no physical-reference campaign promotes it further.</p>
+<h2 id="experimental-jkr">Experimental JKR<a class="headerlink" href="#experimental-jkr" title="Permanent link">&para;</a></h2>
+<p>SPM-Kit's experimental JKR route uses contact radius <span class="arithmatex">\(a\)</span> (m), work of adhesion
+<span class="arithmatex">\(w\)</span> (J m<span class="arithmatex">\(^{-2}\)</span>), radius <span class="arithmatex">\(R\)</span> (m), and reduced modulus <span class="arithmatex">\(E^*\)</span> (Pa):</p>
+<div class="arithmatex">\[
+\delta(a)=\frac{a^2}{R}-\sqrt{\frac{2\pi w a}{E^*}},
+\qquad
+F(a)=\frac{4E^*a^3}{3R}-\sqrt{8\pi wE^*a^3}.
+\]</div>
+<p><code>spmkit.core.analysis.experimental.fit_jkr</code> performs a bounded grid search and
+is explicitly marked experimental. Analytical construction and synthetic
+recovery support a narrow <code>LEVEL 2</code> numerical claim, including the <span class="arithmatex">\(w\to0\)</span>
+Hertz limit. They do not validate JKR for a particular material or tip.</p>
+<h2 id="fit-window-discipline">Fit-window discipline<a class="headerlink" href="#fit-window-discipline" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Exclude non-contact points and pull-off unless the selected model includes them.</li>
+<li>Keep indentation small enough for the assumed geometry, but large enough to
+  exceed contact-point and noise uncertainty.</li>
+<li>Repeat fits across plausible contact points and windows.</li>
+<li>Inspect residual structure, <span class="arithmatex">\(R^2\)</span>, RMSE, point count, and parameter stability.</li>
+<li>Treat substrate, viscoelasticity, plasticity, poroelasticity, roughness, and
+  adhesion regime as model-selection questions, not nuisance noise.</li>
+</ul>
+<p>In automation, use <code>spmkit forcecurve</code>; for maps use <code>spmkit forcemap</code>. Fathom's
+<strong>Curva de fuerza</strong> and <strong>Mapa</strong> perspectives expose these paths. A modulus map
+inherits every calibration and model assumption of every pixel fit.</p>
+<p><a href="../force-distance/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg></span> Force-distance curves</a> ·
+<a href="../kpfm/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> KPFM</a></p>
 
 
 
 
 
 
+
+  
+  
 
 
 
@@ -1819,11 +2525,10 @@ the Hertz fit and builds modulus maps.</p>
     <div class="md-footer-meta__inner md-grid">
       <div class="md-copyright">
   
+    <div class="md-copyright__highlight">
+      Copyright © José Labarca Baeza · MIT-licensed software and documentation
+    </div>
   
-    Made with
-    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-      Material for MkDocs
-    </a>
   
 </div>
       

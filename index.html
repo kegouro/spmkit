@@ -6,8 +6,10 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Open numerical engine and interactive workspace for Scanning Probe Microscopy (SPM)">
+        <meta name="description" content="Open numerical analysis and an interactive Fathom workspace for AFM, KPFM, force spectroscopy, surface metrology, and reproducible scientific evidence.">
       
+      
+        <meta name="author" content="José Labarca Baeza">
       
       
         <link rel="canonical" href="https://kegouro.github.io/spmkit/">
@@ -25,7 +27,7 @@
     
     
       
-        <title>SPM-Kit · Fathom - SPM-Kit · Fathom</title>
+        <title>SPM-Kit · Open AFM/SPM analysis - SPM-Kit ecosystem</title>
       
     
     
@@ -43,12 +45,6 @@
     
     
       
-        
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
-      
     
     
       <link rel="stylesheet" href="stylesheets/fathom.css">
@@ -59,6 +55,24 @@
 
     
     
+  
+  
+  
+  
+  <meta name="author" content="José Labarca Baeza">
+  <meta name="keywords" content="AFM, SPM, KPFM, force spectroscopy, nanomechanics, scientific Python, reproducible microscopy">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SPM-Kit ecosystem">
+  <meta property="og:title" content="Home · SPM-Kit ecosystem">
+  <meta property="og:description" content="Open numerical analysis and an interactive Fathom workspace for AFM, KPFM, force spectroscopy, surface metrology, and reproducible scientific evidence.">
+  <meta property="og:url" content="https://kegouro.github.io/spmkit/">
+  <meta property="og:image" content="https://kegouro.github.io/spmkit/assets/ecosystem/core/banner.png">
+  <meta property="og:image:alt" content="SPM-Kit open AFM and SPM numerical engine">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Home · SPM-Kit ecosystem">
+  <meta name="twitter:description" content="Open numerical analysis and an interactive Fathom workspace for AFM, KPFM, force spectroscopy, surface metrology, and reproducible scientific evidence.">
+  <meta name="twitter:image" content="https://kegouro.github.io/spmkit/assets/ecosystem/core/banner.png">
+
   </head>
   
   
@@ -78,7 +92,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#spm-kit-fathom" class="md-skip">
+        <a href="#why-this-exists" class="md-skip">
           Skip to content
         </a>
       
@@ -94,7 +108,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="SPM-Kit · Fathom" class="md-header__button md-logo" aria-label="SPM-Kit · Fathom" data-md-component="logo">
+    <a href="." title="SPM-Kit ecosystem" class="md-header__button md-logo" aria-label="SPM-Kit ecosystem" data-md-component="logo">
       
   <img src="images/brand/fathom_logo_light.png" alt="logo">
 
@@ -107,13 +121,13 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            SPM-Kit · Fathom
+            SPM-Kit ecosystem
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              SPM-Kit · Fathom
+              SPM-Kit · Open AFM/SPM analysis
             
           </span>
         </div>
@@ -240,17 +254,20 @@
   
   
   
-    <li class="md-tabs__item">
-      <a href="getting-started/" class="md-tabs__link">
-        
+    
+    
+      <li class="md-tabs__item">
+        <a href="getting-started/" class="md-tabs__link">
+          
   
   
     
   
   Getting started
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -290,7 +307,7 @@
   
     
   
-  Manual
+  User manual
 
         </a>
       </li>
@@ -347,6 +364,28 @@
     
     
       <li class="md-tabs__item">
+        <a href="SCIENTIFIC_STATUS/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Scientific evidence
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
         <a href="ARCHITECTURE/" class="md-tabs__link">
           
   
@@ -358,6 +397,44 @@
         </a>
       </li>
     
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="CONTRIBUTING/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Contributing
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="CITATION/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Citation
+
+      </a>
+    </li>
   
 
       
@@ -378,6 +455,8 @@
           
             
               
+                
+              
               <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
@@ -391,12 +470,12 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="SPM-Kit · Fathom" class="md-nav__button md-logo" aria-label="SPM-Kit · Fathom" data-md-component="logo">
+    <a href="." title="SPM-Kit ecosystem" class="md-nav__button md-logo" aria-label="SPM-Kit ecosystem" data-md-component="logo">
       
   <img src="images/brand/fathom_logo_light.png" alt="logo">
 
     </a>
-    SPM-Kit · Fathom
+    SPM-Kit ecosystem
   </label>
   
     <div class="md-nav__source">
@@ -425,8 +504,6 @@
       
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
-      
-        
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
@@ -470,8 +547,6 @@
   
   
   
-    
-  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -480,10 +555,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#the-problem" class="md-nav__link">
+  <a href="#why-this-exists" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The problem
+        Why this exists
       
     </span>
   </a>
@@ -491,10 +566,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-it-can-do" class="md-nav__link">
+  <a href="#what-it-computes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What it can do
+        What it computes
       
     </span>
   </a>
@@ -502,10 +577,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#architecture" class="md-nav__link">
+  <a href="#one-numerical-core-two-operating-surfaces" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Architecture
+        One numerical core, two operating surfaces
       
     </span>
   </a>
@@ -513,10 +588,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#scientific-evidence" class="md-nav__link">
+  <a href="#scientific-evidence-in-scope" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Scientific evidence
+        Scientific evidence, in scope
       
     </span>
   </a>
@@ -524,176 +599,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ecosystem" class="md-nav__link">
+  <a href="#the-ecosystem" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Ecosystem
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Ecosystem">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#spm-kit" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        SPM-Kit
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#fathom" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Fathom
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#phantoms" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Phantoms
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#data-hunter" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Data Hunter
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#validation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Validation
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pharos" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Pharos
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#learn-explore" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Learn &amp; explore
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Learn &amp; explore">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#theory-guide" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Theory guide
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#user-manual" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        User manual
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#getting-started" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Getting started
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#python-api" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Python API
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#validation-evidence" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Validation evidence
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#extending" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Extending
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-spm-kit-does-not-claim" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What SPM-Kit does not claim
+        The ecosystem
       
     </span>
   </a>
@@ -701,10 +610,43 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#citation" class="md-nav__link">
+  <a href="#start-with-the-task-not-the-repository" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Citation
+        Start with the task, not the repository
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-without-ambiguity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Install without ambiguity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#honest-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Honest scope
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#citation-and-acknowledgement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Citation and acknowledgement
       
     </span>
   </a>
@@ -725,9 +667,40 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="getting-started/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="ecosystem/workflows/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -741,7 +714,143 @@
   
   
 
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="getting-started/first-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    First analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="getting-started/fathom-quick-start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fathom quick start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -757,6 +866,8 @@
       
         
           
+        
+      
         
       
         
@@ -987,7 +1098,35 @@
   <span class="md-ellipsis">
     
   
-    Roughness & spectral analysis
+    Roughness
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="theory/spectral-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral analysis
   
 
     
@@ -1043,7 +1182,7 @@
   <span class="md-ellipsis">
     
   
-    SPM-Kit workflows
+    Implementation map
   
 
     
@@ -1165,7 +1304,7 @@
   <span class="md-ellipsis">
     
   
-    Manual
+    User manual
   
 
     
@@ -1187,7 +1326,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Manual
+    User manual
   
 
           </label>
@@ -1366,6 +1505,16 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1418,6 +1567,118 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ecosystem/choose/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Choose a component
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ecosystem/install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Install matrix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ecosystem/contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Artifact contracts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ecosystem/workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Example workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -1483,14 +1744,14 @@
   
   
     <li class="md-nav__item">
-      <a href="ecosystem/phantoms/" class="md-nav__link">
+      <a href="ecosystem/data-hunter/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Phantoms
+    Data Hunter
   
 
     
@@ -1511,14 +1772,14 @@
   
   
     <li class="md-nav__item">
-      <a href="ecosystem/data-hunter/" class="md-nav__link">
+      <a href="ecosystem/phantoms/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Data Hunter
+    Phantoms
   
 
     
@@ -1588,6 +1849,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ecosystem/brand/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Brand governance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1615,6 +1904,8 @@
         
       
         
+          
+        
       
     
     
@@ -1632,7 +1923,227 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
         
           
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+          <div class="md-nav__link md-nav__container">
+            <a href="ecosystem/workflows/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific evidence
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Scientific evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="SCIENTIFIC_STATUS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific status
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="VALIDATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation campaigns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="TRACEABILITY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Traceability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="FILE_FORMATS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Format maturity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="KNOWN_LIMITATIONS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Known limitations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
             
   
   
@@ -1650,8 +2161,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1724,62 +2235,6 @@
   
   
     <li class="md-nav__item">
-      <a href="VALIDATION/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Validation
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="TRACEABILITY/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Traceability
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="ROADMAP/" class="md-nav__link">
         
   
@@ -1829,9 +2284,91 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ACKNOWLEDGEMENTS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Acknowledgements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="CONTRIBUTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="CITATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Citation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1850,212 +2387,246 @@
               <article class="md-content__inner md-typeset">
                 
                   
+  
+
 
 
   
   
 
 
-<div class="fathom-hero">
-<p><img src="images/brand/fathom_banner_new.jpeg" alt="SPM-Kit · Fathom" width="100%"></p>
-<h1 id="spm-kit-fathom">SPM-Kit · Fathom<a class="headerlink" href="#spm-kit-fathom" title="Permanent link">&para;</a></h1>
-<p class="tagline">Fathom is the scientific workspace. SPM-Kit is the open numerical engine beneath it.</p>
-<p><span class="status-badge">Alpha · 0.1.5.dev0</span></p>
-<div class="fathom-cta">
-<p><a class="primary" href="getting-started.md">Get started</a>
-<a class="secondary" href="manual/index.md">Manual</a>
-<a class="secondary" href="theory/index.md">Theory</a>
-<a class="secondary" href="ecosystem/validation.md">Validation</a>
-<a class="secondary" href="https://github.com/kegouro/spmkit">GitHub</a></p>
+<section class="portal-hero">
+  <p class="portal-kicker">Open AFM/SPM computation · Alpha</p>
+  <h1>Inspect the computation, not just the picture.</h1>
+  <p class="portal-lede">SPM-Kit is the open numerical engine for AFM, KPFM and force-spectroscopy data. Fathom is the interactive scientific workspace over that same core. Together they keep the route from instrument file to reported result visible.</p>
+  <div class="portal-signal">
+    <span><strong>CORE</strong> Python + CLI</span>
+    <span><strong>WORKSPACE</strong> Fathom</span>
+    <span><strong>STATUS</strong> 0.1.5.dev0 · alpha</span>
+    <span><strong>AUTHOR</strong> José Labarca Baeza</span>
+  </div>
+  <div class="portal-actions">
+    <a href="getting-started/installation/">Get started</a>
+    <a href="manual/">Open manual</a>
+    <a href="theory/">Study the theory</a>
+    <a href="SCIENTIFIC_STATUS/">Inspect evidence</a>
+    <a href="https://github.com/kegouro/spmkit">GitHub</a>
+  </div>
+</section>
+
+<div class="io-strip">
+  <span><b>Numerical engine</b> SPM-Kit computes</span>
+  <span aria-hidden="true">→</span>
+  <span><b>Scientific workspace</b> Fathom lets the researcher inspect, configure and operate those computations interactively</span>
 </div>
+
+<h2 id="why-this-exists">Why this exists<a class="headerlink" href="#why-this-exists" title="Permanent link">&para;</a></h2>
+<p>AFM/SPM analysis often crosses proprietary formats, hidden preprocessing, manual
+exports and software-specific defaults. A plausible image is easy to produce;
+an inspectable chain of calibrated data, declared operations and preserved
+evidence is harder.</p>
+<p>SPM-Kit separates that chain into explicit responsibilities:</p>
+<ul>
+<li>readers inspect instrument files and construct calibrated domain models;</li>
+<li>pure Core functions perform numerical analysis without GUI state;</li>
+<li>the Python API and CLI support notebooks, batch jobs, servers and CI;</li>
+<li>Fathom operates the same functions through task-oriented perspectives;</li>
+<li>exports preserve results and available provenance;</li>
+<li>independent companion repositories discover evidence, define synthetic truth
+  and execute external validation campaigns.</li>
+</ul>
+<p>The project is independently created, authored and led by <strong>José Labarca
+Baeza</strong>. It is alpha software: useful, testable and open to inspection, but not
+a certified metrology system.</p>
+<h2 id="what-it-computes">What it computes<a class="headerlink" href="#what-it-computes" title="Permanent link">&para;</a></h2>
+<div class="intent-grid">
+  <article class="intent-card">
+    <h3>Image metrology</h3>
+    <p>Plane, polynomial and row leveling; Sa, Sq, Sz, Ssk and Sku; profiles, grain statistics, radial PSD, Hurst exponent and correlation length.</p>
+  </article>
+  <article class="intent-card">
+    <h3>Force spectroscopy</h3>
+    <p>Baseline and contact detection, Hertz, Sneddon, DMT and experimental JKR fitting, adhesion, dissipation, force-volume property maps and reports.</p>
+  </article>
+  <article class="intent-card">
+    <h3>KPFM</h3>
+    <p>Contact-potential statistics and sample work-function calculation when a calibrated tip work function is supplied.</p>
+  </article>
+  <article class="intent-card">
+    <h3>SMFS</h3>
+    <p>Retract-curve baseline correction, event detection, WLC/FJC chain fitting and per-event result inspection.</p>
+  </article>
+  <article class="intent-card">
+    <h3>Resonance</h3>
+    <p>Thermal spectrum extraction, SHO fitting, effective mass, frequency-shift mass sensing and declared evaporation models.</p>
+  </article>
+  <article class="intent-card">
+    <h3>Reporting and provenance</h3>
+    <p>CSV, JSON, figures, HTML/PDF reports, recipes, project files, hashes and traceability records where the workflow exposes them.</p>
+  </article>
 </div>
-<hr />
-<h2 id="the-problem">The problem<a class="headerlink" href="#the-problem" title="Permanent link">&para;</a></h2>
-<p>AFM/SPM data analysis is fragmented across proprietary tools, opaque processing
-pipelines, and format-specific software that makes it hard to inspect what
-transformations were applied to your data. Researchers need to separate
-<strong>computation</strong>, <strong>interface</strong>, and <strong>evidence</strong> — and to trace every result
-back to its source.</p>
-<p>SPM-Kit solves this by providing an open numerical engine with a transparent
-pipeline: every step is inspectable, every format reader is traceable, physical models
-are tested through declared synthetic-recovery protocols, while independent
-cross-validation is reported separately where available (Sa, Sq, Sz vs Gwyddion 2.71).</p>
-<hr />
-<h2 id="what-it-can-do">What it can do<a class="headerlink" href="#what-it-can-do" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Domain</th>
-<th>Capabilities</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Imaging &amp; surface metrology</strong></td>
-<td>ISO 25178 roughness (Sa, Sq, Sz, Ssk, Sku), leveling, profiles, PSD, Hurst exponent</td>
-</tr>
-<tr>
-<td><strong>Force spectroscopy &amp; nanomechanics</strong></td>
-<td>Hertz, DMT, JKR, WLC, FJC, SLS relaxation, force-volume maps</td>
-</tr>
-<tr>
-<td><strong>Single-molecule force spectroscopy</strong></td>
-<td>Event detection, contour extraction, baseline correction, multi-peak analysis</td>
-</tr>
-<tr>
-<td><strong>Resonance &amp; mass sensing</strong></td>
-<td>Thermal tune (SHO fit), Q factor, resonance frequency, mass sensing (d² law)</td>
-</tr>
-<tr>
-<td><strong>Reproducible workflows &amp; reporting</strong></td>
-<td>Recipe (YAML pipeline), HTML/PDF reports, provenance, byte-level traceability</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>flowchart TB
-    Files["Instrument files&lt;br&gt;.nid · .nhf · .gwy · .spm"] --&gt; Core
-    subgraph Core["SPM-Kit core (src/spmkit/core/)"]
-        Readers["Readers"]
-        Analysis["Analysis"]
-        Export["Export &amp; verification"]
-    end
-    Core --&gt; API["Python API"]
-    Core --&gt; CLI["CLI (spmkit)"]
-    Core --&gt; Fathom["Fathom (PyQt6 workspace)"]
-    API --&gt; Output["figures · maps · reports · provenance"]
-    CLI --&gt; Output
-    Fathom --&gt; Output</code></pre>
-<p>All numerical analysis lives in <code>core/</code>. The CLI and Fathom only orchestrate it — they never implement analysis or touch parsers directly.</p>
-<hr />
-<h2 id="scientific-evidence">Scientific evidence<a class="headerlink" href="#scientific-evidence" title="Permanent link">&para;</a></h2>
+
+<h2 id="one-numerical-core-two-operating-surfaces">One numerical core, two operating surfaces<a class="headerlink" href="#one-numerical-core-two-operating-surfaces" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>instrument file
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>      ↓
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>reader inspection → calibrated SPMData / ForceCurve / ForceVolume
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>      ↓
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>SPM-Kit Core → typed numerical result
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>      ↓
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>Python API ───────── CLI ───────── Fathom
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>      ↓              ↓              ↓
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>notebook/batch    artifacts      interactive inspection
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>      └──────────────┴──────────────┘
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>          exports · reports · provenance
+</span></code></pre></div>
+<p>The boundary is deliberate. <code>src/spmkit/core/</code> contains the parsers, domain
+models and analysis. <code>src/spmkit/cli/</code> and <code>src/spmkit/gui/</code> orchestrate public
+Core APIs. Fathom is not a second numerical implementation.</p>
+<p><a href="ARCHITECTURE/">Read the architecture reference</a> ·
+<a href="api/">Use the Python API</a> ·
+<a href="cli/">Inspect the CLI</a></p>
+<h2 id="scientific-evidence-in-scope">Scientific evidence, in scope<a class="headerlink" href="#scientific-evidence-in-scope" title="Permanent link">&para;</a></h2>
+<p>The strongest retained public evidence is narrow and named. Numbers below are
+campaign results, not universal software scores.</p>
 <table>
 <thead>
 <tr>
 <th>Capability</th>
+<th style="text-align: right;">Retained result</th>
 <th>Evidence</th>
-<th>Level</th>
+<th>Boundary</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Physical models (Hertz, WLC, FJC, JKR, SLS, SHO)</td>
-<td>Synthetic recovery tests — parameters recovered within tolerance</td>
-<td><span class="level-badge level-2">LEVEL 2 NUMERICALLY_VERIFIED</span></td>
+<td>Sa, Sq and Sz on 48 frozen synthetic matrices</td>
+<td style="text-align: right;"><strong>144/144</strong> comparisons within the frozen threshold against Gwyddion 2.71</td>
+<td><code>LEVEL 3 — CROSS_VALIDATED</code></td>
+<td>Shared matrices; no physical acquisition or universal equivalence</td>
 </tr>
 <tr>
-<td>Sa, Sq, Sz (synthetic surfaces)</td>
-<td>18/18 cross-comparisons vs Gwyddion 2.71</td>
-<td><span class="level-badge level-3">LEVEL 3 CROSS_VALIDATED</span></td>
+<td>Sa, Sq and Sz on 12 public experimental GWY records</td>
+<td style="text-align: right;"><strong>36/36</strong> shared-matrix comparisons within threshold</td>
+<td><code>LEVEL 3</code> for the shared-matrix metric route</td>
+<td>Public data are not physical ground truth; parser tracks were observational</td>
 </tr>
 <tr>
-<td>Nanoscope III <code>.spm</code> reader</td>
-<td>18/18 within tolerance, 6 experimental files</td>
-<td><span class="level-badge level-2">LEVEL 2 NUMERICALLY_VERIFIED</span></td>
+<td>Limited Nanoscope III parser scope</td>
+<td style="text-align: right;"><strong>18/18</strong> roughness comparisons within threshold; zero reported pixel delta on six demonstrated files</td>
+<td><code>LEVEL 2 — NUMERICALLY_VERIFIED</code></td>
+<td>Accidental pre-freeze unblinding; no blind holdout or family-wide claim</td>
 </tr>
 <tr>
-<td><code>.nid</code> format round-trip</td>
-<td>Machine-precision correlation vs Gwyddion</td>
-<td><span class="level-badge level-1">LEVEL 1 SOFTWARE_VERIFIED</span></td>
-</tr>
-<tr>
-<td>JPK TIFF, <code>.ibw</code>, NT-MDT</td>
-<td>Readers implemented, not cross-validated</td>
-<td><span class="level-badge level-exp">experimental</span></td>
+<td>Physical models and numerical paths</td>
+<td style="text-align: right;">deterministic synthetic recovery and software tests</td>
+<td>capability-specific <code>LEVEL 1</code> or <code>LEVEL 2</code></td>
+<td>Synthetic recovery is not physical validation</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Verification coverage:</strong> 741 unique automated tests, plus 18 external cross-comparisons of Sa, Sq and Sz against Gwyddion 2.71.</p>
-<hr />
-<h2 id="ecosystem">Ecosystem<a class="headerlink" href="#ecosystem" title="Permanent link">&para;</a></h2>
-<div class="fathom-cards">
-<div class="fathom-card">
-<p class="card-role">Core engine</p>
-<h3 id="spm-kit"><a href="ecosystem/spmkit.md">SPM-Kit</a><a class="headerlink" href="#spm-kit" title="Permanent link">&para;</a></h3>
-<p class="card-desc">Numerical engine, Python API, CLI. The package you install with <code>pip install spmkit</code>.</p>
+<p>No retained campaign establishes general physical validation (<code>LEVEL 4</code>) or
+interlaboratory reproducibility (<code>LEVEL 5</code>). <a href="SCIENTIFIC_STATUS/">Read the scientific status</a>
+and <a href="VALIDATION/">campaign evidence</a>.</p>
+<h2 id="the-ecosystem">The ecosystem<a class="headerlink" href="#the-ecosystem" title="Permanent link">&para;</a></h2>
+<div class="workflow-rail" aria-label="SPM-Kit ecosystem evidence chain">
+  <article class="workflow-stage"><span class="step">01 · FIND</span><h3>Data Hunter</h3><p>Discovers and classifies candidate public evidence.</p></article>
+  <article class="workflow-stage"><span class="step">02 · DEFINE</span><h3>Phantoms</h3><p>Creates controlled arrays with declared numerical truth.</p></article>
+  <article class="workflow-stage"><span class="step">03 · TEST</span><h3>Validation</h3><p>Invokes the installed package through public interfaces.</p></article>
+  <article class="workflow-stage"><span class="step">04 · COMPUTE</span><h3>SPM-Kit Core</h3><p>Performs the analysis under evaluation.</p></article>
+  <article class="workflow-stage"><span class="step">05 · OPERATE</span><h3>Fathom</h3><p>Lets researchers inspect and operate the same Core interactively.</p></article>
 </div>
-<div class="fathom-card">
-<p class="card-role">Workspace</p>
-<h3 id="fathom"><a href="ecosystem/fathom.md">Fathom</a><a class="headerlink" href="#fathom" title="Permanent link">&para;</a></h3>
-<p class="card-desc">Interactive PyQt6 desktop workspace for visualization, analysis, and reporting.</p>
+
+<p><strong>Find the evidence → define the truth → test the system externally → preserve
+the result.</strong> The order is explanatory, not an automatic data pipeline. Human
+review separates discovery from validation, Phantoms stays independent from the
+analyzer, and Validation records reference independence campaign by campaign.</p>
+<div class="portal-actions">
+  <a href="ecosystem/">Explore the ecosystem</a>
+  <a href="ecosystem/choose/">Choose a component</a>
+  <a href="ecosystem/workflows/">Run a workflow</a>
+  <a href="ecosystem/validation/">Inspect campaign evidence</a>
 </div>
-<div class="fathom-card">
-<p class="card-role">Synthetic truth</p>
-<h3 id="phantoms"><a href="ecosystem/phantoms.md">Phantoms</a><a class="headerlink" href="#phantoms" title="Permanent link">&para;</a></h3>
-<p class="card-desc">Deterministic synthetic surfaces with known ground truth, controlled corruptions, canonical hashes.</p>
-</div>
-<div class="fathom-card">
-<p class="card-role">Discovery</p>
-<h3 id="data-hunter"><a href="ecosystem/data-hunter.md">Data Hunter</a><a class="headerlink" href="#data-hunter" title="Permanent link">&para;</a></h3>
-<p class="card-desc">Discover, catalog, and triage public AFM/SPM datasets for validation campaigns.</p>
-</div>
-<div class="fathom-card">
-<p class="card-role">Evidence</p>
-<h3 id="validation"><a href="ecosystem/validation.md">Validation</a><a class="headerlink" href="#validation" title="Permanent link">&para;</a></h3>
-<p class="card-desc">External black-box validation harness. Runs SPM-Kit via subprocess, preserves reproducible evidence.</p>
-</div>
-<div class="fathom-card">
-<p class="card-role">Umbrella</p>
-<h3 id="pharos"><a href="ecosystem/pharos.md">Pharos</a><a class="headerlink" href="#pharos" title="Permanent link">&para;</a></h3>
-<p class="card-desc">A broader collection of open scientific tools built around reproducibility and transparent computation.</p>
-</div>
-</div>
-<blockquote>
-<p><strong>Find the evidence → define the truth → test the system externally → preserve the result.</strong></p>
-</blockquote>
-<hr />
-<h2 id="learn-explore">Learn &amp; explore<a class="headerlink" href="#learn-explore" title="Permanent link">&para;</a></h2>
-<div class="fathom-cards">
-<div class="fathom-card">
-<h3 id="theory-guide"><a href="theory/index.md">Theory guide</a><a class="headerlink" href="#theory-guide" title="Permanent link">&para;</a></h3>
-<p class="card-desc">AFM principles, operating modes, force spectroscopy, KPFM, roughness, resonance — connected to SPM-Kit implementations.</p>
-</div>
-<div class="fathom-card">
-<h3 id="user-manual"><a href="manual/index.md">User manual</a><a class="headerlink" href="#user-manual" title="Permanent link">&para;</a></h3>
-<p class="card-desc">Full GUI guide, CLI reference, PDF reader, keyboard shortcuts, and workflows.</p>
-</div>
-<div class="fathom-card">
-<h3 id="getting-started"><a href="getting-started.md">Getting started</a><a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h3>
-<p class="card-desc">Install, open your first file, run your first analysis in 5 minutes.</p>
-</div>
-<div class="fathom-card">
-<h3 id="python-api"><a href="api.md">Python API</a><a class="headerlink" href="#python-api" title="Permanent link">&para;</a></h3>
-<p class="card-desc">Direct access to readers, models, analysis functions, and export utilities.</p>
-</div>
-<div class="fathom-card">
-<h3 id="validation-evidence"><a href="ecosystem/validation.md">Validation evidence</a><a class="headerlink" href="#validation-evidence" title="Permanent link">&para;</a></h3>
-<p class="card-desc">Campaign records, tolerance budgets, receipts, and cross-validation results.</p>
-</div>
-<div class="fathom-card">
-<h3 id="extending"><a href="extending.md">Extending</a><a class="headerlink" href="#extending" title="Permanent link">&para;</a></h3>
-<p class="card-desc">Add file formats, analysis methods, and Fathom perspectives through the plugin system.</p>
-</div>
-</div>
-<hr />
-<h2 id="what-spm-kit-does-not-claim">What SPM-Kit does not claim<a class="headerlink" href="#what-spm-kit-does-not-claim" title="Permanent link">&para;</a></h2>
+
+<h2 id="start-with-the-task-not-the-repository">Start with the task, not the repository<a class="headerlink" href="#start-with-the-task-not-the-repository" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>I need to…</th>
+<th>Start here</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Inspect and analyze a file interactively</td>
+<td><a href="getting-started/fathom-quick-start/">Fathom quick start</a></td>
+</tr>
+<tr>
+<td>Run reproducible Python or cluster analysis</td>
+<td><a href="ecosystem/spmkit/">SPM-Kit Core</a></td>
+</tr>
+<tr>
+<td>Learn the physics behind the computation</td>
+<td><a href="theory/">Theory portal</a></td>
+</tr>
+<tr>
+<td>Reproduce a documented analysis</td>
+<td><a href="ecosystem/workflows/">Workflow tutorials</a></td>
+</tr>
+<tr>
+<td>Evaluate a metric against known truth</td>
+<td><a href="ecosystem/phantoms/">Phantoms</a> then <a href="ecosystem/validation/">Validation</a></td>
+</tr>
+<tr>
+<td>Find a public native-format fixture</td>
+<td><a href="ecosystem/data-hunter/">Data Hunter</a></td>
+</tr>
+<tr>
+<td>Audit the evidence behind a claim</td>
+<td><a href="SCIENTIFIC_STATUS/">Scientific evidence</a></td>
+</tr>
+<tr>
+<td>Add a reader or scientific capability</td>
+<td><a href="extending/">Extending SPM-Kit</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="install-without-ambiguity">Install without ambiguity<a class="headerlink" href="#install-without-ambiguity" title="Permanent link">&para;</a></h2>
+<p>The current source tree is <code>0.1.5.dev0</code>. The latest GitHub release is <code>0.1.4</code>,
+while PyPI currently serves <code>0.1.2</code>; therefore <code>pip install spmkit</code> does <strong>not</strong>
+install the latest GitHub release. Use the development install below when you
+need the documented portal surface:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;spmkit[gui] @ git+https://github.com/kegouro/spmkit@main&quot;</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>spmkit<span class="w"> </span>--version
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>spmkit<span class="w"> </span>gui
+</span></code></pre></div>
+<p>See the <a href="getting-started/installation/">installation guide</a> for reproducible
+Git tags, editable development installs, extras and platform notes. Companion
+repositories have separate packages and are not installed by <code>spmkit</code>.</p>
+<h2 id="honest-scope">Honest scope<a class="headerlink" href="#honest-scope" title="Permanent link">&para;</a></h2>
 <div class="admonition warning">
-<p class="admonition-title">Honest scope</p>
+<p class="admonition-title">What this site does not claim</p>
 <ul>
-<li><strong>Alpha software.</strong> APIs may change before 1.0.</li>
-<li><strong>No certified metrological traceability.</strong> Results are not certified reference values.</li>
-<li><strong>Cross-validation is limited.</strong> Sa, Sq, Sz validated on 6 synthetic surfaces against Gwyddion 2.71 — not on all formats, all metrics, or all instruments.</li>
-<li><strong>No blind holdout.</strong> The Nanoscope campaign had <code>ACCIDENTAL_PRE_FREEZE_UNBLINDING</code>.</li>
-<li><strong>No physical validation (LEVEL 4) or interlaboratory reproducibility (LEVEL 5).</strong></li>
-<li><strong>Experimental formats</strong> (JPK TIFF, <code>.ibw</code>, NT-MDT) are implemented but not cross-validated.</li>
-<li><strong>Not a Gwyddion replacement.</strong> The reference uses Gwyddion libraries through a frozen wrapper; this is not universal equivalence.</li>
+<li>SPM-Kit is alpha software and APIs may change before 1.0.</li>
+<li>It is not a certified instrument-control or metrological-traceability system.</li>
+<li>A supported parser is not automatically validated for every instrument variant.</li>
+<li>Synthetic recovery does not replace calibrated physical reference materials.</li>
+<li>A public dataset is a lead, not automatically a reference.</li>
+<li>Black-box execution separates processes; reference independence still requires an explicit argument.</li>
+<li>Not every feature has the same evidence level. Read the status beside the capability you use.</li>
 </ul>
 </div>
-<hr />
-<h2 id="citation">Citation<a class="headerlink" href="#citation" title="Permanent link">&para;</a></h2>
-<p>If you use SPM-Kit or Fathom in a publication, cite it per <a href="https://github.com/kegouro/spmkit/blob/main/CITATION.cff"><code>CITATION.cff</code></a>.</p>
-<div align="center">
-
-[![DOI](https://zenodo.org/badge/1270254374.svg)](https://zenodo.org/badge/latestdoi/1270254374)
-
-<sub>Independently designed and developed by José Labarca Baeza · SPM Lab, UTFSM · MIT License © 2026</sub>
-
-</div>
+<h2 id="citation-and-acknowledgement">Citation and acknowledgement<a class="headerlink" href="#citation-and-acknowledgement" title="Permanent link">&para;</a></h2>
+<p>SPM-Kit and Fathom were created and are led by <strong>José Labarca Baeza</strong>. Cite the
+software using <a href="https://github.com/kegouro/spmkit/blob/main/CITATION.cff"><code>CITATION.cff</code></a>
+and the guidance on the <a href="CITATION/">citation page</a>.</p>
+<p>Tomás Corrales and the SPM Lab at Universidad Técnica Federico Santa María
+provided selected experimental datasets and laboratory context during the
+development and evaluation of SPM-Kit.</p>
+<p>María Saavedra Fredes and Benjamin Schleyer helped locate and share candidate
+datasets for the validation campaigns.</p>
+<p>These contributions are acknowledgements, not software authorship,
+institutional ownership or an assertion that every located dataset was used,
+accepted, redistributable or scientifically suitable.</p>
 
 
 
@@ -2068,6 +2639,8 @@ cross-validation is reported separately where available (Sa, Sq, Sz vs Gwyddion 
 
 
 
+
+  
 
 
 
@@ -2093,17 +2666,19 @@ cross-validation is reported separately where available (Sa, Sq, Sz vs Gwyddion 
   
     
       
+        
+      
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
         
           
-          <a href="getting-started/" class="md-footer__link md-footer__link--next" aria-label="Next: Getting started">
+          <a href="getting-started/" class="md-footer__link md-footer__link--next" aria-label="Next: Overview">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Getting started
+                Overview
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -2119,11 +2694,10 @@ cross-validation is reported separately where available (Sa, Sq, Sz vs Gwyddion 
     <div class="md-footer-meta__inner md-grid">
       <div class="md-copyright">
   
+    <div class="md-copyright__highlight">
+      Copyright © José Labarca Baeza · MIT-licensed software and documentation
+    </div>
   
-    Made with
-    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-      Material for MkDocs
-    </a>
   
 </div>
       

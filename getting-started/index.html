@@ -6,8 +6,10 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Open numerical engine and interactive workspace for Scanning Probe Microscopy (SPM)">
+        <meta name="description" content="Choose an installation source, run a first SPM-Kit analysis, or open the Fathom workspace.">
       
+      
+        <meta name="author" content="José Labarca Baeza">
       
       
         <link rel="canonical" href="https://kegouro.github.io/spmkit/getting-started/">
@@ -16,7 +18,7 @@
         <link rel="prev" href="..">
       
       
-        <link rel="next" href="../theory/">
+        <link rel="next" href="installation/">
       
       
         
@@ -27,7 +29,7 @@
     
     
       
-        <title>Getting started - SPM-Kit · Fathom</title>
+        <title>Overview - SPM-Kit ecosystem</title>
       
     
     
@@ -45,12 +47,6 @@
     
     
       
-        
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
-      
     
     
       <link rel="stylesheet" href="../stylesheets/fathom.css">
@@ -61,6 +57,24 @@
 
     
     
+  
+  
+  
+  
+  <meta name="author" content="José Labarca Baeza">
+  <meta name="keywords" content="AFM, SPM, KPFM, force spectroscopy, nanomechanics, scientific Python, reproducible microscopy">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SPM-Kit ecosystem">
+  <meta property="og:title" content="Overview · SPM-Kit ecosystem">
+  <meta property="og:description" content="Choose an installation source, run a first SPM-Kit analysis, or open the Fathom workspace.">
+  <meta property="og:url" content="https://kegouro.github.io/spmkit/getting-started/">
+  <meta property="og:image" content="https://kegouro.github.io/spmkit/assets/ecosystem/core/banner.png">
+  <meta property="og:image:alt" content="SPM-Kit open AFM and SPM numerical engine">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Overview · SPM-Kit ecosystem">
+  <meta name="twitter:description" content="Choose an installation source, run a first SPM-Kit analysis, or open the Fathom workspace.">
+  <meta name="twitter:image" content="https://kegouro.github.io/spmkit/assets/ecosystem/core/banner.png">
+
   </head>
   
   
@@ -80,7 +94,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#primeros-pasos" class="md-skip">
+        <a href="#getting-started" class="md-skip">
           Skip to content
         </a>
       
@@ -96,7 +110,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="SPM-Kit · Fathom" class="md-header__button md-logo" aria-label="SPM-Kit · Fathom" data-md-component="logo">
+    <a href=".." title="SPM-Kit ecosystem" class="md-header__button md-logo" aria-label="SPM-Kit ecosystem" data-md-component="logo">
       
   <img src="../images/brand/fathom_logo_light.png" alt="logo">
 
@@ -109,13 +123,13 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            SPM-Kit · Fathom
+            SPM-Kit ecosystem
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Getting started
+              Overview
             
           </span>
         </div>
@@ -242,17 +256,20 @@
     
   
   
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="./" class="md-tabs__link">
-        
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
   
   
     
   
   Getting started
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -292,7 +309,7 @@
   
     
   
-  Manual
+  User manual
 
         </a>
       </li>
@@ -349,6 +366,28 @@
     
     
       <li class="md-tabs__item">
+        <a href="../SCIENTIFIC_STATUS/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Scientific evidence
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
         <a href="../ARCHITECTURE/" class="md-tabs__link">
           
   
@@ -360,6 +399,44 @@
         </a>
       </li>
     
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../CONTRIBUTING/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Contributing
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../CITATION/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Citation
+
+      </a>
+    </li>
   
 
       
@@ -393,12 +470,12 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="SPM-Kit · Fathom" class="md-nav__button md-logo" aria-label="SPM-Kit · Fathom" data-md-component="logo">
+    <a href=".." title="SPM-Kit ecosystem" class="md-nav__button md-logo" aria-label="SPM-Kit ecosystem" data-md-component="logo">
       
   <img src="../images/brand/fathom_logo_light.png" alt="logo">
 
     </a>
-    SPM-Kit · Fathom
+    SPM-Kit ecosystem
   </label>
   
     <div class="md-nav__source">
@@ -450,6 +527,84 @@
   
   
   
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../ecosystem/workflows/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
     <li class="md-nav__item md-nav__item--active">
       
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
@@ -465,7 +620,7 @@
   <span class="md-ellipsis">
     
   
-    Getting started
+    Overview
   
 
     
@@ -483,7 +638,7 @@
   <span class="md-ellipsis">
     
   
-    Getting started
+    Overview
   
 
     
@@ -509,10 +664,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#requisitos" class="md-nav__link">
+  <a href="#choose-a-path" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Requisitos
+        Choose a path
       
     </span>
   </a>
@@ -520,71 +675,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#instalacion" class="md-nav__link">
+  <a href="#requirements" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Instalación
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Instalación">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#nucleo-cli" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Núcleo + CLI
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#con-interfaz-grafica" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Con interfaz gráfica
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#extras-disponibles" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Extras disponibles
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#desde-el-repositorio-desarrollo" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Desde el repositorio (desarrollo)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#verificacion" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Verificación
+        Requirements
       
     </span>
   </a>
@@ -592,71 +686,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#primer-uso-cli" class="md-nav__link">
+  <a href="#thirty-second-source-install" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Primer uso — CLI
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Primer uso — CLI">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#ver-metadatos-de-un-archivo" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Ver metadatos de un archivo
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#calcular-rugosidad" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Calcular rugosidad
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pipeline-completo" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Pipeline completo
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#abrir-la-gui" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Abrir la GUI
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#primer-uso-como-libreria-python" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Primer uso — como librería Python
+        Thirty-second source install
       
     </span>
   </a>
@@ -664,10 +697,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#siguiente-paso" class="md-nav__link">
+  <a href="#scientific-checkpoint" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Siguiente paso
+        Scientific checkpoint
       
     </span>
   </a>
@@ -677,6 +710,100 @@
     </ul>
   
 </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="first-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    First analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="fathom-quick-start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fathom quick start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
       
     </li>
   
@@ -693,6 +820,8 @@
       
         
           
+        
+      
         
       
         
@@ -923,7 +1052,35 @@
   <span class="md-ellipsis">
     
   
-    Roughness & spectral analysis
+    Roughness
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../theory/spectral-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral analysis
   
 
     
@@ -979,7 +1136,7 @@
   <span class="md-ellipsis">
     
   
-    SPM-Kit workflows
+    Implementation map
   
 
     
@@ -1101,7 +1258,7 @@
   <span class="md-ellipsis">
     
   
-    Manual
+    User manual
   
 
     
@@ -1123,7 +1280,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Manual
+    User manual
   
 
           </label>
@@ -1302,6 +1459,16 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1354,6 +1521,118 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ecosystem/choose/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Choose a component
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ecosystem/install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Install matrix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ecosystem/contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Artifact contracts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ecosystem/workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Example workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -1419,14 +1698,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../ecosystem/phantoms/" class="md-nav__link">
+      <a href="../ecosystem/data-hunter/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Phantoms
+    Data Hunter
   
 
     
@@ -1447,14 +1726,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../ecosystem/data-hunter/" class="md-nav__link">
+      <a href="../ecosystem/phantoms/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Data Hunter
+    Phantoms
   
 
     
@@ -1524,6 +1803,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ecosystem/brand/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Brand governance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1551,6 +1858,8 @@
         
       
         
+          
+        
       
     
     
@@ -1568,7 +1877,227 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
         
           
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+          <div class="md-nav__link md-nav__container">
+            <a href="../ecosystem/workflows/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific evidence
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Scientific evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SCIENTIFIC_STATUS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific status
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../VALIDATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation campaigns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../TRACEABILITY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Traceability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../FILE_FORMATS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Format maturity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../KNOWN_LIMITATIONS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Known limitations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
             
   
   
@@ -1586,8 +2115,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1660,62 +2189,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../VALIDATION/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Validation
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../TRACEABILITY/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Traceability
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../ROADMAP/" class="md-nav__link">
         
   
@@ -1765,9 +2238,91 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ACKNOWLEDGEMENTS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Acknowledgements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CONTRIBUTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CITATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Citation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1792,135 +2347,72 @@
   
 
 
-<h1 id="primeros-pasos">Primeros pasos<a class="headerlink" href="#primeros-pasos" title="Permanent link">&para;</a></h1>
-<h2 id="requisitos">Requisitos<a class="headerlink" href="#requisitos" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>Python ≥ 3.11</strong></li>
-<li>pip o <a href="https://github.com/astral-sh/uv">uv</a></li>
-</ul>
-<hr />
-<h2 id="instalacion">Instalación<a class="headerlink" href="#instalacion" title="Permanent link">&para;</a></h2>
-<h3 id="nucleo-cli">Núcleo + CLI<a class="headerlink" href="#nucleo-cli" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip<span class="w"> </span>install<span class="w"> </span>spmkit
-</span></code></pre></div>
-<p>El paquete base incluye la CLI (<code>spmkit</code>) y el core de análisis (sin dependencias pesadas).</p>
-<h3 id="con-interfaz-grafica">Con interfaz gráfica<a class="headerlink" href="#con-interfaz-grafica" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;spmkit[gui]&quot;</span>
-</span></code></pre></div>
-<p>Añade PyQt6, pyqtgraph y matplotlib (necesario para las 7 pestañas de la GUI).</p>
-<h3 id="extras-disponibles">Extras disponibles<a class="headerlink" href="#extras-disponibles" title="Permanent link">&para;</a></h3>
+<h1 id="getting-started">Getting started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h1>
+<p>SPM-Kit separates numerical work from presentation. Use the Python API or CLI
+for scripts, pipelines, and reproducible runs; use Fathom when visual inspection
+and interactive region selection are part of the work.</p>
+<h2 id="choose-a-path">Choose a path<a class="headerlink" href="#choose-a-path" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Extra</th>
-<th>Qué agrega</th>
+<th>Goal</th>
+<th>Start here</th>
+<th>First successful result</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>gui</code></td>
-<td>Interfaz gráfica (PyQt6 + pyqtgraph)</td>
+<td>Install a specific release or development state</td>
+<td><a href="installation/">Installation</a></td>
+<td><code>spmkit --version</code> and <code>spmkit --help</code> succeed</td>
 </tr>
 <tr>
-<td><code>viz</code></td>
-<td>Figuras de publicación (matplotlib, cmcrameri, scale bar)</td>
+<td>Analyze a file or an in-memory surface</td>
+<td><a href="first-analysis/">First analysis</a></td>
+<td>roughness values with declared units and preprocessing</td>
 </tr>
 <tr>
-<td><code>gwy</code></td>
-<td>Interoperabilidad con Gwyddion (<code>.gwy</code>)</td>
+<td>Explore data interactively</td>
+<td><a href="fathom-quick-start/">Fathom quick start</a></td>
+<td>a channel is loaded into the <code>Imagen</code> perspective</td>
 </tr>
 <tr>
-<td><code>hdf5</code></td>
-<td>Lectura / exportación HDF5</td>
-</tr>
-<tr>
-<td><code>grains</code></td>
-<td>Detección de granos y partículas (scipy)</td>
-</tr>
-<tr>
-<td><code>report</code></td>
-<td>Reportes HTML/PDF (Jinja2)</td>
-</tr>
-<tr>
-<td><code>nanosurf</code></td>
-<td>Lector <code>.nhf</code> validado (NSFopen)</td>
+<td>Connect discovery, synthetic truth, and validation</td>
+<td><a href="../ecosystem/workflows/">Example workflows</a></td>
+<td>a provenance-preserving artifact chain</td>
 </tr>
 </tbody>
 </table>
-<p>Instalar varios extras:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;spmkit[gui,gwy,hdf5]&quot;</span>
-</span></code></pre></div>
-<p>Instalar todo:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;spmkit[all]&quot;</span>
-</span></code></pre></div>
-<h3 id="desde-el-repositorio-desarrollo">Desde el repositorio (desarrollo)<a class="headerlink" href="#desde-el-repositorio-desarrollo" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;git+https://github.com/kegouro/spmkit#egg=spmkit[gui]&quot;</span>
-</span></code></pre></div>
-<hr />
-<h2 id="verificacion">Verificación<a class="headerlink" href="#verificacion" title="Permanent link">&para;</a></h2>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>spmkit<span class="w"> </span>--version
-</span></code></pre></div>
-<p>Resultado esperado:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>spmkit 0.1.0
-</span></code></pre></div>
-<hr />
-<h2 id="primer-uso-cli">Primer uso — CLI<a class="headerlink" href="#primer-uso-cli" title="Permanent link">&para;</a></h2>
-<h3 id="ver-metadatos-de-un-archivo">Ver metadatos de un archivo<a class="headerlink" href="#ver-metadatos-de-un-archivo" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>spmkit<span class="w"> </span>info<span class="w"> </span>scan.nid
-</span></code></pre></div>
-<p>Muestra los canales disponibles, sus dimensiones y unidades.</p>
-<h3 id="calcular-rugosidad">Calcular rugosidad<a class="headerlink" href="#calcular-rugosidad" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>spmkit<span class="w"> </span>roughness<span class="w"> </span>scan.nid<span class="w"> </span>-c<span class="w"> </span>Z-Axis
-</span></code></pre></div>
-<p>Parámetros ISO 25178: Sa, Sq, Sz, Ssk, Sku.</p>
-<h3 id="pipeline-completo">Pipeline completo<a class="headerlink" href="#pipeline-completo" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>spmkit<span class="w"> </span>analyze<span class="w"> </span>scan.nid<span class="w"> </span>--output<span class="w"> </span>./results
-</span></code></pre></div>
-<p>Genera <code>results/scan_roughness.csv</code>, <code>results/scan_roughness.json</code> y (si hay canal CPD) los archivos KPFM equivalentes.</p>
-<h3 id="abrir-la-gui">Abrir la GUI<a class="headerlink" href="#abrir-la-gui" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>spmkit<span class="w"> </span>gui
-</span></code></pre></div>
-<div class="admonition note">
-<p class="admonition-title">Requisito extra</p>
-<p>La GUI requiere el extra <code>gui</code>. Si ves un error, instala con <code>pip install "spmkit[gui]"</code>.</p>
-</div>
-<hr />
-<h2 id="primer-uso-como-libreria-python">Primer uso — como librería Python<a class="headerlink" href="#primer-uso-como-libreria-python" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">load</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">leveling</span><span class="p">,</span> <span class="n">roughness</span><span class="p">,</span> <span class="n">kpfm</span>
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="c1"># Cargar un archivo .nid</span>
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="n">data</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s2">&quot;scan.nid&quot;</span><span class="p">)</span>
-</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>
-</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="c1"># Ver canales disponibles</span>
-</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
-</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>
-</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="c1"># Seleccionar canal y nivelar</span>
-</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="n">ch</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Z-Axis&quot;</span><span class="p">]</span>
-</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="n">flat</span> <span class="o">=</span> <span class="n">leveling</span><span class="o">.</span><span class="n">plane_fit</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>   <span class="c1"># corrige inclinación de plano</span>
-</span><span id="__span-11-13"><a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>
-</span><span id="__span-11-14"><a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="c1"># Calcular rugosidad</span>
-</span><span id="__span-11-15"><a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a><span class="n">stats</span> <span class="o">=</span> <span class="n">roughness</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">flat</span><span class="p">)</span>
-</span><span id="__span-11-16"><a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sa = </span><span class="si">{</span><span class="n">stats</span><span class="o">.</span><span class="n">sa</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">stats</span><span class="o">.</span><span class="n">unit</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="__span-11-17"><a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sq = </span><span class="si">{</span><span class="n">stats</span><span class="o">.</span><span class="n">sq</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">stats</span><span class="o">.</span><span class="n">unit</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="__span-11-18"><a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a>
-</span><span id="__span-11-19"><a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a><span class="c1"># Análisis KPFM (si el archivo contiene canal CPD)</span>
-</span><span id="__span-11-20"><a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a><span class="n">cpd</span> <span class="o">=</span> <span class="n">kpfm</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;CPD&quot;</span><span class="p">],</span> <span class="n">tip_work_function</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
-</span><span id="__span-11-21"><a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CPD medio = </span><span class="si">{</span><span class="n">cpd</span><span class="o">.</span><span class="n">mean_cpd</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2"> V&quot;</span><span class="p">)</span>
-</span></code></pre></div>
-<hr />
-<h2 id="siguiente-paso">Siguiente paso<a class="headerlink" href="#siguiente-paso" title="Permanent link">&para;</a></h2>
+<h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Explora todos los comandos CLI en la <a href="../cli/">Referencia CLI</a>.</li>
-<li>Conoce la GUI en la <a href="../user-guide/">Guía de usuario</a>.</li>
-<li>Revisa la <a href="../api/">API Python</a> para integraciones avanzadas.</li>
+<li>Python 3.11 or newer;</li>
+<li><code>pip</code> or <code>uv</code>;</li>
+<li>the <code>gui</code> extra only for Fathom;</li>
+<li>format-specific extras only where the <a href="../FILE_FORMATS/">format matrix</a> says
+  they are required.</li>
 </ul>
+<h2 id="thirty-second-source-install">Thirty-second source install<a class="headerlink" href="#thirty-second-source-install" title="Permanent link">&para;</a></h2>
+<p>The site documents the <code>0.1.5.dev0</code> source tree. Install that state explicitly:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;spmkit[gui] @ git+https://github.com/kegouro/spmkit@main&quot;</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>spmkit<span class="w"> </span>--version
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>spmkit<span class="w"> </span>--help
+</span></code></pre></div>
+<p>PyPI currently serves <code>0.1.2</code>; the latest GitHub release is <code>0.1.4</code>. The
+<a href="installation/">installation matrix</a> explains the difference.</p>
+<h2 id="scientific-checkpoint">Scientific checkpoint<a class="headerlink" href="#scientific-checkpoint" title="Permanent link">&para;</a></h2>
+<p>Loading a file is not validation. Before using a result in a scientific claim,
+record the input checksum, reader path, channel, units, preprocessing,
+parameters, software version, and output checksum. Then match the claim to the
+<a href="../SCIENTIFIC_STATUS/">scientific status matrix</a>.</p>
 
 
 
 
 
 
+
+  
+  
 
 
 
@@ -1969,13 +2461,13 @@
         
         
           
-          <a href="../theory/" class="md-footer__link md-footer__link--next" aria-label="Next: Overview">
+          <a href="installation/" class="md-footer__link md-footer__link--next" aria-label="Next: Installation">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Overview
+                Installation
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -1991,11 +2483,10 @@
     <div class="md-footer-meta__inner md-grid">
       <div class="md-copyright">
   
+    <div class="md-copyright__highlight">
+      Copyright © José Labarca Baeza · MIT-licensed software and documentation
+    </div>
   
-    Made with
-    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-      Material for MkDocs
-    </a>
   
 </div>
       
