@@ -335,6 +335,22 @@ def main() -> int:
 
     manifest_path = DOCS / "assets/ecosystem/assets-manifest.yml"
     manifest = yaml.safe_load(text(manifest_path))
+    parent_assets = manifest.get("parent_identity", [])
+    checks.require(
+        len(parent_assets) == 2,
+        "asset manifest declares canonical Pharos parent marks",
+    )
+    for entry in parent_assets:
+        local = REPO / entry["local_path"]
+        checks.require(
+            local.is_file() and sha256(local) == entry["sha256"],
+            f"parent identity hash: {entry['role']}",
+        )
+    checks.require(
+        any(entry.get("role") == "portal-global-mark-and-favicon" for entry in parent_assets),
+        "Pharos owns the portal-global mark and favicon",
+    )
+
     canonical_assets = manifest.get("canonical", [])
     checks.require(len(canonical_assets) == 5, "asset manifest declares five canonical banners")
     for entry in canonical_assets:
@@ -350,6 +366,13 @@ def main() -> int:
             local.is_file() and sha256(local) == entry["sha256"],
             f"generated asset hash: {local.relative_to(DOCS)}",
         )
+    fathom_inventory = [
+        entry for entry in manifest.get("inventory", []) if entry.get("component") == "fathom"
+    ]
+    checks.require(
+        all("favicon" not in str(entry.get("intended_use", "")) for entry in fathom_inventory),
+        "Fathom inventory remains component-only, never the portal favicon",
+    )
 
     required_assets = (
         "assets/theory/afm-instrument.svg",
