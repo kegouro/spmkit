@@ -1,50 +1,60 @@
-# Operating modes
+# AFM operating modes
 
-Depending on what quantity the feedback loop keeps constant, the AFM operates
-in different regimes. The choice balances **resolution**, **gentleness** with
-the sample, and **speed**.
+An operating mode is defined by how the tip is driven, what signal is measured
+and what the feedback loop holds constant. The same array shape can therefore
+represent different physical observables.
+
+<figure class="science-figure">
+  <img src="../../assets/theory/operating-modes.svg" alt="Comparison of contact, tapping, non-contact, force-volume and KPFM operation with their measured control signals" width="1120" height="300">
+  <figcaption>Each mode changes the interaction regime and measured signal. SPM-Kit analyzes resulting files; it does not control these acquisition loops.</figcaption>
+</figure>
+
+## Mode comparison
+
+| Mode | Physical interaction | Measured/control signal | Advantage | Common limitation/artifact | SPM-Kit scope |
+|---|---|---|---|---|---|
+| contact | repulsive contact, tip remains on surface | deflection or force setpoint | direct, fast, strong signal | lateral drag, wear, sample deformation | reads/analyzes resulting topography and force channels |
+| tapping / intermittent contact | driven oscillation briefly interacts each cycle | amplitude/phase setpoint | lower lateral force; common in air | setpoint/gain artifacts, phase ambiguity, tip convolution | image metrology on resulting channels; no acquisition controller |
+| non-contact / frequency modulation | attractive force gradient shifts resonance | frequency shift or amplitude | gentle; high sensitivity in controlled environments | water layer/environment, long-range-force mixing | reads compatible exported channels; no FM controller |
+| force volume | approach/retract curve at each grid point | force curve per pixel | spatial mechanics/adhesion maps | slow, drift, calibration and fit failures | `ForceVolume`, force fitting and property maps |
+| quantitative imaging / fast force mapping | rapid force curves at each pixel | peak force/indentation/adhesion route | image + mechanical observables | vendor-specific timing and calibration | limited to demonstrated containers/readers; not universal QI support |
+| KPFM | electrostatic force/force-gradient nulling | DC compensation voltage | surface-potential contrast | sign, capacitive averaging, tip calibration | CPD statistics and work-function calculation from a supplied channel |
 
 ## Contact mode
 
-The tip "touches" the sample and the loop keeps the **deflection** (normal
-force) constant. It is simple and fast, but lateral forces can scratch soft
-samples or wear the tip.
+The controller keeps cantilever deflection near a setpoint. Because the tip is
+dragged laterally, friction and tip/sample damage can dominate soft materials.
+Reported height combines scanner response with any residual feedback error.
 
-## Dynamic / tapping (intermittent contact)
+## Tapping and non-contact modes
 
-The cantilever is excited near its resonance frequency $f_0$ and oscillates;
-as it approaches the surface, the interaction **reduces the amplitude**. The
-loop keeps that amplitude constant. Since the tip only "taps" briefly, it
-nearly eliminates lateral forces: ideal for polymers, cells, and fragile
-samples.
+For a driven damped oscillator, tip–sample forces change amplitude, phase and
+resonance frequency. Tapping typically uses amplitude feedback and intermittent
+contact; frequency-modulation non-contact uses a frequency-shift observable.
+They share oscillator physics but do not produce interchangeable channels.
 
-## Non-contact
+## Force volume and quantitative maps
 
-The cantilever oscillates in the *attractive* regime without touching the
-surface; the **frequency shift** due to the force gradient is detected.
-Maximum gentleness and, in ultra-high vacuum, atomic resolution, at the cost
-of environmental sensitivity.
+A force-volume acquisition records approach/retract segments at each grid
+location. SPM-Kit preserves curve segments and grid shape, then derives maps
+from per-curve fits. Failed fits, missing lines and calibration uncertainty
+should remain visible rather than being interpolated into apparent material
+contrast without disclosure.
 
-| Mode | Control signal | Force regime | Advantage | Risk / cost |
-|---|---|---|---|---|
-| **Contact** | `deflection = const` | repulsive | simple, fast, high z-resolution | lateral forces; wear |
-| **Tapping** | `amplitude = const` | attract.↔repuls. | low damage; standard in air | slower; fine tuning |
-| **Non-contact** | `Δf = const` | attractive | very gentle; atomic resolution (UHV) | environment-sensitive |
+## Implementation boundary
 
-!!! note "Connection"
+SPM-Kit is an analyzer, not an instrument controller. The current readers
+interpret demonstrated exported files. The Core path cannot reconstruct missing
+feedback settings or decide whether acquisition was physically appropriate.
 
-    Tapping and non-contact share the same physical root — an oscillating
-    cantilever — formalized in [Resonance & mass sensing](resonance.md). The
-    difference is only *which observable* of the resonance is fed back:
-    amplitude or frequency.
+| Route | Core | Fathom | CLI |
+|---|---|---|---|
+| image/topography | `SPMData` / image readers | Imagen | `info`, `roughness`, `analyze` |
+| force curve | `ForceCurve` / force readers | Curva de fuerza | `forcecurve`, `nanomech` |
+| force volume | `ForceVolume` | Mapa | `forcemap`, `forceexport` |
+| KPFM channel | `kpfm.statistics` | Imagen | `analyze --tip-wf` |
 
----
+Evidence follows the reader and analysis path, not the acquisition-mode label.
 
-## Implementation in SPM-Kit
-
-| Concept | Where | Status |
-|---|---|---|
-| `.nid` topography (contact/tapping) | `spmkit.core.io.nanosurf` | <span class="level-badge level-1">LEVEL 1 SOFTWARE_VERIFIED</span> |
-| `.gwy` multi-channel (topography + KPFM) | `spmkit.core.io.gwyddion` | <span class="level-badge level-1">LEVEL 1 SOFTWARE_VERIFIED</span> |
-
-[:material-arrow-left: AFM principles](afm-principles.md) · [:material-arrow-right: Force-distance curves](force-distance.md)
+[:material-arrow-left: AFM principles](afm-principles.md) ·
+[:material-arrow-right: Force-distance curves](force-distance.md)

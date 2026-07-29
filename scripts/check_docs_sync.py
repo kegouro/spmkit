@@ -1,44 +1,28 @@
 #!/usr/bin/env python3
-"""Documentation synchronisation checks for SPM-Kit / Fathom.
-
-Runs on CI (`.github/workflows/docs.yml`) and locally.  It verifies that the
-documentation tree is internally consistent and that the published artefacts
-(user guide, embedded PDF reader, mkdocs nav) are in sync with the canonical
-version declared in the packaging metadata.
-
-Exit code is non-zero on the first failure.  All checks print a short
-`[OK]`/`[FAIL]` line so the CI log is self-explanatory.
-
-Run::
-
-    python scripts/check_docs_sync.py
-"""
-
 from __future__ import annotations
 
+import ast
+import hashlib
 import re
+import shutil
+import subprocess
 import sys
 import tomllib
 from pathlib import Path
+from typing import Any
 
 try:
-    import yaml  # part of the mkdocs dependency tree
-except ImportError as exc:  # pragma: no cover
+    import yaml
+except ImportError as exc:
     print(f"[FAIL] PyYAML not available: {exc}")
     sys.exit(2)
 
 
 class _PermissiveLoader(yaml.SafeLoader):
-    """SafeLoader that ignores mkdocs-specific custom tags (e.g. ``!!python/name:``).
-
-    The interface we need from ``mkdocs.yml`` only cares about scalars, lists and
-    mappings (nav, theme name, custom_dir).  Custom tags such as
-    ``!!python/name:pymdownx.superfences.fence_code_format`` are opaque YAML for
-    our purposes, so we collapse them to a placeholder string instead of failing.
-    """
+    pass
 
 
-def _ignore_unknown(loader, tag_suffix, node):
+def _ignore_unknown(loader: Any, _tag_suffix: str, node: Any) -> Any:
     if isinstance(node, yaml.ScalarNode):
         return loader.construct_scalar(node)
     if isinstance(node, yaml.SequenceNode):
@@ -48,181 +32,328 @@ def _ignore_unknown(loader, tag_suffix, node):
 
 _PermissiveLoader.add_multi_constructor("", _ignore_unknown)
 
-
 REPO = Path(__file__).resolve().parents[1]
 DOCS = REPO / "docs"
+MANUALS = (DOCS / "user-guide.md", DOCS / "user-guide.tex")
+GITHUB_RELEASE = "0.1.4"
+PYPI_RELEASE = "0.1.2"
+EXPECTED_TOP_NAV = [
+    "Home",
+    "Getting started",
+    "Theory",
+    "User manual",
+    "API",
+    "Ecosystem",
+    "Scientific evidence",
+    "Reference",
+    "Contributing",
+    "Citation",
+]
+ACKNOWLEDGEMENTS = (
+    "Tomás Corrales and the SPM Lab at Universidad Técnica Federico Santa María "
+    "provided selected experimental datasets and laboratory context during the "
+    "development and evaluation of SPM-Kit.",
+    "María Saavedra Fredes and Benjamin Schleyer helped locate and share candidate "
+    "datasets for the validation campaigns.",
+    "Tomás Corrales y el SPM Lab de la Universidad Técnica Federico Santa María "
+    "proporcionaron datasets experimentales seleccionados y contexto de laboratorio "
+    "durante el desarrollo y la evaluación de SPM-Kit.",
+    "María Saavedra Fredes y Benjamin Schleyer ayudaron a localizar y compartir "
+    "datasets candidatos para las campañas de validación.",
+)
 
 
-def ok(msg: str) -> None:
-    print(f"[OK]   {msg}")
+class Checks:
+    def __init__(self) -> None:
+        self.failures: list[str] = []
+
+    def require(self, condition: bool, message: str) -> None:
+        if condition:
+            print(f"[OK]   {message}")
+        else:
+            self.failures.append(message)
+            print(f"[FAIL] {message}")
 
 
-def fail(msg: str) -> None:
-    print(f"[FAIL] {msg}")
+def text(path: Path) -> str:
+    return path.read_text(encoding="utf-8")
 
 
-def load_pyproject_version() -> str:
-    with (REPO / "pyproject.toml").open("rb") as fh:
-        data = tomllib.load(fh)
-    proj = data.get("project", {})
-    version = proj.get("version")
-    if not version:
-        raise RuntimeError("pyproject.toml has no project.version")
-    return version
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
-def load_citation_version() -> str | None:
-    cff = REPO / "CITATION.cff"
-    if not cff.exists():
-        return None
-    match = re.search(r"^version:\s*(\S+)", cff.read_text(), re.MULTILINE)
-    return match.group(1) if match else None
+def project_version() -> str:
+    with (REPO / "pyproject.toml").open("rb") as handle:
+        return str(tomllib.load(handle)["project"]["version"])
 
 
-def iter_nav_files(node, acc):
+def citation_version() -> str:
+    match = re.search(r"^version:\s*(\S+)", text(REPO / "CITATION.cff"), re.MULTILINE)
+    if not match:
+        raise RuntimeError("CITATION.cff has no version")
+    return match.group(1)
+
+
+def collect_nav_files(node: Any) -> list[str]:
+    paths: list[str] = []
     if isinstance(node, str):
-        acc.append(node)
+        paths.append(node)
     elif isinstance(node, list):
         for item in node:
-            iter_nav_files(item, acc)
+            paths.extend(collect_nav_files(item))
     elif isinstance(node, dict):
-        for value in node.values():
-            iter_nav_files(value, acc)
+        for item in node.values():
+            paths.extend(collect_nav_files(item))
+    return paths
 
 
-STALE_VERSIONS = ("0.1.0", "0.1.1", "0.1.2")
+def cli_commands() -> list[str]:
+    tree = ast.parse(text(REPO / "src/spmkit/cli/app.py"))
+    commands: list[str] = []
+    for node in tree.body:
+        if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            continue
+        for decorator in node.decorator_list:
+            if not (
+                isinstance(decorator, ast.Call)
+                and isinstance(decorator.func, ast.Attribute)
+                and isinstance(decorator.func.value, ast.Name)
+                and decorator.func.value.id == "app"
+                and decorator.func.attr == "command"
+            ):
+                continue
+            command = node.name.replace("_", "-")
+            if decorator.args and isinstance(decorator.args[0], ast.Constant):
+                command = str(decorator.args[0].value)
+            for keyword in decorator.keywords:
+                if keyword.arg == "name" and isinstance(keyword.value, ast.Constant):
+                    command = str(keyword.value.value)
+            commands.append(command)
+    return commands
+
+
+def perspective_specs() -> list[tuple[str, str]]:
+    tree = ast.parse(text(REPO / "src/spmkit/gui/builtin_modules.py"))
+    specs: list[tuple[str, str]] = []
+    for node in ast.walk(tree):
+        if not (
+            isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Name)
+            and node.func.id == "PerspectiveSpec"
+            and len(node.args) >= 2
+            and isinstance(node.args[0], ast.Constant)
+            and isinstance(node.args[1], ast.Constant)
+        ):
+            continue
+        specs.append((str(node.args[0].value), str(node.args[1].value)))
+    return specs
+
+
+def pdf_pages(path: Path) -> int:
+    executable = shutil.which("pdfinfo")
+    if executable:
+        result = subprocess.run([executable, str(path)], capture_output=True, check=True, text=True)
+        match = re.search(r"^Pages:\s+(\d+)", result.stdout, re.MULTILINE)
+        if match:
+            return int(match.group(1))
+    raw = path.read_bytes()
+    counts = [int(value) for value in re.findall(rb"/Count\s+(\d+)", raw)]
+    return max(counts) if counts else len(re.findall(rb"/Type\s*/Page\b", raw))
 
 
 def main() -> int:
-    failures: list[str] = []
+    checks = Checks()
+    dev_version = project_version()
+    released_version = citation_version()
+    print(f"Source version        : {dev_version}")
+    print(f"GitHub release        : {released_version}")
+    print(f"PyPI distribution     : {PYPI_RELEASE}")
+    print("-" * 72)
 
-    dev_version = load_pyproject_version()
-    rel_version = load_citation_version()
-    print(f"Canonical dev version  : {dev_version}")
-    print(f"Last released version  : {rel_version}")
-    print("-" * 64)
+    config_path = REPO / "mkdocs.yml"
+    config = yaml.load(text(config_path), Loader=_PermissiveLoader)
+    nav = config.get("nav", [])
+    top_nav = [next(iter(item)) for item in nav if isinstance(item, dict) and item]
+    checks.require(top_nav == EXPECTED_TOP_NAV, "top-level navigation matches portal IA")
+    for relative in collect_nav_files(nav):
+        checks.require((DOCS / relative).is_file(), f"nav target exists: {relative}")
 
-    # 1) mkdocs.yml nav points at files that exist.
-    mkdocs_yml = REPO / "mkdocs.yml"
-    if not mkdocs_yml.exists():
-        failures.append("mkdocs.yml missing")
-        fail("mkdocs.yml missing")
-    else:
-        cfg = yaml.load(mkdocs_yml.read_text(), Loader=_PermissiveLoader)
-        nav_files: list[str] = []
-        iter_nav_files(cfg.get("nav", []), nav_files)
-        for rel in nav_files:
-            if (DOCS / rel).exists():
-                ok(f"nav file exists: {rel}")
-            else:
-                failures.append(f"nav file missing: {rel}")
-                fail(f"nav file missing: {rel}")
-        custom_dir = cfg.get("theme", {}).get("custom_dir")
-        if custom_dir:
-            failures.append(f"custom_dir still set: {custom_dir}")
-            fail(f"custom_dir still set: {custom_dir} (must be removed or backed by a real directory)")
-        else:
-            ok("no custom_dir declared (no phantom overrides)")
+    custom_dir = config.get("theme", {}).get("custom_dir")
+    override_dir = (REPO / custom_dir).resolve() if custom_dir else None
+    checks.require(
+        bool(override_dir and override_dir.is_dir()),
+        f"theme override directory exists: {custom_dir}",
+    )
+    checks.require(
+        bool(override_dir and (override_dir / "main.html").is_file()),
+        "theme override supplies Open Graph metadata",
+    )
 
-    # 2) User guide exists in three formats.
-    required = ("user-guide.md", "user-guide.tex", "user-guide.pdf")
-    for name in required:
-        path = DOCS / name
-        if path.exists() and path.stat().st_size > 0:
-            ok(f"user guide present: {name} ({path.stat().st_size} bytes)")
-        else:
-            failures.append(f"user guide missing/empty: {name}")
-            fail(f"user guide missing/empty: {name}")
+    checks.require(released_version == GITHUB_RELEASE, "CITATION.cff matches GitHub release")
+    required_manual_files = (*MANUALS, DOCS / "user-guide.pdf")
+    for path in required_manual_files:
+        checks.require(path.is_file() and path.stat().st_size > 0, f"manual artifact: {path.name}")
 
-    # 3) PDF page count (heuristic; xelatex may compress object streams).
+    version_surfaces = (
+        *MANUALS,
+        DOCS / "manual/index.md",
+        DOCS / "manual/downloads.md",
+        DOCS / "getting-started/installation.md",
+    )
+    for path in version_surfaces:
+        body = text(path)
+        checks.require(
+            all(value in body for value in (dev_version, GITHUB_RELEASE, PYPI_RELEASE)),
+            f"three-way package status is explicit: {path.relative_to(REPO)}",
+        )
+
+    acknowledgement_surfaces = (*MANUALS, DOCS / "ACKNOWLEDGEMENTS.md")
+    for path in acknowledgement_surfaces:
+        body = text(path)
+        checks.require(
+            all(paragraph in body for paragraph in ACKNOWLEDGEMENTS),
+            f"canonical bilingual acknowledgement: {path.relative_to(REPO)}",
+        )
+    ack_body = text(DOCS / "ACKNOWLEDGEMENTS.md")
+    checks.require(
+        all(term in ack_body for term in ("creator", "author", "lead", "not imply")),
+        "acknowledgement page preserves authorship and dataset-suitability boundaries",
+    )
+
+    specs = perspective_specs()
+    checks.require(len(specs) == 12, "source declares 12 Fathom perspectives")
+    for path in MANUALS:
+        body = text(path)
+        checks.require(
+            all(key in body and label in body for key, label in specs),
+            f"perspective keys and labels are synchronized: {path.name}",
+        )
+
+    commands = cli_commands()
+    checks.require(len(commands) == 19, "source declares 19 CLI commands")
+    markdown_manual = text(DOCS / "user-guide.md")
+    checks.require(
+        all(f"`{command}`" in markdown_manual for command in commands),
+        "Markdown command index covers every CLI command",
+    )
+    for path in MANUALS:
+        body = text(path)
+        checks.require(
+            all(f"LEVEL {level}" in body for level in range(6)),
+            f"evidence vocabulary LEVEL 0–5 is present: {path.name}",
+        )
+
+    published_docs = (
+        DOCS / "api.md",
+        DOCS / "getting-started/installation.md",
+        DOCS / "ecosystem/spmkit.md",
+        DOCS / "user-guide.md",
+        DOCS / "user-guide.tex",
+    )
+    bad_field = re.compile(r"\b(?:result|stats)\.(?:sa|sq|sz|mean_cpd)\b")
+    for path in published_docs:
+        checks.require(
+            not bad_field.search(text(path)),
+            f"public Python fields match source capitalization: {path.relative_to(REPO)}",
+        )
+
     pdf = DOCS / "user-guide.pdf"
-    if pdf.exists():
-        raw = pdf.read_bytes()
-        counts = [int(n) for n in re.findall(rb"/Count\s+(\d+)", raw)]
-        pages = max(counts) if counts else len(re.findall(rb"/Type\s*/Page[^s]", raw))
-        if pages >= 5:
-            ok(f"user-guide.pdf has approximately {pages} pages")
-        elif pdf.stat().st_size > 50_000:
-            ok("user-guide.pdf present and non-trivial (page count heuristic inconclusive)")
-        else:
-            failures.append("user-guide.pdf page count looks wrong")
-            fail("user-guide.pdf page count looks wrong or file too small")
+    pages = pdf_pages(pdf)
+    checks.require(pages == 19, "committed PDF has 19 pages")
+    actual_pdf_hash = sha256(pdf)
+    downloads = text(DOCS / "manual/downloads.md")
+    published_hash = re.search(r"PDF SHA-256:\*\*\s*\n`([0-9a-f]{64})`", downloads)
+    checks.require(
+        bool(published_hash and published_hash.group(1) == actual_pdf_hash),
+        "download metadata matches committed PDF SHA-256",
+    )
+    checks.require("115 KiB" in downloads and "19-page" in downloads, "PDF size/page metadata")
 
-    # 4) Canonical dev version appears wherever it must.
-    def contains(path: Path, token: str) -> bool:
-        return token in path.read_text(encoding="utf-8")
+    viewer_dir = DOCS / "assets/pdf-viewer"
+    viewer = viewer_dir / "viewer.html"
+    checks.require(viewer.stat().st_size > 0, "embedded PDF reader is present")
+    for relative in ("vendor/pdf.min.mjs", "vendor/pdf.worker.min.mjs"):
+        asset = viewer_dir / relative
+        checks.require(
+            asset.is_file() and asset.stat().st_size > 100_000, f"PDF.js asset: {relative}"
+        )
+    reader_body = text(DOCS / "manual/reader.md")
+    checks.require(
+        "assets/pdf-viewer/viewer.html" in reader_body and "user-guide.pdf" in reader_body,
+        "reader page references the local viewer and PDF",
+    )
 
-    checks_version = [
-        ("docs/user-guide.tex", DOCS / "user-guide.tex"),
-        ("docs/manual/index.md", DOCS / "manual" / "index.md"),
-    ]
-    for label, path in checks_version:
-        if not path.exists():
-            failures.append(f"{label} missing")
-            fail(f"{label} missing")
-            continue
-        if contains(path, dev_version):
-            ok(f"{label} references dev version {dev_version}")
-        else:
-            failures.append(f"{label} does not reference dev version {dev_version}")
-            fail(f"{label} does not reference dev version {dev_version}")
+    manifest_path = DOCS / "assets/ecosystem/assets-manifest.yml"
+    manifest = yaml.safe_load(text(manifest_path))
+    canonical_assets = manifest.get("canonical", [])
+    checks.require(len(canonical_assets) == 5, "asset manifest declares five canonical banners")
+    for entry in canonical_assets:
+        local = REPO / entry["local_path"]
+        checks.require(
+            local.is_file() and sha256(local) == entry["sha256"],
+            f"canonical asset hash: {entry['component']}",
+        )
+    generated_assets = manifest.get("generated_derivatives", [])
+    for entry in generated_assets:
+        local = REPO / entry["local_path"]
+        checks.require(
+            local.is_file() and sha256(local) == entry["sha256"],
+            f"generated asset hash: {local.relative_to(DOCS)}",
+        )
 
-    # 5) No stale version strings in the user guide.
-    for name in ("user-guide.tex", "user-guide.md"):
-        path = DOCS / name
-        if not path.exists():
-            continue
-        text = path.read_text(encoding="utf-8")
-        for stale in STALE_VERSIONS:
-            if stale in text:
-                failures.append(f"{name} still references stale version {stale}")
-                fail(f"{name} still references stale version {stale}")
-            else:
-                ok(f"{name} has no stale version {stale}")
+    required_assets = (
+        "assets/theory/afm-instrument.svg",
+        "assets/theory/operating-modes.svg",
+        "assets/theory/force-distance.svg",
+        "assets/theory/contact-geometries.svg",
+        "assets/theory/kpfm-energy.svg",
+        "assets/theory/roughness-flow.svg",
+        "assets/theory/psd-interpretation.svg",
+        "assets/theory/resonance-response.svg",
+        "assets/theory/software-architecture.svg",
+        "assets/vendor/fonts/inter-latin-variable.woff2",
+        "assets/vendor/fonts/jetbrains-mono-latin-variable.woff2",
+        "assets/vendor/mathjax/tex-mml-chtml.js",
+        "assets/vendor/mathjax/LICENSE",
+    )
+    for relative in required_assets:
+        asset = DOCS / relative
+        checks.require(asset.is_file() and asset.stat().st_size > 0, f"required asset: {relative}")
 
-    # 6) Embedded PDF reader assets.
-    viewer = DOCS / "assets" / "pdf-viewer" / "viewer.html"
-    if viewer.exists() and viewer.stat().st_size > 0:
-        ok(f"pdf viewer present: assets/pdf-viewer/viewer.html")
-    else:
-        failures.append("pdf viewer missing")
-        fail("pdf viewer missing: docs/assets/pdf-viewer/viewer.html")
+    config_scripts = config.get("extra_javascript", [])
+    checks.require(
+        config_scripts == ["javascripts/mathjax.js"],
+        "MathJax engine is demand-loaded instead of globally blocking every page",
+    )
+    banner_pages = (
+        DOCS / "ecosystem/index.md",
+        DOCS / "ecosystem/spmkit.md",
+        DOCS / "ecosystem/fathom.md",
+        DOCS / "ecosystem/data-hunter.md",
+        DOCS / "ecosystem/phantoms.md",
+        DOCS / "ecosystem/validation.md",
+    )
+    for path in banner_pages:
+        body = text(path)
+        checks.require(
+            "srcset=" in body and ".webp" in body,
+            f"responsive banner candidates: {path.relative_to(REPO)}",
+        )
 
-    for rel in ("vendor/pdf.min.mjs", "vendor/pdf.worker.min.mjs"):
-        p = DOCS / "assets" / "pdf-viewer" / rel
-        if p.exists() and p.stat().st_size > 100_000:
-            ok(f"pdfjs asset present: {rel} ({p.stat().st_size} bytes)")
-        else:
-            failures.append(f"pdfjs asset missing/small: {rel}")
-            fail(f"pdfjs asset missing/small: {rel}")
-
-    # 7) reader.md must reference the viewer, not a phantom path.
-    reader = DOCS / "manual" / "reader.md"
-    if reader.exists():
-        rtext = reader.read_text(encoding="utf-8")
-        if "assets/pdf-viewer/viewer.html" in rtext:
-            ok("reader.md references the embedded viewer")
-        else:
-            failures.append("reader.md does not reference the viewer")
-            fail("reader.md does not reference the viewer")
-        if "custom_dir" in rtext or "overrides/" in rtext:
-            failures.append("reader.md still mentions overrides/")
-            fail("reader.md still mentions overrides/")
-        else:
-            ok("reader.md has no override reference")
-    else:
-        failures.append("reader.md missing")
-        fail("reader.md missing")
-
-    print("-" * 64)
-    if failures:
-        print(f"DOCUMENTATION SYNC FAILED: {len(failures)} problem(s)")
-        for f in failures:
-            print(f"  - {f}")
+    print("-" * 72)
+    if checks.failures:
+        print(f"DOCUMENTATION SYNC FAILED: {len(checks.failures)} problem(s)")
+        for failure in checks.failures:
+            print(f"  - {failure}")
         return 1
     print("DOCUMENTATION SYNC OK")
     return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())

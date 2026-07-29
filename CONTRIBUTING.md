@@ -1,57 +1,62 @@
-# Contribuir a spmkit
+# Contributing to SPM-Kit
 
-¡Gracias por tu interés! spmkit es diseñado y desarrollado independientemente por
-José Labarca Baeza, estudiante de pregrado de Física en la Universidad Técnica
-Federico Santa María, en el contexto académico del SPM Lab. Recibe contribuciones
-de la comunidad.
+SPM-Kit was independently designed and developed by José Labarca Baeza. It
+welcomes community contributions without changing the software’s authorship or
+implying institutional ownership.
 
-## Preparar el entorno
+## Development setup
 
 ```bash
-git clone https://github.com/kegouro/spmkit
+git clone https://github.com/kegouro/spmkit.git
 cd spmkit
-uv pip install -e ".[dev,gui,hdf5,gwy,report,test-gui]"   # o pip
-pre-commit install
+uv pip install -e ".[dev,gui,hdf5,gwy,report,test-gui]"
 ```
 
-> Los tests de la GUI requieren los extras `gui` + `test-gui` (PyQt6 + pytest-qt)
-> y un entorno con Qt; en CI se omiten automáticamente (la ciencia sí se prueba).
-
-## Principios de diseño
-
-spmkit separa estrictamente tres capas (ver [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)):
-
-- **`core/`** — puro Python, sin dependencias de UI. Toda la ciencia vive aquí.
-- **`cli/`** y **`gui/`** — solo orquestan/presentan; nunca implementan análisis
-  ni tocan parsers directamente.
-
-Si agregas análisis, va en `core/` con su test. La CLI/GUI solo lo invocan.
-
-## Antes de abrir un PR
-
-Todo lo que corre CI debe pasar localmente:
+Before a pull request:
 
 ```bash
-ruff check src tests      # lint
-black --check src tests   # formato
-mypy src                  # tipos
-pytest                    # tests (+ cobertura)
+ruff check src tests
+black --check src tests
+mypy src
+pytest
 ```
 
-- **Tests con datos**: usa datos sintéticos (ver `tests/conftest.py`). No
-  subas archivos del instrumento (`reference/` está en `.gitignore`).
-- **Confianza científica**: si tocas el manejo de datos (parsers, conversión
-  de unidades, orientación), agrega o actualiza una prueba en
-  `tests/validation/` y documenta el porqué. Ver [docs/VALIDATION.md](docs/VALIDATION.md).
-- Mantén el estilo del código vecino (nombres, docstrings en español).
+## Architecture rule
 
-## Formatos e instrumentos nuevos
+- `src/spmkit/core/` contains all numerical and file-format behavior.
+- `src/spmkit/cli/` and `src/spmkit/gui/` only orchestrate public core APIs.
+- New physical or numerical behavior needs the smallest convincing synthetic or
+  analytical recovery test.
+- Parser, unit, calibration, or orientation changes need traceability evidence.
 
-Para soportar un formato, agrega un parser en `core/io/` que devuelva un
-`SPMData`, regístralo en `core/io/registry.py` y valídalo contra una
-referencia conocida (otra herramienta o un archivo de especificación).
+## Contributing a file-format fixture
 
-## Reportar bugs / pedir features
+Do not upload restricted instrument files to a public issue. State:
 
-Usa las plantillas de issues. Incluye versión de spmkit, SO, y pasos para
-reproducir (o un archivo sintético mínimo).
+- instrument family, software/firmware version when known, and acquisition mode;
+- file extension, channel names, direction, array shape, units, and orientation;
+- expected reader behavior and any independent reference;
+- SHA-256 checksum and approximate file size;
+- license and redistribution permission;
+- whether personal, laboratory, or sample-identifying metadata was removed;
+- whether sample identity may remain private.
+
+If the file cannot be redistributed, submit metadata only and describe a lawful
+private validation route. Public availability by itself is not permission to
+copy the file into this repository.
+
+## Contributing a validation comparison
+
+Record the SPM-Kit version or commit, reference software/version, exact input,
+preprocessing order, units, metrics, tolerances, output, and reference-independence
+classification. Preserve failures and inconclusive results. Do not widen a
+tolerance after seeing results merely to obtain a pass.
+
+## Pull request checklist
+
+- [ ] The change is focused and preserves the core/CLI/GUI boundary.
+- [ ] Relevant tests and documented commands pass.
+- [ ] Scientific scope, units, assumptions, and limitations are explicit.
+- [ ] No private or restricted data is committed.
+- [ ] New claims link to executable or preserved evidence.
+- [ ] Authorship and acknowledgements remain distinct.

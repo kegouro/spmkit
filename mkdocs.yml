@@ -1,6 +1,8 @@
-site_name: SPM-Kit · Fathom
-site_description: Open numerical engine and interactive workspace for Scanning Probe Microscopy (SPM)
-site_url: https://kegouro.github.io/spmkit
+site_name: SPM-Kit ecosystem
+site_description: Open numerical analysis, interactive workflows, theory, and inspectable validation evidence for AFM, KPFM, and force spectroscopy
+site_url: https://kegouro.github.io/spmkit/
+site_author: José Labarca Baeza
+copyright: Copyright © José Labarca Baeza · MIT-licensed software and documentation
 repo_url: https://github.com/kegouro/spmkit
 repo_name: kegouro/spmkit
 edit_uri: edit/main/docs/
@@ -9,11 +11,11 @@ docs_dir: docs
 
 theme:
   name: material
+  custom_dir: docs/overrides
+  language: en
   favicon: images/brand/fathom_mark.svg
   logo: images/brand/fathom_logo_light.png
-  font:
-    text: Inter
-    code: JetBrains Mono
+  font: false
   palette:
     - scheme: slate
       primary: custom
@@ -59,16 +61,15 @@ markdown_extensions:
       permalink: true
   - pymdownx.arithmatex:
       generic: true
-  - pymdownx.superfences:
-      custom_fences:
-        - name: mermaid
-          class: mermaid
-          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.superfences
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
       pygments_lang_class: true
   - pymdownx.inlinehilite
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.details
   - pymdownx.tabbed:
       alternate_style: true
@@ -78,7 +79,12 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Getting started: getting-started.md
+  - Getting started:
+      - Overview: getting-started.md
+      - Installation: getting-started/installation.md
+      - First analysis: getting-started/first-analysis.md
+      - Fathom quick start: getting-started/fathom-quick-start.md
+      - Example workflows: ecosystem/workflows/index.md
   - Theory:
       - Overview: theory/index.md
       - AFM principles: theory/afm-principles.md
@@ -86,12 +92,13 @@ nav:
       - Force-distance curves: theory/force-distance.md
       - Contact mechanics: theory/contact-mechanics.md
       - KPFM: theory/kpfm.md
-      - Roughness & spectral analysis: theory/roughness.md
+      - Roughness: theory/roughness.md
+      - Spectral analysis: theory/spectral-analysis.md
       - Resonance & mass sensing: theory/resonance.md
-      - SPM-Kit workflows: theory/spmkit-workflows.md
+      - Implementation map: theory/spmkit-workflows.md
       - Glossary: theory/glossary.md
       - References: theory/references.md
-  - Manual:
+  - User manual:
       - Overview: manual/index.md
       - Full guide: user-guide.md
       - PDF reader: manual/reader.md
@@ -100,21 +107,35 @@ nav:
   - API: api.md
   - Ecosystem:
       - Overview: ecosystem/index.md
+      - Choose a component: ecosystem/choose.md
+      - Install matrix: ecosystem/install.md
+      - Artifact contracts: ecosystem/contracts.md
+      - Workflow walkthrough: ecosystem/workflows/index.md
       - SPM-Kit: ecosystem/spmkit.md
       - Fathom: ecosystem/fathom.md
-      - Phantoms: ecosystem/phantoms.md
       - Data Hunter: ecosystem/data-hunter.md
+      - Phantoms: ecosystem/phantoms.md
       - Validation: ecosystem/validation.md
       - Pharos: ecosystem/pharos.md
+      - Brand governance: ecosystem/brand.md
+  - Scientific evidence:
+      - Scientific status: SCIENTIFIC_STATUS.md
+      - Validation campaigns: VALIDATION.md
+      - Traceability: TRACEABILITY.md
+      - Format maturity: FILE_FORMATS.md
+      - Known limitations: KNOWN_LIMITATIONS.md
+      - Reproducibility workflow: ecosystem/workflows/index.md
   - Reference:
       - Architecture: ARCHITECTURE.md
       - Extending: extending.md
-      - Validation: VALIDATION.md
-      - Traceability: TRACEABILITY.md
       - Roadmap: ROADMAP.md
       - Brand: BRAND.md
+      - Acknowledgements: ACKNOWLEDGEMENTS.md
+  - Contributing: CONTRIBUTING.md
+  - Citation: CITATION.md
 
 extra:
+  generator: false
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/kegouro/spmkit

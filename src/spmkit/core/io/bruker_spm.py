@@ -2,15 +2,16 @@
 
 .. warning::
 
-    **Experimental y sin validar contra archivos reales.** Reimplementado desde la
+    **Experimental y de alcance parcial.** Reimplementado desde la
     especificación pública del formato Nanoscope, tomando como **referencia** (sin usar su
     código) la librería `AFMReader <https://github.com/AFM-SPM/AFMReader>`_ (GPL-3.0) y
     `TopoStats <https://github.com/AFM-SPM/TopoStats>`_ (DOI 10.15131/shef.data.22633528),
     del grupo AFM-SPM. La **cadena de escalado** de Nanoscope (``hard scale`` × sensibilidad
     ``soft``) depende de la versión del instrumento; esta implementación cubre el caso común
-    (Nanoscope III/V, enteros de 2/4 bytes) y **debe validarse contra un ``.spm`` real** antes
-    de confiar en los valores físicos absolutos. Si no puede resolver el escalado, devuelve el
-    **crudo** (``metadata["scaled"] = False``) en vez de inventar una calibración.
+    (Nanoscope III/V, enteros de 2/4 bytes). Se compararon seis archivos demostrados con
+    Gwyddion 2.71, pero no se ha cubierto la familia completa. Si no puede resolver el
+    escalado, devuelve el **crudo** (``metadata["scaled"] = False``) en vez de inventar
+    una calibración.
 
 Estructura del archivo:
 
@@ -138,7 +139,8 @@ def _pixel_layout(
 def load_bruker_spm(path: str | Path) -> SPMData:
     """Lee un ``.spm`` de Bruker/Nanoscope como :class:`SPMData` (**experimental**)."""
     warnings.warn(
-        "Lector Bruker .spm EXPERIMENTAL: escalado sin validar contra archivos reales.",
+        "Lector Bruker .spm EXPERIMENTAL/PARCIAL: solo variantes demostradas; "
+        "no soporte universal.",
         stacklevel=2,
     )
     path = Path(path)

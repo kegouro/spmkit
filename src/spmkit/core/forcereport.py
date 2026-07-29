@@ -321,7 +321,7 @@ _HTML_TEMPLATE = """<!doctype html>
 <img src="data:image/png;base64,{{ hist_b64 }}" alt="histogramas">
 <h2>Curva representativa (índice {{ rep_index }})</h2>
 <img src="data:image/png;base64,{{ curve_b64 }}" alt="curva">
-<footer>spmkit · Fathom — SPM Lab UTFSM · motor de cálculo: {{ backend }}</footer>
+<footer>spmkit · Fathom — José Labarca Baeza · motor de cálculo: {{ backend }}</footer>
 </body></html>"""
 
 
@@ -366,5 +366,5 @@ Propiedad & Mediana $\pm\,\sigma$ & Rango & N \\ \midrule
 \begin{center}\includegraphics[width=0.7\linewidth]{\VAR{curve_png}}\end{center}
 \vfill
 \noindent\rule{\linewidth}{0.4pt}\\
-{\small spmkit $\cdot$ Fathom --- SPM Lab UTFSM $\cdot$ motor: \VAR{backend}}
+{\small spmkit $\cdot$ Fathom --- Jos\'e Labarca Baeza $\cdot$ motor: \VAR{backend}}
 \end{document}"""

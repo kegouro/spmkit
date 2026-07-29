@@ -37,14 +37,10 @@ ofrece y lo que el lab necesita para análisis de topografía.
 
 ## Flujo de usuario
 
-```mermaid
-flowchart LR
-    A["Abrir .nid/.nhf"] --> B["Seleccionar canal"]
-    B --> C["Nivelar\n(plane/poly/rows)"]
-    C --> D["Leer rugosidad\n+ KPFM"]
-    C --> E["Trazar perfil\n(arrastrar línea)"]
-    D --> F["Exportar resultados"]
-    E --> F
+```text
+Abrir archivo → seleccionar canal → nivelar → leer rugosidad o KPFM
+                                      └────→ trazar perfil
+                                  resultados y perfil → exportar
 ```
 
 1. **Abrir** un archivo del instrumento (`.nid`/`.nhf`).

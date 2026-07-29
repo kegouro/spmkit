@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "spmkit"
 version = "0.1.5.dev0"
-description = "Analizador open-source de datos AFM/KPFM para microscopía de sonda de barrido (SPM)"
+description = "Open AFM/SPM numerical analysis engine and Fathom scientific workspace"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
@@ -59,7 +59,8 @@ docs = ["mkdocs-material>=9.5"]
 all = ["spmkit[hdf5,gwy,nanosurf,afm,jpk,grains,viz,report,gui]"]
 
 [project.urls]
-Homepage = "https://github.com/kegouro/spmkit"
+Homepage = "https://kegouro.github.io/spmkit/"
+Documentation = "https://kegouro.github.io/spmkit/"
 Repository = "https://github.com/kegouro/spmkit"
 Issues = "https://github.com/kegouro/spmkit/issues"
 

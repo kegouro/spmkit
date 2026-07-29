@@ -19,7 +19,7 @@ from spmkit.core.verify import trace_nid
 
 app = typer.Typer(
     name="spmkit",
-    help="Analizador open-source de datos AFM/KPFM (SPM Lab UTFSM).",
+    help="Motor abierto de análisis AFM/KPFM creado por José Labarca Baeza.",
     no_args_is_help=True,
     add_completion=False,
 )

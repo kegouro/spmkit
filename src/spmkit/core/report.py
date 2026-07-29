@@ -42,7 +42,7 @@ _TEMPLATE = """<!doctype html>
 {% for k, v in section.rows %}<tr><td>{{ k }}</td><td>{{ v }}</td></tr>{% endfor %}
 </table>
 {% endfor %}
-<footer>spmkit · SPM Lab UTFSM</footer>
+<footer>spmkit · José Labarca Baeza</footer>
 </body></html>"""
 
 

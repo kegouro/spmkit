@@ -1,299 +1,243 @@
-# API Python
+---
+title: Python API
+description: Public SPM-Kit source API for loading image and force data, numerical analysis, export, batch processing, and reader extensions.
+---
 
-spmkit expone una API pública limpia en `spmkit.core`. La CLI y la GUI solo orquestan — toda la lógica vive aquí.
+# Python API
 
-## Instalación
+This page describes the public contracts in source version `0.1.5.dev0`. SPM-Kit is
+alpha software: pin a version or commit for reproducible work and consult the
+[format matrix](FILE_FORMATS.md) before treating a reader as suitable for a particular
+instrument variant.
+
+## Install
 
 ```bash
-pip install spmkit
+python -m pip install spmkit                    # PyPI 0.1.2
+python -m pip install "spmkit[gwy,hdf5,grains]" # selected optional features
 ```
 
----
+The current source and GitHub-release options are listed in the
+[installation guide](getting-started/installation.md).
 
-## Carga de datos — `spmkit.load`
+## Load image data
 
-Punto de entrada principal. Detecta el formato automáticamente.
+`spmkit.load()` is the compact built-in image dispatcher. It currently dispatches
+`.nid`, `.nhf`, `.gwy`, and SPM-Kit `.npz` bundles by extension.
 
 ```python
-from spmkit import load
+from spmkit import SPMChannel, SPMData, load
 
-data = load("scan.nid")    # NanoSurf clásico
-data = load("scan.nhf")    # NanoSurf HDF5
-data = load("scan.gwy")    # Gwyddion
+data: SPMData = load("scan.nid")
+print(data.names)
+
+height: SPMChannel = data["Z-Axis"]
+height_backward = data.get("Z-Axis", direction="backward")
+
+print(height.shape)          # (lines, points)
+print(height.unit)           # physical data unit
+print(height.x_range)        # metres
+print(height.y_range)        # metres
+print(height.pixel_size_x)   # metres per pixel
+print(height.direction)
 ```
 
-### `SPMData`
+`SPMData` contains an immutable tuple of channels, file metadata, and `source_path`.
+`SPMChannel.with_data(array)` returns a new channel carrying the original axes, unit,
+direction, group, and copied metadata. A missing channel raises `KeyError`; SPM-Kit
+does not silently guess a near-matching name.
 
-El objeto devuelto por `load()`.
+## Inspect and load by capability
+
+Use the capability-based path when a file may contain image or force data:
 
 ```python
-# Ver canales disponibles
-print(data.names)          # ['Z-Axis', 'CPD', 'Phase', ...]
+from spmkit.core.io import inspect_any, load_any
 
-# Acceder a un canal (devuelve SPMChannel)
-ch = data["Z-Axis"]
+info = inspect_any("measurement.nid")
+print(info.format, info.kinds, info.channels)
 
-# Acceder con dirección explícita
-ch = data["Z-Axis", "forward"]
-ch = data["Z-Axis", "backward"]
-
-# Metadatos del barrido
-print(data.metadata)       # dict con parámetros del instrumento
+payload, kind = load_any("measurement.nid", kind="image")
 ```
 
-### `SPMChannel`
+`load_any()` returns `(payload, kind)`. The payload is `SPMData` for `"image"` or a
+`ForceVolume` for `"force"`. Content detection additionally covers demonstrated JPK
+TIFF and numbered Bruker/Nanoscope files. Optional `afmformats` readers appear only
+when the `afm` extra is installed. This registry is broader than `spmkit.load()`; see
+the [format matrix](FILE_FORMATS.md) for evidence and limitations.
 
-Representa un canal 2D en unidades físicas.
+## Level and calculate roughness
+
+Analysis functions do not mutate input channels.
 
 ```python
-ch = data["Z-Axis"]
+from spmkit.core.analysis import leveling, roughness
 
-ch.data        # numpy.ndarray 2D (shape: rows × cols)
-ch.unit        # str, p.ej. "m", "V", "°"
-ch.x_range     # float, rango horizontal en metros
-ch.y_range     # float, rango vertical en metros
-ch.shape       # tuple (rows, cols)
-ch.name        # str, nombre del canal
-ch.direction   # "forward" | "backward"
+levelled = leveling.plane_fit(height)
+# Alternatives:
+# levelled = leveling.polynomial(height, order=2)
+# levelled = leveling.align_rows(height, method="median")
+
+stats = roughness.statistics(levelled)
+print(stats.Sa, stats.Sq, stats.Sz, stats.unit, stats.n_points)
+print(stats.Sp, stats.Sv, stats.Ssk, stats.Sku)
+record = stats.to_dict()
 ```
 
----
+Roughness expects a previously levelled spatial image. The result fields use the
+ISO-style capitalization shown above. The current implementation excludes non-finite
+values and centres the finite height population before calculating the metrics.
 
-## Nivelación — `spmkit.core.analysis.leveling`
-
-```python
-from spmkit.core.analysis import leveling
-
-# Corrección de plano (elimina inclinación)
-flat = leveling.plane_fit(ch)
-
-# Corrección polinómica (orden configurable)
-flat = leveling.polynomial(ch, order=2)
-
-# Alineado de filas (corrige deriva línea a línea)
-flat = leveling.align_rows(ch)
-```
-
-Todas las funciones devuelven un nuevo `SPMChannel` (inmutable).
-
----
-
-## Rugosidad — `spmkit.core.analysis.roughness`
-
-Parámetros ISO 25178.
-
-```python
-from spmkit.core.analysis import roughness
-
-result = roughness.statistics(flat)
-
-result.sa      # rugosidad media aritmética
-result.sq      # rugosidad RMS
-result.sz      # altura máxima (Sp + Sv)
-result.sp      # altura máxima de picos
-result.sv      # profundidad máxima de valles
-result.ssk     # asimetría (skewness)
-result.sku     # curtosis (kurtosis)
-result.unit    # unidad del canal ("m", "nm", …)
-
-# Convertir a dict
-d = result.to_dict()
-```
-
----
-
-## KPFM — `spmkit.core.analysis.kpfm`
-
-Potencial de contacto y función de trabajo.
+## KPFM statistics
 
 ```python
 from spmkit.core.analysis import kpfm
 
-# Estadísticas básicas del canal CPD
-result = kpfm.statistics(data["CPD"])
-
-result.mean_cpd       # CPD medio (V)
-result.std_cpd        # desviación estándar (V)
-result.min_cpd        # mínimo (V)
-result.max_cpd        # máximo (V)
-
-# Con función de trabajo de la punta (eV)
-result = kpfm.statistics(data["CPD"], tip_work_function=4.8)
-result.work_function  # función de trabajo de la muestra (eV)
+cpd = kpfm.statistics(data["CPD"], tip_work_function=4.8)
+print(cpd.mean, cpd.std, cpd.minimum, cpd.maximum, cpd.contrast)
+print(cpd.work_function, cpd.work_function_unit)
 ```
 
----
+`tip_work_function` is expressed in eV. With CPD in volts, the implementation uses
+`sample_work_function = tip_work_function - mean_CPD`. This sign convention and the
+channel's calibration must match the instrument workflow; SPM-Kit cannot infer them
+from an arbitrary label.
 
-## Nanomecánica — `spmkit.core.analysis.mechanics`
+## Spectral and grain analysis
 
-Curvas fuerza-distancia, modelos de contacto.
+```python
+from spmkit.core.analysis import grains, spectral
+
+psd = spectral.radial_psd(levelled)
+fractal = spectral.fractal_dimension(levelled, q_min=None, q_max=None)
+correlation_length_m = spectral.correlation_length(levelled)
+
+segmentation = grains.detect(
+    levelled,
+    threshold=None,
+    min_size=4,
+    relative_height=0.5,
+)
+print(segmentation.n_grains, segmentation.mean_diameter)
+print(segmentation.coverage, segmentation.density)
+```
+
+`radial_psd()` returns `q` in `1/m`. Grain detection requires the `grains` extra,
+uses eight-connected components, and reports density in grains per µm². Automatic
+thresholding is an algorithmic default, not a scientifically universal segmentation
+rule; record or override it for a campaign.
+
+## Force data
+
+Force curves and force volumes are a separate domain from `SPMData` images.
+
+```python
+from spmkit.core.io import load_force
+
+volume = load_force("curve.jpk-force")
+curve = volume.curve(0)
+print(volume.grid_shape, curve.position)
+```
+
+`load_force()` currently covers `.nid`, `.jpk-force`, and `.jpk`. A single curve is
+wrapped as a `1 × 1` `ForceVolume`. Raw force segments preserve calibration state;
+operations that require calibrated force or tip-sample separation fail explicitly if
+those values have not been produced. Model choice, tip geometry, Poisson ratio,
+calibration, contact detection, and fit window remain scientific inputs.
+
+The older array-oriented mechanics API is also public in this alpha release:
 
 ```python
 from spmkit.core.analysis import mechanics
 
-# Extraer curvas del canal de espectroscopía
 curves = mechanics.extract_curves(data["Deflection"])
-
-# Ajustar modelo de Hertz a una curva
-result = mechanics.fit_hertz(
-    curves[50],
-    tip_radius=10e-9,          # radio de punta (m)
-    model="sphere",            # "sphere" | "paraboloid" | "cone"
-    spring_constant=0.3,       # N/m (opcional)
+fit = mechanics.fit_hertz(
+    curves[0],
+    tip_radius=10e-9,
+    poisson=0.3,
+    model="sphere",
+    spring_constant=0.3,
+    contact_method="rov",
 )
-
-result.young_modulus   # módulo de Young (Pa)
-result.contact_point   # punto de contacto (m)
-result.adhesion        # fuerza de adhesión (N)
-result.rmse            # error del ajuste
-
-# Mapa de módulo (force-volume)
-modulus_map = mechanics.modulus_map(curves, tip_radius=10e-9)
-# modulus_map.data → ndarray 2D con E en Pa
+print(fit.young_modulus, fit.young_modulus_std, fit.r_squared, fit.rmse)
 ```
 
----
+Do not treat a successful fit as evidence that the chosen contact model or calibration
+is valid for the sample.
 
-## Resonancia — `spmkit.core.analysis.resonance`
-
-Thermal tuning y sensado de masa.
-
-```python
-from spmkit.core.analysis import resonance
-from pathlib import Path
-
-# Cargar serie temporal de espectros
-files = sorted(Path("./tuning/").glob("*.nid"))
-ev = resonance.load_evaporation_series(files, spring_constant=0.3)
-
-ev.time              # ndarray, tiempo (s)
-ev.frequency         # ndarray, frecuencia de resonancia (Hz)
-ev.mass              # ndarray, masa efectiva (kg)
-ev.added_mass        # ndarray, Δm respecto a la primera medida (kg)
-ev.evaporation_rate  # ndarray, dm/dt (kg/s)
-ev.spring_constant   # float (N/m)
-ev.bare_frequency    # float, f₀ sin masa (Hz)
-
-# Ajuste de ley d² (evaporación limitada por difusión)
-radii = resonance.droplet_radius(ev.added_mass)
-d2 = resonance.fit_d2_law(ev.time, radii)
-
-d2.r0                    # radio inicial (m)
-d2.tau                   # tiempo de vida total (s)
-d2.rate_constant         # K (m²/s)
-d2.r_squared             # R² del ajuste
-d2.is_diffusion_limited  # bool
-```
-
----
-
-## Análisis espectral — `spmkit.core.analysis.spectral`
-
-PSD radial, dimensión fractal, longitud de correlación.
+## Export
 
 ```python
-from spmkit.core.analysis import spectral
-
-# Dimensión fractal y exponente de Hurst
-frac = spectral.fractal_dimension(flat)
-frac.fractal_dimension   # D (2 < D < 3 para superficies rugosas)
-frac.hurst               # H = 3 - D
-frac.psd_slope           # pendiente β del ajuste log-log
-frac.r_squared           # bondad del ajuste
-
-# Longitud de correlación
-corr_length = spectral.correlation_length(flat)  # metros
-```
-
----
-
-## Granos — `spmkit.core.analysis.grains`
-
-Detección de partículas y estadística de tamaños.
-
-```python
-from spmkit.core.analysis import grains
-
-result = grains.detect(
-    flat,
-    threshold=None,       # None = automático
-    min_size=4,           # píxeles mínimos por grano
-    relative_height=0.5,  # fracción para umbral auto
-)
-
-result.n_grains         # número de granos detectados
-result.mean_diameter    # diámetro medio (m)
-result.density          # densidad (granos/m²)
-result.coverage         # fracción de cobertura (0..1)
-result.labels           # ndarray 2D con etiquetas de granos
-```
-
----
-
-## Visualización — `spmkit.core.viz`
-
-Figuras de publicación con colormaps científicos.
-
-```python
-from spmkit.core.viz import FigureSpec, save_figure
-
-spec = FigureSpec(
-    title="Topografía AFM",
-    colormap="batlow",                    # colormaps Crameri
-    colorbar_label="Z-Axis (nm)",
-)
-
-# Exportar a PNG / SVG / PDF
-save_figure(flat, spec, "topografia.png")
-save_figure(flat, spec, "topografia.svg")
-save_figure(flat, spec, "topografia.pdf")
-```
-
-**Colormaps disponibles** (Crameri perceptualmente uniformes):
-
-`batlow`, `tokyo`, `oslo`, `vik`, `davos`, `hawaii`, `lapaz`, `roma`, `turku`, `acton`
-
----
-
-## Exportación — `spmkit.core.export`
-
-```python
-from spmkit.core.export import to_csv, to_json, to_hdf5
-
-# Exportar resultados de rugosidad
-to_csv(roughness_result, "roughness.csv")
-to_json(roughness_result, "roughness.json")
-
-# Exportar datos completos a HDF5
-to_hdf5(data, "scan.h5")
-```
-
----
-
-## Conversión de formatos — `spmkit.core.io`
-
-```python
+from spmkit.core.export import to_csv, to_hdf5, to_json
 from spmkit.core.io import save_gwy
 
-# Guardar como Gwyddion (.gwy)
-save_gwy(data, "scan.gwy")
+to_csv(stats, "roughness.csv")
+to_json(stats, "roughness.json")
+to_hdf5(data, "scan.h5")       # requires h5py
+save_gwy(data, "scan.gwy")     # requires gwyfile
 ```
 
----
+CSV is a presentation/interchange export and does not preserve the complete source
+object. HDF5 and GWY output do not establish universal lossless round-trip equivalence;
+retain the original instrument file, checksums, versions, and processing parameters.
 
-## Procesamiento por lotes — `spmkit.core.batch`
+## Batch image analysis
 
 ```python
-from spmkit.core import batch
 from pathlib import Path
+from spmkit.core import batch
 
-# Encontrar archivos SPM en una carpeta
-files = batch.find_files(Path("./medidas/"))
-
-# Procesar todos
-result = batch.process(files, channel="Z-Axis")
-
-result.n_ok        # archivos procesados con éxito
-result.n_failed    # archivos con error
-result.to_csv(Path("summary.csv"))
+files = batch.find_files(Path("measurements"))
+result = batch.process(files, channel="Z-Axis", cpd_channel="CPD", level="plane")
+print(result.n_ok, result.n_failed)
+result.to_csv("summary.csv")
 ```
+
+`find_files()` is non-recursive and follows the compact built-in image registry.
+`BatchResult.rows` retains an error string for each failed file rather than hiding it.
+
+## Reader plugins
+
+Reader plugins implement the versioned `Reader` protocol and register through the
+`spmkit.plugins.v1` entry-point group.
+
+```python
+from pathlib import Path
+from spmkit.core.plugins import DatasetInfo, register_reader
+
+class ExampleReader:
+    extensions = (".example",)
+
+    def inspect(self, path):
+        return DatasetInfo(
+            path=Path(path),
+            format="example",
+            kinds=("image",),
+            channels=(),
+        )
+
+    def load(self, path, kind=None):
+        raise NotImplementedError("return an SPMData instance here")
+
+register_reader(ExampleReader())
+```
+
+`inspect()` should be inexpensive; `load()` returns the requested data kind. Production
+plugins should publish an entry point rather than relying on process-local registration.
+The plugin contract is versioned, but the surrounding package remains alpha.
+
+## Contract summary
+
+| Concern | Public entry point | Result |
+|---|---|---|
+| compact image loading | `spmkit.load(path)` | `SPMData` |
+| capability inspection | `inspect_any(path)` | `DatasetInfo` |
+| capability loading | `load_any(path, kind)` | `(payload, kind)` |
+| force loading | `load_force(path)` | `ForceVolume` |
+| image preprocessing | `analysis.leveling.*` | new `SPMChannel` |
+| numerical results | `analysis.*` | immutable result dataclasses or arrays |
+| open exports | `core.export.*`, `save_gwy()` | file path/output artifact |
+| extension discovery | `spmkit.plugins.v1` | registered `Reader`/`Domain` |
+
+For end-to-end examples, continue with the [first analysis](getting-started/first-analysis.md),
+[manual](user-guide.md), and [artifact contracts](ecosystem/contracts.md).

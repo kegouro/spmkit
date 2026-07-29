@@ -1,62 +1,82 @@
 # AFM principles
 
-## What is the AFM?
+An atomic force microscope converts tip–sample interaction into a calibrated
+height or force signal. The image is not a direct photograph: it is the output
+of a sensor, feedback controller, scanner and reconstruction convention.
 
-The atomic force microscope (AFM) is, in essence, a nanometric finger. Instead
-of lenses and light, it uses a **sharp tip** — with a radius of just a few
-nanometers — mounted on the end of a flexible **cantilever** that scans the
-surface line by line.
+<figure class="science-figure">
+  <img src="../../assets/theory/afm-instrument.svg" alt="AFM instrument path from sample and tip through cantilever, laser, quadrant photodiode, feedback and scanner correction" width="960" height="340">
+  <figcaption>The optical lever amplifies cantilever angle. Feedback turns the detector error into a scanner Z command that is recorded as topography in constant-interaction modes.</figcaption>
+</figure>
 
-When the tip approaches the sample, **tip-sample forces** appear: van der Waals
-attraction at medium distances, Pauli repulsion on contact, plus adhesion,
-capillarity, and electrostatic forces. These forces *bend* the cantilever. The
-cantilever behaves as a spring of constant $k$ (Hooke's law, $F = -k \cdot z$),
-so measuring its deflection is equivalent to measuring the force.
+## Tip, cantilever and interaction
 
-```text
-                 laser ──►  ┌─── photodiode (4 quadrants)
-              ╲            │      A ── B
-               ╲           │      C ── D   (A+B) − (C+D) = deflection
-                ╲          │
-                 ╲         │   feedback loop: Z-piezo keeps
-                  ●─ ─ ─ ─●   (A+B)−(C+D) = setpoint → topography
-            ╱╲ cantilever          ▲
-           ╱  ╲ (spring k)         │  Z-piezo
-          ●    tip                  │
-    ───── ──── sample ─────────────►│
-```
+A sharp tip sits at the end of a compliant cantilever. When the interaction
+force $F$ is small enough for a linear cantilever model,
 
-*migrated from `docs/assets/legacy/theory-standalone.html` §01 (AFM setup SVG);
-reproduced here as a static ASCII diagram so the figure survives in the native
-build without shipping a binary asset.*
+$$
+F=-k\,d,
+$$
 
-## The optical lever trick
+where $k$ is spring constant in N m$^{-1}$ and $d$ is cantilever deflection in
+metres. The sign depends on the detector and coordinate convention. Van der
+Waals, capillary, electrostatic, chemical and repulsive contact forces can all
+contribute; “height” is therefore inferred through an operating-mode-specific
+control law, not read by a camera.
 
-The deflection is minuscule (fractions of a nanometer), so it is amplified
-optically: a **laser** strikes the back of the cantilever and reflects onto a
-**four-quadrant photodiode**. A tiny tilt of the lever displaces the laser spot
-by several millimeters on the photodiode: geometric gain for free.
+## Optical lever and detector
 
-A **feedback loop** compares the photodiode signal with a setpoint value and
-commands the **piezoelectric scanner** to raise or lower the sample to keep
-the interaction constant. The correction signal, point by point, *is* the
-topography.
+A laser reflected from the back of the cantilever moves across a quadrant
+photodiode. A vertical difference signal such as $(A+B)-(C+D)$ is converted
+from volts to deflection with a deflection-sensitivity calibration. Multiplying
+by $k$ converts deflection to force. Detector saturation, laser drift, cross-talk
+and an incorrect sensitivity propagate into force results.
 
-!!! definition "Key physics"
+## Feedback and scanner
 
-    The AFM does not require the sample to conduct (unlike STM). It resolves
-    **sub-nanometric heights** and **piconewton forces** because it converts a
-    tiny mechanical deflection into a large optical signal, and because a fast
-    loop prevents the tip from "crashing" into the surface.
+The controller compares the measured interaction signal with a setpoint and
+commands the Z piezo. The reported topography can correspond to this correction,
+the residual/error signal, or another vendor-defined channel. Feedback gains,
+line speed and bandwidth determine whether steep features are tracked or
+distorted.
 
----
+## Coordinates and physical scale
 
-## Implementation in SPM-Kit
+SPM arrays have at least four coordinate choices:
 
-| Concept | Where | Status |
+- array row/column indexing;
+- physical X/Y coordinates derived from field of view and pixel count;
+- fast/slow scan axes and forward/backward direction;
+- Z/force sign and unit conventions.
+
+A transpose or vertical flip can preserve roughness statistics while changing
+spatial interpretation. A unit error can change a modulus by orders of
+magnitude. SPM-Kit domain objects therefore keep array shape, X/Y range, unit,
+direction and source metadata where the reader can recover them.
+
+## Raw signal versus calibrated quantity
+
+| Raw/near-raw signal | Required context | Calibrated/derived quantity |
 |---|---|---|
-| Topography reading | `spmkit.core.io` (`.nid`, `.nhf`, `.gwy` readers) | <span class="level-badge level-1">LEVEL 1 SOFTWARE_VERIFIED</span> |
-| Leveling (plane, polynomial, per-row) | `spmkit.core.analysis` | <span class="level-badge level-1">LEVEL 1 SOFTWARE_VERIFIED</span> |
-| Line profiles (bilinear interpolation) | `spmkit.core.analysis` | <span class="level-badge level-1">LEVEL 1 SOFTWARE_VERIFIED</span> |
+| detector voltage | deflection sensitivity | cantilever deflection (m) |
+| cantilever deflection | spring constant | force (N) |
+| scanner command/counts | scanner calibration and axis convention | topography (m) |
+| force and ramp coordinate | tip/sample geometry, contact point, Poisson ratio | indentation and modulus |
+| electrostatic null voltage | sign convention and calibrated tip work function | CPD/work function |
 
-[:material-arrow-left: Theory overview](index.md) · [:material-arrow-right: Operating modes](operating-modes.md)
+Calibration metadata are inputs to a result, not decorative labels.
+
+## SPM-Kit implementation and evidence
+
+| Concept | Current path | Evidence | Limitation |
+|---|---|---|---|
+| image/force inspection | `spmkit.core.io.load_any`, reader contracts | format-specific Level 1/2 | not every variant is demonstrated |
+| image domain model | `spmkit.core.models.SPMData` / `SPMChannel` | Level 1 | metadata depend on source availability |
+| force calibration functions | `spmkit.core.analysis.calibration` | Level 1/2 paths | calibration constants must be externally defensible |
+| file inspection CLI | `spmkit info` | Level 1 | inspection does not validate an analysis |
+
+Fathom routes image data to **Imagen** and force data to **Curva de fuerza** or
+**Mapa**. It uses the same Core reader/domain objects.
+
+[:material-arrow-left: Theory overview](index.md) ·
+[:material-arrow-right: Operating modes](operating-modes.md)

@@ -1,0 +1,49 @@
+name: File-format fixture contribution
+description: Propose a redistributable AFM/SPM file or a metadata-only private validation case
+title: "[FIXTURE] "
+labels: ["format", "validation"]
+body:
+  - type: markdown
+    attributes:
+      value: Do not upload restricted data. Public availability does not automatically grant redistribution rights.
+  - type: input
+    id: format
+    attributes:
+      label: Format and instrument family
+      placeholder: NanoSurf .nid, Nanoscope III .spm, JPK .jpk-force...
+    validations:
+      required: true
+  - type: textarea
+    id: acquisition
+    attributes:
+      label: Acquisition and expected behavior
+      description: Include mode, channels, direction, shape, physical units, orientation, and known software/firmware version.
+    validations:
+      required: true
+  - type: input
+    id: checksum
+    attributes:
+      label: SHA-256 and approximate size
+    validations:
+      required: true
+  - type: textarea
+    id: rights
+    attributes:
+      label: License and redistribution status
+      description: State who owns the file, the license, whether it may enter the repository, and whether sample identity must remain private.
+    validations:
+      required: true
+  - type: textarea
+    id: reference
+    attributes:
+      label: Independent reference, if any
+      description: Name software/version, preprocessing, expected values, and how independence was established. Raw-only fixtures are welcome.
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Safety declaration
+      options:
+        - label: I removed credentials, personal data, confidential paths, and restricted sample metadata.
+          required: true
+        - label: I understand that a raw-only file is a reader fixture, not an analysis-validation benchmark.
+          required: true

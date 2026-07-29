@@ -1,0 +1,10 @@
+<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fathom">
+  <title>Fathom</title>
+  <rect x="3.5" y="3.5" width="41" height="41" rx="10" fill="#121821" stroke="#2A3644" stroke-width="1.2"/>
+  <!-- línea base (approach, sin fuerza) -->
+  <path d="M11 33 H22" fill="none" stroke="#4A5765" stroke-width="2.4" stroke-linecap="round"/>
+  <!-- curva de carga (contacto → indentación) -->
+  <path d="M22 33 C29 33 33 26 38.5 12" fill="none" stroke="#2DD4BF" stroke-width="2.8" stroke-linecap="round"/>
+  <!-- punto de contacto -->
+  <circle cx="22" cy="33" r="2.4" fill="#E8A94B"/>
+</svg>

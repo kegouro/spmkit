@@ -101,7 +101,7 @@ class GwyReader(_ImageReader):
 
 
 class BrukerSpmReader(_ImageReader):
-    """Bruker/Nanoscope ``.spm`` (imagen) — **EXPERIMENTAL**, escalado sin validar."""
+    """Bruker/Nanoscope ``.spm`` (imagen) — parcial, limitado a variantes demostradas."""
 
     extensions: tuple[str, ...] = (".spm",)
     format = "bruker-spm"

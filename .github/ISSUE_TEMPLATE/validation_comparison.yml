@@ -1,0 +1,49 @@
+name: Independent validation or cross-comparison
+description: Report a reproducible comparison without inflating its scientific scope
+title: "[VALIDATION] "
+labels: ["validation"]
+body:
+  - type: input
+    id: spmkit
+    attributes:
+      label: SPM-Kit version or commit
+    validations:
+      required: true
+  - type: input
+    id: reference
+    attributes:
+      label: Reference software, version, and route
+    validations:
+      required: true
+  - type: dropdown
+    id: independence
+    attributes:
+      label: Reference-independence classification
+      options:
+        - Independent implementation and reference
+        - External software through a harness-authored wrapper
+        - Shared implementation or non-independent control
+        - Unknown
+    validations:
+      required: true
+  - type: textarea
+    id: protocol
+    attributes:
+      label: Inputs and frozen protocol
+      description: Include data family, checksums, preprocessing order, parameters, units, metrics, and tolerances.
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcomes, failures, and limitations
+      description: Preserve all PASS, FAIL, ERROR, BLOCKED, and inconclusive cases.
+    validations:
+      required: true
+  - type: textarea
+    id: rights
+    attributes:
+      label: Data rights and reproducibility
+      description: State redistribution rights, evidence path, platform, and commands needed to reproduce the comparison.
+    validations:
+      required: true

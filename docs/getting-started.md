@@ -1,143 +1,46 @@
-# Primeros pasos
-
-## Requisitos
-
-- **Python ≥ 3.11**
-- pip o [uv](https://github.com/astral-sh/uv)
-
+---
+description: Choose an installation source, run a first SPM-Kit analysis, or open the Fathom workspace.
 ---
 
-## Instalación
+# Getting started
 
-### Núcleo + CLI
+SPM-Kit separates numerical work from presentation. Use the Python API or CLI
+for scripts, pipelines, and reproducible runs; use Fathom when visual inspection
+and interactive region selection are part of the work.
 
-```bash
-pip install spmkit
-```
+## Choose a path
 
-El paquete base incluye la CLI (`spmkit`) y el core de análisis (sin dependencias pesadas).
+| Goal | Start here | First successful result |
+|---|---|---|
+| Install a specific release or development state | [Installation](getting-started/installation.md) | `spmkit --version` and `spmkit --help` succeed |
+| Analyze a file or an in-memory surface | [First analysis](getting-started/first-analysis.md) | roughness values with declared units and preprocessing |
+| Explore data interactively | [Fathom quick start](getting-started/fathom-quick-start.md) | a channel is loaded into the `Imagen` perspective |
+| Connect discovery, synthetic truth, and validation | [Example workflows](ecosystem/workflows/index.md) | a provenance-preserving artifact chain |
 
-### Con interfaz gráfica
+## Requirements
 
-```bash
-pip install "spmkit[gui]"
-```
+- Python 3.11 or newer;
+- `pip` or `uv`;
+- the `gui` extra only for Fathom;
+- format-specific extras only where the [format matrix](FILE_FORMATS.md) says
+  they are required.
 
-Añade PyQt6, pyqtgraph y matplotlib (necesario para las 7 pestañas de la GUI).
+## Thirty-second source install
 
-### Extras disponibles
-
-| Extra | Qué agrega |
-|-------|-----------|
-| `gui` | Interfaz gráfica (PyQt6 + pyqtgraph) |
-| `viz` | Figuras de publicación (matplotlib, cmcrameri, scale bar) |
-| `gwy` | Interoperabilidad con Gwyddion (`.gwy`) |
-| `hdf5` | Lectura / exportación HDF5 |
-| `grains` | Detección de granos y partículas (scipy) |
-| `report` | Reportes HTML/PDF (Jinja2) |
-| `nanosurf` | Lector `.nhf` validado (NSFopen) |
-
-Instalar varios extras:
+The site documents the `0.1.5.dev0` source tree. Install that state explicitly:
 
 ```bash
-pip install "spmkit[gui,gwy,hdf5]"
-```
-
-Instalar todo:
-
-```bash
-pip install "spmkit[all]"
-```
-
-### Desde el repositorio (desarrollo)
-
-```bash
-pip install "git+https://github.com/kegouro/spmkit#egg=spmkit[gui]"
-```
-
----
-
-## Verificación
-
-```bash
+python -m pip install "spmkit[gui] @ git+https://github.com/kegouro/spmkit@main"
 spmkit --version
+spmkit --help
 ```
 
-Resultado esperado:
+PyPI currently serves `0.1.2`; the latest GitHub release is `0.1.4`. The
+[installation matrix](getting-started/installation.md) explains the difference.
 
-```
-spmkit 0.1.0
-```
+## Scientific checkpoint
 
----
-
-## Primer uso — CLI
-
-### Ver metadatos de un archivo
-
-```bash
-spmkit info scan.nid
-```
-
-Muestra los canales disponibles, sus dimensiones y unidades.
-
-### Calcular rugosidad
-
-```bash
-spmkit roughness scan.nid -c Z-Axis
-```
-
-Parámetros ISO 25178: Sa, Sq, Sz, Ssk, Sku.
-
-### Pipeline completo
-
-```bash
-spmkit analyze scan.nid --output ./results
-```
-
-Genera `results/scan_roughness.csv`, `results/scan_roughness.json` y (si hay canal CPD) los archivos KPFM equivalentes.
-
-### Abrir la GUI
-
-```bash
-spmkit gui
-```
-
-!!! note "Requisito extra"
-    La GUI requiere el extra `gui`. Si ves un error, instala con `pip install "spmkit[gui]"`.
-
----
-
-## Primer uso — como librería Python
-
-```python
-from spmkit import load
-from spmkit.core.analysis import leveling, roughness, kpfm
-
-# Cargar un archivo .nid
-data = load("scan.nid")
-
-# Ver canales disponibles
-print(data.names)
-
-# Seleccionar canal y nivelar
-ch = data["Z-Axis"]
-flat = leveling.plane_fit(ch)   # corrige inclinación de plano
-
-# Calcular rugosidad
-stats = roughness.statistics(flat)
-print(f"Sa = {stats.sa:.4g} {stats.unit}")
-print(f"Sq = {stats.sq:.4g} {stats.unit}")
-
-# Análisis KPFM (si el archivo contiene canal CPD)
-cpd = kpfm.statistics(data["CPD"], tip_work_function=5.0)
-print(f"CPD medio = {cpd.mean_cpd:.4g} V")
-```
-
----
-
-## Siguiente paso
-
-- Explora todos los comandos CLI en la [Referencia CLI](cli.md).
-- Conoce la GUI en la [Guía de usuario](user-guide.md).
-- Revisa la [API Python](api.md) para integraciones avanzadas.
+Loading a file is not validation. Before using a result in a scientific claim,
+record the input checksum, reader path, channel, units, preprocessing,
+parameters, software version, and output checksum. Then match the claim to the
+[scientific status matrix](SCIENTIFIC_STATUS.md).

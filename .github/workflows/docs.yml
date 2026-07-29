@@ -32,11 +32,17 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r docs/requirements.txt
 
+      - name: Verify manual, PDF reader, package status, and required assets
+        run: python scripts/check_docs_sync.py
+
       - name: Build documentation strictly
         run: mkdocs build --strict
 
-      - name: Run documentation checks
-        run: python scripts/check_docs_sync.py
+      - name: Verify PDF is included in the built site
+        run: test -s site/user-guide.pdf
+
+      - name: Check built internal links and media
+        run: python scripts/check_docs_links.py site
 
       - name: Configure git identity for gh-deploy
         run: |

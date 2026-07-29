@@ -1,7 +1,7 @@
 cff-version: 1.2.0
-message: "Si usas este software, por favor cítalo."
-title: "spmkit — análisis de datos AFM/KPFM"
-abstract: "Open-source AFM/KPFM scanning probe microscopy data analyzer. Sa, Sq and Sz externally cross-validated against Gwyddion 2.71 on synthetic surfaces (LEVEL 3). Independently developed by José Labarca Baeza in the academic context of the SPM Lab, UTFSM."
+message: "If you use this software in research, please cite it."
+title: "SPM-Kit — open AFM/SPM analysis engine and Fathom workspace"
+abstract: "Open-source AFM/SPM numerical analysis engine and graphical workspace. Selected Sa, Sq and Sz claims have limited LEVEL 3 cross-validation against Gwyddion 2.71. Independently designed and developed by José Labarca Baeza in the academic context of the SPM Lab at Universidad Técnica Federico Santa María."
 type: software
 authors:
   - family-names: "Labarca Baeza"
@@ -9,7 +9,7 @@ authors:
     orcid: "https://orcid.org/0009-0006-8890-4048"
     affiliation: "Universidad Técnica Federico Santa María, Valparaíso, Chile"
 repository-code: "https://github.com/kegouro/spmkit"
-url: "https://kegouro.github.io"
+url: "https://kegouro.github.io/spmkit/"
 license: MIT
 keywords:
   - AFM

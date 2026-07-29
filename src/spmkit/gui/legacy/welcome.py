@@ -8,7 +8,8 @@ from spmkit import __version__
 
 _HTML = f"""
 <h2 style="margin-bottom:2px;">spmkit <span style="font-weight:400;">v{__version__}</span></h2>
-<p style="color:#8B949E; margin-top:0;">Analizador open-source de AFM/KPFM · SPM Lab UTFSM</p>
+<p style="color:#8B949E; margin-top:0;">Analizador open-source de AFM/KPFM ·
+proyecto independiente</p>
 <p>Abre un archivo <b>.nid</b>, <b>.nhf</b> o <b>.gwy</b> (botón <b>Abrir</b> o
 arrastrándolo a la ventana) y trabaja en las pestañas:</p>
 <ul>
@@ -34,7 +35,7 @@ compártelo y hazlo crecer. 🔬✨</p>
 <p style="text-align:right; margin-top:10px; color:#8B949E;">
 Con cariño para la comunidad científica,<br>
 <span style="font-style:italic; font-size:15px; color:#2dd4bf;">— José Labarca</span><br>
-<span style="font-size:11px;">SPM Lab · UTFSM</span></p>
+<span style="font-size:11px;">Contexto académico: SPM Lab · UTFSM</span></p>
 """
 
 
