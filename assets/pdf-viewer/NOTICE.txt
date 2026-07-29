@@ -1,4 +1,4 @@
-SPM-Kit · Fathom — embedded PDF reader assets
+SPM-Kit · Pharos — embedded PDF reader assets
 =================================================
 
 This directory ships a self-contained PDF reader used by
@@ -6,7 +6,7 @@ This directory ships a self-contained PDF reader used by
 
 Files
 -----
-- viewer.html .................. Fathom-styled reader UI (project code, MIT).
+- viewer.html .................. Pharos-aligned reader UI (project code, MIT).
 - vendor/pdf.min.mjs .......... PDF.js core library, vendored.
 - vendor/pdf.worker.min.mjs ... PDF.js worker, vendored.
 
@@ -22,6 +22,16 @@ preserved inside each file).
   home    : https://mozilla.github.io/pdf.js/
   license : Apache-2.0
 
+The full Apache License 2.0 text is shipped at
+`../vendor/mathjax/LICENSE` and applies independently of the package-specific
+notices retained here and in the PDF.js source headers.
+
+SHA-256
+-------
+
+  pdf.min.mjs        : 343b4166b06716a55a8f87175b83223cb1a9ab701eb8a96b2577509d47fbaf4a
+  pdf.worker.min.mjs : dbcae78a691b3c501508f74b774c6066a57a14a76cefdc9e25ad86b651bb75d5
+
 Reproducibility
 ---------------
 To regenerate the vendored files pin the same version and download the two
@@ -31,7 +41,7 @@ ESM build artefacts:
   curl -fsSL -o vendor/pdf.min.mjs         https://cdn.jsdelivr.net/npm/pdfjs-dist@$V/build/pdf.min.mjs
   curl -fsSL -o vendor/pdf.worker.min.mjs  https://cdn.jsdelivr.net/npm/pdfjs-dist@$V/build/pdf.worker.min.mjs
 
-The reader resolves the PDF path from its own URL fragment, so it works
-under the GitHub Pages sub-path `/spmkit/` without absolute paths.
+The reader resolves the packaged guide relative to its own URL, so it works
+under the GitHub Pages sub-path `/spmkit/` without accepting external inputs.
 
 Project code in `viewer.html` is covered by the SPM-Kit MIT license.

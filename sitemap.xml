@@ -73,11 +73,23 @@
          <lastmod>2026-07-29</lastmod>
     </url>
     <url>
+         <loc>https://kegouro.github.io/spmkit/scientific-status/</loc>
+         <lastmod>2026-07-29</lastmod>
+    </url>
+    <url>
          <loc>https://kegouro.github.io/spmkit/user-guide/</loc>
          <lastmod>2026-07-29</lastmod>
     </url>
     <url>
+         <loc>https://kegouro.github.io/spmkit/assets/brand/</loc>
+         <lastmod>2026-07-29</lastmod>
+    </url>
+    <url>
          <loc>https://kegouro.github.io/spmkit/assets/ecosystem/ASSETS/</loc>
+         <lastmod>2026-07-29</lastmod>
+    </url>
+    <url>
+         <loc>https://kegouro.github.io/spmkit/assets/vendor/fonts/</loc>
          <lastmod>2026-07-29</lastmod>
     </url>
     <url>
@@ -94,6 +106,10 @@
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/design/UI_REDESIGN/</loc>
+         <lastmod>2026-07-29</lastmod>
+    </url>
+    <url>
+         <loc>https://kegouro.github.io/spmkit/design/visual-system-fixture/</loc>
          <lastmod>2026-07-29</lastmod>
     </url>
     <url>
@@ -214,6 +230,10 @@
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/theory/spmkit-workflows/</loc>
+         <lastmod>2026-07-29</lastmod>
+    </url>
+    <url>
+         <loc>https://kegouro.github.io/spmkit/validation/</loc>
          <lastmod>2026-07-29</lastmod>
     </url>
 </urlset>
