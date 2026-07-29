@@ -161,6 +161,12 @@ def pdf_pages(path: Path) -> int:
         match = re.search(r"^Pages:\s+(\d+)", result.stdout, re.MULTILINE)
         if match:
             return int(match.group(1))
+    try:
+        from pypdf import PdfReader
+
+        return len(PdfReader(path).pages)
+    except ImportError:
+        pass
     raw = path.read_bytes()
     counts = [int(value) for value in re.findall(rb"/Count\s+(\d+)", raw)]
     return max(counts) if counts else len(re.findall(rb"/Type\s*/Page\b", raw))
