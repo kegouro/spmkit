@@ -1,9 +1,16 @@
-# Marca — Fathom
+# Submarca de componente — Fathom
+
+!!! note "Alcance de esta página"
+
+    Esta especificación gobierna la interfaz **Fathom**, no el portal global.
+    El portal SPM-Kit es un instrumento hijo del **Pharos Project** y usa su
+    marca, paleta cálida y jerarquía. Consulte la
+    [gobernanza del ecosistema](ecosystem/brand.md) para las reglas compartidas.
 
 **Fathom** es el nombre del *workspace* de curvas de fuerza. **spmkit** es el motor
 (librería + CLI) que lo impulsa. La relación es deliberada:
 
-> **Fathom** — el producto que ve el usuario (reemplazo de Nanosurf ANA / JPK).
+> **Fathom** — el workspace interactivo que ve el usuario.
 > **spmkit** — el toolkit open-source debajo (`pip install spmkit`, `spmkit …`).
 
 La identidad del producto vive en una sola fuente: [`src/spmkit/gui/design/brand.py`](https://github.com/kegouro/spmkit/blob/main/src/spmkit/gui/design/brand.py).
@@ -44,7 +51,7 @@ que hace el producto.
 
 | Archivo | Uso |
 |---------|-----|
-| [`brand/fathom_mark.svg`](images/brand/fathom_mark.svg) | Símbolo solo (favicon, app icon) |
+| [`brand/fathom_mark.svg`](images/brand/fathom_mark.svg) | Símbolo solo (app icon de Fathom; no favicon del portal) |
 | [`brand/fathom_lockup.svg`](images/brand/fathom_lockup.svg) | Símbolo + wordmark (docs, "Acerca de") |
 | [`brand/fathom_banner.svg`](images/brand/fathom_banner.svg) | Banner ancho (hero del README) |
 

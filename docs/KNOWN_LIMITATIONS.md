@@ -49,5 +49,5 @@ declared truth; they are not physical references. Validation records campaign
 outcomes; a successful run only supports the frozen claim and scope written in
 that campaign.
 
-For capability-level detail, use the [scientific status matrix](SCIENTIFIC_STATUS.md),
-the [format matrix](FILE_FORMATS.md), and the [retained campaign record](VALIDATION.md).
+For capability-level detail, use the [scientific status matrix](scientific-status.md),
+the [format matrix](FILE_FORMATS.md), and the [retained campaign record](validation/index.md).

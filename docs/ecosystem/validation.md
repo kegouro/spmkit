@@ -3,11 +3,11 @@ title: SPM-Kit Validation
 description: External black-box campaigns, frozen contracts, retained evidence, exact tolerances, failures, blockers, and reproduction guidance.
 ---
 
-<section class="component-section" data-component="validation">
-  <picture><source type="image/webp" srcset="../../assets/ecosystem/validation/banner-640.webp 640w, ../../assets/ecosystem/validation/banner-1280.webp 1280w" sizes="(max-width: 1280px) 100vw, 1280px"><img class="brand-banner" src="../../assets/ecosystem/validation/banner.png" width="1983" height="793" alt="SPM-Kit Validation external black-box evidence banner" loading="eager" fetchpriority="high"></picture>
-  <div class="component-copy">
-    <div><p class="component-role">SPM-Kit Validation · External evidence</p><h1>Test what the installed package actually does</h1><p>Validation freezes campaign inputs, executable identity, reference route and tolerances, invokes public interfaces in a separate process and preserves the result with its limitations.</p></div>
-    <div><span class="status-ribbon">Alpha · source 0.1.0</span><div class="io-strip"><span><b>Input</b>campaign, SUT, reference, tolerance</span><span aria-hidden="true">→</span><span><b>Output</b>records, reports, blockers, audit trail</span></div></div>
+<section class="spm-component" data-component="validation">
+  <picture><source type="image/webp" srcset="../../assets/ecosystem/validation/banner-640.webp 640w, ../../assets/ecosystem/validation/banner-1280.webp 1280w" sizes="(max-width: 1280px) 100vw, 1280px"><img class="spm-component__banner" src="../../assets/ecosystem/validation/banner.png" width="1983" height="793" alt="SPM-Kit Validation external black-box evidence banner" loading="eager" fetchpriority="high"></picture>
+  <div class="spm-component__body">
+    <div><p class="spm-component__role">SPM-Kit Validation · External evidence</p><h1>Test what the installed package actually does</h1><p>Validation freezes campaign inputs, executable identity, reference route and tolerances, invokes public interfaces in a separate process and preserves the result with its limitations.</p></div>
+    <div><span class="spm-status spm-status--experimental">Alpha · source 0.1.0</span><div class="spm-io"><span><b>Input</b>campaign, SUT, reference, tolerance</span><span aria-hidden="true">→</span><span><b>Output</b>records, reports, blockers, audit trail</span></div></div>
   </div>
 </section>
 

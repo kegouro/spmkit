@@ -43,4 +43,4 @@ PyPI currently serves `0.1.2`; the latest GitHub release is `0.1.4`. The
 Loading a file is not validation. Before using a result in a scientific claim,
 record the input checksum, reader path, channel, units, preprocessing,
 parameters, software version, and output checksum. Then match the claim to the
-[scientific status matrix](SCIENTIFIC_STATUS.md).
+[scientific status matrix](scientific-status.md).

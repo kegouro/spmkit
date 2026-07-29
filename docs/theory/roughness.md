@@ -8,7 +8,7 @@ Roughness parameters summarize deviations from a chosen reference surface.
 They do not discover that surface automatically, and they do not preserve where
 features occur. Two physically different surfaces can share the same Sa or Sq.
 
-<figure class="science-figure">
+<figure class="spm-science-figure">
   <img src="../../assets/theory/roughness-flow.svg" alt="Roughness workflow from calibrated height field through masking and leveling to deviations, parameters, plots and provenance" width="960" height="430">
   <figcaption>Every preprocessing decision changes the field over which the statistics are defined. Preserve the raw channel and report the transformation.</figcaption>
 </figure>

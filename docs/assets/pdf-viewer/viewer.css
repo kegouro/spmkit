@@ -1,0 +1,278 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+.spm-reader-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  background: var(--spm-canvas);
+  color: var(--spm-ink);
+  font-family: "Inter", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+:where(button, a, [tabindex]):focus-visible {
+  outline: 3px solid var(--spm-focus);
+  outline-offset: 2px;
+}
+
+.spm-reader-toolbar {
+  position: sticky;
+  z-index: 10;
+  top: 0;
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .4rem;
+  padding: .55rem .7rem;
+  border-bottom: 1px solid var(--spm-rule);
+  background: var(--spm-surface);
+}
+
+.spm-reader-brand {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  margin-right: .5rem;
+  color: var(--spm-ink);
+}
+
+.spm-reader-mark {
+  width: 2rem;
+  height: 2rem;
+}
+
+.spm-reader-title {
+  font-size: .76rem;
+  font-weight: 720;
+  letter-spacing: -.01em;
+}
+
+.spm-reader-subtitle {
+  color: var(--spm-ink-muted);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: .54rem;
+  letter-spacing: .035em;
+  text-transform: uppercase;
+}
+
+.spm-reader-spacer {
+  flex: 1 1 auto;
+}
+
+.spm-reader-group {
+  display: inline-flex;
+  min-width: 0;
+  margin: 0;
+  align-items: center;
+  gap: .1rem;
+  padding: .15rem;
+  border: 1px solid var(--spm-rule);
+  border-radius: .25rem;
+  background: var(--spm-surface-raised);
+}
+
+button {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0 .7rem;
+  border: 1px solid transparent;
+  border-radius: .2rem;
+  background: transparent;
+  color: var(--spm-ink);
+  font: 600 .7rem/1 "Inter", ui-sans-serif, sans-serif;
+  cursor: pointer;
+  transition: border-color .12s ease, background-color .12s ease, color .12s ease;
+}
+
+button:hover {
+  border-color: var(--spm-rule-strong);
+  background: var(--spm-surface);
+  color: var(--spm-action);
+}
+
+button:active {
+  background: color-mix(in srgb, var(--spm-action) 12%, var(--spm-surface));
+}
+
+button:disabled {
+  border-color: transparent;
+  background: transparent;
+  color: var(--spm-ink-faint);
+  cursor: default;
+}
+
+.spm-reader-value {
+  min-width: 4.2rem;
+  padding: 0 .45rem;
+  color: var(--spm-ink-muted);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: .61rem;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  user-select: none;
+}
+
+.spm-reader-separator {
+  width: 1px;
+  height: 1.8rem;
+  margin: 0 .25rem;
+  background: var(--spm-rule);
+}
+
+.spm-reader-download,
+.spm-reader-fit {
+  color: var(--spm-action);
+}
+
+#scroll {
+  position: relative;
+  flex: 1 1 auto;
+  overflow: auto;
+  background: var(--spm-canvas);
+}
+
+#stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem .75rem 3.75rem;
+}
+
+.spm-reader-page {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--spm-rule);
+  border-radius: 2px;
+  box-shadow: 0 12px 34px var(--spm-shadow);
+}
+
+canvas.spm-reader-canvas {
+  display: block;
+  background: var(--spm-paper);
+}
+
+.spm-reader-page-number {
+  position: absolute;
+  top: .4rem;
+  right: .5rem;
+  padding: .12rem .4rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--spm-fixed-night) 70%, transparent);
+  color: var(--spm-fixed-ink);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: .56rem;
+  pointer-events: none;
+}
+
+.spm-reader-loading {
+  width: 100%;
+  padding: 2.5rem 0;
+  color: var(--spm-ink-muted);
+  font-size: .72rem;
+  text-align: center;
+}
+
+.spm-reader-loading::before {
+  display: block;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin: 0 auto .75rem;
+  border: 3px solid var(--spm-rule-strong);
+  border-top-color: var(--spm-action);
+  border-radius: 50%;
+  animation: spin .9s linear infinite;
+  content: "";
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+#fallback {
+  max-width: 35rem;
+  margin: 1.75rem auto;
+  padding: 1.4rem;
+  border: 1px solid var(--spm-rule);
+  border-left: 3px solid var(--spm-danger);
+  background: var(--spm-surface);
+  text-align: center;
+}
+
+#fallback a {
+  color: var(--spm-link);
+  font-weight: 700;
+  text-underline-offset: .15em;
+}
+
+/* Alert visibility must override its layout declaration. */
+.hidden {
+  display: none !important;
+}
+
+@media (max-width: 42rem) {
+  .spm-reader-toolbar {
+    gap: .35rem;
+  }
+
+  .spm-reader-brand {
+    flex-basis: calc(100% - 2rem);
+  }
+
+  .spm-reader-spacer,
+  .spm-reader-separator {
+    display: none;
+  }
+
+  .spm-reader-group {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 25rem) {
+  .spm-reader-subtitle {
+    display: none;
+  }
+
+  .spm-reader-toolbar {
+    padding: .45rem;
+  }
+
+  button {
+    padding-inline: .5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* User preference must win over every reader transition. */
+  *,
+  *::before,
+  *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

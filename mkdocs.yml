@@ -8,13 +8,15 @@ repo_name: kegouro/spmkit
 edit_uri: edit/main/docs/
 
 docs_dir: docs
+exclude_docs: |
+  overrides/
 
 theme:
   name: material
   custom_dir: docs/overrides
   language: en
-  favicon: images/brand/fathom_mark.svg
-  logo: images/brand/fathom_logo_light.png
+  favicon: assets/brand/pharos.svg
+  logo: assets/brand/pharos.svg
   font: false
   palette:
     - scheme: slate
@@ -45,10 +47,15 @@ theme:
     - content.tooltips
 
 extra_css:
-  - stylesheets/fathom.css
+  - stylesheets/tokens.css
+  - stylesheets/shell.css
+  - stylesheets/components.css
+  - stylesheets/scientific.css
+  - stylesheets/responsive.css
 
 extra_javascript:
   - javascripts/mathjax.js
+  - javascripts/accessibility.js
 
 markdown_extensions:
   - admonition
@@ -119,8 +126,8 @@ nav:
       - Pharos: ecosystem/pharos.md
       - Brand governance: ecosystem/brand.md
   - Scientific evidence:
-      - Scientific status: SCIENTIFIC_STATUS.md
-      - Validation campaigns: VALIDATION.md
+      - Scientific status: scientific-status.md
+      - Validation campaigns: validation/index.md
       - Traceability: TRACEABILITY.md
       - Format maturity: FILE_FORMATS.md
       - Known limitations: KNOWN_LIMITATIONS.md

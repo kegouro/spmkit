@@ -3,11 +3,11 @@ title: SPM-Kit Core
 description: The headless numerical engine, public Python API, CLI, readers, plugins, exports, and scientific boundary of the SPM-Kit ecosystem.
 ---
 
-<section class="component-section" data-component="core">
-  <picture><source type="image/webp" srcset="../../assets/ecosystem/core/banner-640.webp 640w, ../../assets/ecosystem/core/banner-1024.webp 1024w" sizes="(max-width: 1024px) 100vw, 1024px"><img class="brand-banner" src="../../assets/ecosystem/core/banner.png" width="1024" height="512" alt="SPM-Kit Core, modular numerical engine" loading="eager" fetchpriority="high"></picture>
-  <div class="component-copy">
-    <div><p class="component-role">SPM-Kit Core · Numerical engine</p><h1>The computation beneath every SPM-Kit workflow</h1><p>SPM-Kit Core inspects files, constructs calibrated domain objects, performs declared numerical analysis and returns structured results. It is the computational source of truth used by the CLI and Fathom.</p></div>
-    <div><span class="status-ribbon">Alpha · 0.1.5.dev0 source</span><div class="io-strip"><span><b>Input</b>instrument files, arrays, parameters</span><span aria-hidden="true">→</span><span><b>Output</b>typed results, exports, provenance</span></div></div>
+<section class="spm-component" data-component="core">
+  <picture><source type="image/webp" srcset="../../assets/ecosystem/core/banner-640.webp 640w, ../../assets/ecosystem/core/banner-1024.webp 1024w" sizes="(max-width: 1024px) 100vw, 1024px"><img class="spm-component__banner" src="../../assets/ecosystem/core/banner.png" width="1024" height="512" alt="SPM-Kit Core, modular numerical engine" loading="eager" fetchpriority="high"></picture>
+  <div class="spm-component__body">
+    <div><p class="spm-component__role">SPM-Kit Core · Numerical engine</p><h1>The computation beneath every SPM-Kit workflow</h1><p>SPM-Kit Core inspects files, constructs calibrated domain objects, performs declared numerical analysis and returns structured results. It is the computational source of truth used by the CLI and Fathom.</p></div>
+    <div><span class="spm-status spm-status--experimental">Alpha · 0.1.5.dev0 source</span><div class="spm-io"><span><b>Input</b>instrument files, arrays, parameters</span><span aria-hidden="true">→</span><span><b>Output</b>typed results, exports, provenance</span></div></div>
   </div>
 </section>
 
@@ -200,7 +200,7 @@ demonstrates parsing behavior; it does not validate all analyses applied later.
 | Experimental formats | maturity varies; see the format matrix |
 | Physical/interlaboratory validation | incomplete; no general `LEVEL 4`/`LEVEL 5` claim |
 
-[Read the capability matrix](../SCIENTIFIC_STATUS.md) and
+[Read the capability matrix](../scientific-status.md) and
 [format maturity](../FILE_FORMATS.md) before interpreting a result.
 
 ## Limitations

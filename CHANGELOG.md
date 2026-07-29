@@ -195,7 +195,7 @@ el versionado es [SemVer](https://semver.org/lang/es/).
   en vez de un `IndexError`.
 - Docstring de `thermal_spring_constant` con un ejemplo numérico incorrecto
   (×100); corregido y verificado.
-- **Privacidad**: se retiraron de la documentación pública (`VALIDATION.md`,
+- **Privacidad**: se retiraron de la documentación pública (`validation/index.md`,
   `cli.md`) el identificador de muestra del lab y un valor medido específico,
   según la política de neutralidad experimental del proyecto.
 

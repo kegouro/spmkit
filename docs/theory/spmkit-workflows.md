@@ -1,6 +1,6 @@
 # SPM-Kit implementation map
 
-<figure class="science-figure">
+<figure class="spm-science-figure">
   <img src="../../assets/theory/software-architecture.svg" alt="SPM-Kit architecture from instrument files through readers, domain models, pure analysis and typed results to Python, CLI, Fathom and exports" width="960" height="340">
   <figcaption>Core owns computation. Python, the CLI and Fathom orchestrate the same public numerical paths.</figcaption>
 </figure>
@@ -49,6 +49,6 @@ but reference independence is still assessed per campaign.
 5. Add calibrated physical and interlaboratory evidence when it exists.
 6. Expose the stable result in Fathom without changing the equation.
 
-[Scientific status](../SCIENTIFIC_STATUS.md) ·
+[Scientific status](../scientific-status.md) ·
 [Architecture](../ARCHITECTURE.md) ·
 [Ecosystem workflow E](../ecosystem/workflows/index.md#workflow-e-add-an-ecosystem-capability)

@@ -5,26 +5,26 @@ hide:
   - toc
 ---
 
-<section class="portal-hero">
-  <p class="portal-kicker">Open AFM/SPM computation · Alpha</p>
+<section class="spm-hero">
+  <p class="spm-eyebrow">Pharos Project · SPM-Kit instrument · Alpha</p>
   <h1>Inspect the computation, not just the picture.</h1>
-  <p class="portal-lede">SPM-Kit is the open numerical engine for AFM, KPFM and force-spectroscopy data. Fathom is the interactive scientific workspace over that same core. Together they keep the route from instrument file to reported result visible.</p>
-  <div class="portal-signal">
+  <p class="spm-hero__lede">SPM-Kit is the open numerical engine for AFM, KPFM and force-spectroscopy data. Fathom is the interactive scientific workspace over that same core. Together they keep the route from instrument file to reported result visible.</p>
+  <div class="spm-hero__meta">
     <span><strong>CORE</strong> Python + CLI</span>
     <span><strong>WORKSPACE</strong> Fathom</span>
     <span><strong>STATUS</strong> 0.1.5.dev0 · alpha</span>
     <span><strong>AUTHOR</strong> José Labarca Baeza</span>
   </div>
-  <div class="portal-actions">
+  <div class="spm-actions">
     <a href="getting-started/installation/">Get started</a>
     <a href="manual/">Open manual</a>
     <a href="theory/">Study the theory</a>
-    <a href="SCIENTIFIC_STATUS/">Inspect evidence</a>
+    <a href="scientific-status/">Inspect evidence</a>
     <a href="https://github.com/kegouro/spmkit">GitHub</a>
   </div>
 </section>
 
-<div class="io-strip">
+<div class="spm-io">
   <span><b>Numerical engine</b> SPM-Kit computes</span>
   <span aria-hidden="true">→</span>
   <span><b>Scientific workspace</b> Fathom lets the researcher inspect, configure and operate those computations interactively</span>
@@ -53,28 +53,28 @@ a certified metrology system.
 
 ## What it computes
 
-<div class="intent-grid">
-  <article class="intent-card">
+<div class="spm-capability-grid">
+  <article class="spm-panel spm-panel--capability">
     <h3>Image metrology</h3>
     <p>Plane, polynomial and row leveling; Sa, Sq, Sz, Ssk and Sku; profiles, grain statistics, radial PSD, Hurst exponent and correlation length.</p>
   </article>
-  <article class="intent-card">
+  <article class="spm-panel spm-panel--capability">
     <h3>Force spectroscopy</h3>
     <p>Baseline and contact detection, Hertz, Sneddon, DMT and experimental JKR fitting, adhesion, dissipation, force-volume property maps and reports.</p>
   </article>
-  <article class="intent-card">
+  <article class="spm-panel spm-panel--capability">
     <h3>KPFM</h3>
     <p>Contact-potential statistics and sample work-function calculation when a calibrated tip work function is supplied.</p>
   </article>
-  <article class="intent-card">
+  <article class="spm-panel spm-panel--capability">
     <h3>SMFS</h3>
     <p>Retract-curve baseline correction, event detection, WLC/FJC chain fitting and per-event result inspection.</p>
   </article>
-  <article class="intent-card">
+  <article class="spm-panel spm-panel--capability">
     <h3>Resonance</h3>
     <p>Thermal spectrum extraction, SHO fitting, effective mass, frequency-shift mass sensing and declared evaporation models.</p>
   </article>
-  <article class="intent-card">
+  <article class="spm-panel spm-panel--capability">
     <h3>Reporting and provenance</h3>
     <p>CSV, JSON, figures, HTML/PDF reports, recipes, project files, hashes and traceability records where the workflow exposes them.</p>
   </article>
@@ -111,23 +111,23 @@ campaign results, not universal software scores.
 
 | Capability | Retained result | Evidence | Boundary |
 |---|---:|---|---|
-| Sa, Sq and Sz on 48 frozen synthetic matrices | **144/144** comparisons within the frozen threshold against Gwyddion 2.71 | `LEVEL 3 — CROSS_VALIDATED` | Shared matrices; no physical acquisition or universal equivalence |
-| Sa, Sq and Sz on 12 public experimental GWY records | **36/36** shared-matrix comparisons within threshold | `LEVEL 3` for the shared-matrix metric route | Public data are not physical ground truth; parser tracks were observational |
-| Limited Nanoscope III parser scope | **18/18** roughness comparisons within threshold; zero reported pixel delta on six demonstrated files | `LEVEL 2 — NUMERICALLY_VERIFIED` | Accidental pre-freeze unblinding; no blind holdout or family-wide claim |
-| Physical models and numerical paths | deterministic synthetic recovery and software tests | capability-specific `LEVEL 1` or `LEVEL 2` | Synthetic recovery is not physical validation |
+| Sa, Sq and Sz on 48 frozen synthetic matrices | **144/144** comparisons within the frozen threshold against Gwyddion 2.71 | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> | Shared matrices; no physical acquisition or universal equivalence |
+| Sa, Sq and Sz on 12 public experimental GWY records | **36/36** shared-matrix comparisons within threshold | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> for the shared-matrix metric route | Public data are not physical ground truth; parser tracks were observational |
+| Limited Nanoscope III parser scope | **18/18** roughness comparisons within threshold; zero reported pixel delta on six demonstrated files | <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> | Accidental pre-freeze unblinding; no blind holdout or family-wide claim |
+| Physical models and numerical paths | deterministic synthetic recovery and software tests | capability-specific <span class="spm-level spm-level--1" data-level="1">SOFTWARE_VERIFIED</span> or <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> | Synthetic recovery is not physical validation |
 
 No retained campaign establishes general physical validation (`LEVEL 4`) or
-interlaboratory reproducibility (`LEVEL 5`). [Read the scientific status](SCIENTIFIC_STATUS.md)
-and [campaign evidence](VALIDATION.md).
+interlaboratory reproducibility (`LEVEL 5`). [Read the scientific status](scientific-status.md)
+and [campaign evidence](validation/index.md).
 
 ## The ecosystem
 
-<div class="workflow-rail" aria-label="SPM-Kit ecosystem evidence chain">
-  <article class="workflow-stage"><span class="step">01 · FIND</span><h3>Data Hunter</h3><p>Discovers and classifies candidate public evidence.</p></article>
-  <article class="workflow-stage"><span class="step">02 · DEFINE</span><h3>Phantoms</h3><p>Creates controlled arrays with declared numerical truth.</p></article>
-  <article class="workflow-stage"><span class="step">03 · TEST</span><h3>Validation</h3><p>Invokes the installed package through public interfaces.</p></article>
-  <article class="workflow-stage"><span class="step">04 · COMPUTE</span><h3>SPM-Kit Core</h3><p>Performs the analysis under evaluation.</p></article>
-  <article class="workflow-stage"><span class="step">05 · OPERATE</span><h3>Fathom</h3><p>Lets researchers inspect and operate the same Core interactively.</p></article>
+<div class="spm-workflow-ladder" tabindex="0" aria-label="SPM-Kit ecosystem evidence chain">
+  <article class="spm-workflow-step"><span class="spm-step-label">01 · FIND</span><h3>Data Hunter</h3><p>Discovers and classifies candidate public evidence.</p></article>
+  <article class="spm-workflow-step"><span class="spm-step-label">02 · DEFINE</span><h3>Phantoms</h3><p>Creates controlled arrays with declared numerical truth.</p></article>
+  <article class="spm-workflow-step"><span class="spm-step-label">03 · TEST</span><h3>Validation</h3><p>Invokes the installed package through public interfaces.</p></article>
+  <article class="spm-workflow-step"><span class="spm-step-label">04 · COMPUTE</span><h3>SPM-Kit Core</h3><p>Performs the analysis under evaluation.</p></article>
+  <article class="spm-workflow-step"><span class="spm-step-label">05 · OPERATE</span><h3>Fathom</h3><p>Lets researchers inspect and operate the same Core interactively.</p></article>
 </div>
 
 **Find the evidence → define the truth → test the system externally → preserve
@@ -135,7 +135,7 @@ the result.** The order is explanatory, not an automatic data pipeline. Human
 review separates discovery from validation, Phantoms stays independent from the
 analyzer, and Validation records reference independence campaign by campaign.
 
-<div class="portal-actions">
+<div class="spm-actions">
   <a href="ecosystem/">Explore the ecosystem</a>
   <a href="ecosystem/choose/">Choose a component</a>
   <a href="ecosystem/workflows/">Run a workflow</a>
@@ -152,7 +152,7 @@ analyzer, and Validation records reference independence campaign by campaign.
 | Reproduce a documented analysis | [Workflow tutorials](ecosystem/workflows/index.md) |
 | Evaluate a metric against known truth | [Phantoms](ecosystem/phantoms.md) then [Validation](ecosystem/validation.md) |
 | Find a public native-format fixture | [Data Hunter](ecosystem/data-hunter.md) |
-| Audit the evidence behind a claim | [Scientific evidence](SCIENTIFIC_STATUS.md) |
+| Audit the evidence behind a claim | [Scientific evidence](scientific-status.md) |
 | Add a reader or scientific capability | [Extending SPM-Kit](extending.md) |
 
 ## Install without ambiguity
@@ -186,7 +186,8 @@ repositories have separate packages and are not installed by `spmkit`.
 
 ## Citation and acknowledgement
 
-SPM-Kit and Fathom were created and are led by **José Labarca Baeza**. Cite the
+**José Labarca Baeza is the creator, author and lead developer of SPM-Kit and
+Fathom.** Cite the
 software using [`CITATION.cff`](https://github.com/kegouro/spmkit/blob/main/CITATION.cff)
 and the guidance on the [citation page](CITATION.md).
 

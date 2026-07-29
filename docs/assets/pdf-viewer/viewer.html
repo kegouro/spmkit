@@ -3,225 +3,65 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SPM-Kit · PDF reader · Fathom</title>
-<style>
-  :root {
-    --fathom-bg: #0B0E13;
-    --fathom-surface: #121821;
-    --fathom-surface-2: #171F2A;
-    --fathom-elevated: #1E2733;
-    --fathom-text: #E8EEF5;
-    --fathom-text-muted: #93A0AE;
-    --fathom-text-faint: #5C6875;
-    --fathom-border: #232C38;
-    --fathom-border-strong: #33404F;
-    --fathom-accent: #2DD4BF;
-    --fathom-accent-press: #14B8A6;
-    --fathom-accent-soft: #0F3A37;
-    --fathom-gold: #E8A94B;
-  }
-  @media (prefers-color-scheme: light) {
-    :root {
-      --fathom-bg: #FBFCFE;
-      --fathom-surface: #FFFFFF;
-      --fathom-surface-2: #F4F7FB;
-      --fathom-elevated: #ECF1F7;
-      --fathom-text: #16202B;
-      --fathom-text-muted: #44545F;
-      --fathom-text-faint: #7A8794;
-      --fathom-border: #DEE5EC;
-      --fathom-border-strong: #C6D0DA;
-      --fathom-accent: #0B9388;
-      --fathom-accent-press: #0A7E74;
-      --fathom-accent-soft: #E2F5F2;
-      --fathom-gold: #B7791F;
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>SPM-Kit · PDF reader · Pharos Project</title>
+<link rel="icon" href="../brand/pharos.svg" type="image/svg+xml">
+<script>
+  function syncParentPalette() {
+    try {
+      const scheme = window.parent.document.body.getAttribute("data-md-color-scheme");
+      document.documentElement.setAttribute("data-md-color-scheme", scheme || "slate");
+    } catch (_) {
+      document.documentElement.setAttribute(
+        "data-md-color-scheme",
+        window.matchMedia("(prefers-color-scheme: light)").matches ? "default" : "slate"
+      );
     }
   }
-  * { box-sizing: border-box; }
-  html, body { height: 100%; }
-  body {
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    background: var(--fathom-bg);
-    color: var(--fathom-text);
-    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  }
-  .toolbar {
-    flex: 0 0 auto;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 12px;
-    background: var(--fathom-surface);
-    border-bottom: 1px solid var(--fathom-border);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    flex-wrap: wrap;
-  }
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    margin-right: 10px;
-    color: var(--fathom-text);
-  }
-  .brand .mark {
-    width: 18px; height: 18px;
-    border-radius: 5px;
-    background: linear-gradient(135deg, var(--fathom-accent), var(--fathom-gold));
-  }
-  .brand .title { font-size: 13px; }
-  .brand .sub { font-size: 11px; color: var(--fathom-text-muted); font-weight: 400; }
-  .spacer { flex: 1 1 auto; }
-  .grp {
-    display: inline-flex;
-    align-items: center;
-    gap: 2px;
-    padding: 2px;
-    background: var(--fathom-surface-2);
-    border: 1px solid var(--fathom-border);
-    border-radius: 8px;
-  }
-  button {
-    appearance: none;
-    border: 1px solid transparent;
-    background: transparent;
-    color: var(--fathom-text);
-    font: inherit;
-    font-size: 13px;
-    min-width: 30px;
-    height: 30px;
-    padding: 0 9px;
-    border-radius: 6px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    transition: background .12s ease, border-color .12s ease;
-  }
-  button:hover { background: var(--fathom-elevated); border-color: var(--fathom-border-strong); }
-  button:active { background: var(--fathom-accent-soft); }
-  button:focus-visible { outline: 2px solid var(--fathom-accent); outline-offset: 1px; }
-  button:disabled { color: var(--fathom-text-faint); cursor: default; background: transparent; border-color: transparent; }
-  .pill {
-    font-size: 12px;
-    color: var(--fathom-text-muted);
-    padding: 0 8px;
-    min-width: 64px;
-    text-align: center;
-    user-select: none;
-    font-variant-numeric: tabular-nums;
-  }
-  .sev { width: 1px; height: 22px; background: var(--fathom-border); margin: 0 4px; }
-  .gold { color: var(--fathom-gold); }
-  .accent { color: var(--fathom-accent); }
-  #scroll {
-    flex: 1 1 auto;
-    overflow: auto;
-    position: relative;
-    background: var(--fathom-bg);
-  }
-  #stack {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 14px;
-    padding: 18px 12px 60px;
-  }
-  .page-wrap {
-    position: relative;
-    box-shadow: 0 6px 24px rgba(0,0,0,.45);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  canvas.page { display: block; background: #fff; }
-  .page-num {
-    position: absolute;
-    top: 6px; right: 8px;
-    font-size: 11px;
-    color: #fff;
-    background: rgba(11,14,19,.62);
-    padding: 2px 7px;
-    border-radius: 10px;
-    pointer-events: none;
-  }
-  .loading {
-    width: 100%;
-    text-align: center;
-    color: var(--fathom-text-muted);
-    padding: 40px 0;
-    font-size: 13px;
-  }
-  .loading::before {
-    content: "";
-    display: block;
-    width: 28px; height: 28px;
-    margin: 0 auto 12px;
-    border: 3px solid var(--fathom-border-strong);
-    border-top-color: var(--fathom-accent);
-    border-radius: 50%;
-    animation: spin 0.9s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  #fallback {
-    margin: 28px auto;
-    max-width: 560px;
-    text-align: center;
-    padding: 22px;
-    background: var(--fathom-surface);
-    border: 1px solid var(--fathom-border);
-    border-radius: 12px;
-  }
-  #fallback a {
-    color: var(--fathom-accent);
-    text-decoration: none;
-    font-weight: 600;
-  }
-  #fallback a:hover { text-decoration: underline; }
-  .hidden { display: none !important; }
-  .hint { font-size: 11px; color: var(--fathom-text-faint); margin-left: 8px; }
-</style>
+  syncParentPalette();
+</script>
+<link rel="stylesheet" href="../../stylesheets/tokens.css">
+<link rel="stylesheet" href="viewer.css">
 </head>
 <body data-page="0">
 
-<header class="toolbar" role="toolbar" aria-label="PDF reader toolbar">
-  <span class="brand" aria-hidden="true">
-    <span class="mark"></span>
+<header class="spm-reader-toolbar">
+  <h1 class="spm-reader-visually-hidden">SPM-Kit user guide PDF reader</h1>
+  <span class="spm-reader-brand">
+    <img class="spm-reader-mark" src="../brand/pharos.svg" alt="">
     <span>
-      <span class="title">SPM-Kit · User Guide</span><br>
-      <span class="sub">Fathom document viewer</span>
+      <span class="spm-reader-title">SPM-Kit · User Guide</span><br>
+      <span class="spm-reader-subtitle">Pharos Project · instrument manual</span>
     </span>
   </span>
 
-  <span class="spacer" aria-hidden="true"></span>
+  <span class="spm-reader-spacer" aria-hidden="true"></span>
 
-  <span class="grp" role="group" aria-label="Pages">
-    <button id="prev"  title="Previous page (←)"     type="button">‹</button>
-    <span id="pagepill" class="pill" aria-live="polite">0 / 0</span>
-    <button id="next"  title="Next page (→)"         type="button">›</button>
-  </span>
+  <fieldset class="spm-reader-group">
+    <legend class="spm-reader-visually-hidden">Pages</legend>
+    <button id="prev"  title="Previous page (←)" aria-label="Previous page" type="button">‹</button>
+    <span id="pagepill" class="spm-reader-value" aria-live="polite">0 / 0</span>
+    <button id="next"  title="Next page (→)" aria-label="Next page" type="button">›</button>
+  </fieldset>
 
-  <span class="grp" role="group" aria-label="Zoom">
-    <button id="zout"  title="Zoom out (−)"          type="button">−</button>
-    <span id="zoompill" class="pill" aria-live="polite">100%</span>
-    <button id="zin"   title="Zoom in (+)"           type="button">+</button>
-    <button id="fit"   title="Fit to width (W)"      type="button" class="accent">⤢</button>
-  </span>
+  <fieldset class="spm-reader-group">
+    <legend class="spm-reader-visually-hidden">Zoom</legend>
+    <button id="zout"  title="Zoom out (−)" aria-label="Zoom out" type="button">−</button>
+    <span id="zoompill" class="spm-reader-value" aria-live="polite">100%</span>
+    <button id="zin"   title="Zoom in (+)" aria-label="Zoom in" type="button">+</button>
+    <button id="fit"   title="Fit to width (W)" aria-label="Fit document to width" type="button" class="spm-reader-fit">⤢</button>
+  </fieldset>
 
-  <span class="sev" aria-hidden="true"></span>
+  <span class="spm-reader-separator" aria-hidden="true"></span>
 
   <button id="open"  title="Open in a new tab"       type="button">Open</button>
-  <button id="download" title="Download PDF"         type="button" class="gold">Download</button>
+  <button id="download" title="Download PDF"         type="button" class="spm-reader-download">Download</button>
 </header>
 
-<main id="scroll" tabindex="0">
+<!-- biome-ignore lint/a11y/noNoninteractiveTabindex: the overflowing PDF page region must be keyboard-scrollable -->
+<main id="scroll" tabindex="0" aria-label="Document pages">
   <div id="stack" aria-busy="true">
-    <div class="loading" id="loading">Loading document…</div>
+    <div class="spm-reader-loading" id="loading">Loading document…</div>
   </div>
 </main>
 
@@ -229,14 +69,24 @@
   <p><strong>The embedded viewer could not render this PDF.</strong></p>
   <p>You can open the guide directly in a new tab, or download it for offline reading.</p>
   <p>
-    <a id="fallback-open" href="#" target="_blank" rel="noopener">Open PDF in a new tab</a>
+    <a id="fallback-open" href="../../user-guide.pdf" target="_blank" rel="noopener">Open PDF in a new tab</a>
     &nbsp;·&nbsp;
-    <a id="fallback-download" href="#" download>User guide PDF</a>
+    <a id="fallback-download" href="../../user-guide.pdf" download>User guide PDF</a>
   </p>
 </div>
 
 <script type="module">
 import * as pdfjsLib from "./vendor/pdf.min.mjs";
+
+try {
+  const parentBody = window.parent.document.body;
+  new MutationObserver(syncParentPalette).observe(parentBody, {
+    attributes: true,
+    attributeFilter: ["data-md-color-scheme"]
+  });
+} catch (_) {
+  // The standalone reader already follows the operating-system preference.
+}
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = "./vendor/pdf.worker.min.mjs";
 
@@ -256,14 +106,7 @@ const dlB   = document.getElementById("download");
 const pagepill = document.getElementById("pagepill");
 const zoompill = document.getElementById("zoompill");
 
-const raw = decodeURIComponent(String(location.hash || "").replace(/^#/, "")).trim();
-const fileRel = raw || "../../user-guide.pdf";
-let fileUrl;
-try {
-  fileUrl = new URL(fileRel, location.href).toString();
-} catch (e) {
-  fileUrl = fileRel;
-}
+const fileUrl = new URL("../../user-guide.pdf", location.href).toString();
 fOpen.href = fileUrl;
 fDown.href = fileUrl;
 openB.addEventListener("click", () => window.open(fileUrl, "_blank", "noopener"));
@@ -277,7 +120,9 @@ let pdf = null;
 let scale = 1.0;
 let fitScale = 1.0;
 let pages = [];
-const rendered = new Map();
+let fitMode = true;
+let renderGeneration = 0;
+let pageObserver = null;
 
 async function load() {
   try {
@@ -287,20 +132,45 @@ async function load() {
     pages = new Array(pdf.numPages);
     for (let i = 0; i < pdf.numPages; i++) {
       const wrap = document.createElement("div");
-      wrap.className = "page-wrap";
+      wrap.className = "spm-reader-page";
       wrap.setAttribute("data-page", String(i + 1));
       const canvas = document.createElement("canvas");
-      canvas.className = "page";
+      canvas.className = "spm-reader-canvas";
       wrap.appendChild(canvas);
       const num = document.createElement("div");
-      num.className = "page-num";
+      num.className = "spm-reader-page-number";
       num.textContent = String(i + 1);
       wrap.appendChild(num);
       stack.appendChild(wrap);
-      pages[i] = { wrap, canvas, pagep: null, viewport1: null };
+      pages[i] = {
+        wrap,
+        canvas,
+        pagep: null,
+        viewport1: null,
+        renderTask: null,
+        renderQueue: Promise.resolve(),
+        renderedScale: null
+      };
     }
-    pagepill.textContent = "0 / " + pdf.numPages;
+    pagepill.textContent = `0 / ${pdf.numPages}`;
     await fitWidth(true);
+    pageObserver = new IntersectionObserver((entries) => {
+      const generation = renderGeneration;
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        const index = Number(entry.target.getAttribute("data-page")) - 1;
+        for (const nearby of [index - 1, index, index + 1]) {
+          if (nearby >= 0 && nearby < pages.length) {
+            void renderPage(nearby, scale, generation).catch((error) => {
+              console.error("[pdf-reader] page render failed:", error);
+            });
+          }
+        }
+      }
+    }, { root: scroll, rootMargin: "100% 0px" });
+    pages.forEach((page) => {
+      pageObserver.observe(page.wrap);
+    });
     stack.setAttribute("aria-busy", "false");
   } catch (err) {
     console.error("[pdf-reader] load failed:", err);
@@ -311,27 +181,70 @@ async function load() {
 
 async function ensurePage(i) {
   const p = pages[i];
-  if (!p || !p.pagep) {
+  if (!p.pagep) {
     p.pagep = await pdf.getPage(i + 1);
     p.viewport1 = p.pagep.getViewport({ scale: 1 });
   }
   return p;
 }
 
-async function renderPage(i, s) {
-  const p = await ensurePage(i);
-  const viewport = p.pagep.getViewport({ scale: s });
-  const ctx = p.canvas.getContext("2d");
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  p.canvas.width  = Math.floor(viewport.width  * dpr);
-  p.canvas.height = Math.floor(viewport.height * dpr);
-  p.canvas.style.width  = Math.floor(viewport.width)  + "px";
-  p.canvas.style.height = Math.floor(viewport.height) + "px";
-  await p.pagep.render({ canvasContext: ctx, viewport, transform: dpr !== 1 ? [dpr, 0, 0, dpr, 0, 0] : undefined }).promise;
+function layoutPages(s) {
+  for (const page of pages) {
+    const viewport = page.pagep.getViewport({ scale: s });
+    const width = Math.floor(viewport.width);
+    const height = Math.floor(viewport.height);
+    page.wrap.style.width = `${width}px`;
+    page.wrap.style.height = `${height}px`;
+    page.canvas.style.width = `${width}px`;
+    page.canvas.style.height = `${height}px`;
+  }
 }
 
-async function renderAll(s) {
-  await Promise.all(pages.map((_, i) => renderPage(i, s)));
+async function renderPage(i, s, generation) {
+  const p = await ensurePage(i);
+  const work = p.renderQueue.then(async () => {
+    if (generation !== renderGeneration || p.renderedScale === s) return;
+    const viewport = p.pagep.getViewport({ scale: s });
+    const ctx = p.canvas.getContext("2d");
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    p.canvas.width  = Math.floor(viewport.width  * dpr);
+    p.canvas.height = Math.floor(viewport.height * dpr);
+    p.canvas.style.width  = `${Math.floor(viewport.width)}px`;
+    p.canvas.style.height = `${Math.floor(viewport.height)}px`;
+    const task = p.pagep.render({
+      canvasContext: ctx,
+      viewport,
+      transform: dpr !== 1 ? [dpr, 0, 0, dpr, 0, 0] : undefined
+    });
+    p.renderTask = task;
+    try {
+      await task.promise;
+      if (generation === renderGeneration) p.renderedScale = s;
+    } catch (error) {
+      if (error?.name !== "RenderingCancelledException") throw error;
+    } finally {
+      if (p.renderTask === task) p.renderTask = null;
+    }
+  });
+  p.renderQueue = work.catch(() => {});
+  return work;
+}
+
+function visiblePageIndexes() {
+  const root = scroll.getBoundingClientRect();
+  const margin = scroll.clientHeight;
+  const visible = [];
+  for (let i = 0; i < pages.length; i++) {
+    const rect = pages[i].wrap.getBoundingClientRect();
+    if (rect.bottom >= root.top - margin && rect.top <= root.bottom + margin) {
+      visible.push(i);
+    }
+  }
+  return visible.length ? visible : [0];
+}
+
+async function renderVisible(s, generation) {
+  await Promise.all(visiblePageIndexes().map((i) => renderPage(i, s, generation)));
 }
 
 function computeFitScale() {
@@ -349,51 +262,69 @@ async function fitWidth(initial) {
   for (let i = 0; i < pages.length; i++) await ensurePage(i);
   fitScale = computeFitScale() || 1.0;
   scale = fitScale;
-  await renderAll(scale);
+  fitMode = true;
+  const generation = ++renderGeneration;
+  pages.forEach((page) => {
+    page.renderedScale = null;
+    if (page.renderTask) page.renderTask.cancel();
+  });
+  layoutPages(scale);
+  await renderVisible(scale, generation);
   updateZoom();
   if (initial) updateCurrentPage();
 }
 
-function updateZoom() { zoompill.textContent = Math.round(scale * 100) + "%"; }
+function updateZoom() { zoompill.textContent = `${Math.round(scale * 100)}%`; }
 
 function updateCurrentPage() {
   const probe = 80;
   let winner = 1;
   let best = Infinity;
+  const viewportTop = scroll.getBoundingClientRect().top;
   for (let i = 0; i < pages.length; i++) {
     const r = pages[i].wrap.getBoundingClientRect();
-    const top = r.top + scroll.scrollTop - scroll.offsetTop;
-    let d = top;
-    let target = probe;
-    if (d <= target) {
+    const distance = Math.abs(r.top - viewportTop - probe);
+    if (distance < best) {
+      best = distance;
       winner = i + 1;
     }
   }
-  if (pages.length) pagepill.textContent = winner + " / " + pages.length;
+  if (pages.length) pagepill.textContent = `${winner} / ${pages.length}`;
   document.body.setAttribute("data-page", String(winner));
   prevB.disabled = winner <= 1;
   nextB.disabled = winner >= pages.length;
 }
 
-scroll.addEventListener("scroll", () => { updateCurrentPage(); }, { passive: true });
+scroll.addEventListener("scroll", updateCurrentPage, { passive: true });
 
-let zoomT;
 async function applyZoom(s) {
   scale = Math.min(4, Math.max(0.2, s));
-  clearTimeout(zoomT);
-  await renderAll(scale);
+  fitMode = false;
+  const generation = ++renderGeneration;
+  pages.forEach((page) => {
+    page.renderedScale = null;
+    if (page.renderTask) page.renderTask.cancel();
+  });
+  layoutPages(scale);
+  await renderVisible(scale, generation);
   updateZoom();
   updateCurrentPage();
 }
 
-zinB.addEventListener("click",  () => applyZoom(scale * 1.15));
-zoutB.addEventListener("click", () => applyZoom(scale / 1.15));
-fitB.addEventListener("click",  () => fitWidth(false));
+zinB.addEventListener("click",  () => { void applyZoom(scale * 1.15); });
+zoutB.addEventListener("click", () => { void applyZoom(scale / 1.15); });
+fitB.addEventListener("click",  () => { void fitWidth(false); });
 
 let resizeT;
 window.addEventListener("resize", () => {
   clearTimeout(resizeT);
-  resizeT = setTimeout(() => { fitScale = computeFitScale() || fitScale; }, 200);
+  resizeT = setTimeout(() => {
+    if (fitMode) {
+      void fitWidth(false);
+    } else {
+      fitScale = computeFitScale() || fitScale;
+    }
+  }, 200);
 });
 
 prevB.addEventListener("click", () => {

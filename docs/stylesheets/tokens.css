@@ -1,0 +1,172 @@
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../assets/vendor/fonts/inter-latin-variable.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Fraunces";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../assets/vendor/fonts/fraunces-latin-variable.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/vendor/fonts/ibm-plex-mono-latin-400.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../assets/vendor/fonts/ibm-plex-mono-latin-600.woff2") format("woff2");
+}
+
+:root {
+  --spm-fixed-night: #0a0908;
+  --spm-fixed-coal: #15110d;
+  --spm-fixed-umber: #1c1712;
+  --spm-fixed-rule: #2a2118;
+  --spm-fixed-rule-strong: #493723;
+  --spm-fixed-ink: #efe7d8;
+  --spm-fixed-muted: #c8bba8;
+  --spm-fixed-faint: #9a8a76;
+  --spm-fixed-amber: #f5a72c;
+  --spm-fixed-ember: #ff7a3c;
+  --spm-fixed-glow: #ffd690;
+  --spm-fixed-beam-ink: #20150a;
+  --spm-media-black: #000;
+  --spm-paper: #fff;
+  --spm-print-ink: #111;
+  --spm-print-rule: #777;
+  --spm-code-string-light: #145c38;
+  --spm-code-keyword-light: #274f9e;
+  --spm-code-name-light: #7a2d89;
+}
+
+:root,
+[data-md-color-scheme="slate"] {
+  color-scheme: dark;
+
+  --spm-night: var(--spm-fixed-night);
+  --spm-coal: var(--spm-fixed-coal);
+  --spm-umber: var(--spm-fixed-umber);
+  --spm-rule: var(--spm-fixed-rule);
+  --spm-rule-strong: var(--spm-fixed-rule-strong);
+  --spm-ink: var(--spm-fixed-ink);
+  --spm-ink-muted: var(--spm-fixed-muted);
+  --spm-ink-faint: var(--spm-fixed-faint);
+  --spm-amber: var(--spm-fixed-amber);
+  --spm-ember: var(--spm-fixed-ember);
+  --spm-glow: var(--spm-fixed-glow);
+  --spm-beam: #fb923c;
+  --spm-beam-ink: var(--spm-fixed-beam-ink);
+  --spm-signal: #2dd4bf;
+  --spm-status-success: #86efac;
+  --spm-status-warning: #ffd690;
+  --spm-status-error: #fca5a5;
+  --spm-status-informational: #93c5fd;
+  --spm-status-blocked: #d8b4fe;
+  --spm-status-experimental: #f9a8d4;
+  --spm-status-neutral: #c8bba8;
+  --spm-success: var(--spm-status-success);
+  --spm-warning: var(--spm-status-warning);
+  --spm-danger: var(--spm-status-error);
+  --spm-shadow: rgb(0 0 0 / 34%);
+
+  --spm-canvas: var(--spm-night);
+  --spm-surface: var(--spm-coal);
+  --spm-surface-raised: var(--spm-umber);
+  --spm-action: var(--spm-amber);
+  --spm-action-hover: var(--spm-ember);
+  --spm-action-ink: var(--spm-fixed-beam-ink);
+  --spm-link: var(--spm-glow);
+  --spm-focus: var(--spm-glow);
+
+  --md-default-bg-color: var(--spm-canvas);
+  --md-default-fg-color: var(--spm-ink);
+  --md-default-fg-color--light: var(--spm-ink-muted);
+  --md-default-fg-color--lighter: var(--spm-ink-faint);
+  --md-primary-bg-color: var(--spm-surface);
+  --md-primary-fg-color: var(--spm-ink);
+  --md-primary-fg-color--light: var(--spm-ink-muted);
+  --md-accent-bg-color: var(--spm-action);
+  --md-accent-fg-color: var(--spm-action-ink);
+  --md-code-bg-color: var(--spm-surface-raised);
+  --md-code-fg-color: var(--spm-ink);
+  --md-typeset-color: var(--spm-ink);
+  --md-typeset-a-color: var(--spm-link);
+  --md-admonition-bg-color: var(--spm-surface);
+  --md-admonition-fg-color: var(--spm-ink);
+  --md-footer-bg-color: var(--spm-coal);
+  --md-footer-bg-color--dark: var(--spm-night);
+  --md-footer-fg-color: var(--spm-ink-muted);
+  --md-text-font: "Inter";
+  --md-code-font: "IBM Plex Mono";
+}
+
+[data-md-color-scheme="default"] {
+  color-scheme: light;
+
+  --spm-night: #201a15;
+  --spm-coal: #fffdf8;
+  --spm-umber: #ebe3d6;
+  --spm-rule: #d8cdbd;
+  --spm-rule-strong: #a89275;
+  --spm-ink: #201a15;
+  --spm-ink-muted: #5f5143;
+  --spm-ink-faint: #756552;
+  --spm-amber: #8a4b00;
+  --spm-ember: #6f3900;
+  --spm-glow: #6f3900;
+  --spm-beam: #b74f13;
+  --spm-beam-ink: #fffdf8;
+  --spm-signal: #0f766e;
+  --spm-status-success: #166534;
+  --spm-status-warning: #7c4a03;
+  --spm-status-error: #991b1b;
+  --spm-status-informational: #1e40af;
+  --spm-status-blocked: #6b21a8;
+  --spm-status-experimental: #9d174d;
+  --spm-status-neutral: #5f5143;
+  --spm-success: var(--spm-status-success);
+  --spm-warning: var(--spm-status-warning);
+  --spm-danger: var(--spm-status-error);
+  --spm-shadow: rgb(70 45 20 / 14%);
+
+  --spm-canvas: #f4f0e7;
+  --spm-surface: #fffdf8;
+  --spm-surface-raised: #ebe3d6;
+  --spm-action: #8a4b00;
+  --spm-action-hover: #6f3900;
+  --spm-action-ink: #fffdf8;
+  --spm-link: #8a4b00;
+  --spm-focus: #8a4b00;
+
+  --md-default-bg-color: var(--spm-canvas);
+  --md-default-fg-color: var(--spm-ink);
+  --md-default-fg-color--light: var(--spm-ink-muted);
+  --md-default-fg-color--lighter: var(--spm-ink-faint);
+  --md-primary-bg-color: var(--spm-surface);
+  --md-primary-fg-color: var(--spm-ink);
+  --md-primary-fg-color--light: var(--spm-ink-muted);
+  --md-accent-bg-color: var(--spm-action);
+  --md-accent-fg-color: var(--spm-action-ink);
+  --md-code-bg-color: var(--spm-surface-raised);
+  --md-code-fg-color: var(--spm-ink);
+  --md-typeset-color: var(--spm-ink);
+  --md-typeset-a-color: var(--spm-link);
+  --md-admonition-bg-color: var(--spm-surface);
+  --md-admonition-fg-color: var(--spm-ink);
+  --md-footer-bg-color: #201a15;
+  --md-footer-bg-color--dark: #17120e;
+  --md-footer-fg-color: #c8bba8;
+}

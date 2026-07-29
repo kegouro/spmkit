@@ -322,11 +322,26 @@ def main() -> int:
     viewer_dir = DOCS / "assets/pdf-viewer"
     viewer = viewer_dir / "viewer.html"
     checks.require(viewer.stat().st_size > 0, "embedded PDF reader is present")
-    for relative in ("vendor/pdf.min.mjs", "vendor/pdf.worker.min.mjs"):
+    pdfjs_hashes = {
+        "vendor/pdf.min.mjs": "343b4166b06716a55a8f87175b83223cb1a9ab701eb8a96b2577509d47fbaf4a",
+        "vendor/pdf.worker.min.mjs": "dbcae78a691b3c501508f74b774c6066a57a14a76cefdc9e25ad86b651bb75d5",
+    }
+    for relative, expected_hash in pdfjs_hashes.items():
         asset = viewer_dir / relative
         checks.require(
-            asset.is_file() and asset.stat().st_size > 100_000, f"PDF.js asset: {relative}"
+            asset.is_file()
+            and asset.stat().st_size > 100_000
+            and sha256(asset) == expected_hash,
+            f"pinned PDF.js asset: {relative}",
         )
+    pdfjs_notice = text(viewer_dir / "NOTICE.txt")
+    checks.require(
+        "pdfjs-dist" in pdfjs_notice
+        and "version : 5.4.296" in pdfjs_notice
+        and "Apache License 2.0" in pdfjs_notice
+        and all(expected in pdfjs_notice for expected in pdfjs_hashes.values()),
+        "PDF.js provenance, license, version, and hashes",
+    )
     reader_body = text(DOCS / "manual/reader.md")
     checks.require(
         "assets/pdf-viewer/viewer.html" in reader_body and "user-guide.pdf" in reader_body,
@@ -335,6 +350,22 @@ def main() -> int:
 
     manifest_path = DOCS / "assets/ecosystem/assets-manifest.yml"
     manifest = yaml.safe_load(text(manifest_path))
+    parent_assets = manifest.get("parent_identity", [])
+    checks.require(
+        len(parent_assets) == 2,
+        "asset manifest declares canonical Pharos parent marks",
+    )
+    for entry in parent_assets:
+        local = REPO / entry["local_path"]
+        checks.require(
+            local.is_file() and sha256(local) == entry["sha256"],
+            f"parent identity hash: {entry['role']}",
+        )
+    checks.require(
+        any(entry.get("role") == "portal-global-mark-and-favicon" for entry in parent_assets),
+        "Pharos owns the portal-global mark and favicon",
+    )
+
     canonical_assets = manifest.get("canonical", [])
     checks.require(len(canonical_assets) == 5, "asset manifest declares five canonical banners")
     for entry in canonical_assets:
@@ -350,6 +381,13 @@ def main() -> int:
             local.is_file() and sha256(local) == entry["sha256"],
             f"generated asset hash: {local.relative_to(DOCS)}",
         )
+    fathom_inventory = [
+        entry for entry in manifest.get("inventory", []) if entry.get("component") == "fathom"
+    ]
+    checks.require(
+        all("favicon" not in str(entry.get("intended_use", "")) for entry in fathom_inventory),
+        "Fathom inventory remains component-only, never the portal favicon",
+    )
 
     required_assets = (
         "assets/theory/afm-instrument.svg",
@@ -361,8 +399,18 @@ def main() -> int:
         "assets/theory/psd-interpretation.svg",
         "assets/theory/resonance-response.svg",
         "assets/theory/software-architecture.svg",
+        "assets/brand/pharos.svg",
+        "assets/brand/pharos-mono.svg",
         "assets/vendor/fonts/inter-latin-variable.woff2",
-        "assets/vendor/fonts/jetbrains-mono-latin-variable.woff2",
+        "assets/vendor/fonts/fraunces-latin-variable.woff2",
+        "assets/vendor/fonts/ibm-plex-mono-latin-400.woff2",
+        "assets/vendor/fonts/ibm-plex-mono-latin-600.woff2",
+        "stylesheets/tokens.css",
+        "stylesheets/shell.css",
+        "stylesheets/components.css",
+        "stylesheets/scientific.css",
+        "stylesheets/responsive.css",
+        "assets/pdf-viewer/viewer.css",
         "assets/vendor/mathjax/tex-mml-chtml.js",
         "assets/vendor/mathjax/LICENSE",
     )
@@ -372,8 +420,24 @@ def main() -> int:
 
     config_scripts = config.get("extra_javascript", [])
     checks.require(
-        config_scripts == ["javascripts/mathjax.js"],
-        "MathJax engine is demand-loaded instead of globally blocking every page",
+        config_scripts == ["javascripts/mathjax.js", "javascripts/accessibility.js"],
+        "MathJax stays demand-loaded and scroll regions receive keyboard access",
+    )
+    checks.require(
+        config.get("extra_css")
+        == [
+            "stylesheets/tokens.css",
+            "stylesheets/shell.css",
+            "stylesheets/components.css",
+            "stylesheets/scientific.css",
+            "stylesheets/responsive.css",
+        ],
+        "Pharos visual system loads in canonical layer order",
+    )
+    checks.require(
+        config.get("theme", {}).get("logo") == "assets/brand/pharos.svg"
+        and config.get("theme", {}).get("favicon") == "assets/brand/pharos.svg",
+        "global logo and favicon use the canonical Pharos parent mark",
     )
     banner_pages = (
         DOCS / "ecosystem/index.md",

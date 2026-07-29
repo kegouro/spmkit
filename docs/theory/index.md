@@ -39,9 +39,12 @@ behind the path that produced it.
 
 ## Evidence vocabulary
 
-`LEVEL 0 — CLAIMED` → `LEVEL 1 — SOFTWARE_VERIFIED` →
-`LEVEL 2 — NUMERICALLY_VERIFIED` → `LEVEL 3 — CROSS_VALIDATED` →
-`LEVEL 4 — PHYSICALLY_VALIDATED` → `LEVEL 5 — REPRODUCIBILITY_VALIDATED`.
+<span class="spm-level spm-level--0" data-level="0">CLAIMED</span> →
+<span class="spm-level spm-level--1" data-level="1">SOFTWARE_VERIFIED</span> →
+<span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> →
+<span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> →
+<span class="spm-level spm-level--4 spm-level--unclaimed" data-level="4">PHYSICALLY_VALIDATED</span> →
+<span class="spm-level spm-level--5 spm-level--unclaimed" data-level="5">REPRODUCIBILITY_VALIDATED</span>.
 
 The same project can contain Level 1, Level 2 and Level 3 capabilities at once.
 No current public evidence supports a general Level 4 or Level 5 claim.

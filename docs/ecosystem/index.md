@@ -5,16 +5,16 @@ hide:
   - toc
 ---
 
-<section class="portal-hero">
-  <p class="portal-kicker">One ecosystem · Five scientific responsibilities</p>
+<section class="spm-hero">
+  <p class="spm-eyebrow">Pharos Project · SPM-Kit ecosystem · Five responsibilities</p>
   <h1>An open AFM/SPM analysis ecosystem built around evidence.</h1>
-  <p class="portal-lede">SPM-Kit combines a numerical engine, an interactive workspace, synthetic ground truth, external validation and public-data discovery so that scientific results can be inspected from raw evidence to final output.</p>
-  <div class="portal-signal">
+  <p class="spm-hero__lede">SPM-Kit combines a numerical engine, an interactive workspace, synthetic ground truth, external validation and public-data discovery so that scientific results can be inspected from raw evidence to final output.</p>
+  <div class="spm-hero__meta">
     <span><strong>CREATOR</strong> José Labarca Baeza</span>
     <span><strong>CHAIN</strong> discover → define → test → compute → inspect</span>
     <span><strong>BOUNDARY</strong> alpha · no universal validation claim</span>
   </div>
-  <div class="portal-actions">
+  <div class="spm-actions">
     <a href="#workflow">Explore the workflow</a>
     <a href="choose/">Choose a component</a>
     <a href="workflows/">Run an example</a>
@@ -29,28 +29,28 @@ hide:
 the result.** Five identities divide that work without pretending the boundaries
 are automatic:
 
-<div class="workflow-rail" aria-label="Conceptual ecosystem sequence">
-  <article class="workflow-stage"><span class="step">LEADS</span><h3>Data Hunter</h3><p>Finds candidate datasets, fixtures and references. Human review decides whether a candidate advances.</p></article>
-  <article class="workflow-stage"><span class="step">KNOWN TRUTH</span><h3>Phantoms</h3><p>Creates deterministic numerical surfaces and declared corruptions independently from the analyzer.</p></article>
-  <article class="workflow-stage"><span class="step">EXTERNAL TEST</span><h3>Validation</h3><p>Freezes contracts and invokes an installed SPM-Kit package through public interfaces.</p></article>
-  <article class="workflow-stage"><span class="step">COMPUTATION</span><h3>SPM-Kit Core</h3><p>Reads calibrated data and performs the numerical analysis being evaluated.</p></article>
-  <article class="workflow-stage"><span class="step">OPERATION</span><h3>Fathom</h3><p>Lets a researcher inspect, configure and operate the same Core interactively.</p></article>
+<div class="spm-workflow-ladder" tabindex="0" aria-label="Conceptual ecosystem sequence">
+  <article class="spm-workflow-step"><span class="spm-step-label">LEADS</span><h3>Data Hunter</h3><p>Finds candidate datasets, fixtures and references. Human review decides whether a candidate advances.</p></article>
+  <article class="spm-workflow-step"><span class="spm-step-label">KNOWN TRUTH</span><h3>Phantoms</h3><p>Creates deterministic numerical surfaces and declared corruptions independently from the analyzer.</p></article>
+  <article class="spm-workflow-step"><span class="spm-step-label">EXTERNAL TEST</span><h3>Validation</h3><p>Freezes contracts and invokes an installed SPM-Kit package through public interfaces.</p></article>
+  <article class="spm-workflow-step"><span class="spm-step-label">COMPUTATION</span><h3>SPM-Kit Core</h3><p>Reads calibrated data and performs the numerical analysis being evaluated.</p></article>
+  <article class="spm-workflow-step"><span class="spm-step-label">OPERATION</span><h3>Fathom</h3><p>Lets a researcher inspect, configure and operate the same Core interactively.</p></article>
 </div>
 
 The line above is explanatory. The real architecture is a network.
 
 ## The technically accurate network
 
-<div class="network-map" role="group" aria-label="Ecosystem component network">
-  <div class="network-node"><strong>Data Hunter</strong><small>Produces candidate inventories. A human may transfer an accepted fixture or dataset into campaign design.</small></div>
-  <div class="network-node"><strong>Phantoms</strong><small>Produces independent clean/observed numerical cases and manifests. It does not call the analyzer.</small></div>
-  <div class="network-node"><strong>Validation</strong><small>Consumes frozen cases and invokes the public installed SPM-Kit package as the system under test.</small></div>
-  <div class="network-node central"><strong>SPM-Kit Core</strong><small>Computational source of truth for readers, models, analysis, exports and provenance.</small></div>
-  <div class="network-node central"><strong>Fathom</strong><small>Invokes Core through the application layer. It is not a separate analyzer.</small></div>
-  <div class="network-node"><strong>External reference</strong><small>Gwyddion or another reference appears only inside a declared campaign with an explicit independence class.</small></div>
+<div class="spm-relationship-map" role="group" aria-label="Ecosystem component network">
+  <div class="spm-relationship-node"><strong>Data Hunter</strong><small>Produces candidate inventories. A human may transfer an accepted fixture or dataset into campaign design.</small></div>
+  <div class="spm-relationship-node"><strong>Phantoms</strong><small>Produces independent clean/observed numerical cases and manifests. It does not call the analyzer.</small></div>
+  <div class="spm-relationship-node"><strong>Validation</strong><small>Consumes frozen cases and invokes the public installed SPM-Kit package as the system under test.</small></div>
+  <div class="spm-relationship-node spm-relationship-node--core"><strong>SPM-Kit Core</strong><small>Computational source of truth for readers, models, analysis, exports and provenance.</small></div>
+  <div class="spm-relationship-node spm-relationship-node--core"><strong>Fathom</strong><small>Invokes Core through the application layer. It is not a separate analyzer.</small></div>
+  <div class="spm-relationship-node"><strong>External reference</strong><small>Gwyddion or another reference appears only inside a declared campaign with an explicit independence class.</small></div>
 </div>
 
-<div class="connection-list">
+<div class="spm-relationship-note">
   <strong>Directed relationships:</strong> Fathom → Core; Validation → public
   SPM-Kit package; Phantoms → Validation case design; Data Hunter → human review
   → fixture/campaign design; declared external reference → Validation comparison.
@@ -60,44 +60,44 @@ The line above is explanatory. The real architecture is a network.
 
 ## Components
 
-<div class="ecosystem-stack" id="repositories">
-  <section class="component-section" data-component="core">
-    <picture><source type="image/webp" srcset="../assets/ecosystem/core/banner-640.webp 640w, ../assets/ecosystem/core/banner-1024.webp 1024w" sizes="(max-width: 1024px) 100vw, 1024px"><img class="brand-banner" src="../assets/ecosystem/core/banner.png" width="1024" height="512" alt="SPM-Kit Core banner: Modular Numerical Core" loading="lazy"></picture>
-    <div class="component-copy">
-      <div><p class="component-role">SPM-Kit Core · Numerical engine</p><h2><a href="spmkit/">The computational source of truth</a></h2><p>Readers, calibrated domain models, image metrology, force spectroscopy, KPFM, resonance, export, provenance and plugins through Python and the `spmkit` CLI.</p><p><strong>For:</strong> scientists writing scripts, notebook users, HPC/batch operators, integrators and reader/plugin developers.</p><div class="portal-actions"><a href="spmkit/">Core guide</a><a href="https://github.com/kegouro/spmkit">Repository</a></div></div>
-      <div><span class="status-ribbon">Alpha · source 0.1.5.dev0</span><div class="io-strip"><span><b>Input</b>instrument files, arrays, declared parameters</span><span aria-hidden="true">→</span><span><b>Output</b>typed results, exports, provenance</span></div><p class="visually-equal"><strong>Install:</strong> `spmkit` package. PyPI lags the current GitHub source; see the installation matrix.</p></div>
+<div class="spm-component-stack" id="repositories">
+  <section class="spm-component" data-component="core">
+    <picture><source type="image/webp" srcset="../assets/ecosystem/core/banner-640.webp 640w, ../assets/ecosystem/core/banner-1024.webp 1024w" sizes="(max-width: 1024px) 100vw, 1024px"><img class="spm-component__banner" src="../assets/ecosystem/core/banner.png" width="1024" height="512" alt="SPM-Kit Core banner: Modular Numerical Core" loading="lazy"></picture>
+    <div class="spm-component__body">
+      <div><p class="spm-component__role">SPM-Kit Core · Numerical engine</p><h2><a href="spmkit/">The computational source of truth</a></h2><p>Readers, calibrated domain models, image metrology, force spectroscopy, KPFM, resonance, export, provenance and plugins through Python and the `spmkit` CLI.</p><p><strong>For:</strong> scientists writing scripts, notebook users, HPC/batch operators, integrators and reader/plugin developers.</p><div class="spm-actions"><a href="spmkit/">Core guide</a><a href="https://github.com/kegouro/spmkit">Repository</a></div></div>
+      <div><span class="spm-status spm-status--experimental">Alpha · source 0.1.5.dev0</span><div class="spm-io"><span><b>Input</b>instrument files, arrays, declared parameters</span><span aria-hidden="true">→</span><span><b>Output</b>typed results, exports, provenance</span></div><p class="spm-component__note"><strong>Install:</strong> `spmkit` package. PyPI lags the current GitHub source; see the installation matrix.</p></div>
     </div>
   </section>
 
-  <section class="component-section" data-component="fathom">
-    <picture><source type="image/webp" srcset="../assets/ecosystem/fathom/banner-640.webp 640w, ../assets/ecosystem/fathom/banner-1280.webp 1280w" sizes="(max-width: 1280px) 100vw, 1280px"><img class="brand-banner" src="../assets/ecosystem/fathom/banner.jpeg" width="1600" height="900" alt="Fathom, the SPM-Kit scientific workspace" loading="lazy"></picture>
-    <div class="component-copy">
-      <div><p class="component-role">Fathom · Interactive workspace</p><h2><a href="fathom/">Operate the Core without hiding it</a></h2><p>Perspective-based exploration, parameter editing, curve fitting, maps, linked panels, figures, projects and reports over the same numerical implementation.</p><p><strong>For:</strong> researchers who need visual inspection, interactive fitting and publication-oriented output.</p><div class="portal-actions"><a href="fathom/">Fathom tour</a><a href="../getting-started/fathom-quick-start/">First session</a></div></div>
-      <div><span class="status-ribbon">Bundled with SPM-Kit</span><div class="io-strip"><span><b>Input</b>files, parameters, projects</span><span aria-hidden="true">→</span><span><b>Output</b>Core results, figures, reports</span></div><p class="visually-equal"><strong>Install:</strong> `spmkit[gui]`; launch with `spmkit gui`.</p></div>
+  <section class="spm-component" data-component="fathom">
+    <picture><source type="image/webp" srcset="../assets/ecosystem/fathom/banner-640.webp 640w, ../assets/ecosystem/fathom/banner-1280.webp 1280w" sizes="(max-width: 1280px) 100vw, 1280px"><img class="spm-component__banner" src="../assets/ecosystem/fathom/banner.jpeg" width="1600" height="900" alt="Fathom, the SPM-Kit scientific workspace" loading="lazy"></picture>
+    <div class="spm-component__body">
+      <div><p class="spm-component__role">Fathom · Interactive workspace</p><h2><a href="fathom/">Operate the Core without hiding it</a></h2><p>Perspective-based exploration, parameter editing, curve fitting, maps, linked panels, figures, projects and reports over the same numerical implementation.</p><p><strong>For:</strong> researchers who need visual inspection, interactive fitting and publication-oriented output.</p><div class="spm-actions"><a href="fathom/">Fathom tour</a><a href="../getting-started/fathom-quick-start/">First session</a></div></div>
+      <div><span class="spm-status spm-status--informational">Bundled with SPM-Kit</span><div class="spm-io"><span><b>Input</b>files, parameters, projects</span><span aria-hidden="true">→</span><span><b>Output</b>Core results, figures, reports</span></div><p class="spm-component__note"><strong>Install:</strong> `spmkit[gui]`; launch with `spmkit gui`.</p></div>
     </div>
   </section>
 
-  <section class="component-section" data-component="hunter">
-    <picture><source type="image/webp" srcset="../assets/ecosystem/data-hunter/banner-640.webp 640w, ../assets/ecosystem/data-hunter/banner-1280.webp 1280w" sizes="(max-width: 1280px) 100vw, 1280px"><img class="brand-banner" src="../assets/ecosystem/data-hunter/banner.png" width="1280" height="640" alt="SPM-Kit Data Hunter evidence discovery banner" loading="lazy"></picture>
-    <div class="component-copy">
-      <div><p class="component-role">SPM-Kit Data Hunter · Evidence discovery</p><h2><a href="data-hunter/">Find leads, then review them</a></h2><p>Queries supported public repositories, normalizes metadata, deduplicates records, inventories files and classifies possible scientific utility.</p><p><strong>For:</strong> dataset scouts, reader-fixture curators and validation designers.</p><div class="portal-actions"><a href="data-hunter/">Discovery guide</a><a href="https://github.com/kegouro/spmkit-data-hunter">Repository</a></div></div>
-      <div><span class="status-ribbon">Alpha · 2.2.0 source</span><div class="io-strip"><span><b>Input</b>queries, source APIs, campaign rules</span><span aria-hidden="true">→</span><span><b>Output</b>candidate catalog and provenance</span></div><p class="visually-equal"><strong>Install:</strong> separate Git repository; not on PyPI.</p></div>
+  <section class="spm-component" data-component="hunter">
+    <picture><source type="image/webp" srcset="../assets/ecosystem/data-hunter/banner-640.webp 640w, ../assets/ecosystem/data-hunter/banner-1280.webp 1280w" sizes="(max-width: 1280px) 100vw, 1280px"><img class="spm-component__banner" src="../assets/ecosystem/data-hunter/banner.png" width="1280" height="640" alt="SPM-Kit Data Hunter evidence discovery banner" loading="lazy"></picture>
+    <div class="spm-component__body">
+      <div><p class="spm-component__role">SPM-Kit Data Hunter · Evidence discovery</p><h2><a href="data-hunter/">Find leads, then review them</a></h2><p>Queries supported public repositories, normalizes metadata, deduplicates records, inventories files and classifies possible scientific utility.</p><p><strong>For:</strong> dataset scouts, reader-fixture curators and validation designers.</p><div class="spm-actions"><a href="data-hunter/">Discovery guide</a><a href="https://github.com/kegouro/spmkit-data-hunter">Repository</a></div></div>
+      <div><span class="spm-status spm-status--experimental">Alpha · 2.2.0 source</span><div class="spm-io"><span><b>Input</b>queries, source APIs, campaign rules</span><span aria-hidden="true">→</span><span><b>Output</b>candidate catalog and provenance</span></div><p class="spm-component__note"><strong>Install:</strong> separate Git repository; not on PyPI.</p></div>
     </div>
   </section>
 
-  <section class="component-section" data-component="phantoms">
-    <picture><source type="image/webp" srcset="../assets/ecosystem/phantoms/banner-640.webp 640w, ../assets/ecosystem/phantoms/banner-1280.webp 1280w" sizes="(max-width: 1280px) 100vw, 1280px"><img class="brand-banner" src="../assets/ecosystem/phantoms/banner.png" width="1774" height="887" alt="SPM-Kit Phantoms synthetic truth banner" loading="lazy"></picture>
-    <div class="component-copy">
-      <div><p class="component-role">SPM-Kit Phantoms · Synthetic truth</p><h2><a href="phantoms/">Define truth before analysis</a></h2><p>Creates analytical surfaces with known parameters, deterministic random cases, declared corruption sequences, clean/observed separation and export manifests.</p><p><strong>For:</strong> algorithm developers, reviewers and campaign authors who need a known numerical answer.</p><div class="portal-actions"><a href="phantoms/">Phantom catalog</a><a href="https://github.com/kegouro/spmkit-phantoms">Repository</a></div></div>
-      <div><span class="status-ribbon">Alpha · 0.1.0 source</span><div class="io-strip"><span><b>Input</b>model parameters, field of view, seed</span><span aria-hidden="true">→</span><span><b>Output</b>arrays, masks, manifests, hashes</span></div><p class="visually-equal"><strong>Install:</strong> separate Git repository; not on PyPI.</p></div>
+  <section class="spm-component" data-component="phantoms">
+    <picture><source type="image/webp" srcset="../assets/ecosystem/phantoms/banner-640.webp 640w, ../assets/ecosystem/phantoms/banner-1280.webp 1280w" sizes="(max-width: 1280px) 100vw, 1280px"><img class="spm-component__banner" src="../assets/ecosystem/phantoms/banner.png" width="1774" height="887" alt="SPM-Kit Phantoms synthetic truth banner" loading="lazy"></picture>
+    <div class="spm-component__body">
+      <div><p class="spm-component__role">SPM-Kit Phantoms · Synthetic truth</p><h2><a href="phantoms/">Define truth before analysis</a></h2><p>Creates analytical surfaces with known parameters, deterministic random cases, declared corruption sequences, clean/observed separation and export manifests.</p><p><strong>For:</strong> algorithm developers, reviewers and campaign authors who need a known numerical answer.</p><div class="spm-actions"><a href="phantoms/">Phantom catalog</a><a href="https://github.com/kegouro/spmkit-phantoms">Repository</a></div></div>
+      <div><span class="spm-status spm-status--experimental">Alpha · 0.1.0 source</span><div class="spm-io"><span><b>Input</b>model parameters, field of view, seed</span><span aria-hidden="true">→</span><span><b>Output</b>arrays, masks, manifests, hashes</span></div><p class="spm-component__note"><strong>Install:</strong> separate Git repository; not on PyPI.</p></div>
     </div>
   </section>
 
-  <section class="component-section" data-component="validation">
-    <picture><source type="image/webp" srcset="../assets/ecosystem/validation/banner-640.webp 640w, ../assets/ecosystem/validation/banner-1280.webp 1280w" sizes="(max-width: 1280px) 100vw, 1280px"><img class="brand-banner" src="../assets/ecosystem/validation/banner.png" width="1983" height="793" alt="SPM-Kit Validation external black-box evidence banner" loading="lazy"></picture>
-    <div class="component-copy">
-      <div><p class="component-role">SPM-Kit Validation · External evidence</p><h2><a href="validation/">Test what the package actually does</a></h2><p>Freezes campaigns, invokes public executables in a separate process, captures outputs, compares references and preserves passes, failures, blockers and limitations.</p><p><strong>For:</strong> reviewers, release maintainers and researchers reproducing a narrow scientific claim.</p><div class="portal-actions"><a href="validation/">Campaign browser</a><a href="https://github.com/kegouro/spmkit-validation">Repository</a></div></div>
-      <div><span class="status-ribbon">Alpha · 0.1.0 source</span><div class="io-strip"><span><b>Input</b>frozen contract, SUT, reference</span><span aria-hidden="true">→</span><span><b>Output</b>reports, manifests, audit trail</span></div><p class="visually-equal"><strong>Install:</strong> separate Git repository; not on PyPI.</p></div>
+  <section class="spm-component" data-component="validation">
+    <picture><source type="image/webp" srcset="../assets/ecosystem/validation/banner-640.webp 640w, ../assets/ecosystem/validation/banner-1280.webp 1280w" sizes="(max-width: 1280px) 100vw, 1280px"><img class="spm-component__banner" src="../assets/ecosystem/validation/banner.png" width="1983" height="793" alt="SPM-Kit Validation external black-box evidence banner" loading="lazy"></picture>
+    <div class="spm-component__body">
+      <div><p class="spm-component__role">SPM-Kit Validation · External evidence</p><h2><a href="validation/">Test what the package actually does</a></h2><p>Freezes campaigns, invokes public executables in a separate process, captures outputs, compares references and preserves passes, failures, blockers and limitations.</p><p><strong>For:</strong> reviewers, release maintainers and researchers reproducing a narrow scientific claim.</p><div class="spm-actions"><a href="validation/">Campaign browser</a><a href="https://github.com/kegouro/spmkit-validation">Repository</a></div></div>
+      <div><span class="spm-status spm-status--experimental">Alpha · 0.1.0 source</span><div class="spm-io"><span><b>Input</b>frozen contract, SUT, reference</span><span aria-hidden="true">→</span><span><b>Output</b>reports, manifests, audit trail</span></div><p class="spm-component__note"><strong>Install:</strong> separate Git repository; not on PyPI.</p></div>
     </div>
   </section>
 </div>
@@ -148,12 +148,12 @@ remain inspectable even while Core continues to evolve.
 
 | Level | Meaning | Ecosystem contribution | Not automatic |
 |---|---|---|---|
-| `LEVEL 0 — CLAIMED` | behavior is described | all components document intent | a README statement is not a test |
-| `LEVEL 1 — SOFTWARE_VERIFIED` | automated software behavior is checked | Core, Fathom and companions test contracts | passing tests do not prove the physical model |
-| `LEVEL 2 — NUMERICALLY_VERIFIED` | a known numerical case is recovered | Phantoms supplies truth; Core/Validation execute recovery | a synthetic surface is not a calibrated specimen |
-| `LEVEL 3 — CROSS_VALIDATED` | a declared external reference agrees within frozen tolerance | Validation records reference, independence and comparison | external software is not necessarily independent truth |
-| `LEVEL 4 — PHYSICALLY_VALIDATED` | calibrated physical reference supports the claim | future campaign proposals may use reviewed datasets | no current general claim exists |
-| `LEVEL 5 — REPRODUCIBILITY_VALIDATED` | independent laboratories reproduce the result | future interlaboratory protocol | no current claim exists |
+| <span class="spm-level spm-level--0" data-level="0">CLAIMED</span> | behavior is described | all components document intent | a README statement is not a test |
+| <span class="spm-level spm-level--1" data-level="1">SOFTWARE_VERIFIED</span> | automated software behavior is checked | Core, Fathom and companions test contracts | passing tests do not prove the physical model |
+| <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> | a known numerical case is recovered | Phantoms supplies truth; Core/Validation execute recovery | a synthetic surface is not a calibrated specimen |
+| <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> | a declared external reference agrees within frozen tolerance | Validation records reference, independence and comparison | external software is not necessarily independent truth |
+| <span class="spm-level spm-level--4 spm-level--unclaimed" data-level="4">PHYSICALLY_VALIDATED</span> | calibrated physical reference supports the claim | future campaign proposals may use reviewed datasets | no current general claim exists |
+| <span class="spm-level spm-level--5 spm-level--unclaimed" data-level="5">REPRODUCIBILITY_VALIDATED</span> | independent laboratories reproduce the result | future interlaboratory protocol | no current claim exists |
 
 Using a component never grants a level by itself. The retained evidence record,
 scope and limitations determine the level.

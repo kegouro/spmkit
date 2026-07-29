@@ -4,7 +4,7 @@ An atomic force microscope converts tip–sample interaction into a calibrated
 height or force signal. The image is not a direct photograph: it is the output
 of a sensor, feedback controller, scanner and reconstruction convention.
 
-<figure class="science-figure">
+<figure class="spm-science-figure">
   <img src="../../assets/theory/afm-instrument.svg" alt="AFM instrument path from sample and tip through cantilever, laser, quadrant photodiode, feedback and scanner correction" width="960" height="340">
   <figcaption>The optical lever amplifies cantilever angle. Feedback turns the detector error into a scanner Z command that is recorded as topography in constant-interaction modes.</figcaption>
 </figure>
