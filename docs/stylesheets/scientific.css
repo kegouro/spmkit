@@ -33,23 +33,23 @@
   background: color-mix(in srgb, var(--spm-action) 5%, transparent);
 }
 
-.md-typeset .highlight pre,
-.md-typeset pre {
+.md-typeset pre,
+.md-typeset :where(.highlight) pre {
   border: 1px solid var(--spm-rule);
   border-radius: .25rem;
   box-shadow: none;
 }
 
 [data-md-color-scheme="default"] .md-typeset .highlight .s2 {
-  color: #145c38;
+  color: var(--spm-code-string-light);
 }
 
 [data-md-color-scheme="default"] .md-typeset .highlight .kn {
-  color: #274f9e;
+  color: var(--spm-code-keyword-light);
 }
 
 [data-md-color-scheme="default"] .md-typeset .highlight .nn {
-  color: #7a2d89;
+  color: var(--spm-code-name-light);
 }
 
 .md-typeset .admonition,
@@ -111,6 +111,7 @@
   color: var(--spm-ink);
 }
 
+/* MathJax and Material provide inline margins that the reading surface normalizes. */
 .arithmatex mjx-container[display="true"] {
   margin: 1.4rem 0 !important;
   padding: 1rem;
@@ -129,7 +130,7 @@
   height: auto;
   border: 1px solid var(--spm-rule);
   border-radius: .2rem;
-  background: #000;
+  background: var(--spm-media-black);
   object-fit: contain;
 }
 
@@ -145,6 +146,7 @@
   margin-top: 1.5rem;
 }
 
+/* Material's embedded-content rules otherwise win over the shared reader frame. */
 .pdf-reader-frame iframe {
   width: 100%;
   min-height: min(78vh, 62rem);

@@ -80,7 +80,7 @@ description: AFM, KPFM, force-spectroscopy, surface-metrology, resonance, softwa
 | **Candidate dataset** | Located material requiring licensing, suitability, integrity, and campaign review; not automatically accepted evidence. |
 | **Core** | Presentation-independent SPM-Kit numerical and I/O package. |
 | **Fathom** | Interactive workspace that invokes public SPM-Kit Core paths. |
-| **Level 1–5** | Claim-scoped evidence vocabulary from software verification through independent reproducibility; see [scientific status](../SCIENTIFIC_STATUS.md). |
+| **Level 1–5** | Claim-scoped evidence vocabulary from software verification through independent reproducibility; see [scientific status](../scientific-status.md). |
 | **Phantom** | Deterministic synthetic fixture with declared truth. It is not a physical reference. |
 | **Provenance** | Source, version, parameters, units, transformations, environment, and checksums needed to inspect an artifact chain. |
 | **System under test** | Installed public package or command invoked by a validation campaign without importing private internals. |

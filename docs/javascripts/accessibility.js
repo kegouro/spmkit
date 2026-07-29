@@ -20,13 +20,12 @@ function enhanceAccessibility(root = document) {
     navigation.setAttribute("aria-label", `Code actions ${index + 1}`);
   });
 
-  root.querySelectorAll("nav.md-nav").forEach((navigation, index) => {
-    const labelledBy = navigation.getAttribute("aria-labelledby");
-    const label = labelledBy
-      ? root.getElementById(labelledBy)?.textContent?.trim()
-      : "Documentation";
-    navigation.setAttribute("aria-label", `${label || "Documentation"} section ${index + 1}`);
-    navigation.removeAttribute("aria-labelledby");
+  root.querySelectorAll("nav.md-nav:not([aria-label])").forEach((navigation) => {
+    const title = navigation.querySelector(":scope > .md-nav__title")?.textContent?.trim();
+    if (title) {
+      navigation.setAttribute("aria-label", title);
+      navigation.removeAttribute("aria-labelledby");
+    }
   });
 }
 

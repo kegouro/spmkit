@@ -1,27 +1,29 @@
 name: Deploy docs
 
 on:
+  pull_request:
   push:
     branches:
       - main
   workflow_dispatch: {}
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: docs-deploy
+  group: docs-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
-      - uses: actions/setup-python@v7
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
           python-version: "3.12"
           cache: pip
@@ -47,10 +49,50 @@ jobs:
       - name: Check built internal links and media
         run: python scripts/check_docs_links.py site
 
-      - name: Configure git identity for gh-deploy
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Preserve verified site
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: spmkit-site-${{ github.sha }}
+          path: site
+          if-no-files-found: error
 
-      - name: Deploy to GitHub Pages
-        run: mkdocs gh-deploy --force
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: spmkit-site-${{ github.sha }}
+          path: site
+
+      - name: Publish verified site to GitHub Pages
+        env:
+          GH_PAGES_TOKEN: ${{ github.token }}
+        run: |
+          deploy_tree="$RUNNER_TEMP/spmkit-gh-pages"
+          git fetch origin gh-pages
+          remote_sha="$(git rev-parse origin/gh-pages)"
+          git worktree add --detach "$deploy_tree" origin/gh-pages
+          git -C "$deploy_tree" rm -r --ignore-unmatch .
+          cp -R site/. "$deploy_tree"/
+          touch "$deploy_tree/.nojekyll"
+          git -C "$deploy_tree" config user.name  "github-actions[bot]"
+          git -C "$deploy_tree" config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C "$deploy_tree" add -A
+          if git -C "$deploy_tree" diff --cached --quiet; then
+            exit 0
+          fi
+          git -C "$deploy_tree" commit -m "Deploy $GITHUB_SHA"
+          auth_header="$(printf 'x-access-token:%s' "$GH_PAGES_TOKEN" | base64 | tr -d '\n')"
+          echo "::add-mask::$auth_header"
+          git -C "$deploy_tree" \
+            -c http.https://github.com/.extraheader="AUTHORIZATION: basic $auth_header" \
+            push --force-with-lease="refs/heads/gh-pages:$remote_sha" origin HEAD:gh-pages

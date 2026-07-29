@@ -49,6 +49,6 @@ but reference independence is still assessed per campaign.
 5. Add calibrated physical and interlaboratory evidence when it exists.
 6. Expose the stable result in Fathom without changing the equation.
 
-[Scientific status](../SCIENTIFIC_STATUS.md) ·
+[Scientific status](../scientific-status.md) ·
 [Architecture](../ARCHITECTURE.md) ·
 [Ecosystem workflow E](../ecosystem/workflows/index.md#workflow-e-add-an-ecosystem-capability)

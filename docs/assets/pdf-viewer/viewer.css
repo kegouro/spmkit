@@ -79,6 +79,8 @@ body {
 
 .spm-reader-group {
   display: inline-flex;
+  min-width: 0;
+  margin: 0;
   align-items: center;
   gap: .1rem;
   padding: .15rem;
@@ -92,8 +94,8 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 2.55rem;
-  min-height: 2.55rem;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
   padding: 0 .7rem;
   border: 1px solid transparent;
   border-radius: .2rem;
@@ -169,7 +171,7 @@ button:disabled {
 
 canvas.spm-reader-canvas {
   display: block;
-  background: #fff;
+  background: var(--spm-paper);
 }
 
 .spm-reader-page-number {
@@ -179,7 +181,7 @@ canvas.spm-reader-canvas {
   padding: .12rem .4rem;
   border-radius: 999px;
   background: rgb(10 9 8 / 70%);
-  color: #efe7d8;
+  color: var(--spm-fixed-ink);
   font-family: "IBM Plex Mono", ui-monospace, monospace;
   font-size: .56rem;
   pointer-events: none;
@@ -225,6 +227,7 @@ canvas.spm-reader-canvas {
   text-underline-offset: .15em;
 }
 
+/* Alert visibility must override its layout declaration. */
 .hidden {
   display: none !important;
 }
@@ -264,6 +267,7 @@ canvas.spm-reader-canvas {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* User preference must win over every reader transition. */
   *,
   *::before,
   *::after {

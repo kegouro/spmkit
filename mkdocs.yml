@@ -124,8 +124,8 @@ nav:
       - Pharos: ecosystem/pharos.md
       - Brand governance: ecosystem/brand.md
   - Scientific evidence:
-      - Scientific status: SCIENTIFIC_STATUS.md
-      - Validation campaigns: VALIDATION.md
+      - Scientific status: scientific-status.md
+      - Validation campaigns: validation/index.md
       - Traceability: TRACEABILITY.md
       - Format maturity: FILE_FORMATS.md
       - Known limitations: KNOWN_LIMITATIONS.md

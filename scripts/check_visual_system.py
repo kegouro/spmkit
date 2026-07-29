@@ -27,6 +27,31 @@ def contrast(first: str, second: str) -> float:
     return (lighter + 0.05) / (darker + 0.05)
 
 
+def declaration_block(source: str, selector: str) -> str:
+    selector_at = source.index(selector)
+    block_start = source.index("{", selector_at) + 1
+    block_end = source.index("}", block_start)
+    return source[block_start:block_end]
+
+
+def custom_properties(block: str) -> dict[str, str]:
+    return dict(re.findall(r"(--[\w-]+):\s*([^;]+);", block))
+
+
+def resolved_hex(name: str, properties: dict[str, str]) -> str:
+    seen: set[str] = set()
+    value = properties[name].strip()
+    while match := re.fullmatch(r"var\((--[\w-]+)\)", value):
+        name = match.group(1)
+        if name in seen:
+            raise ValueError(f"cyclic token reference: {name}")
+        seen.add(name)
+        value = properties[name].strip()
+    if not re.fullmatch(r"#[0-9a-fA-F]{6}", value):
+        raise ValueError(f"token {name} does not resolve to a six-digit hex color: {value}")
+    return value
+
+
 class Checks:
     def __init__(self) -> None:
         self.failures: list[str] = []
@@ -53,6 +78,10 @@ def main() -> int:
         "responsive.css",
     )]
     css = "\n".join(path.read_text(encoding="utf-8") for path in layers)
+    tokens = layers[0].read_text(encoding="utf-8")
+    reader_css = (DOCS / "assets/pdf-viewer/viewer.css").read_text(encoding="utf-8")
+    runtime_css = "\n".join(path.read_text(encoding="utf-8") for path in layers[1:])
+    runtime_css += "\n" + reader_css
 
     checks.require(
         "logo: assets/brand/pharos.svg" in config
@@ -64,11 +93,23 @@ def main() -> int:
         == "2cb865a79561c7099cc9d482cbc51634c88f9d6889810b9ab67ebe063f438835",
         "canonical Pharos asset hash",
     )
+    current_sources = []
+    for path in DOCS.rglob("*"):
+        if path.suffix not in {".md", ".html", ".css", ".js"}:
+            continue
+        if "assets/legacy" in path.as_posix():
+            continue
+        current_sources.append(path.read_text(encoding="utf-8"))
+    current_source = "\n".join(current_sources)
     checks.require(
-        "--fathom-" not in css
-        and ".portal-" not in css
-        and ".fathom-card" not in css,
+        "--fathom-" not in current_source
+        and ".portal-" not in current_source
+        and ".fathom-card" not in current_source,
         "legacy global theme selectors removed",
+    )
+    checks.require(
+        re.search(r"#[0-9a-fA-F]{3,8}\b", runtime_css) is None,
+        "runtime colors are centralized in tokens.css",
     )
 
     required_selectors = (
@@ -81,7 +122,11 @@ def main() -> int:
         ".spm-status--fail",
         ".spm-status--blocked",
         ".spm-status--not-run",
+        ".spm-workflow-ladder",
         ".spm-evidence-ladder",
+        ".spm-evidence-level--unclaimed",
+        ".spm-level--3",
+        ".spm-level--unclaimed",
         ".spm-component",
         ".spm-science-figure",
     )
@@ -90,25 +135,34 @@ def main() -> int:
 
     global_css_bytes = sum(path.stat().st_size for path in layers)
     reader_css_bytes = (DOCS / "assets/pdf-viewer/viewer.css").stat().st_size
-    checks.require(global_css_bytes <= 27_000, "global CSS budget <= 27 KiB")
+    checks.require(global_css_bytes <= 36_864, "global CSS budget <= 36 KiB")
     checks.require(reader_css_bytes <= 5_500, "PDF reader CSS budget <= 5.5 KiB")
 
+    fixed = custom_properties(declaration_block(tokens, ":root {"))
+    dark = fixed | custom_properties(
+        declaration_block(tokens, '[data-md-color-scheme="slate"]')
+    )
+    light = fixed | custom_properties(
+        declaration_block(tokens, '[data-md-color-scheme="default"]')
+    )
     token_contract = {
-        "dark ink / canvas": ("#efe7d8", "#0a0908", 4.5),
-        "dark muted / canvas": ("#c8bba8", "#0a0908", 4.5),
-        "dark link / canvas": ("#ffd690", "#0a0908", 4.5),
-        "dark primary label / amber": ("#20150a", "#f5a72c", 4.5),
-        "dark success / canvas": ("#86efac", "#0a0908", 4.5),
-        "dark danger / canvas": ("#fca5a5", "#0a0908", 4.5),
-        "light ink / canvas": ("#201a15", "#f4f0e7", 4.5),
-        "light muted / canvas": ("#5f5143", "#f4f0e7", 4.5),
-        "light link / canvas": ("#8a4b00", "#f4f0e7", 4.5),
-        "light primary label / action": ("#fffdf8", "#8a4b00", 4.5),
-        "light signal / canvas": ("#0f766e", "#f4f0e7", 4.5),
-        "light success / canvas": ("#166534", "#f4f0e7", 4.5),
-        "light danger / canvas": ("#991b1b", "#f4f0e7", 4.5),
+        "dark ink / canvas": (dark, "--spm-ink", "--spm-canvas", 4.5),
+        "dark muted / canvas": (dark, "--spm-ink-muted", "--spm-canvas", 4.5),
+        "dark link / canvas": (dark, "--spm-link", "--spm-canvas", 4.5),
+        "dark primary label / action": (dark, "--spm-action-ink", "--spm-action", 4.5),
+        "dark success / canvas": (dark, "--spm-success", "--spm-canvas", 4.5),
+        "dark danger / canvas": (dark, "--spm-danger", "--spm-canvas", 4.5),
+        "light ink / canvas": (light, "--spm-ink", "--spm-canvas", 4.5),
+        "light muted / canvas": (light, "--spm-ink-muted", "--spm-canvas", 4.5),
+        "light link / canvas": (light, "--spm-link", "--spm-canvas", 4.5),
+        "light primary label / action": (light, "--spm-action-ink", "--spm-action", 4.5),
+        "light signal / canvas": (light, "--spm-signal", "--spm-canvas", 4.5),
+        "light success / canvas": (light, "--spm-success", "--spm-canvas", 4.5),
+        "light danger / canvas": (light, "--spm-danger", "--spm-canvas", 4.5),
     }
-    for label, (foreground, background, minimum) in token_contract.items():
+    for label, (properties, foreground_token, background_token, minimum) in token_contract.items():
+        foreground = resolved_hex(foreground_token, properties)
+        background = resolved_hex(background_token, properties)
         ratio = contrast(foreground, background)
         checks.require(ratio >= minimum, f"{label}: {ratio:.2f}:1")
 
@@ -126,7 +180,52 @@ def main() -> int:
         "#ffd690",
         "#fb923c",
     }:
-        checks.require(value in css.lower(), f"canonical Pharos token: {value}")
+        checks.require(value in tokens.lower(), f"canonical Pharos token: {value}")
+
+    scientific_status = (DOCS / "scientific-status.md").read_text(encoding="utf-8")
+    checks.require(
+        all(f"spm-evidence-level--{level}" in scientific_status for level in range(6)),
+        "canonical scientific ladder contains evidence levels 0 through 5",
+    )
+    checks.require(
+        scientific_status.count("spm-evidence-level--unclaimed") == 2
+        and "spm-evidence-level--4 spm-evidence-level--unclaimed" in scientific_status
+        and "spm-evidence-level--5 spm-evidence-level--unclaimed" in scientific_status,
+        "unclaimed physical and reproducibility levels remain explicit",
+    )
+    for relative in (
+        "index.md",
+        "scientific-status.md",
+        "validation/index.md",
+        "theory/index.md",
+        "ecosystem/index.md",
+    ):
+        checks.require(
+            "spm-level" in (DOCS / relative).read_text(encoding="utf-8"),
+            f"compact evidence consumer: {relative}",
+        )
+
+    viewer = (DOCS / "assets/pdf-viewer/viewer.html").read_text(encoding="utf-8")
+    checks.require(
+        'new URL("../../user-guide.pdf", location.href)' in viewer
+        and "location.hash" not in viewer
+        and "connect-src 'self'" in viewer,
+        "PDF reader is restricted to the packaged same-origin guide",
+    )
+    checks.require(
+        "IntersectionObserver" in viewer
+        and "renderTask.cancel()" in viewer
+        and "if (fitMode)" in viewer,
+        "PDF reader lazily renders, cancels stale work, and reapplies fit on resize",
+    )
+
+    checks.require(
+        (DOCS / "scientific-status.md").is_file()
+        and (DOCS / "validation/index.md").is_file()
+        and "Scientific status: scientific-status.md" in config
+        and "Validation campaigns: validation/index.md" in config,
+        "canonical lowercase evidence routes",
+    )
 
     class_pattern = re.compile(r'class="([^"]+)"')
     used_classes: set[str] = set()

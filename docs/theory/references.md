@@ -59,7 +59,7 @@ particular experiment.
 11. Gwyddion developers, [Gwyddion User Guide](https://gwyddion.net/documentation/user-guide-en/),
     including leveling, statistical analysis, Fourier analysis, and calibration.
 12. SPM-Kit, [source repository](https://github.com/kegouro/spmkit) and
-    [scientific status matrix](../SCIENTIFIC_STATUS.md).
+    [scientific status matrix](../scientific-status.md).
 13. SPM-Kit Validation, [retained campaign repository](https://github.com/kegouro/spmkit-validation).
 
 [:material-arrow-left: Glossary](glossary.md) ·

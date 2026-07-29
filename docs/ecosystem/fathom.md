@@ -184,7 +184,7 @@ Fathom's controls exercise capabilities with different evidence levels. The UI
 itself has GUI/software tests; a displayed physical-model result inherits the
 evidence and limitations of that Core path. See the
 [implementation map](../theory/spmkit-workflows.md) and
-[scientific status](../SCIENTIFIC_STATUS.md).
+[scientific status](../scientific-status.md).
 
 ## Limitations
 

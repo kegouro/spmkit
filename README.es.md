@@ -19,7 +19,7 @@ Universidad Técnica Federico Santa María, en el contexto académico del SPM La
 
 [English](README.md) · [Español](README.es.md) ·
 [Documentación](https://kegouro.github.io/spmkit/) ·
-[Estado científico](https://kegouro.github.io/spmkit/SCIENTIFIC_STATUS/) ·
+[Estado científico](https://kegouro.github.io/spmkit/scientific-status/) ·
 [Citación](CITATION.cff)
 
 ```bash
@@ -82,7 +82,7 @@ fixtures sintéticos o redistribuibles al compartir ejemplos.
 | Resonancia | Ajuste SHO, calibración térmica y utilidades de series temporales | Tests numéricos y ejercicio experimental limitado; no es calibración certificada |
 | Reproducibilidad | Recetas, proyectos, exportaciones trazables e inspección byte a byte de `.nid` | El alcance depende del lector y flujo utilizado |
 
-El registro autoritativo por capacidad es **[Estado científico](docs/SCIENTIFIC_STATUS.md)**.
+El registro autoritativo por capacidad es **[Estado científico](docs/scientific-status.md)**.
 Distingue entre implementado, testeado, verificado numéricamente, comparado
 externamente, experimental, parcial y no soportado.
 

@@ -19,7 +19,7 @@ hide:
     <a href="getting-started/installation/">Get started</a>
     <a href="manual/">Open manual</a>
     <a href="theory/">Study the theory</a>
-    <a href="SCIENTIFIC_STATUS/">Inspect evidence</a>
+    <a href="scientific-status/">Inspect evidence</a>
     <a href="https://github.com/kegouro/spmkit">GitHub</a>
   </div>
 </section>
@@ -111,23 +111,23 @@ campaign results, not universal software scores.
 
 | Capability | Retained result | Evidence | Boundary |
 |---|---:|---|---|
-| Sa, Sq and Sz on 48 frozen synthetic matrices | **144/144** comparisons within the frozen threshold against Gwyddion 2.71 | `LEVEL 3 — CROSS_VALIDATED` | Shared matrices; no physical acquisition or universal equivalence |
-| Sa, Sq and Sz on 12 public experimental GWY records | **36/36** shared-matrix comparisons within threshold | `LEVEL 3` for the shared-matrix metric route | Public data are not physical ground truth; parser tracks were observational |
-| Limited Nanoscope III parser scope | **18/18** roughness comparisons within threshold; zero reported pixel delta on six demonstrated files | `LEVEL 2 — NUMERICALLY_VERIFIED` | Accidental pre-freeze unblinding; no blind holdout or family-wide claim |
-| Physical models and numerical paths | deterministic synthetic recovery and software tests | capability-specific `LEVEL 1` or `LEVEL 2` | Synthetic recovery is not physical validation |
+| Sa, Sq and Sz on 48 frozen synthetic matrices | **144/144** comparisons within the frozen threshold against Gwyddion 2.71 | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> | Shared matrices; no physical acquisition or universal equivalence |
+| Sa, Sq and Sz on 12 public experimental GWY records | **36/36** shared-matrix comparisons within threshold | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> for the shared-matrix metric route | Public data are not physical ground truth; parser tracks were observational |
+| Limited Nanoscope III parser scope | **18/18** roughness comparisons within threshold; zero reported pixel delta on six demonstrated files | <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> | Accidental pre-freeze unblinding; no blind holdout or family-wide claim |
+| Physical models and numerical paths | deterministic synthetic recovery and software tests | capability-specific <span class="spm-level spm-level--1" data-level="1">SOFTWARE_VERIFIED</span> or <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> | Synthetic recovery is not physical validation |
 
 No retained campaign establishes general physical validation (`LEVEL 4`) or
-interlaboratory reproducibility (`LEVEL 5`). [Read the scientific status](SCIENTIFIC_STATUS.md)
-and [campaign evidence](VALIDATION.md).
+interlaboratory reproducibility (`LEVEL 5`). [Read the scientific status](scientific-status.md)
+and [campaign evidence](validation/index.md).
 
 ## The ecosystem
 
-<div class="spm-evidence-ladder" tabindex="0" aria-label="SPM-Kit ecosystem evidence chain">
-  <article class="spm-evidence-step"><span class="spm-step-label">01 · FIND</span><h3>Data Hunter</h3><p>Discovers and classifies candidate public evidence.</p></article>
-  <article class="spm-evidence-step"><span class="spm-step-label">02 · DEFINE</span><h3>Phantoms</h3><p>Creates controlled arrays with declared numerical truth.</p></article>
-  <article class="spm-evidence-step"><span class="spm-step-label">03 · TEST</span><h3>Validation</h3><p>Invokes the installed package through public interfaces.</p></article>
-  <article class="spm-evidence-step"><span class="spm-step-label">04 · COMPUTE</span><h3>SPM-Kit Core</h3><p>Performs the analysis under evaluation.</p></article>
-  <article class="spm-evidence-step"><span class="spm-step-label">05 · OPERATE</span><h3>Fathom</h3><p>Lets researchers inspect and operate the same Core interactively.</p></article>
+<div class="spm-workflow-ladder" tabindex="0" aria-label="SPM-Kit ecosystem evidence chain">
+  <article class="spm-workflow-step"><span class="spm-step-label">01 · FIND</span><h3>Data Hunter</h3><p>Discovers and classifies candidate public evidence.</p></article>
+  <article class="spm-workflow-step"><span class="spm-step-label">02 · DEFINE</span><h3>Phantoms</h3><p>Creates controlled arrays with declared numerical truth.</p></article>
+  <article class="spm-workflow-step"><span class="spm-step-label">03 · TEST</span><h3>Validation</h3><p>Invokes the installed package through public interfaces.</p></article>
+  <article class="spm-workflow-step"><span class="spm-step-label">04 · COMPUTE</span><h3>SPM-Kit Core</h3><p>Performs the analysis under evaluation.</p></article>
+  <article class="spm-workflow-step"><span class="spm-step-label">05 · OPERATE</span><h3>Fathom</h3><p>Lets researchers inspect and operate the same Core interactively.</p></article>
 </div>
 
 **Find the evidence → define the truth → test the system externally → preserve
@@ -152,7 +152,7 @@ analyzer, and Validation records reference independence campaign by campaign.
 | Reproduce a documented analysis | [Workflow tutorials](ecosystem/workflows/index.md) |
 | Evaluate a metric against known truth | [Phantoms](ecosystem/phantoms.md) then [Validation](ecosystem/validation.md) |
 | Find a public native-format fixture | [Data Hunter](ecosystem/data-hunter.md) |
-| Audit the evidence behind a claim | [Scientific evidence](SCIENTIFIC_STATUS.md) |
+| Audit the evidence behind a claim | [Scientific evidence](scientific-status.md) |
 | Add a reader or scientific capability | [Extending SPM-Kit](extending.md) |
 
 ## Install without ambiguity

@@ -29,12 +29,12 @@ hide:
 the result.** Five identities divide that work without pretending the boundaries
 are automatic:
 
-<div class="spm-evidence-ladder" tabindex="0" aria-label="Conceptual ecosystem sequence">
-  <article class="spm-evidence-step"><span class="spm-step-label">LEADS</span><h3>Data Hunter</h3><p>Finds candidate datasets, fixtures and references. Human review decides whether a candidate advances.</p></article>
-  <article class="spm-evidence-step"><span class="spm-step-label">KNOWN TRUTH</span><h3>Phantoms</h3><p>Creates deterministic numerical surfaces and declared corruptions independently from the analyzer.</p></article>
-  <article class="spm-evidence-step"><span class="spm-step-label">EXTERNAL TEST</span><h3>Validation</h3><p>Freezes contracts and invokes an installed SPM-Kit package through public interfaces.</p></article>
-  <article class="spm-evidence-step"><span class="spm-step-label">COMPUTATION</span><h3>SPM-Kit Core</h3><p>Reads calibrated data and performs the numerical analysis being evaluated.</p></article>
-  <article class="spm-evidence-step"><span class="spm-step-label">OPERATION</span><h3>Fathom</h3><p>Lets a researcher inspect, configure and operate the same Core interactively.</p></article>
+<div class="spm-workflow-ladder" tabindex="0" aria-label="Conceptual ecosystem sequence">
+  <article class="spm-workflow-step"><span class="spm-step-label">LEADS</span><h3>Data Hunter</h3><p>Finds candidate datasets, fixtures and references. Human review decides whether a candidate advances.</p></article>
+  <article class="spm-workflow-step"><span class="spm-step-label">KNOWN TRUTH</span><h3>Phantoms</h3><p>Creates deterministic numerical surfaces and declared corruptions independently from the analyzer.</p></article>
+  <article class="spm-workflow-step"><span class="spm-step-label">EXTERNAL TEST</span><h3>Validation</h3><p>Freezes contracts and invokes an installed SPM-Kit package through public interfaces.</p></article>
+  <article class="spm-workflow-step"><span class="spm-step-label">COMPUTATION</span><h3>SPM-Kit Core</h3><p>Reads calibrated data and performs the numerical analysis being evaluated.</p></article>
+  <article class="spm-workflow-step"><span class="spm-step-label">OPERATION</span><h3>Fathom</h3><p>Lets a researcher inspect, configure and operate the same Core interactively.</p></article>
 </div>
 
 The line above is explanatory. The real architecture is a network.
@@ -148,12 +148,12 @@ remain inspectable even while Core continues to evolve.
 
 | Level | Meaning | Ecosystem contribution | Not automatic |
 |---|---|---|---|
-| `LEVEL 0 — CLAIMED` | behavior is described | all components document intent | a README statement is not a test |
-| `LEVEL 1 — SOFTWARE_VERIFIED` | automated software behavior is checked | Core, Fathom and companions test contracts | passing tests do not prove the physical model |
-| `LEVEL 2 — NUMERICALLY_VERIFIED` | a known numerical case is recovered | Phantoms supplies truth; Core/Validation execute recovery | a synthetic surface is not a calibrated specimen |
-| `LEVEL 3 — CROSS_VALIDATED` | a declared external reference agrees within frozen tolerance | Validation records reference, independence and comparison | external software is not necessarily independent truth |
-| `LEVEL 4 — PHYSICALLY_VALIDATED` | calibrated physical reference supports the claim | future campaign proposals may use reviewed datasets | no current general claim exists |
-| `LEVEL 5 — REPRODUCIBILITY_VALIDATED` | independent laboratories reproduce the result | future interlaboratory protocol | no current claim exists |
+| <span class="spm-level spm-level--0" data-level="0">CLAIMED</span> | behavior is described | all components document intent | a README statement is not a test |
+| <span class="spm-level spm-level--1" data-level="1">SOFTWARE_VERIFIED</span> | automated software behavior is checked | Core, Fathom and companions test contracts | passing tests do not prove the physical model |
+| <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> | a known numerical case is recovered | Phantoms supplies truth; Core/Validation execute recovery | a synthetic surface is not a calibrated specimen |
+| <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> | a declared external reference agrees within frozen tolerance | Validation records reference, independence and comparison | external software is not necessarily independent truth |
+| <span class="spm-level spm-level--4 spm-level--unclaimed" data-level="4">PHYSICALLY_VALIDATED</span> | calibrated physical reference supports the claim | future campaign proposals may use reviewed datasets | no current general claim exists |
+| <span class="spm-level spm-level--5 spm-level--unclaimed" data-level="5">REPRODUCIBILITY_VALIDATED</span> | independent laboratories reproduce the result | future interlaboratory protocol | no current claim exists |
 
 Using a component never grants a level by itself. The retained evidence record,
 scope and limitations determine the level.

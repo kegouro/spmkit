@@ -19,7 +19,7 @@ Técnica Federico Santa María, in the academic context of the SPM Lab.
 
 [English](README.md) · [Español](README.es.md) ·
 [Documentation](https://kegouro.github.io/spmkit/) ·
-[Scientific status](https://kegouro.github.io/spmkit/SCIENTIFIC_STATUS/) ·
+[Scientific status](https://kegouro.github.io/spmkit/scientific-status/) ·
 [Citation](CITATION.cff)
 
 ```bash
@@ -82,7 +82,7 @@ synthetic or redistributable fixtures when sharing examples.
 | Reproducibility | Recipes, project files, traceable exports, byte-level `.nid` inspection | Scope depends on the reader and workflow used |
 
 The authoritative, capability-by-capability record is the
-**[Scientific status](docs/SCIENTIFIC_STATUS.md)** page. It distinguishes
+**[Scientific status](docs/scientific-status.md)** page. It distinguishes
 implemented, unit tested, numerically verified, externally compared,
 experimental, partial, and unsupported behavior.
 

@@ -30,23 +30,45 @@
   src: url("../assets/vendor/fonts/ibm-plex-mono-latin-600.woff2") format("woff2");
 }
 
+:root {
+  --spm-fixed-night: #0a0908;
+  --spm-fixed-coal: #15110d;
+  --spm-fixed-umber: #1c1712;
+  --spm-fixed-rule: #2a2118;
+  --spm-fixed-rule-strong: #493723;
+  --spm-fixed-ink: #efe7d8;
+  --spm-fixed-muted: #c8bba8;
+  --spm-fixed-faint: #9a8a76;
+  --spm-fixed-amber: #f5a72c;
+  --spm-fixed-ember: #ff7a3c;
+  --spm-fixed-glow: #ffd690;
+  --spm-fixed-beam-ink: #20150a;
+  --spm-media-black: #000;
+  --spm-paper: #fff;
+  --spm-print-ink: #111;
+  --spm-print-rule: #777;
+  --spm-code-string-light: #145c38;
+  --spm-code-keyword-light: #274f9e;
+  --spm-code-name-light: #7a2d89;
+}
+
 :root,
 [data-md-color-scheme="slate"] {
   color-scheme: dark;
 
-  --spm-night: #0a0908;
-  --spm-coal: #15110d;
-  --spm-umber: #1c1712;
-  --spm-rule: #2a2118;
-  --spm-rule-strong: #493723;
-  --spm-ink: #efe7d8;
-  --spm-ink-muted: #c8bba8;
-  --spm-ink-faint: #9a8a76;
-  --spm-amber: #f5a72c;
-  --spm-ember: #ff7a3c;
-  --spm-glow: #ffd690;
+  --spm-night: var(--spm-fixed-night);
+  --spm-coal: var(--spm-fixed-coal);
+  --spm-umber: var(--spm-fixed-umber);
+  --spm-rule: var(--spm-fixed-rule);
+  --spm-rule-strong: var(--spm-fixed-rule-strong);
+  --spm-ink: var(--spm-fixed-ink);
+  --spm-ink-muted: var(--spm-fixed-muted);
+  --spm-ink-faint: var(--spm-fixed-faint);
+  --spm-amber: var(--spm-fixed-amber);
+  --spm-ember: var(--spm-fixed-ember);
+  --spm-glow: var(--spm-fixed-glow);
   --spm-beam: #fb923c;
-  --spm-beam-ink: #20150a;
+  --spm-beam-ink: var(--spm-fixed-beam-ink);
   --spm-signal: #2dd4bf;
   --spm-success: #86efac;
   --spm-warning: #ffd690;
@@ -58,7 +80,7 @@
   --spm-surface-raised: var(--spm-umber);
   --spm-action: var(--spm-amber);
   --spm-action-hover: var(--spm-ember);
-  --spm-action-ink: #20150a;
+  --spm-action-ink: var(--spm-fixed-beam-ink);
   --spm-link: var(--spm-glow);
   --spm-focus: var(--spm-glow);
 

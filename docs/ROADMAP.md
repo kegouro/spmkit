@@ -12,7 +12,7 @@ and visual polish.
 - Selected Sa/Sq/Sz claims have `LEVEL 3` external comparison evidence.
 - The limited Nanoscope III `.spm` path has `LEVEL 2` evidence for six
   demonstrated files and remains partial.
-- All other maturity claims are listed in [Scientific status](SCIENTIFIC_STATUS.md).
+- All other maturity claims are listed in [Scientific status](scientific-status.md).
 
 ## Evidence priorities
 

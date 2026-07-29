@@ -322,11 +322,26 @@ def main() -> int:
     viewer_dir = DOCS / "assets/pdf-viewer"
     viewer = viewer_dir / "viewer.html"
     checks.require(viewer.stat().st_size > 0, "embedded PDF reader is present")
-    for relative in ("vendor/pdf.min.mjs", "vendor/pdf.worker.min.mjs"):
+    pdfjs_hashes = {
+        "vendor/pdf.min.mjs": "343b4166b06716a55a8f87175b83223cb1a9ab701eb8a96b2577509d47fbaf4a",
+        "vendor/pdf.worker.min.mjs": "dbcae78a691b3c501508f74b774c6066a57a14a76cefdc9e25ad86b651bb75d5",
+    }
+    for relative, expected_hash in pdfjs_hashes.items():
         asset = viewer_dir / relative
         checks.require(
-            asset.is_file() and asset.stat().st_size > 100_000, f"PDF.js asset: {relative}"
+            asset.is_file()
+            and asset.stat().st_size > 100_000
+            and sha256(asset) == expected_hash,
+            f"pinned PDF.js asset: {relative}",
         )
+    pdfjs_notice = text(viewer_dir / "NOTICE.txt")
+    checks.require(
+        "pdfjs-dist" in pdfjs_notice
+        and "version : 5.4.296" in pdfjs_notice
+        and "Apache License 2.0" in pdfjs_notice
+        and all(expected in pdfjs_notice for expected in pdfjs_hashes.values()),
+        "PDF.js provenance, license, version, and hashes",
+    )
     reader_body = text(DOCS / "manual/reader.md")
     checks.require(
         "assets/pdf-viewer/viewer.html" in reader_body and "user-guide.pdf" in reader_body,

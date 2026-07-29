@@ -196,6 +196,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* User preference must win over every framework and component transition. */
   *,
   *::before,
   *::after {
@@ -207,6 +208,7 @@
 }
 
 @media print {
+  /* Material's navigation visibility rules are explicitly suppressed for print. */
   .md-header,
   .md-tabs,
   .md-sidebar,
@@ -218,8 +220,8 @@
 
   body,
   .md-typeset {
-    background: #fff;
-    color: #111;
+    background: var(--spm-paper);
+    color: var(--spm-print-ink);
   }
 
   .md-content {
@@ -227,13 +229,13 @@
   }
 
   .spm-hero {
-    border: 1px solid #777;
-    background: #fff;
-    color: #111;
+    border: 1px solid var(--spm-print-rule);
+    background: var(--spm-paper);
+    color: var(--spm-print-ink);
   }
 
   .spm-hero h1,
   .spm-hero__lede {
-    color: #111;
+    color: var(--spm-print-ink);
   }
 }

@@ -200,7 +200,7 @@ demonstrates parsing behavior; it does not validate all analyses applied later.
 | Experimental formats | maturity varies; see the format matrix |
 | Physical/interlaboratory validation | incomplete; no general `LEVEL 4`/`LEVEL 5` claim |
 
-[Read the capability matrix](../SCIENTIFIC_STATUS.md) and
+[Read the capability matrix](../scientific-status.md) and
 [format maturity](../FILE_FORMATS.md) before interpreting a result.
 
 ## Limitations
