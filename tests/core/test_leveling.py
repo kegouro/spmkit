@@ -541,3 +541,177 @@ def test_three_point_level_rejects_invalid_points(
             channel,
             points=points,  # type: ignore[arg-type]
         )
+
+
+def test_polynomial_background_total_degree_excludes_masked_feature() -> None:
+    """Total-degree fitting must preserve an excluded surface feature."""
+    rows, cols = 9, 10
+    y = np.linspace(-1.0, 1.0, rows)[:, np.newaxis]
+    x = np.linspace(-1.0, 1.0, cols)[np.newaxis, :]
+
+    background = 4.0 + 2.0 * x - 3.0 * y + 0.5 * x**2 + 0.75 * x * y - 0.25 * y**2
+    data = background.copy()
+    data[4, 5] += 50.0
+
+    excluded = np.zeros(data.shape, dtype=bool)
+    excluded[4, 5] = True
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=10e-6,
+        y_range=9e-6,
+    )
+
+    result = leveling.polynomial_background(
+        channel,
+        degree_mode="total",
+        degree=2,
+        mask=excluded,
+        mask_mode="exclude",
+    )
+
+    assert np.allclose(result.data[~excluded], 0.0, atol=1e-10)
+    assert np.isclose(result.data[4, 5], 50.0, atol=1e-10)
+
+
+def test_polynomial_background_supports_independent_degrees() -> None:
+    """Independent degrees must permit terms beyond the total-degree limit."""
+    rows, cols = 8, 9
+    y = np.linspace(-1.0, 1.0, rows)[:, np.newaxis]
+    x = np.linspace(-1.0, 1.0, cols)[np.newaxis, :]
+
+    # x**3 * y requires independent degrees (3, 1).
+    background = 1.0 + 0.5 * x**2 - 0.25 * y + 2.0 * x**3 * y
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=background,
+        unit="nm",
+        x_range=9e-6,
+        y_range=8e-6,
+    )
+
+    result = leveling.polynomial_background(
+        channel,
+        degree_mode="independent",
+        x_degree=3,
+        y_degree=1,
+    )
+
+    assert np.allclose(result.data, 0.0, atol=1e-10)
+
+
+def test_polynomial_legacy_api_matches_total_degree_background() -> None:
+    """The legacy polynomial API must retain its current total-degree meaning."""
+    rows, cols = 6, 7
+    yy, xx = np.mgrid[0:rows, 0:cols]
+    data = 3.0 + 2.0 * xx - yy + 0.25 * xx**2 + 0.5 * xx * yy
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=7e-6,
+        y_range=6e-6,
+    )
+
+    legacy = leveling.polynomial(channel, order=2)
+    explicit = leveling.polynomial_background(
+        channel,
+        degree_mode="total",
+        degree=2,
+    )
+
+    assert np.allclose(legacy.data, explicit.data, atol=1e-10)
+
+
+@pytest.mark.parametrize(
+    ("kwargs", "error_type", "message"),
+    [
+        (
+            {"degree_mode": "unknown"},
+            ValueError,
+            "polynomial_background degree_mode must be",
+        ),
+        (
+            {"degree_mode": "total", "degree": True},
+            TypeError,
+            "polynomial_background requires degree to be a non-negative integer",
+        ),
+        (
+            {"degree_mode": "total", "degree": -1},
+            ValueError,
+            "polynomial_background requires degree to be non-negative",
+        ),
+        (
+            {
+                "degree_mode": "total",
+                "degree": 2,
+                "x_degree": 2,
+            },
+            ValueError,
+            "total degree mode does not accept x_degree or y_degree",
+        ),
+        (
+            {"degree_mode": "independent"},
+            ValueError,
+            "independent degree mode requires x_degree and y_degree",
+        ),
+    ],
+    ids=[
+        "invalid-mode",
+        "boolean-degree",
+        "negative-degree",
+        "total-with-axis-degree",
+        "independent-missing-degrees",
+    ],
+)
+def test_polynomial_background_rejects_invalid_degree_configuration(
+    kwargs: dict[str, object],
+    error_type: type[Exception],
+    message: str,
+) -> None:
+    """Invalid polynomial degree configurations must fail explicitly."""
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=np.arange(25.0).reshape(5, 5),
+        unit="nm",
+        x_range=5e-6,
+        y_range=5e-6,
+    )
+
+    with pytest.raises(error_type, match=message):
+        leveling.polynomial_background(
+            channel,
+            **kwargs,  # type: ignore[arg-type]
+        )
+
+
+def test_polynomial_background_rejects_rank_deficient_selection() -> None:
+    """Selected pixels must determine every requested polynomial term."""
+    data = np.arange(25.0).reshape(5, 5)
+    mask = np.zeros(data.shape, dtype=bool)
+    mask[0, :] = True
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=5e-6,
+        y_range=5e-6,
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="selected points do not define a unique polynomial background",
+    ):
+        leveling.polynomial_background(
+            channel,
+            degree_mode="independent",
+            x_degree=1,
+            y_degree=1,
+            mask=mask,
+            mask_mode="include",
+        )
