@@ -173,3 +173,47 @@ def test_zero_mean_rejects_invalid_data(
 
     with pytest.raises(error_type, match=message):
         leveling.zero_mean(channel)
+
+
+def test_zero_minimum_sets_lowest_height_to_zero() -> None:
+    """Minimum leveling must shift only the vertical reference."""
+    data = np.array(
+        [
+            [-3.0, 1.0],
+            [4.0, 9.0],
+        ]
+    )
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=2e-6,
+        y_range=3e-6,
+        direction="backward",
+        group="Scan backward",
+        metadata={"source": "synthetic"},
+    )
+    original_data = data.copy()
+
+    result = leveling.zero_minimum(channel)
+
+    assert np.isclose(np.min(result.data), 0.0)
+
+    # Subtracting a constant must preserve all relative heights.
+    assert np.allclose(
+        result.data - result.data[0, 0],
+        data - data[0, 0],
+    )
+
+    # Input data and physical channel context are preserved.
+    assert result is not channel
+    assert result.data is not channel.data
+    assert np.array_equal(channel.data, original_data)
+    assert result.name == channel.name
+    assert result.unit == channel.unit
+    assert result.x_range == channel.x_range
+    assert result.y_range == channel.y_range
+    assert result.direction == channel.direction
+    assert result.group == channel.group
+    assert result.metadata == channel.metadata
+    assert result.metadata is not channel.metadata

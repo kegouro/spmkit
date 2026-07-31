@@ -35,6 +35,13 @@ def zero_mean(channel: SPMChannel) -> SPMChannel:
     return channel.with_data(data - mean_height)
 
 
+def zero_minimum(channel: SPMChannel) -> SPMChannel:
+    """Shift the vertical reference so the minimum height is zero."""
+    data = _validated_data(channel, operation="zero_minimum")
+    minimum_height = np.min(data)
+    return channel.with_data(data - minimum_height)
+
+
 def plane_fit(channel: SPMChannel) -> SPMChannel:
     """Resta un plano de mínimos cuadrados ``z = a*x + b*y + c``.
 
