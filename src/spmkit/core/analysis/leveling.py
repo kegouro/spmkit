@@ -142,6 +142,59 @@ def plane_fit(
     return channel.with_data(data - plane)
 
 
+def three_point_level(
+    channel: SPMChannel,
+    *,
+    points: tuple[
+        tuple[int, int],
+        tuple[int, int],
+        tuple[int, int],
+    ],
+) -> SPMChannel:
+    """Subtract the plane defined by three non-collinear reference pixels."""
+    data = _validated_data(channel, operation="three_point_level")
+    point_data = np.asarray(points)
+
+    if point_data.shape != (3, 2):
+        raise ValueError("three_point_level requires exactly three (row, column) points")
+
+    if not np.issubdtype(point_data.dtype, np.integer):
+        raise TypeError("three_point_level requires integer pixel coordinates")
+
+    point_rows = point_data[:, 0]
+    point_columns = point_data[:, 1]
+
+    rows, columns = data.shape
+    out_of_bounds = (
+        np.any(point_rows < 0)
+        or np.any(point_rows >= rows)
+        or np.any(point_columns < 0)
+        or np.any(point_columns >= columns)
+    )
+
+    if out_of_bounds:
+        raise ValueError("three_point_level requires points within channel bounds")
+
+    design = np.column_stack(
+        (
+            point_columns.astype(float),
+            point_rows.astype(float),
+            np.ones(3),
+        )
+    )
+
+    if np.linalg.matrix_rank(design) < 3:
+        raise ValueError("three_point_level requires three non-collinear points")
+
+    heights = data[point_rows, point_columns]
+    coefficients = np.linalg.solve(design, heights)
+
+    yy, xx = np.mgrid[0:rows, 0:columns]
+    plane = coefficients[0] * xx + coefficients[1] * yy + coefficients[2]
+
+    return channel.with_data(data - plane)
+
+
 def polynomial(channel: SPMChannel, order: int = 2) -> SPMChannel:
     """Resta una superficie polinómica 2D de grado ``order``.
 

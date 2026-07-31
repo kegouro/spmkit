@@ -441,3 +441,103 @@ def test_plane_fit_rejects_collinear_selected_points() -> None:
             mask=mask,
             mask_mode="include",
         )
+
+
+def test_three_point_level_subtracts_plane_defined_by_reference_points() -> None:
+    """Three reference pixels must define the plane subtracted from the channel."""
+    rows, cols = 5, 6
+    yy, xx = np.mgrid[0:rows, 0:cols]
+
+    background = 1.5 * xx - 0.25 * yy + 7.0
+    data = background.copy()
+    data[2, 3] += 4.0
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=6e-6,
+        y_range=5e-6,
+        direction="forward",
+        group="Scan forward",
+        metadata={"source": "synthetic"},
+    )
+    original_data = data.copy()
+
+    points = ((0, 0), (0, 5), (4, 0))
+    result = leveling.three_point_level(channel, points=points)
+
+    # The three reference pixels define zero height after leveling.
+    for row, column in points:
+        assert np.isclose(result.data[row, column], 0.0, atol=1e-12)
+
+    feature_mask = np.ones(data.shape, dtype=bool)
+    feature_mask[2, 3] = False
+
+    assert np.allclose(result.data[feature_mask], 0.0, atol=1e-12)
+    assert np.isclose(result.data[2, 3], 4.0, atol=1e-12)
+
+    # Input and physical channel context are preserved.
+    assert np.array_equal(channel.data, original_data)
+    assert result is not channel
+    assert result.data is not channel.data
+    assert result.name == channel.name
+    assert result.unit == channel.unit
+    assert result.x_range == channel.x_range
+    assert result.y_range == channel.y_range
+    assert result.direction == channel.direction
+    assert result.group == channel.group
+    assert result.metadata == channel.metadata
+    assert result.metadata is not channel.metadata
+
+
+@pytest.mark.parametrize(
+    ("points", "error_type", "message"),
+    [
+        (
+            ((0, 0), (0, 1)),
+            ValueError,
+            "three_point_level requires exactly three",
+        ),
+        (
+            ((0.0, 0.0), (0.0, 2.0), (2.0, 0.0)),
+            TypeError,
+            "three_point_level requires integer pixel coordinates",
+        ),
+        (
+            ((0, 0), (0, 2), (8, 0)),
+            ValueError,
+            "three_point_level requires points within channel bounds",
+        ),
+        (
+            ((0, 0), (0, 1), (0, 2)),
+            ValueError,
+            "three_point_level requires three non-collinear points",
+        ),
+    ],
+    ids=[
+        "wrong-count",
+        "non-integer",
+        "out-of-bounds",
+        "collinear",
+    ],
+)
+def test_three_point_level_rejects_invalid_points(
+    points: object,
+    error_type: type[Exception],
+    message: str,
+) -> None:
+    """Invalid reference-point configurations must fail explicitly."""
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=np.arange(16.0).reshape(4, 4),
+        unit="nm",
+        x_range=4e-6,
+        y_range=4e-6,
+    )
+
+    with pytest.raises(error_type, match=message):
+        leveling.three_point_level(
+            channel,
+            points=points,  # type: ignore[arg-type]
+        )
