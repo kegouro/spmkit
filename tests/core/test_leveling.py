@@ -1601,3 +1601,158 @@ def test_align_rows_mode_supports_one_selected_point_per_row() -> None:
             ]
         ),
     )
+
+
+def test_align_rows_facet_tilt_removes_row_slopes_preserving_offsets() -> None:
+    """Facet tilt must remove row slopes without changing row offsets."""
+    columns = 9
+    x = np.linspace(-1.0, 1.0, columns)
+
+    offsets = np.array([2.0, -3.0, 7.0])
+    slopes = np.array([1.5, -2.0, 0.75])
+
+    data = np.vstack([offsets[row] + slopes[row] * x for row in range(offsets.size)])
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=9e-6,
+        y_range=3e-6,
+    )
+
+    result = leveling.align_rows(
+        channel,
+        method="facet_tilt",
+    )
+
+    expected = np.repeat(
+        offsets[:, np.newaxis],
+        columns,
+        axis=1,
+    )
+
+    assert np.allclose(result.data, expected, atol=1e-12)
+    assert np.allclose(
+        np.mean(result.data, axis=1),
+        np.mean(data, axis=1),
+        atol=1e-12,
+    )
+
+
+def test_align_rows_facet_tilt_is_robust_to_local_spike() -> None:
+    """A local spike must not dominate the prevalent row slope."""
+    columns = 9
+    x = np.linspace(-1.0, 1.0, columns)
+
+    data = np.vstack(
+        [
+            3.0 + 2.0 * x,
+            -4.0 - 1.5 * x,
+        ]
+    )
+    data[0, 4] += 100.0
+    data[1, 5] -= 80.0
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=9e-6,
+        y_range=2e-6,
+    )
+
+    result = leveling.align_rows(
+        channel,
+        method="facet_tilt",
+    )
+
+    clean_first = np.ones(columns, dtype=bool)
+    clean_first[4] = False
+
+    clean_second = np.ones(columns, dtype=bool)
+    clean_second[5] = False
+
+    assert np.allclose(
+        result.data[0, clean_first],
+        3.0,
+        atol=1e-12,
+    )
+    assert np.allclose(
+        result.data[1, clean_second],
+        -4.0,
+        atol=1e-12,
+    )
+    assert np.isclose(result.data[0, 4], 103.0, atol=1e-12)
+    assert np.isclose(result.data[1, 5], -84.0, atol=1e-12)
+
+
+@pytest.mark.parametrize("mask_mode", ["include", "exclude"])
+def test_align_rows_facet_tilt_respects_mask_selection(
+    mask_mode: str,
+) -> None:
+    """Facet tilt must estimate slopes only from selected adjacent pixels."""
+    columns = 8
+    x = np.linspace(-1.0, 1.0, columns)
+
+    data = np.vstack(
+        [
+            2.0 + 3.0 * x,
+            -1.0 - 2.0 * x,
+        ]
+    )
+
+    data[:, 5:] += np.array([[20.0], [-30.0]])
+
+    excluded = np.zeros(data.shape, dtype=bool)
+    excluded[:, 5:] = True
+
+    mask = ~excluded if mask_mode == "include" else excluded
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=8e-6,
+        y_range=2e-6,
+    )
+
+    result = leveling.align_rows(
+        channel,
+        method="facet_tilt",
+        mask=mask,
+        mask_mode=mask_mode,  # type: ignore[arg-type]
+    )
+
+    assert np.allclose(result.data[0, :5], 2.0, atol=1e-12)
+    assert np.allclose(result.data[1, :5], -1.0, atol=1e-12)
+
+    assert np.allclose(result.data[0, 5:], 22.0, atol=1e-12)
+    assert np.allclose(result.data[1, 5:], -31.0, atol=1e-12)
+
+
+def test_align_rows_facet_tilt_requires_selected_adjacent_pixels() -> None:
+    """Each row must contain a selected neighbouring-pixel pair."""
+    data = np.arange(15.0).reshape(3, 5)
+
+    mask = np.zeros(data.shape, dtype=bool)
+    mask[:, [0, 2, 4]] = True
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=5e-6,
+        y_range=3e-6,
+    )
+
+    with pytest.raises(
+        ValueError,
+        match=("align_rows facet_tilt requires selected " "neighbouring pixels in every row"),
+    ):
+        leveling.align_rows(
+            channel,
+            method="facet_tilt",
+            mask=mask,
+            mask_mode="include",
+        )

@@ -399,6 +399,45 @@ def _half_sample_mode(values: np.ndarray) -> float:
         ordered = ordered[start : start + interval_size]
 
 
+def _facet_tilt_row_corrections(
+    data: np.ndarray,
+    selection: np.ndarray,
+) -> np.ndarray:
+    """Estimate per-row tilt from the prevalent local slope."""
+    row_count, column_count = data.shape
+
+    if column_count < 2:
+        raise ValueError(
+            "align_rows facet_tilt requires selected " "neighbouring pixels in every row"
+        )
+
+    x_coordinates = np.linspace(
+        -1.0,
+        1.0,
+        column_count,
+    )
+    x_coordinates = x_coordinates - np.mean(x_coordinates)
+    x_steps = np.diff(x_coordinates)
+
+    corrections = np.empty(data.shape, dtype=float)
+
+    for row_index in range(row_count):
+        selected_edges = selection[row_index, :-1] & selection[row_index, 1:]
+
+        if not np.any(selected_edges):
+            raise ValueError(
+                "align_rows facet_tilt requires selected " "neighbouring pixels in every row"
+            )
+
+        local_slopes = np.diff(data[row_index]) / x_steps
+
+        prevalent_slope = _half_sample_mode(local_slopes[selected_edges])
+
+        corrections[row_index] = prevalent_slope * x_coordinates
+
+    return corrections
+
+
 def _without_linear_row_component(
     corrections: np.ndarray,
 ) -> np.ndarray:
@@ -534,6 +573,7 @@ def align_rows(
         "median_difference",
         "trimmed_mean_difference",
         "matching",
+        "facet_tilt",
     ] = "median",
     *,
     trim_fraction: float = 0.0,
@@ -560,13 +600,14 @@ def align_rows(
         "median_difference",
         "trimmed_mean_difference",
         "matching",
+        "facet_tilt",
     }
 
     if method not in allowed_methods:
         raise ValueError(
             "align_rows method must be 'median', 'mean', 'mode', "
             "'trimmed_mean', 'polynomial', 'median_difference', "
-            "'trimmed_mean_difference', or 'matching'"
+            "'trimmed_mean_difference', 'matching', or 'facet_tilt'"
         )
 
     if not isinstance(preserve_mean, (bool, np.bool_)):
@@ -612,7 +653,13 @@ def align_rows(
         "trimmed_mean_difference",
     }
 
-    if method == "matching":
+    if method == "facet_tilt":
+        corrections = _facet_tilt_row_corrections(
+            data,
+            selection,
+        )
+
+    elif method == "matching":
         row_corrections = _matching_row_corrections(
             data,
             selection,
