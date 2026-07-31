@@ -28,23 +28,34 @@ collect_ignore_glob = [] if _HAS_GUI else ["test_*.py"]
 
 if _HAS_GUI:
 
-    @pytest.fixture(autouse=True)
-    def _flush_qt():  # type: ignore[no-untyped-def]
-        """Purga los widgets pendientes (deleteLater) entre tests.
+    @pytest.fixture(scope="session", autouse=True)
+    def _disable_cyclic_gc_for_gui_tests():  # type: ignore[no-untyped-def]
+        """Desactiva el GC cíclico durante la fase GUI de pytest.
 
-        Evita el segfault por acumulación de recursos nativos al correr muchos tests
-        de GUI pesados en un mismo proceso (cada uno crea un Workspace completo).
+        Los widgets Qt, los ViewBox de pyqtgraph y los FigureCanvas de Matplotlib
+        forman ciclos con callbacks nativos. Una recolección automática mientras
+        Qt procesa eventos puede destruir parcialmente esos objetos y provocar un
+        segmentation fault. El proceso de pytest es efímero, por lo que el sistema
+        operativo recupera sus recursos al terminar.
+        """
+        gc.disable()
+        yield
+
+    @pytest.fixture(autouse=True)
+    def _flush_qt(qapp):  # type: ignore[no-untyped-def]
+        """Drena eliminaciones diferidas y eventos Qt entre tests.
+
+        pytest-qt cierra los widgets registrados con ``qtbot.addWidget``. Aquí solo
+        procesamos ``DeferredDelete`` y eventos pendientes. No se fuerza
+        ``gc.collect()`` porque Qt, pyqtgraph y Matplotlib pueden conservar callbacks
+        nativos durante el teardown y recolectarlos en ese punto puede causar un
+        segmentation fault.
         """
         yield
-        from PyQt6.QtWidgets import QApplication
+        from PyQt6.QtCore import QCoreApplication, QEvent
 
-        app = QApplication.instance()
-        if app is not None:
-            app.processEvents()
-            app.sendPostedEvents(None, 0)  # ejecuta los deleteLater encolados
-        gc.collect()
-        if app is not None:
-            app.processEvents()
+        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
+        qapp.processEvents()
 
 
 def _hertz_curve(
