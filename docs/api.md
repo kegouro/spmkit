@@ -88,6 +88,51 @@ Roughness expects a previously levelled spatial image. The result fields use the
 ISO-style capitalization shown above. The current implementation excludes non-finite
 values and centres the finite height population before calculating the metrics.
 
+## Arc-revolution background
+
+SPM-Kit exposes physical arc-revolution background estimation through the
+public Python API:
+
+```python
+from spmkit.core.analysis import (
+    estimate_arc_revolution_background,
+    remove_arc_revolution_background,
+)
+
+background = estimate_arc_revolution_background(
+    height,
+    radius=2e-6,
+    direction="both",
+    side="below",
+    border="nearest",
+)
+
+corrected = remove_arc_revolution_background(
+    height,
+    radius=2e-6,
+    direction="both",
+    side="below",
+    border="nearest",
+)
+```
+
+`radius` is expressed in metres. Channel heights must use a supported
+geometric Z unit. Heights are converted internally to metres and returned in
+the original unit while preserving the channel context.
+
+`direction="horizontal"` processes rows, `"vertical"` processes columns, and
+`"both"` applies horizontal followed by vertical. `side="above"` is defined
+as the inversion dual of `"below"`.
+
+The current contract accepts finite data and the `"nearest"` and `"reflect"`
+border policies. Masks, CLI and Fathom exposure are not available. The
+estimated background remains separately inspectable and satisfies
+`corrected + background == original` within floating-point tolerance.
+
+This implementation is LEVEL 1 — SOFTWARE_VERIFIED through synthetic tests
+and an independent test-local one-dimensional oracle. Numerical equivalence
+with Gwyddion has not been established.
+
 ## KPFM statistics
 
 ```python
@@ -234,7 +279,7 @@ The plugin contract is versioned, but the surrounding package remains alpha.
 | capability inspection | `inspect_any(path)` | `DatasetInfo` |
 | capability loading | `load_any(path, kind)` | `(payload, kind)` |
 | force loading | `load_force(path)` | `ForceVolume` |
-| image preprocessing | `analysis.leveling.*` | new `SPMChannel` |
+| image preprocessing | `analysis.leveling.*`, `analysis.background.*` | new `SPMChannel` |
 | numerical results | `analysis.*` | immutable result dataclasses or arrays |
 | open exports | `core.export.*`, `save_gwy()` | file path/output artifact |
 | extension discovery | `spmkit.plugins.v1` | registered `Reader`/`Domain` |

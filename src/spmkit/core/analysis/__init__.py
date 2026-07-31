@@ -1,6 +1,7 @@
 """Análisis numérico de datos SPM."""
 
 from spmkit.core.analysis import (
+    background,
     calibration,
     forcecurve,
     forcevolume,
@@ -13,6 +14,10 @@ from spmkit.core.analysis import (
     roughness,
     simulation,
     spectral,
+)
+from spmkit.core.analysis.background import (
+    estimate_arc_revolution_background,
+    remove_arc_revolution_background,
 )
 from spmkit.core.analysis.forcecurve import ForceCurveFit
 from spmkit.core.analysis.forcevolume import VolumeResult, analyze_volume
@@ -36,6 +41,9 @@ from spmkit.core.analysis.simulation import SimulatedCantilever
 from spmkit.core.analysis.spectral import FractalResult, RadialPSD
 
 __all__ = [
+    "background",
+    "estimate_arc_revolution_background",
+    "remove_arc_revolution_background",
     "calibration",
     "leveling",
     "roughness",
