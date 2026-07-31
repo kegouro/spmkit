@@ -42,6 +42,26 @@ def zero_minimum(channel: SPMChannel) -> SPMChannel:
     return channel.with_data(data - minimum_height)
 
 
+def shift_vertical(channel: SPMChannel, *, offset: float) -> SPMChannel:
+    """Add a finite scalar offset to every height value."""
+    data = _validated_data(channel, operation="shift_vertical")
+    offset_array = np.asarray(offset)
+
+    if (
+        offset_array.ndim != 0
+        or not np.issubdtype(offset_array.dtype, np.number)
+        or np.iscomplexobj(offset_array)
+    ):
+        raise TypeError("shift_vertical requires a real numeric scalar offset")
+
+    offset_value = float(offset_array.item())
+
+    if not np.isfinite(offset_value):
+        raise ValueError("shift_vertical requires a finite offset")
+
+    return channel.with_data(data + offset_value)
+
+
 def plane_fit(channel: SPMChannel) -> SPMChannel:
     """Resta un plano de mínimos cuadrados ``z = a*x + b*y + c``.
 

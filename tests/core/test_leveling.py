@@ -217,3 +217,105 @@ def test_zero_minimum_sets_lowest_height_to_zero() -> None:
     assert result.group == channel.group
     assert result.metadata == channel.metadata
     assert result.metadata is not channel.metadata
+
+
+def test_shift_vertical_adds_requested_offset() -> None:
+    """Vertical shifting must add the requested offset to every pixel."""
+    data = np.array(
+        [
+            [-2.0, 0.0],
+            [3.0, 7.0],
+        ]
+    )
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=2e-6,
+        y_range=3e-6,
+        direction="forward",
+        group="Scan forward",
+        metadata={"source": "synthetic"},
+    )
+    original_data = data.copy()
+
+    result = leveling.shift_vertical(channel, offset=2.5)
+
+    assert np.allclose(result.data, data + 2.5)
+
+    # A constant shift preserves all relative heights.
+    assert np.allclose(
+        result.data - result.data[0, 0],
+        data - data[0, 0],
+    )
+
+    # The input remains unchanged and the channel context is preserved.
+    assert np.array_equal(channel.data, original_data)
+    assert result is not channel
+    assert result.data is not channel.data
+    assert result.unit == channel.unit
+    assert result.x_range == channel.x_range
+    assert result.y_range == channel.y_range
+    assert result.metadata == channel.metadata
+    assert result.metadata is not channel.metadata
+
+
+@pytest.mark.parametrize(
+    ("offset", "error_type", "message"),
+    [
+        (
+            "2.5",
+            TypeError,
+            "shift_vertical requires a real numeric scalar offset",
+        ),
+        (
+            [2.5],
+            TypeError,
+            "shift_vertical requires a real numeric scalar offset",
+        ),
+        (
+            True,
+            TypeError,
+            "shift_vertical requires a real numeric scalar offset",
+        ),
+        (
+            1.0 + 2.0j,
+            TypeError,
+            "shift_vertical requires a real numeric scalar offset",
+        ),
+        (
+            np.nan,
+            ValueError,
+            "shift_vertical requires a finite offset",
+        ),
+        (
+            np.inf,
+            ValueError,
+            "shift_vertical requires a finite offset",
+        ),
+    ],
+    ids=[
+        "string",
+        "array",
+        "boolean",
+        "complex",
+        "nan",
+        "infinite",
+    ],
+)
+def test_shift_vertical_rejects_invalid_offsets(
+    offset: object,
+    error_type: type[Exception],
+    message: str,
+) -> None:
+    """Invalid offsets must fail explicitly."""
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=np.array([[1.0, 2.0], [3.0, 4.0]]),
+        unit="nm",
+        x_range=2e-6,
+        y_range=2e-6,
+    )
+
+    with pytest.raises(error_type, match=message):
+        leveling.shift_vertical(channel, offset=offset)  # type: ignore[arg-type]
