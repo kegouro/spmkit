@@ -1278,3 +1278,181 @@ def test_align_rows_difference_requires_shared_selected_pixels() -> None:
             mask=mask,
             mask_mode="include",
         )
+
+
+def test_align_rows_matching_downweights_local_slope_mismatch() -> None:
+    """Matching must downweight a local defect with incompatible slopes."""
+    columns = 9
+    base_profile = np.linspace(-1.0, 1.0, columns)
+
+    data = np.vstack(
+        [
+            base_profile,
+            base_profile + 2.0,
+        ]
+    )
+    data[1, 4] += 100.0
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=9e-6,
+        y_range=2e-6,
+    )
+
+    result = leveling.align_rows(
+        channel,
+        method="matching",
+        preserve_tilt=False,
+    )
+
+    clean_columns = np.ones(columns, dtype=bool)
+    clean_columns[4] = False
+
+    assert np.allclose(
+        result.data[1, clean_columns],
+        result.data[0, clean_columns],
+        atol=1e-2,
+    )
+    assert result.data[1, 4] - result.data[0, 4] > 99.0
+
+
+def test_align_rows_matching_aligns_constant_row_offsets() -> None:
+    """Matching must exactly align rows differing only by vertical offsets."""
+    base_profile = np.array([0.0, 1.0, 3.0, 2.0, -1.0, 4.0, 5.0])
+    offsets = np.array([0.0, 3.0, -2.0, 1.0])
+
+    data = base_profile[np.newaxis, :] + offsets[:, np.newaxis]
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=7e-6,
+        y_range=4e-6,
+    )
+
+    result = leveling.align_rows(
+        channel,
+        method="matching",
+        preserve_tilt=False,
+    )
+
+    assert np.allclose(
+        result.data,
+        base_profile[np.newaxis, :],
+        atol=1e-12,
+    )
+
+
+@pytest.mark.parametrize("mask_mode", ["include", "exclude"])
+def test_align_rows_matching_respects_mask_selection(
+    mask_mode: str,
+) -> None:
+    """Matching must estimate offsets only from selected neighbouring pixels."""
+    data = np.array(
+        [
+            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            [3.0, 3.0, 3.0, 50.0, 50.0, 50.0],
+        ]
+    )
+
+    excluded = np.zeros(data.shape, dtype=bool)
+    excluded[:, 3:] = True
+
+    mask = ~excluded if mask_mode == "include" else excluded
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=6e-6,
+        y_range=2e-6,
+    )
+
+    result = leveling.align_rows(
+        channel,
+        method="matching",
+        mask=mask,
+        mask_mode=mask_mode,  # type: ignore[arg-type]
+        preserve_tilt=False,
+    )
+
+    assert np.allclose(result.data[1, :3], 0.0, atol=1e-12)
+    assert np.allclose(result.data[1, 3:], 47.0, atol=1e-12)
+
+
+def test_align_rows_matching_preserves_global_tilt() -> None:
+    """Matching must preserve slow-axis tilt when requested."""
+    rows, columns = 6, 8
+    row_coordinate = np.arange(rows, dtype=float)
+    base_profile = np.linspace(-2.0, 3.0, columns)
+
+    global_tilt = 1.25 * row_coordinate
+    row_defects = np.array([0.0, 2.0, -1.0, 1.5, -2.0, 0.5])
+
+    data = base_profile[np.newaxis, :] + global_tilt[:, np.newaxis] + row_defects[:, np.newaxis]
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=8e-6,
+        y_range=6e-6,
+    )
+
+    result = leveling.align_rows(
+        channel,
+        method="matching",
+        preserve_tilt=True,
+        preserve_mean=True,
+    )
+
+    original_slope = np.polyfit(
+        row_coordinate,
+        np.mean(data, axis=1),
+        deg=1,
+    )[0]
+    corrected_slope = np.polyfit(
+        row_coordinate,
+        np.mean(result.data, axis=1),
+        deg=1,
+    )[0]
+
+    assert np.isclose(
+        corrected_slope,
+        original_slope,
+        atol=1e-12,
+    )
+
+
+def test_align_rows_matching_requires_shared_selected_edges() -> None:
+    """Adjacent rows must share a selected neighbouring-pixel pair."""
+    data = np.arange(15.0).reshape(3, 5)
+
+    mask = np.zeros(data.shape, dtype=bool)
+    mask[0, [0, 2, 4]] = True
+    mask[1, [0, 2, 4]] = True
+    mask[2, [0, 2, 4]] = True
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=5e-6,
+        y_range=3e-6,
+    )
+
+    with pytest.raises(
+        ValueError,
+        match=(
+            "align_rows matching requires adjacent rows to share " "selected neighbouring pixels"
+        ),
+    ):
+        leveling.align_rows(
+            channel,
+            method="matching",
+            mask=mask,
+            mask_mode="include",
+        )

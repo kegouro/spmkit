@@ -367,6 +367,87 @@ def polynomial(channel: SPMChannel, order: int = 2) -> SPMChannel:
     )
 
 
+def _without_linear_row_component(
+    corrections: np.ndarray,
+) -> np.ndarray:
+    """Remove the least-squares linear component from row corrections."""
+    row_count = corrections.size
+
+    if row_count <= 1:
+        return corrections.copy()
+
+    row_coordinates = np.arange(row_count, dtype=float)
+    centered_rows = row_coordinates - np.mean(row_coordinates)
+    centered_corrections = corrections - np.mean(corrections)
+
+    denominator = float(np.dot(centered_rows, centered_rows))
+
+    if denominator == 0.0:
+        return corrections.copy()
+
+    correction_slope = float(np.dot(centered_rows, centered_corrections) / denominator)
+
+    return corrections - correction_slope * centered_rows
+
+
+def _matching_row_corrections(
+    data: np.ndarray,
+    selection: np.ndarray,
+    *,
+    preserve_tilt: bool,
+) -> np.ndarray:
+    """Estimate row offsets by matching locally flat neighbouring segments."""
+    row_count = data.shape[0]
+    corrections = np.zeros(row_count, dtype=float)
+
+    for row_index in range(1, row_count):
+        shared_selection = selection[row_index - 1] & selection[row_index]
+        shared_edges = shared_selection[:-1] & shared_selection[1:]
+
+        if not np.any(shared_edges):
+            raise ValueError(
+                "align_rows matching requires adjacent rows to share "
+                "selected neighbouring pixels"
+            )
+
+        previous_row = data[row_index - 1]
+        current_row = data[row_index]
+
+        vertical_differences = 0.5 * (
+            current_row[:-1] - previous_row[:-1] + current_row[1:] - previous_row[1:]
+        )
+
+        previous_slopes = np.diff(previous_row)
+        current_slopes = np.diff(current_row)
+
+        local_flatness = np.abs(previous_slopes) + np.abs(current_slopes)
+        selected_flatness = local_flatness[shared_edges]
+
+        scale = float(np.median(selected_flatness))
+        epsilon = np.finfo(float).eps
+
+        if scale <= epsilon:
+            positive_flatness = selected_flatness[selected_flatness > epsilon]
+            scale = float(np.median(positive_flatness)) if positive_flatness.size else 1.0
+
+        normalized_flatness = selected_flatness / scale
+        weights = 1.0 / np.square(np.hypot(1.0, normalized_flatness))
+
+        increment = float(
+            np.average(
+                vertical_differences[shared_edges],
+                weights=weights,
+            )
+        )
+
+        corrections[row_index] = corrections[row_index - 1] + increment
+
+    if preserve_tilt:
+        corrections = _without_linear_row_component(corrections)
+
+    return corrections
+
+
 def _difference_row_corrections(
     data: np.ndarray,
     selection: np.ndarray,
@@ -404,21 +485,8 @@ def _difference_row_corrections(
 
         corrections[row_index] = corrections[row_index - 1] + increment
 
-    if preserve_tilt and row_count > 1:
-
-        row_coordinates = np.arange(row_count, dtype=float)
-
-        centered_rows = row_coordinates - np.mean(row_coordinates)
-
-        centered_corrections = corrections - np.mean(corrections)
-
-        denominator = float(np.dot(centered_rows, centered_rows))
-
-        if denominator > 0.0:
-
-            correction_slope = float(np.dot(centered_rows, centered_corrections) / denominator)
-
-            corrections = corrections - correction_slope * centered_rows
+    if preserve_tilt:
+        corrections = _without_linear_row_component(corrections)
 
     return corrections
 
@@ -432,6 +500,7 @@ def align_rows(
         "polynomial",
         "median_difference",
         "trimmed_mean_difference",
+        "matching",
     ] = "median",
     *,
     trim_fraction: float = 0.0,
@@ -456,13 +525,14 @@ def align_rows(
         "polynomial",
         "median_difference",
         "trimmed_mean_difference",
+        "matching",
     }
 
     if method not in allowed_methods:
         raise ValueError(
             "align_rows method must be 'median', 'mean', "
             "'trimmed_mean', 'polynomial', 'median_difference', "
-            "or 'trimmed_mean_difference'"
+            "'trimmed_mean_difference', or 'matching'"
         )
 
     if not isinstance(preserve_mean, (bool, np.bool_)):
@@ -508,7 +578,15 @@ def align_rows(
         "trimmed_mean_difference",
     }
 
-    if method in difference_methods:
+    if method == "matching":
+        row_corrections = _matching_row_corrections(
+            data,
+            selection,
+            preserve_tilt=bool(preserve_tilt),
+        )
+        corrections = row_corrections[:, np.newaxis]
+
+    elif method in difference_methods:
         statistic: Literal["median", "trimmed_mean"] = (
             "median" if method == "median_difference" else "trimmed_mean"
         )
