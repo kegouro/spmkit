@@ -1456,3 +1456,148 @@ def test_align_rows_matching_requires_shared_selected_edges() -> None:
             mask=mask,
             mask_mode="include",
         )
+
+
+def test_align_rows_mode_tracks_dominant_row_level() -> None:
+    """Mode alignment must follow the densest cluster in each row."""
+    data = np.array(
+        [
+            [1.0, 1.0, 1.0, 8.0, 20.0],
+            [4.0, 4.0, 4.0, -10.0, 30.0],
+        ]
+    )
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=5e-6,
+        y_range=2e-6,
+    )
+
+    result = leveling.align_rows(
+        channel,
+        method="mode",
+    )
+
+    expected = np.array(
+        [
+            [0.0, 0.0, 0.0, 7.0, 19.0],
+            [0.0, 0.0, 0.0, -14.0, 26.0],
+        ]
+    )
+
+    assert np.allclose(result.data, expected)
+
+
+@pytest.mark.parametrize("mask_mode", ["include", "exclude"])
+def test_align_rows_mode_respects_mask_selection(
+    mask_mode: str,
+) -> None:
+    """Modal row level must be estimated only from selected pixels."""
+    data = np.array(
+        [
+            [1.0, 1.0, 1.0, 100.0, 200.0],
+            [2.0, 2.0, 2.0, -50.0, 80.0],
+        ]
+    )
+
+    excluded = np.zeros(data.shape, dtype=bool)
+    excluded[:, 3:] = True
+
+    mask = ~excluded if mask_mode == "include" else excluded
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=5e-6,
+        y_range=2e-6,
+    )
+
+    result = leveling.align_rows(
+        channel,
+        method="mode",
+        mask=mask,
+        mask_mode=mask_mode,  # type: ignore[arg-type]
+    )
+
+    assert np.allclose(result.data[:, :3], 0.0)
+    assert np.allclose(
+        result.data[:, 3:],
+        np.array(
+            [
+                [99.0, 199.0],
+                [-52.0, 78.0],
+            ]
+        ),
+    )
+
+
+def test_align_rows_mode_can_preserve_global_mean() -> None:
+    """Mean-preserving mode alignment must retain the global level."""
+    data = np.array(
+        [
+            [1.0, 1.0, 1.0, 9.0],
+            [4.0, 4.0, 4.0, 20.0],
+            [8.0, 8.0, 8.0, -5.0],
+        ]
+    )
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=4e-6,
+        y_range=3e-6,
+    )
+
+    result = leveling.align_rows(
+        channel,
+        method="mode",
+        preserve_mean=True,
+    )
+
+    assert np.isclose(
+        np.mean(result.data),
+        np.mean(data),
+    )
+
+
+def test_align_rows_mode_supports_one_selected_point_per_row() -> None:
+    """A single selected pixel must define the modal row level."""
+    data = np.array(
+        [
+            [1.0, 5.0, 9.0],
+            [2.0, 6.0, 10.0],
+        ]
+    )
+
+    mask = np.zeros(data.shape, dtype=bool)
+    mask[:, 1] = True
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=3e-6,
+        y_range=2e-6,
+    )
+
+    result = leveling.align_rows(
+        channel,
+        method="mode",
+        mask=mask,
+        mask_mode="include",
+    )
+
+    assert np.allclose(result.data[:, 1], 0.0)
+    assert np.allclose(
+        result.data,
+        np.array(
+            [
+                [-4.0, 0.0, 4.0],
+                [-4.0, 0.0, 4.0],
+            ]
+        ),
+    )

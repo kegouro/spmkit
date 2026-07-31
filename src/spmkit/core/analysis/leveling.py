@@ -367,6 +367,38 @@ def polynomial(channel: SPMChannel, order: int = 2) -> SPMChannel:
     )
 
 
+def _half_sample_mode(values: np.ndarray) -> float:
+    """Estimate the mode using the deterministic half-sample method."""
+    ordered = np.sort(np.asarray(values, dtype=float))
+
+    while True:
+        count = ordered.size
+
+        if count == 1:
+            return float(ordered[0])
+
+        if count == 2:
+            return float(np.mean(ordered))
+
+        if count == 3:
+            left_width = ordered[1] - ordered[0]
+            right_width = ordered[2] - ordered[1]
+
+            if left_width < right_width:
+                return float(np.mean(ordered[:2]))
+
+            if right_width < left_width:
+                return float(np.mean(ordered[1:]))
+
+            return float(ordered[1])
+
+        interval_size = (count + 1) // 2
+        widths = ordered[interval_size - 1 :] - ordered[: count - interval_size + 1]
+        start = int(np.argmin(widths))
+
+        ordered = ordered[start : start + interval_size]
+
+
 def _without_linear_row_component(
     corrections: np.ndarray,
 ) -> np.ndarray:
@@ -496,6 +528,7 @@ def align_rows(
     method: Literal[
         "median",
         "mean",
+        "mode",
         "trimmed_mean",
         "polynomial",
         "median_difference",
@@ -521,6 +554,7 @@ def align_rows(
     allowed_methods = {
         "median",
         "mean",
+        "mode",
         "trimmed_mean",
         "polynomial",
         "median_difference",
@@ -530,7 +564,7 @@ def align_rows(
 
     if method not in allowed_methods:
         raise ValueError(
-            "align_rows method must be 'median', 'mean', "
+            "align_rows method must be 'median', 'mean', 'mode', "
             "'trimmed_mean', 'polynomial', 'median_difference', "
             "'trimmed_mean_difference', or 'matching'"
         )
@@ -638,6 +672,8 @@ def align_rows(
                 baselines[row_index] = np.median(row_values)
             elif method == "mean":
                 baselines[row_index] = np.mean(row_values)
+            elif method == "mode":
+                baselines[row_index] = _half_sample_mode(row_values)
             else:
                 baselines[row_index] = _trimmed_mean(
                     row_values,
