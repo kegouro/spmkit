@@ -12,19 +12,25 @@ import numpy as np
 from spmkit.core.models import SPMChannel
 
 
-def zero_mean(channel: SPMChannel) -> SPMChannel:
-    """Shift the vertical reference so the arithmetic mean is zero."""
+def _validated_data(channel: SPMChannel, *, operation: str) -> np.ndarray:
+    """Return valid 2D, numeric, finite channel data."""
     data = np.asarray(channel.data)
 
     if data.ndim != 2:
-        raise ValueError("zero_mean requires a 2D channel")
+        raise ValueError(f"{operation} requires a 2D channel")
     if data.size == 0:
-        raise ValueError("zero_mean requires non-empty data")
+        raise ValueError(f"{operation} requires non-empty data")
     if not np.issubdtype(data.dtype, np.number):
-        raise TypeError("zero_mean requires numeric data")
+        raise TypeError(f"{operation} requires numeric data")
     if not np.all(np.isfinite(data)):
-        raise ValueError("zero_mean requires finite data")
+        raise ValueError(f"{operation} requires finite data")
 
+    return data
+
+
+def zero_mean(channel: SPMChannel) -> SPMChannel:
+    """Shift the vertical reference so the arithmetic mean is zero."""
+    data = _validated_data(channel, operation="zero_mean")
     mean_height = np.mean(data)
     return channel.with_data(data - mean_height)
 
