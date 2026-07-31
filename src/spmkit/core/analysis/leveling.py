@@ -369,14 +369,20 @@ def polynomial(channel: SPMChannel, order: int = 2) -> SPMChannel:
 
 def align_rows(
     channel: SPMChannel,
-    method: Literal["median", "mean", "trimmed_mean"] = "median",
+    method: Literal[
+        "median",
+        "mean",
+        "trimmed_mean",
+        "polynomial",
+    ] = "median",
     *,
     trim_fraction: float = 0.0,
+    polynomial_degree: int = 1,
     mask: np.ndarray | None = None,
     mask_mode: Literal["ignore", "include", "exclude"] = "ignore",
     preserve_mean: bool = False,
 ) -> SPMChannel:
-    """Align rows by subtracting a representative value from each row.
+    """Align rows by subtracting a fitted or representative row background.
 
     ``preserve_mean=False`` retains the historical SPMKit behaviour.
     ``preserve_mean=True`` keeps the mean correction at zero, matching
@@ -384,9 +390,17 @@ def align_rows(
     """
     data = _validated_data(channel, operation="align_rows")
 
-    allowed_methods = {"median", "mean", "trimmed_mean"}
+    allowed_methods = {
+        "median",
+        "mean",
+        "trimmed_mean",
+        "polynomial",
+    }
+
     if method not in allowed_methods:
-        raise ValueError("align_rows method must be 'median', 'mean', " "or 'trimmed_mean'")
+        raise ValueError(
+            "align_rows method must be 'median', 'mean', " "'trimmed_mean', or 'polynomial'"
+        )
 
     if not isinstance(preserve_mean, (bool, np.bool_)):
         raise TypeError("align_rows requires preserve_mean to be boolean")
@@ -404,28 +418,72 @@ def align_rows(
         minimum_points=1,
     )
 
+    if method == "polynomial":
+        degree = _nonnegative_integer(
+            polynomial_degree,
+            name="polynomial_degree",
+            operation="align_rows",
+        )
+        required_points = degree + 1
+    else:
+        degree = 0
+        required_points = 1
+
     selected_per_row = np.count_nonzero(selection, axis=1)
-    if np.any(selected_per_row < 1):
-        raise ValueError("align_rows requires at least 1 selected point in every row")
 
-    baselines = np.empty(data.shape[0], dtype=float)
+    if np.any(selected_per_row < required_points):
+        point_word = "point" if required_points == 1 else "points"
+        raise ValueError(
+            f"align_rows requires at least {required_points} selected " f"{point_word} in every row"
+        )
 
-    for row_index in range(data.shape[0]):
-        row_values = data[row_index, selection[row_index]]
+    if method == "polynomial":
+        columns = data.shape[1]
+        x_coordinates = np.linspace(-1.0, 1.0, columns) if columns > 1 else np.zeros(columns)
 
-        if method == "median":
-            baselines[row_index] = np.median(row_values)
-        elif method == "mean":
-            baselines[row_index] = np.mean(row_values)
-        else:
-            baselines[row_index] = _trimmed_mean(
-                row_values,
-                fraction,
+        design = np.vander(
+            x_coordinates,
+            N=degree + 1,
+            increasing=True,
+        )
+
+        corrections = np.empty(data.shape, dtype=float)
+
+        for row_index in range(data.shape[0]):
+            selected = selection[row_index]
+
+            coefficients, _, rank, _ = np.linalg.lstsq(
+                design[selected],
+                data[row_index, selected],
+                rcond=None,
             )
 
-    corrections = baselines
+            if rank < degree + 1:
+                raise ValueError(
+                    "align_rows selected points do not define " "a unique polynomial in every row"
+                )
+
+            corrections[row_index] = design @ coefficients
+
+    else:
+        baselines = np.empty(data.shape[0], dtype=float)
+
+        for row_index in range(data.shape[0]):
+            row_values = data[row_index, selection[row_index]]
+
+            if method == "median":
+                baselines[row_index] = np.median(row_values)
+            elif method == "mean":
+                baselines[row_index] = np.mean(row_values)
+            else:
+                baselines[row_index] = _trimmed_mean(
+                    row_values,
+                    fraction,
+                )
+
+        corrections = baselines[:, np.newaxis]
 
     if preserve_mean:
         corrections = corrections - np.mean(corrections)
 
-    return channel.with_data(data - corrections[:, np.newaxis])
+    return channel.with_data(data - corrections)

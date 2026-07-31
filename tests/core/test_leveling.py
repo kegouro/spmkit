@@ -904,3 +904,182 @@ def test_align_rows_rejects_rows_without_selected_points() -> None:
             mask=mask,
             mask_mode="include",
         )
+
+
+def test_align_rows_polynomial_removes_row_background_and_preserves_feature() -> None:
+    """Polynomial row alignment must preserve excluded surface features."""
+    rows, columns = 4, 9
+    x = np.linspace(-1.0, 1.0, columns)
+
+    offsets = np.array([1.0, 3.0, -2.0, 5.0])
+    slopes = np.array([0.5, -1.0, 2.0, -0.25])
+    curvatures = np.array([0.2, -0.4, 0.75, 0.1])
+
+    data = np.vstack(
+        [offsets[row] + slopes[row] * x + curvatures[row] * x**2 for row in range(rows)]
+    )
+
+    data[2, 4] += 12.0
+
+    excluded = np.zeros(data.shape, dtype=bool)
+    excluded[2, 4] = True
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=9e-6,
+        y_range=4e-6,
+        metadata={"source": "synthetic"},
+    )
+
+    result = leveling.align_rows(
+        channel,
+        method="polynomial",
+        polynomial_degree=2,
+        mask=excluded,
+        mask_mode="exclude",
+    )
+
+    assert np.allclose(result.data[~excluded], 0.0, atol=1e-10)
+    assert np.isclose(result.data[2, 4], 12.0, atol=1e-10)
+
+
+def test_align_rows_polynomial_degree_zero_matches_mean() -> None:
+    """A degree-zero row polynomial must reproduce mean alignment."""
+    data = np.array(
+        [
+            [1.0, 2.0, 6.0],
+            [4.0, 8.0, 12.0],
+        ]
+    )
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=3e-6,
+        y_range=2e-6,
+    )
+
+    polynomial = leveling.align_rows(
+        channel,
+        method="polynomial",
+        polynomial_degree=0,
+    )
+    mean = leveling.align_rows(
+        channel,
+        method="mean",
+    )
+
+    assert np.allclose(polynomial.data, mean.data)
+
+
+def test_align_rows_polynomial_can_preserve_global_mean() -> None:
+    """Mean-preserving polynomial alignment must retain the global level."""
+    columns = 7
+    x = np.linspace(-1.0, 1.0, columns)
+
+    data = np.vstack(
+        [
+            5.0 + x,
+            8.0 - 2.0 * x,
+            12.0 + 0.5 * x,
+        ]
+    )
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=7e-6,
+        y_range=3e-6,
+    )
+
+    result = leveling.align_rows(
+        channel,
+        method="polynomial",
+        polynomial_degree=1,
+        preserve_mean=True,
+    )
+
+    assert np.isclose(np.mean(result.data), np.mean(data))
+    assert np.allclose(
+        result.data,
+        np.mean(data),
+        atol=1e-10,
+    )
+
+
+@pytest.mark.parametrize(
+    ("degree", "error_type", "message"),
+    [
+        (
+            True,
+            TypeError,
+            "align_rows requires polynomial_degree to be a non-negative integer",
+        ),
+        (
+            1.5,
+            TypeError,
+            "align_rows requires polynomial_degree to be a non-negative integer",
+        ),
+        (
+            -1,
+            ValueError,
+            "align_rows requires polynomial_degree to be non-negative",
+        ),
+    ],
+    ids=[
+        "boolean",
+        "non-integer",
+        "negative",
+    ],
+)
+def test_align_rows_polynomial_rejects_invalid_degree(
+    degree: object,
+    error_type: type[Exception],
+    message: str,
+) -> None:
+    """Polynomial row degree must be a valid non-negative integer."""
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=np.arange(12.0).reshape(3, 4),
+        unit="nm",
+        x_range=4e-6,
+        y_range=3e-6,
+    )
+
+    with pytest.raises(error_type, match=message):
+        leveling.align_rows(
+            channel,
+            method="polynomial",
+            polynomial_degree=degree,  # type: ignore[arg-type]
+        )
+
+
+def test_align_rows_polynomial_rejects_rank_deficient_row() -> None:
+    """Every row must contain enough independent points for its polynomial."""
+    data = np.arange(15.0).reshape(3, 5)
+    mask = np.ones(data.shape, dtype=bool)
+    mask[1, :] = False
+    mask[1, :2] = True
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=5e-6,
+        y_range=3e-6,
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="align_rows requires at least 3 selected points in every row",
+    ):
+        leveling.align_rows(
+            channel,
+            method="polynomial",
+            polynomial_degree=2,
+            mask=mask,
+            mask_mode="include",
+        )
