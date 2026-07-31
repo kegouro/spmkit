@@ -38,6 +38,17 @@ def _nearest_index(index: int, size: int) -> int:
     return min(max(index, 0), size - 1)
 
 
+def _reflect_index(index: int, size: int) -> int:
+    """Map an integer index using SciPy's half-sample reflect convention."""
+    period = 2 * size
+    position = index % period
+
+    if position < size:
+        return position
+
+    return period - 1 - position
+
+
 def _brute_force_below_nearest(
     profile: np.ndarray,
     *,
@@ -73,6 +84,50 @@ def _brute_force_below_nearest(
     for position in range(values.size):
         candidates = [
             eroded[_nearest_index(position - offset, values.size)] - sag
+            for offset, sag in zip(offsets, sagitta, strict=True)
+        ]
+        opened[position] = max(candidates)
+
+    return opened
+
+
+def _brute_force_below_reflect(
+    profile: np.ndarray,
+    *,
+    radius: float,
+    spacing: float,
+) -> np.ndarray:
+    """Independent rolling-circle oracle with reflected boundaries."""
+    values = np.asarray(profile, dtype=float)
+    maximum_offset = min(
+        int(np.floor(radius / spacing)),
+        values.size - 1,
+    )
+
+    offsets = np.arange(
+        -maximum_offset,
+        maximum_offset + 1,
+        dtype=int,
+    )
+    distances = offsets.astype(float) * spacing
+    ratio = distances / radius
+    squared_ratio = np.square(ratio)
+    sagitta = radius * squared_ratio / (1.0 + np.sqrt(np.maximum(1.0 - squared_ratio, 0.0)))
+
+    eroded = np.empty_like(values)
+
+    for center in range(values.size):
+        candidates = [
+            values[_reflect_index(center + offset, values.size)] + sag
+            for offset, sag in zip(offsets, sagitta, strict=True)
+        ]
+        eroded[center] = min(candidates)
+
+    opened = np.empty_like(values)
+
+    for position in range(values.size):
+        candidates = [
+            eroded[_reflect_index(position - offset, values.size)] - sag
             for offset, sag in zip(offsets, sagitta, strict=True)
         ]
         opened[position] = max(candidates)
@@ -790,3 +845,57 @@ def test_arc_structure_preserves_small_sagitta_for_large_radius() -> None:
         rtol=1e-12,
         atol=0.0,
     )
+
+
+def test_horizontal_reflect_matches_independent_oracle() -> None:
+    profile = np.array([1.5, 0.1, 0.4, 2.5, 0.3, 1.2])
+    channel = _channel(
+        profile[np.newaxis, :],
+        x_range=float(profile.size),
+        y_range=1.0,
+    )
+
+    result = estimate_arc_revolution_background(
+        channel,
+        radius=2.5,
+        direction="horizontal",
+        border="reflect",
+    )
+    expected = _brute_force_below_reflect(
+        profile,
+        radius=2.5,
+        spacing=1.0,
+    )
+
+    assert np.allclose(
+        result.data[0],
+        expected,
+        rtol=1e-13,
+        atol=1e-13,
+    )
+
+
+@pytest.mark.parametrize(
+    ("parameter", "value"),
+    [
+        ("direction", None),
+        ("side", 1),
+        ("border", ["nearest"]),
+    ],
+)
+def test_non_string_public_options_are_rejected(
+    parameter: str,
+    value: object,
+) -> None:
+    channel = _channel(np.ones((2, 3)))
+    kwargs = {parameter: value}
+
+    with pytest.raises(
+        TypeError,
+        match=rf"requires {parameter} to be a string",
+    ):
+        estimate_arc_revolution_background(
+            channel,
+            radius=1.0,
+            **kwargs,
+        )

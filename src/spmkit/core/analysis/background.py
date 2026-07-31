@@ -75,13 +75,16 @@ def _positive_radius(
 
 
 def _validated_choice(
-    value: str,
+    value: object,
     *,
     name: str,
     allowed: tuple[str, ...],
     operation: str,
 ) -> str:
     """Validate a string-valued public option."""
+    if not isinstance(value, str):
+        raise TypeError(f"{operation} requires {name} to be a string")
+
     if value not in allowed:
         choices = ", ".join(repr(item) for item in allowed)
         raise ValueError(f"{operation} {name} must be one of {choices}")
