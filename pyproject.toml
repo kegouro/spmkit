@@ -56,7 +56,7 @@ dev = [
 ]
 test-gui = ["pytest-qt>=4.4"]  # tests de GUI (requiere también el extra 'gui')
 docs = ["mkdocs-material>=9.5"]
-all = ["spmkit[hdf5,gwy,nanosurf,afm,jpk,grains,viz,report,gui]"]
+all = ["spmkit[hdf5,gwy,nanosurf,afm,jpk,viz,report,gui]"]
 
 [project.urls]
 Homepage = "https://kegouro.github.io/spmkit/"
