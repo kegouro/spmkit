@@ -12,6 +12,23 @@ import numpy as np
 from spmkit.core.models import SPMChannel
 
 
+def zero_mean(channel: SPMChannel) -> SPMChannel:
+    """Shift the vertical reference so the arithmetic mean is zero."""
+    data = np.asarray(channel.data)
+
+    if data.ndim != 2:
+        raise ValueError("zero_mean requires a 2D channel")
+    if data.size == 0:
+        raise ValueError("zero_mean requires non-empty data")
+    if not np.issubdtype(data.dtype, np.number):
+        raise TypeError("zero_mean requires numeric data")
+    if not np.all(np.isfinite(data)):
+        raise ValueError("zero_mean requires finite data")
+
+    mean_height = np.mean(data)
+    return channel.with_data(data - mean_height)
+
+
 def plane_fit(channel: SPMChannel) -> SPMChannel:
     """Resta un plano de mínimos cuadrados ``z = a*x + b*y + c``.
 

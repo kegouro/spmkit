@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import numpy as np
+import pytest
 
 from spmkit.core.analysis import leveling
 from spmkit.core.models import SPMChannel
@@ -69,3 +70,106 @@ def test_plane_fit_returns_new_channel_without_mutating_input(
     # with_data crea un diccionario exterior nuevo.
     assert leveled.metadata == tilted_surface.metadata
     assert leveled.metadata is not tilted_surface.metadata
+
+
+def test_zero_mean_sets_arithmetic_mean_to_zero() -> None:
+    """Zero-mean leveling must shift only the vertical reference."""
+    data = np.array(
+        [
+            [10.0, 12.0],
+            [14.0, 20.0],
+        ]
+    )
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=2e-6,
+        y_range=3e-6,
+        direction="backward",
+        group="Scan backward",
+        metadata={"source": "synthetic"},
+    )
+
+    original_data = data.copy()
+
+    result = leveling.zero_mean(channel)
+
+    assert np.isclose(np.mean(result.data), 0.0)
+    # The operation returns independent data without mutating the input.
+    assert result is not channel
+    assert result.data is not channel.data
+    assert np.array_equal(channel.data, original_data)
+
+    # Physical channel context is preserved.
+    assert result.name == channel.name
+    assert result.unit == channel.unit
+    assert result.x_range == channel.x_range
+    assert result.y_range == channel.y_range
+    assert result.direction == channel.direction
+    assert result.group == channel.group
+
+    # with_data copies the outer metadata dictionary.
+    assert result.metadata == channel.metadata
+    assert result.metadata is not channel.metadata
+
+    # Subtracting a constant must preserve all relative heights.
+    assert np.allclose(
+        result.data - result.data[0, 0],
+        data - data[0, 0],
+    )
+
+
+@pytest.mark.parametrize(
+    ("data", "error_type", "message"),
+    [
+        (
+            np.array([1.0, 2.0]),
+            ValueError,
+            "zero_mean requires a 2D channel",
+        ),
+        (
+            np.empty((0, 2), dtype=float),
+            ValueError,
+            "zero_mean requires non-empty data",
+        ),
+        (
+            np.array([["a", "b"], ["c", "d"]]),
+            TypeError,
+            "zero_mean requires numeric data",
+        ),
+        (
+            np.array([[1.0, np.nan], [2.0, 3.0]]),
+            ValueError,
+            "zero_mean requires finite data",
+        ),
+        (
+            np.array([[1.0, np.inf], [2.0, 3.0]]),
+            ValueError,
+            "zero_mean requires finite data",
+        ),
+    ],
+    ids=[
+        "one-dimensional",
+        "empty",
+        "non-numeric",
+        "nan",
+        "infinite",
+    ],
+)
+def test_zero_mean_rejects_invalid_data(
+    data: np.ndarray,
+    error_type: type[Exception],
+    message: str,
+) -> None:
+    """Invalid inputs must fail explicitly instead of producing bad data."""
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=2e-6,
+        y_range=2e-6,
+    )
+
+    with pytest.raises(error_type, match=message):
+        leveling.zero_mean(channel)
