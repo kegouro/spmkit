@@ -1083,3 +1083,198 @@ def test_align_rows_polynomial_rejects_rank_deficient_row() -> None:
             mask=mask,
             mask_mode="include",
         )
+
+
+def test_align_rows_median_difference_preserves_large_feature() -> None:
+    """Median differences must align offsets without flattening shared features."""
+    base_profile = np.array([0.0, 0.0, 8.0, 8.0, 8.0, 0.0, 0.0])
+    row_offsets = np.array([1.0, -1.0, -1.0, 1.0])
+
+    data = base_profile[np.newaxis, :] + row_offsets[:, np.newaxis]
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=7e-6,
+        y_range=4e-6,
+    )
+
+    result = leveling.align_rows(
+        channel,
+        method="median_difference",
+    )
+
+    expected = base_profile + row_offsets[0]
+
+    assert np.allclose(
+        result.data,
+        expected[np.newaxis, :],
+        atol=1e-12,
+    )
+
+
+def test_align_rows_median_difference_preserves_global_tilt() -> None:
+    """Difference alignment must preserve the linear slow-axis trend."""
+    rows, columns = 7, 9
+    row_coordinate = np.arange(rows, dtype=float)
+    base_profile = np.linspace(-2.0, 3.0, columns)
+
+    global_tilt = 1.75 * row_coordinate
+    row_defects = np.array([0.0, 2.0, -1.0, 1.5, -2.0, 1.0, 0.0])
+
+    data = base_profile[np.newaxis, :] + global_tilt[:, np.newaxis] + row_defects[:, np.newaxis]
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=9e-6,
+        y_range=7e-6,
+    )
+
+    result = leveling.align_rows(
+        channel,
+        method="median_difference",
+        preserve_tilt=True,
+        preserve_mean=True,
+    )
+
+    original_slope = np.polyfit(
+        row_coordinate,
+        np.mean(data, axis=1),
+        deg=1,
+    )[0]
+    corrected_slope = np.polyfit(
+        row_coordinate,
+        np.mean(result.data, axis=1),
+        deg=1,
+    )[0]
+
+    assert np.isclose(corrected_slope, original_slope, atol=1e-12)
+
+
+def test_align_rows_median_difference_can_remove_global_tilt() -> None:
+    """Tilt preservation must be explicitly disableable."""
+    rows, columns = 5, 6
+    row_coordinate = np.arange(rows, dtype=float)
+    base_profile = np.linspace(0.0, 2.0, columns)
+
+    data = base_profile[np.newaxis, :] + 3.0 * row_coordinate[:, np.newaxis]
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=6e-6,
+        y_range=5e-6,
+    )
+
+    result = leveling.align_rows(
+        channel,
+        method="median_difference",
+        preserve_tilt=False,
+    )
+
+    assert np.allclose(
+        result.data,
+        result.data[0],
+        atol=1e-12,
+    )
+
+
+def test_align_rows_trimmed_mean_difference_half_matches_median_difference() -> None:
+    """Maximum trimming must reproduce median-difference alignment."""
+    data = np.array(
+        [
+            [0.0, 1.0, 2.0, 80.0, 4.0],
+            [2.0, 3.0, 4.0, 150.0, 6.0],
+            [-1.0, 0.0, 1.0, -100.0, 3.0],
+        ]
+    )
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=5e-6,
+        y_range=3e-6,
+    )
+
+    trimmed = leveling.align_rows(
+        channel,
+        method="trimmed_mean_difference",
+        trim_fraction=0.5,
+    )
+    median = leveling.align_rows(
+        channel,
+        method="median_difference",
+    )
+
+    assert np.allclose(trimmed.data, median.data)
+
+
+@pytest.mark.parametrize(
+    ("preserve_tilt", "error_type", "message"),
+    [
+        (
+            "yes",
+            TypeError,
+            "align_rows requires preserve_tilt to be boolean",
+        ),
+        (
+            1,
+            TypeError,
+            "align_rows requires preserve_tilt to be boolean",
+        ),
+    ],
+    ids=["string", "integer"],
+)
+def test_align_rows_rejects_invalid_preserve_tilt(
+    preserve_tilt: object,
+    error_type: type[Exception],
+    message: str,
+) -> None:
+    """Tilt-preservation configuration must be explicitly boolean."""
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=np.arange(12.0).reshape(3, 4),
+        unit="nm",
+        x_range=4e-6,
+        y_range=3e-6,
+    )
+
+    with pytest.raises(error_type, match=message):
+        leveling.align_rows(
+            channel,
+            method="median_difference",
+            preserve_tilt=preserve_tilt,  # type: ignore[arg-type]
+        )
+
+
+def test_align_rows_difference_requires_shared_selected_pixels() -> None:
+    """Adjacent rows must share at least one selected column."""
+    data = np.arange(12.0).reshape(3, 4)
+    mask = np.zeros(data.shape, dtype=bool)
+    mask[0, :2] = True
+    mask[1, 2:] = True
+    mask[2, 2:] = True
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=4e-6,
+        y_range=3e-6,
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="align_rows requires adjacent rows to share selected points",
+    ):
+        leveling.align_rows(
+            channel,
+            method="median_difference",
+            mask=mask,
+            mask_mode="include",
+        )

@@ -367,6 +367,62 @@ def polynomial(channel: SPMChannel, order: int = 2) -> SPMChannel:
     )
 
 
+def _difference_row_corrections(
+    data: np.ndarray,
+    selection: np.ndarray,
+    *,
+    statistic: Literal["median", "trimmed_mean"],
+    trim_fraction: float,
+    preserve_tilt: bool,
+) -> np.ndarray:
+    """Estimate cumulative row offsets from vertical neighbour differences."""
+
+    row_count = data.shape[0]
+
+    corrections = np.zeros(row_count, dtype=float)
+
+    for row_index in range(1, row_count):
+
+        shared_selection = selection[row_index - 1] & selection[row_index]
+
+        if not np.any(shared_selection):
+
+            raise ValueError("align_rows requires adjacent rows to share selected points")
+
+        differences = data[row_index, shared_selection] - data[row_index - 1, shared_selection]
+
+        if statistic == "median":
+
+            increment = float(np.median(differences))
+
+        else:
+
+            increment = _trimmed_mean(
+                differences,
+                trim_fraction,
+            )
+
+        corrections[row_index] = corrections[row_index - 1] + increment
+
+    if preserve_tilt and row_count > 1:
+
+        row_coordinates = np.arange(row_count, dtype=float)
+
+        centered_rows = row_coordinates - np.mean(row_coordinates)
+
+        centered_corrections = corrections - np.mean(corrections)
+
+        denominator = float(np.dot(centered_rows, centered_rows))
+
+        if denominator > 0.0:
+
+            correction_slope = float(np.dot(centered_rows, centered_corrections) / denominator)
+
+            corrections = corrections - correction_slope * centered_rows
+
+    return corrections
+
+
 def align_rows(
     channel: SPMChannel,
     method: Literal[
@@ -374,6 +430,8 @@ def align_rows(
         "mean",
         "trimmed_mean",
         "polynomial",
+        "median_difference",
+        "trimmed_mean_difference",
     ] = "median",
     *,
     trim_fraction: float = 0.0,
@@ -381,6 +439,7 @@ def align_rows(
     mask: np.ndarray | None = None,
     mask_mode: Literal["ignore", "include", "exclude"] = "ignore",
     preserve_mean: bool = False,
+    preserve_tilt: bool = True,
 ) -> SPMChannel:
     """Align rows by subtracting a fitted or representative row background.
 
@@ -395,15 +454,22 @@ def align_rows(
         "mean",
         "trimmed_mean",
         "polynomial",
+        "median_difference",
+        "trimmed_mean_difference",
     }
 
     if method not in allowed_methods:
         raise ValueError(
-            "align_rows method must be 'median', 'mean', " "'trimmed_mean', or 'polynomial'"
+            "align_rows method must be 'median', 'mean', "
+            "'trimmed_mean', 'polynomial', 'median_difference', "
+            "or 'trimmed_mean_difference'"
         )
 
     if not isinstance(preserve_mean, (bool, np.bool_)):
         raise TypeError("align_rows requires preserve_mean to be boolean")
+
+    if not isinstance(preserve_tilt, (bool, np.bool_)):
+        raise TypeError("align_rows requires preserve_tilt to be boolean")
 
     fraction = _trim_fraction(
         trim_fraction,
@@ -437,7 +503,26 @@ def align_rows(
             f"align_rows requires at least {required_points} selected " f"{point_word} in every row"
         )
 
-    if method == "polynomial":
+    difference_methods = {
+        "median_difference",
+        "trimmed_mean_difference",
+    }
+
+    if method in difference_methods:
+        statistic: Literal["median", "trimmed_mean"] = (
+            "median" if method == "median_difference" else "trimmed_mean"
+        )
+
+        row_corrections = _difference_row_corrections(
+            data,
+            selection,
+            statistic=statistic,
+            trim_fraction=fraction,
+            preserve_tilt=bool(preserve_tilt),
+        )
+        corrections = row_corrections[:, np.newaxis]
+
+    elif method == "polynomial":
         columns = data.shape[1]
         x_coordinates = np.linspace(-1.0, 1.0, columns) if columns > 1 else np.zeros(columns)
 
