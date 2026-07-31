@@ -319,3 +319,125 @@ def test_shift_vertical_rejects_invalid_offsets(
 
     with pytest.raises(error_type, match=message):
         leveling.shift_vertical(channel, offset=offset)  # type: ignore[arg-type]
+
+
+@pytest.mark.parametrize("mask_mode", ["include", "exclude"])
+def test_plane_fit_mask_controls_fit_selection(mask_mode: str) -> None:
+    """Masked plane fitting must ignore an excluded surface feature."""
+    rows, cols = 7, 7
+    yy, xx = np.mgrid[0:rows, 0:cols]
+
+    background = 2.0 * xx - 0.5 * yy + 10.0
+    data = background.copy()
+    data[3, 3] += 1000.0
+
+    excluded = np.zeros_like(data, dtype=bool)
+    excluded[3, 3] = True
+
+    mask = ~excluded if mask_mode == "include" else excluded
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=7e-6,
+        y_range=7e-6,
+    )
+
+    result = leveling.plane_fit(
+        channel,
+        mask=mask,
+        mask_mode=mask_mode,  # type: ignore[arg-type]
+    )
+
+    assert np.allclose(result.data[~excluded], 0.0, atol=1e-10)
+    assert np.isclose(result.data[3, 3], 1000.0, atol=1e-10)
+
+
+@pytest.mark.parametrize(
+    ("mask", "mask_mode", "error_type", "message"),
+    [
+        (
+            None,
+            "include",
+            ValueError,
+            "plane_fit requires a mask",
+        ),
+        (
+            np.ones((2, 3), dtype=bool),
+            "exclude",
+            ValueError,
+            "plane_fit requires mask shape to match channel data",
+        ),
+        (
+            np.ones((4, 4), dtype=int),
+            "exclude",
+            TypeError,
+            "plane_fit requires a boolean mask",
+        ),
+        (
+            np.zeros((4, 4), dtype=bool),
+            "include",
+            ValueError,
+            "plane_fit requires at least 3 selected points",
+        ),
+        (
+            None,
+            "invalid",
+            ValueError,
+            "plane_fit mask_mode must be",
+        ),
+    ],
+    ids=[
+        "missing-mask",
+        "wrong-shape",
+        "non-boolean",
+        "too-few-points",
+        "invalid-mode",
+    ],
+)
+def test_plane_fit_rejects_invalid_mask_configuration(
+    mask: object,
+    mask_mode: str,
+    error_type: type[Exception],
+    message: str,
+) -> None:
+    """Invalid mask configurations must fail explicitly."""
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=np.arange(16.0).reshape(4, 4),
+        unit="nm",
+        x_range=4e-6,
+        y_range=4e-6,
+    )
+
+    with pytest.raises(error_type, match=message):
+        leveling.plane_fit(
+            channel,
+            mask=mask,  # type: ignore[arg-type]
+            mask_mode=mask_mode,  # type: ignore[arg-type]
+        )
+
+
+def test_plane_fit_rejects_collinear_selected_points() -> None:
+    """Three collinear pixels cannot determine a unique plane."""
+    mask = np.zeros((3, 3), dtype=bool)
+    mask[0, :] = True
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=np.arange(9.0).reshape(3, 3),
+        unit="nm",
+        x_range=3e-6,
+        y_range=3e-6,
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="selected points do not define a unique plane",
+    ):
+        leveling.plane_fit(
+            channel,
+            mask=mask,
+            mask_mode="include",
+        )
