@@ -3,7 +3,7 @@
 Corre ``core.analysis.grains.detect`` sobre el canal **nivelado** del hub de imagen
 (:class:`ImageViewModel`) con parámetros ajustables (tamaño mínimo, altura relativa).
 Paridad con JPK/ANA (conteo, tamaño, cobertura, densidad de granos). Requiere scipy
-(extra ``grains``); si falta, avisa por ``statusChanged`` sin tumbar la app.
+como dependencia obligatoria; si falta, avisa por ``statusChanged`` sin tumbar la app.
 """
 
 from __future__ import annotations
@@ -78,7 +78,9 @@ class GrainsViewModel(QObject):
                 relative_height=self._relative_height,
             )
         except ImportError:
-            self.statusChanged.emit("la detección de granos requiere scipy (extra 'grains')")
+            self.statusChanged.emit(
+                "la detección de granos requiere SciPy, una dependencia obligatoria de SPMKit"
+            )
             return
         except Exception as exc:  # noqa: BLE001 - parámetros/imagen inválidos: se informa
             self.statusChanged.emit(f"detección falló: {exc}")

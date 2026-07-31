@@ -410,7 +410,7 @@ KPFM work‑function calculation uses `Φ_sample = Φ_tip - e·CPD`.
 ### Grains (`grains`)
 **Purpose:** Detect particles/grains on a levelled topography channel.
 
-Requires the `grains` extra (scipy).
+Uses SciPy, which is a required SPMKit dependency.
 
 | Feature | Description |
 |---------|-------------|
@@ -1264,7 +1264,7 @@ ValueError: unsupported extension: .xxx
 ```
 ModuleNotFoundError: No module named 'scipy'
 ```
-**Fix:** Install the relevant extra (e.g. `pip install "spmkit[grains]"`).
+**Fix:** Reinstall SPMKit so its required dependencies are restored (for a development checkout: `python -m pip install -e .`).
 
 ### Empty or unexpected channels
 ```

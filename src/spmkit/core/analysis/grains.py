@@ -111,7 +111,8 @@ def detect(
         from scipy.ndimage import label as ndlabel
     except ImportError as exc:  # pragma: no cover
         raise ImportError(
-            "La detección de granos requiere scipy. " "Instala con: pip install 'spmkit[grains]'"
+            "La detección de granos requiere SciPy, una dependencia obligatoria "
+            "de SPMKit. Reinstala el entorno con: python -m pip install -e ."
         ) from exc
 
     if not (0.0 < relative_height <= 1.0):

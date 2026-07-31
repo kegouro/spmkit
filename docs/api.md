@@ -122,7 +122,7 @@ print(segmentation.n_grains, segmentation.mean_diameter)
 print(segmentation.coverage, segmentation.density)
 ```
 
-`radial_psd()` returns `q` in `1/m`. Grain detection requires the `grains` extra,
+`radial_psd()` returns `q` in `1/m`. Grain detection uses SciPy, a required SPMKit dependency,
 uses eight-connected components, and reports density in grains per µm². Automatic
 thresholding is an algorithmic default, not a scientifically universal segmentation
 rule; record or override it for a campaign.
