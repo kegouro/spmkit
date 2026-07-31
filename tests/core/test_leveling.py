@@ -1973,3 +1973,276 @@ def test_facet_level_requires_selected_local_facets() -> None:
             mask=mask,
             mask_mode="include",
         )
+
+
+def test_rotate_level_flattens_exact_physical_plane_and_preserves_context() -> None:
+    """Level rotation must flatten a physical plane without mutating its channel."""
+    rows, columns = 13, 15
+    x_range = 14e-6
+    y_range = 12e-6
+
+    x = (np.arange(columns, dtype=float) + 0.5) * x_range / columns - 0.5 * x_range
+    y = (np.arange(rows, dtype=float) + 0.5) * y_range / rows - 0.5 * y_range
+    xx, yy = np.meshgrid(x, y)
+
+    x_slope = 0.08
+    y_slope = -0.05
+    intercept = 7e-9
+
+    data = (intercept + x_slope * xx + y_slope * yy) / 1e-9
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=x_range,
+        y_range=y_range,
+        direction="forward",
+        group="Scan forward",
+        metadata={"source": "synthetic"},
+    )
+    original_data = data.copy()
+
+    result = leveling.rotate_level(channel)
+
+    assert np.allclose(result.data, 0.0, atol=1e-6)
+
+    assert np.array_equal(channel.data, original_data)
+    assert result is not channel
+    assert result.data is not channel.data
+    assert result.name == channel.name
+    assert result.unit == channel.unit
+    assert result.x_range == channel.x_range
+    assert result.y_range == channel.y_range
+    assert result.direction == channel.direction
+    assert result.group == channel.group
+    assert result.metadata == channel.metadata
+    assert result.metadata is not channel.metadata
+
+
+@pytest.mark.parametrize("mask_mode", ["include", "exclude"])
+def test_rotate_level_respects_mask_selection_and_rotates_feature_height(
+    mask_mode: str,
+) -> None:
+    """The mask must control plane fitting while relief is geometrically rotated."""
+    rows = columns = 21
+    x_range = y_range = 20e-6
+
+    x = (np.arange(columns, dtype=float) + 0.5) * x_range / columns - 0.5 * x_range
+    y = (np.arange(rows, dtype=float) + 0.5) * y_range / rows - 0.5 * y_range
+    xx, yy = np.meshgrid(x, y)
+
+    x_slope = 0.10
+    y_slope = -0.05
+    intercept = 5e-9
+    feature_height = 20.0
+
+    data = (intercept + x_slope * xx + y_slope * yy) / 1e-9
+
+    feature = np.zeros(data.shape, dtype=bool)
+    feature[7:15, 10:19] = True
+    data[feature] += feature_height
+
+    mask = ~feature if mask_mode == "include" else feature
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=x_range,
+        y_range=y_range,
+    )
+
+    result = leveling.rotate_level(
+        channel,
+        mask=mask,
+        mask_mode=mask_mode,  # type: ignore[arg-type]
+    )
+
+    base_probe = np.zeros(data.shape, dtype=bool)
+    base_probe[2:6, 2:6] = True
+
+    feature_probe = np.zeros(data.shape, dtype=bool)
+    feature_probe[9:13, 12:17] = True
+
+    normal_z = 1.0 / np.sqrt(1.0 + x_slope**2 + y_slope**2)
+    expected_feature_height = feature_height * normal_z
+
+    assert np.allclose(
+        result.data[base_probe],
+        0.0,
+        atol=1e-5,
+    )
+    assert np.allclose(
+        result.data[feature_probe],
+        expected_feature_height,
+        atol=1e-5,
+    )
+
+
+def test_rotate_level_can_preserve_global_mean() -> None:
+    """Mean preservation must retain the original absolute vertical level."""
+    rows, columns = 9, 11
+    x_range = 10e-6
+    y_range = 8e-6
+
+    x = (np.arange(columns, dtype=float) + 0.5) * x_range / columns - 0.5 * x_range
+    y = (np.arange(rows, dtype=float) + 0.5) * y_range / rows - 0.5 * y_range
+    xx, yy = np.meshgrid(x, y)
+
+    data = (12e-9 + 0.04 * xx - 0.03 * yy) / 1e-9
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=x_range,
+        y_range=y_range,
+    )
+
+    result = leveling.rotate_level(
+        channel,
+        preserve_mean=True,
+    )
+
+    assert np.isclose(
+        np.mean(result.data),
+        np.mean(data),
+        atol=1e-12,
+    )
+    assert np.allclose(
+        result.data,
+        np.mean(data),
+        atol=1e-6,
+    )
+
+
+def test_rotate_level_constant_fill_marks_exterior_pixels() -> None:
+    """Constant fill must explicitly identify pixels outside the source domain."""
+    rows = columns = 11
+    x_range = y_range = 10e-6
+
+    x = (np.arange(columns, dtype=float) + 0.5) * x_range / columns - 0.5 * x_range
+    y = (np.arange(rows, dtype=float) + 0.5) * y_range / rows - 0.5 * y_range
+    xx, yy = np.meshgrid(x, y)
+
+    data = (3e-9 + 0.45 * xx - 0.30 * yy) / 1e-9
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=x_range,
+        y_range=y_range,
+    )
+
+    result = leveling.rotate_level(
+        channel,
+        fill_mode="constant",
+        fill_value=-7.0,
+    )
+
+    assert np.all(np.isfinite(result.data))
+    assert np.any(result.data == -7.0)
+
+    inside = result.data != -7.0
+    assert np.allclose(
+        result.data[inside],
+        0.0,
+        atol=1e-5,
+    )
+
+
+def test_rotate_level_rejects_non_geometric_channel_unit() -> None:
+    """True geometric rotation requires Z to represent a physical length."""
+    channel = SPMChannel(
+        name="Current",
+        data=np.arange(25.0).reshape(5, 5),
+        unit="V",
+        x_range=5e-6,
+        y_range=5e-6,
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="unsupported geometric length unit",
+    ):
+        leveling.rotate_level(channel)
+
+
+@pytest.mark.parametrize(
+    ("kwargs", "error_type", "message"),
+    [
+        (
+            {"interpolation": "cubic"},
+            ValueError,
+            "rotate_level interpolation must be 'linear'",
+        ),
+        (
+            {"fill_mode": "nan"},
+            ValueError,
+            "rotate_level fill_mode must be 'nearest' or 'constant'",
+        ),
+        (
+            {"preserve_mean": "yes"},
+            TypeError,
+            "rotate_level requires preserve_mean to be boolean",
+        ),
+        (
+            {"fill_value": True},
+            TypeError,
+            "rotate_level requires fill_value to be a real scalar",
+        ),
+    ],
+    ids=[
+        "unsupported-interpolation",
+        "unsupported-fill-mode",
+        "non-boolean-preserve-mean",
+        "boolean-fill-value",
+    ],
+)
+def test_rotate_level_rejects_invalid_configuration(
+    kwargs: dict[str, object],
+    error_type: type[Exception],
+    message: str,
+) -> None:
+    """Invalid level-rotation settings must fail explicitly."""
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=np.arange(25.0).reshape(5, 5),
+        unit="nm",
+        x_range=5e-6,
+        y_range=5e-6,
+    )
+
+    with pytest.raises(error_type, match=message):
+        leveling.rotate_level(
+            channel,
+            **kwargs,  # type: ignore[arg-type]
+        )
+
+
+def test_rotate_level_rejects_rank_deficient_plane_selection() -> None:
+    """Selected pixels must determine a unique physical plane."""
+    data = np.arange(25.0).reshape(5, 5)
+
+    mask = np.zeros(data.shape, dtype=bool)
+    mask[0, :] = True
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=5e-6,
+        y_range=5e-6,
+    )
+
+    with pytest.raises(
+        ValueError,
+        match=("rotate_level selected points do not define " "a unique plane"),
+    ):
+        leveling.rotate_level(
+            channel,
+            mask=mask,
+            mask_mode="include",
+        )

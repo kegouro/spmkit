@@ -11,6 +11,13 @@ from typing import Literal
 
 import numpy as np
 
+from spmkit.core.geometry import (
+    bilinear_sample,
+    length_values_from_metres,
+    length_values_to_metres,
+    physical_to_pixel_indices,
+    pixel_center_axes,
+)
 from spmkit.core.models import SPMChannel
 
 
@@ -247,6 +254,218 @@ def plane_fit(
     plane = coefficients[0] * xx + coefficients[1] * yy + coefficients[2]
 
     return channel.with_data(data - plane)
+
+
+def _rotation_matrix_to_horizontal(
+    x_slope: float,
+    y_slope: float,
+) -> np.ndarray:
+    """Return the minimal 3D rotation mapping a plane normal to +Z."""
+    normal = np.array(
+        [-x_slope, -y_slope, 1.0],
+        dtype=float,
+    )
+    normal /= np.linalg.norm(normal)
+
+    target = np.array([0.0, 0.0, 1.0])
+    cross = np.cross(normal, target)
+    sine = float(np.linalg.norm(cross))
+    cosine = float(np.dot(normal, target))
+
+    if sine <= np.finfo(float).eps:
+        return np.eye(3)
+
+    cross_matrix = np.array(
+        [
+            [0.0, -cross[2], cross[1]],
+            [cross[2], 0.0, -cross[0]],
+            [-cross[1], cross[0], 0.0],
+        ]
+    )
+
+    return np.eye(3) + cross_matrix + cross_matrix @ cross_matrix * ((1.0 - cosine) / sine**2)
+
+
+def rotate_level(
+    channel: SPMChannel,
+    *,
+    mask: np.ndarray | None = None,
+    mask_mode: Literal["ignore", "include", "exclude"] = "ignore",
+    interpolation: Literal["linear"] = "linear",
+    fill_mode: Literal["nearest", "constant"] = "nearest",
+    fill_value: float = 0.0,
+    preserve_mean: bool = False,
+) -> SPMChannel:
+    """Flatten a fitted plane by approximate physical 3D image rotation.
+
+    The fitted plane defines an inverse lateral mapping from the output grid
+    to the source grid. Heights are interpolated in the source field and then
+    rotated in physical XYZ coordinates. Shape and lateral ranges are kept.
+    """
+    data = _validated_data(
+        channel,
+        operation="rotate_level",
+    )
+
+    if interpolation != "linear":
+        raise ValueError("rotate_level interpolation must be 'linear'")
+
+    if fill_mode not in {"nearest", "constant"}:
+        raise ValueError("rotate_level fill_mode must be 'nearest' or 'constant'")
+
+    if not isinstance(preserve_mean, (bool, np.bool_)):
+        raise TypeError("rotate_level requires preserve_mean to be boolean")
+
+    fill_data = np.asarray(fill_value)
+
+    if (
+        fill_data.ndim != 0
+        or not np.issubdtype(fill_data.dtype, np.number)
+        or np.iscomplexobj(fill_data)
+        or isinstance(fill_value, (bool, np.bool_))
+    ):
+        raise TypeError("rotate_level requires fill_value to be a real scalar")
+
+    fill_scalar = float(fill_data.item())
+
+    if not np.isfinite(fill_scalar):
+        raise ValueError("rotate_level requires fill_value to be finite")
+
+    data_metres = length_values_to_metres(
+        data,
+        unit=channel.unit,
+    )
+    fill_metres = float(
+        length_values_to_metres(
+            np.asarray(fill_scalar),
+            unit=channel.unit,
+        )
+    )
+
+    selection = _fit_selection(
+        data,
+        mask=mask,
+        mask_mode=mask_mode,
+        operation="rotate_level",
+        minimum_points=3,
+    )
+
+    x_coordinates, y_coordinates = pixel_center_axes(
+        data.shape,
+        x_range=channel.x_range,
+        y_range=channel.y_range,
+    )
+    xx, yy = np.meshgrid(
+        x_coordinates,
+        y_coordinates,
+    )
+
+    design = np.column_stack(
+        (
+            xx.ravel(),
+            yy.ravel(),
+            np.ones(data.size),
+        )
+    )
+    selected = selection.ravel()
+
+    coefficients, _, rank, _ = np.linalg.lstsq(
+        design[selected],
+        data_metres.ravel()[selected],
+        rcond=None,
+    )
+
+    if rank < 3:
+        raise ValueError("rotate_level selected points do not define " "a unique plane")
+
+    x_slope = float(coefficients[0])
+    y_slope = float(coefficients[1])
+    intercept = float(coefficients[2])
+
+    rotation = _rotation_matrix_to_horizontal(
+        x_slope,
+        y_slope,
+    )
+
+    output_plane_points = np.stack(
+        (
+            xx.ravel(),
+            yy.ravel(),
+            np.zeros(data.size),
+        )
+    )
+
+    source_plane_points = rotation.T @ output_plane_points
+
+    source_x = source_plane_points[0].reshape(data.shape)
+    source_y = source_plane_points[1].reshape(data.shape)
+
+    x_indices, y_indices = physical_to_pixel_indices(
+        source_x,
+        source_y,
+        shape=data.shape,
+        x_range=channel.x_range,
+        y_range=channel.y_range,
+    )
+
+    rows, columns = data.shape
+
+    outside = (
+        (x_indices < 0.0) | (x_indices > columns - 1) | (y_indices < 0.0) | (y_indices > rows - 1)
+    )
+
+    sampled_x_indices = np.clip(
+        x_indices,
+        0.0,
+        columns - 1,
+    )
+    sampled_y_indices = np.clip(
+        y_indices,
+        0.0,
+        rows - 1,
+    )
+
+    sampled_heights = bilinear_sample(
+        data_metres,
+        x_index=sampled_x_indices,
+        y_index=sampled_y_indices,
+        fill_mode="nearest",
+    )
+
+    x_step = channel.x_range / columns
+    y_step = channel.y_range / rows
+
+    effective_source_x = (sampled_x_indices + 0.5 - 0.5 * columns) * x_step
+
+    effective_source_y = (sampled_y_indices + 0.5 - 0.5 * rows) * y_step
+
+    actual_source_points = np.stack(
+        (
+            effective_source_x.ravel(),
+            effective_source_y.ravel(),
+            (sampled_heights - intercept).ravel(),
+        )
+    )
+
+    rotated_points = rotation @ actual_source_points
+    rotated_height_metres = rotated_points[2].reshape(data.shape)
+
+    if fill_mode == "constant":
+        rotated_height_metres = np.where(
+            outside,
+            fill_metres,
+            rotated_height_metres,
+        )
+
+    rotated_data = length_values_from_metres(
+        rotated_height_metres,
+        unit=channel.unit,
+    )
+
+    if preserve_mean:
+        rotated_data = rotated_data + np.mean(data) - np.mean(rotated_data)
+
+    return channel.with_data(rotated_data)
 
 
 def _selected_local_facet_slopes(
