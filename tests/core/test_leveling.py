@@ -1756,3 +1756,220 @@ def test_align_rows_facet_tilt_requires_selected_adjacent_pixels() -> None:
             mask=mask,
             mask_mode="include",
         )
+
+
+def test_facet_level_flattens_exact_plane_and_preserves_context() -> None:
+    """Facet levelling must remove an exact plane without mutating the input."""
+    rows, columns = 9, 10
+    y = np.linspace(-1.0, 1.0, rows)[:, np.newaxis]
+    x = np.linspace(-1.0, 1.0, columns)[np.newaxis, :]
+
+    data = 4.0 + 2.0 * x - 3.0 * y
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=10e-6,
+        y_range=9e-6,
+        direction="forward",
+        group="Scan forward",
+        metadata={"source": "synthetic"},
+    )
+    original_data = data.copy()
+
+    result = leveling.facet_level(channel)
+
+    assert np.allclose(result.data, 0.0, atol=1e-12)
+
+    assert np.array_equal(channel.data, original_data)
+    assert result is not channel
+    assert result.data is not channel.data
+    assert result.name == channel.name
+    assert result.unit == channel.unit
+    assert result.x_range == channel.x_range
+    assert result.y_range == channel.y_range
+    assert result.direction == channel.direction
+    assert result.group == channel.group
+    assert result.metadata == channel.metadata
+    assert result.metadata is not channel.metadata
+
+
+def test_facet_level_preserves_large_raised_feature() -> None:
+    """Facet levelling must remove tilt without flattening a raised plateau."""
+    rows, columns = 11, 12
+    y = np.linspace(-1.0, 1.0, rows)[:, np.newaxis]
+    x = np.linspace(-1.0, 1.0, columns)[np.newaxis, :]
+
+    background = 5.0 + 1.25 * x - 0.75 * y
+    data = background.copy()
+
+    feature = np.zeros(data.shape, dtype=bool)
+    feature[4:7, 5:8] = True
+    data[feature] += 20.0
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=12e-6,
+        y_range=11e-6,
+    )
+
+    result = leveling.facet_level(channel)
+
+    base_values = result.data[~feature]
+    feature_values = result.data[feature]
+
+    assert np.allclose(
+        base_values,
+        np.mean(base_values),
+        atol=1e-10,
+    )
+    assert np.allclose(
+        feature_values,
+        np.mean(feature_values),
+        atol=1e-10,
+    )
+    assert np.isclose(
+        np.mean(feature_values) - np.mean(base_values),
+        20.0,
+        atol=1e-10,
+    )
+
+
+@pytest.mark.parametrize("mask_mode", ["include", "exclude"])
+def test_facet_level_respects_mask_selection(mask_mode: str) -> None:
+    """Facet levelling must estimate its plane only from selected regions."""
+    rows, columns = 11, 12
+    y = np.linspace(-1.0, 1.0, rows)[:, np.newaxis]
+    x = np.linspace(-1.0, 1.0, columns)[np.newaxis, :]
+
+    background = 3.0 - 2.0 * x + 0.5 * y
+    data = background.copy()
+
+    excluded = np.zeros(data.shape, dtype=bool)
+    excluded[4:7, 5:8] = True
+    data[excluded] += 15.0
+
+    mask = ~excluded if mask_mode == "include" else excluded
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=12e-6,
+        y_range=11e-6,
+    )
+
+    result = leveling.facet_level(
+        channel,
+        mask=mask,
+        mask_mode=mask_mode,  # type: ignore[arg-type]
+    )
+
+    assert np.allclose(result.data[~excluded], 0.0, atol=1e-10)
+    assert np.allclose(result.data[excluded], 15.0, atol=1e-10)
+
+
+def test_facet_level_can_preserve_global_mean() -> None:
+    """Optional mean preservation must retain the absolute vertical level."""
+    rows, columns = 8, 9
+    y = np.linspace(-1.0, 1.0, rows)[:, np.newaxis]
+    x = np.linspace(-1.0, 1.0, columns)[np.newaxis, :]
+
+    data = 7.0 + 1.5 * x - 2.5 * y
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=9e-6,
+        y_range=8e-6,
+    )
+
+    result = leveling.facet_level(
+        channel,
+        preserve_mean=True,
+    )
+
+    assert np.isclose(np.mean(result.data), np.mean(data))
+    assert np.allclose(result.data, np.mean(data), atol=1e-12)
+
+
+@pytest.mark.parametrize(
+    ("kwargs", "error_type", "message"),
+    [
+        (
+            {"max_iterations": True},
+            TypeError,
+            "facet_level requires max_iterations to be a positive integer",
+        ),
+        (
+            {"max_iterations": 0},
+            ValueError,
+            "facet_level requires max_iterations to be positive",
+        ),
+        (
+            {"tolerance": 0.0},
+            ValueError,
+            "facet_level requires tolerance to be positive",
+        ),
+        (
+            {"preserve_mean": "yes"},
+            TypeError,
+            "facet_level requires preserve_mean to be boolean",
+        ),
+    ],
+    ids=[
+        "boolean-iterations",
+        "zero-iterations",
+        "zero-tolerance",
+        "non-boolean-preserve-mean",
+    ],
+)
+def test_facet_level_rejects_invalid_configuration(
+    kwargs: dict[str, object],
+    error_type: type[Exception],
+    message: str,
+) -> None:
+    """Invalid facet-level configuration must fail explicitly."""
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=np.arange(25.0).reshape(5, 5),
+        unit="nm",
+        x_range=5e-6,
+        y_range=5e-6,
+    )
+
+    with pytest.raises(error_type, match=message):
+        leveling.facet_level(
+            channel,
+            **kwargs,  # type: ignore[arg-type]
+        )
+
+
+def test_facet_level_requires_selected_local_facets() -> None:
+    """Selected pixels must form at least one complete local facet."""
+    data = np.arange(36.0).reshape(6, 6)
+
+    mask = np.zeros(data.shape, dtype=bool)
+    mask[::2, ::2] = True
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=6e-6,
+        y_range=6e-6,
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="facet_level requires selected neighbouring pixel cells",
+    ):
+        leveling.facet_level(
+            channel,
+            mask=mask,
+            mask_mode="include",
+        )

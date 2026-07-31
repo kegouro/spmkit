@@ -124,6 +124,55 @@ def _trimmed_mean(values: np.ndarray, fraction: float) -> float:
     return float(np.mean(ordered[trim_count:-trim_count]))
 
 
+def _positive_integer(
+    value: object,
+    *,
+    name: str,
+    operation: str,
+) -> int:
+    """Validate and return a strictly positive integer."""
+    if isinstance(value, (bool, np.bool_)) or not isinstance(
+        value,
+        (int, np.integer),
+    ):
+        raise TypeError(f"{operation} requires {name} to be a positive integer")
+
+    integer_value = int(value)
+
+    if integer_value <= 0:
+        raise ValueError(f"{operation} requires {name} to be positive")
+
+    return integer_value
+
+
+def _positive_real_scalar(
+    value: object,
+    *,
+    name: str,
+    operation: str,
+) -> float:
+    """Validate and return a finite strictly positive real scalar."""
+    scalar_data = np.asarray(value)
+
+    if (
+        scalar_data.ndim != 0
+        or not np.issubdtype(scalar_data.dtype, np.number)
+        or np.iscomplexobj(scalar_data)
+        or isinstance(value, (bool, np.bool_))
+    ):
+        raise TypeError(f"{operation} requires {name} to be a positive real scalar")
+
+    scalar = float(scalar_data.item())
+
+    if not np.isfinite(scalar):
+        raise ValueError(f"{operation} requires {name} to be finite")
+
+    if scalar <= 0.0:
+        raise ValueError(f"{operation} requires {name} to be positive")
+
+    return scalar
+
+
 def zero_mean(channel: SPMChannel) -> SPMChannel:
     """Shift the vertical reference so the arithmetic mean is zero."""
     data = _validated_data(channel, operation="zero_mean")
@@ -198,6 +247,140 @@ def plane_fit(
     plane = coefficients[0] * xx + coefficients[1] * yy + coefficients[2]
 
     return channel.with_data(data - plane)
+
+
+def _selected_local_facet_slopes(
+    data: np.ndarray,
+    selection: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Return local x/y facet slopes for fully selected pixel cells."""
+    rows, columns = data.shape
+
+    if rows < 2 or columns < 2:
+        raise ValueError("facet_level requires selected neighbouring pixel cells")
+
+    selected_cells = (
+        selection[:-1, :-1] & selection[:-1, 1:] & selection[1:, :-1] & selection[1:, 1:]
+    )
+
+    if not np.any(selected_cells):
+        raise ValueError("facet_level requires selected neighbouring pixel cells")
+
+    x_coordinates = np.linspace(-1.0, 1.0, columns)
+    y_coordinates = np.linspace(-1.0, 1.0, rows)
+
+    x_step = float(x_coordinates[1] - x_coordinates[0])
+    y_step = float(y_coordinates[1] - y_coordinates[0])
+
+    x_slopes = (data[:-1, 1:] - data[:-1, :-1] + data[1:, 1:] - data[1:, :-1]) / (2.0 * x_step)
+
+    y_slopes = (data[1:, :-1] - data[:-1, :-1] + data[1:, 1:] - data[:-1, 1:]) / (2.0 * y_step)
+
+    return (
+        x_slopes[selected_cells],
+        y_slopes[selected_cells],
+    )
+
+
+def _dominant_facet_slopes(
+    x_slopes: np.ndarray,
+    y_slopes: np.ndarray,
+) -> tuple[float, float]:
+    """Estimate the dominant local facet slope using Gaussian reweighting."""
+    seed_x = _half_sample_mode(x_slopes)
+    seed_y = _half_sample_mode(y_slopes)
+
+    squared_distances = np.square(x_slopes - seed_x) + np.square(y_slopes - seed_y)
+
+    epsilon = np.finfo(float).eps
+    positive_distances = squared_distances[squared_distances > epsilon]
+
+    if positive_distances.size == 0:
+        return seed_x, seed_y
+
+    scale = float(np.median(positive_distances))
+    gaussian_constant = 1.0 / 20.0
+
+    weights = np.exp(-0.5 * squared_distances / (gaussian_constant * scale))
+
+    if float(np.sum(weights)) <= np.finfo(float).tiny:
+        return seed_x, seed_y
+
+    return (
+        float(np.average(x_slopes, weights=weights)),
+        float(np.average(y_slopes, weights=weights)),
+    )
+
+
+def facet_level(
+    channel: SPMChannel,
+    *,
+    mask: np.ndarray | None = None,
+    mask_mode: Literal["ignore", "include", "exclude"] = "ignore",
+    max_iterations: int = 20,
+    tolerance: float = 1e-12,
+    preserve_mean: bool = False,
+) -> SPMChannel:
+    """Level a surface using the prevalent orientation of local facets."""
+    data = _validated_data(
+        channel,
+        operation="facet_level",
+    )
+
+    iterations = _positive_integer(
+        max_iterations,
+        name="max_iterations",
+        operation="facet_level",
+    )
+    convergence_tolerance = _positive_real_scalar(
+        tolerance,
+        name="tolerance",
+        operation="facet_level",
+    )
+
+    if not isinstance(preserve_mean, (bool, np.bool_)):
+        raise TypeError("facet_level requires preserve_mean to be boolean")
+
+    selection = _fit_selection(
+        data,
+        mask=mask,
+        mask_mode=mask_mode,
+        operation="facet_level",
+        minimum_points=4,
+    )
+
+    rows, columns = data.shape
+    x_coordinates = np.linspace(-1.0, 1.0, columns)
+    y_coordinates = np.linspace(-1.0, 1.0, rows)
+    xx, yy = np.meshgrid(x_coordinates, y_coordinates)
+
+    corrections = np.zeros(data.shape, dtype=float)
+    working = data.astype(float, copy=True)
+
+    for _ in range(iterations):
+        x_slopes, y_slopes = _selected_local_facet_slopes(
+            working,
+            selection,
+        )
+        dominant_x, dominant_y = _dominant_facet_slopes(
+            x_slopes,
+            y_slopes,
+        )
+
+        if np.hypot(dominant_x, dominant_y) <= convergence_tolerance:
+            break
+
+        plane_tilt = dominant_x * xx + dominant_y * yy
+
+        corrections += plane_tilt
+        working -= plane_tilt
+
+    if preserve_mean:
+        corrections -= np.mean(corrections)
+    else:
+        corrections += float(np.mean(working[selection]))
+
+    return channel.with_data(data - corrections)
 
 
 def three_point_level(
