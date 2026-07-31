@@ -715,3 +715,192 @@ def test_polynomial_background_rejects_rank_deficient_selection() -> None:
             mask=mask,
             mask_mode="include",
         )
+
+
+def test_align_rows_can_preserve_global_mean() -> None:
+    """Mean-preserving alignment must keep the absolute global level."""
+    data = np.array(
+        [
+            [1.0, 1.0, 1.0],
+            [2.0, 2.0, 2.0],
+            [6.0, 6.0, 6.0],
+        ]
+    )
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=3e-6,
+        y_range=3e-6,
+    )
+
+    result = leveling.align_rows(
+        channel,
+        method="median",
+        preserve_mean=True,
+    )
+
+    expected_level = np.mean(data)
+
+    assert np.allclose(
+        np.mean(result.data, axis=1),
+        expected_level,
+    )
+    assert np.isclose(np.mean(result.data), np.mean(data))
+
+
+@pytest.mark.parametrize("mask_mode", ["include", "exclude"])
+def test_align_rows_mask_controls_row_statistic(mask_mode: str) -> None:
+    """Masked row alignment must ignore excluded surface features."""
+    data = np.array(
+        [
+            [1.0, 1.0, 100.0],
+            [2.0, 2.0, 200.0],
+        ]
+    )
+    excluded = np.zeros(data.shape, dtype=bool)
+    excluded[:, 2] = True
+
+    mask = ~excluded if mask_mode == "include" else excluded
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=3e-6,
+        y_range=2e-6,
+    )
+
+    result = leveling.align_rows(
+        channel,
+        method="mean",
+        mask=mask,
+        mask_mode=mask_mode,  # type: ignore[arg-type]
+    )
+
+    assert np.allclose(result.data[~excluded], 0.0)
+    assert np.allclose(result.data[:, 2], [99.0, 198.0])
+
+
+@pytest.mark.parametrize(
+    ("trim_fraction", "reference_method"),
+    [
+        (0.0, "mean"),
+        (0.5, "median"),
+    ],
+    ids=["no-trimming-is-mean", "maximum-trimming-is-median"],
+)
+def test_align_rows_trimmed_mean_endpoints(
+    trim_fraction: float,
+    reference_method: str,
+) -> None:
+    """Trimmed mean must interpolate between mean and median."""
+    data = np.array(
+        [
+            [0.0, 1.0, 2.0, 100.0],
+            [4.0, 5.0, 6.0, 200.0],
+        ]
+    )
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=4e-6,
+        y_range=2e-6,
+    )
+
+    trimmed = leveling.align_rows(
+        channel,
+        method="trimmed_mean",
+        trim_fraction=trim_fraction,
+    )
+    reference = leveling.align_rows(
+        channel,
+        method=reference_method,  # type: ignore[arg-type]
+    )
+
+    assert np.allclose(trimmed.data, reference.data)
+
+
+@pytest.mark.parametrize(
+    ("kwargs", "error_type", "message"),
+    [
+        (
+            {"method": "unknown"},
+            ValueError,
+            "align_rows method must be",
+        ),
+        (
+            {"method": "trimmed_mean", "trim_fraction": True},
+            TypeError,
+            "align_rows requires trim_fraction to be a real scalar",
+        ),
+        (
+            {"method": "trimmed_mean", "trim_fraction": -0.1},
+            ValueError,
+            "align_rows requires trim_fraction between 0 and 0.5",
+        ),
+        (
+            {"method": "trimmed_mean", "trim_fraction": 0.6},
+            ValueError,
+            "align_rows requires trim_fraction between 0 and 0.5",
+        ),
+        (
+            {"preserve_mean": "yes"},
+            TypeError,
+            "align_rows requires preserve_mean to be boolean",
+        ),
+    ],
+    ids=[
+        "unknown-method",
+        "boolean-trim",
+        "negative-trim",
+        "excessive-trim",
+        "non-boolean-preserve-mean",
+    ],
+)
+def test_align_rows_rejects_invalid_configuration(
+    kwargs: dict[str, object],
+    error_type: type[Exception],
+    message: str,
+) -> None:
+    """Invalid row-alignment configurations must fail explicitly."""
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=np.arange(12.0).reshape(3, 4),
+        unit="nm",
+        x_range=4e-6,
+        y_range=3e-6,
+    )
+
+    with pytest.raises(error_type, match=message):
+        leveling.align_rows(
+            channel,
+            **kwargs,  # type: ignore[arg-type]
+        )
+
+
+def test_align_rows_rejects_rows_without_selected_points() -> None:
+    """Every row must contain data selected for its statistic."""
+    data = np.arange(12.0).reshape(3, 4)
+    mask = np.ones(data.shape, dtype=bool)
+    mask[1, :] = False
+
+    channel = SPMChannel(
+        name="Z-Axis",
+        data=data,
+        unit="nm",
+        x_range=4e-6,
+        y_range=3e-6,
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="align_rows requires at least 1 selected point in every row",
+    ):
+        leveling.align_rows(
+            channel,
+            method="median",
+            mask=mask,
+            mask_mode="include",
+        )

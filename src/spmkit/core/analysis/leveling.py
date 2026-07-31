@@ -87,6 +87,43 @@ def _nonnegative_integer(
     return integer_value
 
 
+def _trim_fraction(value: object, *, operation: str) -> float:
+    """Validate a trimming fraction in the closed interval [0, 0.5]."""
+    fraction_data = np.asarray(value)
+
+    if (
+        fraction_data.ndim != 0
+        or not np.issubdtype(fraction_data.dtype, np.number)
+        or np.iscomplexobj(fraction_data)
+        or isinstance(value, (bool, np.bool_))
+    ):
+        raise TypeError(f"{operation} requires trim_fraction to be a real scalar")
+
+    fraction = float(fraction_data.item())
+
+    if not np.isfinite(fraction):
+        raise ValueError(f"{operation} requires trim_fraction to be finite")
+
+    if fraction < 0.0 or fraction > 0.5:
+        raise ValueError(f"{operation} requires trim_fraction between 0 and 0.5")
+
+    return fraction
+
+
+def _trimmed_mean(values: np.ndarray, fraction: float) -> float:
+    """Return the symmetrically trimmed mean of one-dimensional values."""
+    if fraction == 0.5:
+        return float(np.median(values))
+
+    ordered = np.sort(values)
+    trim_count = int(np.floor(fraction * ordered.size))
+
+    if trim_count == 0:
+        return float(np.mean(ordered))
+
+    return float(np.mean(ordered[trim_count:-trim_count]))
+
+
 def zero_mean(channel: SPMChannel) -> SPMChannel:
     """Shift the vertical reference so the arithmetic mean is zero."""
     data = _validated_data(channel, operation="zero_mean")
@@ -330,17 +367,65 @@ def polynomial(channel: SPMChannel, order: int = 2) -> SPMChannel:
     )
 
 
-def align_rows(channel: SPMChannel, method: str = "median") -> SPMChannel:
-    """Alinea filas restando su estadístico (corrige saltos línea a línea).
+def align_rows(
+    channel: SPMChannel,
+    method: Literal["median", "mean", "trimmed_mean"] = "median",
+    *,
+    trim_fraction: float = 0.0,
+    mask: np.ndarray | None = None,
+    mask_mode: Literal["ignore", "include", "exclude"] = "ignore",
+    preserve_mean: bool = False,
+) -> SPMChannel:
+    """Align rows by subtracting a representative value from each row.
 
-    Args:
-        method: ``"median"`` (robusto) o ``"mean"``.
+    ``preserve_mean=False`` retains the historical SPMKit behaviour.
+    ``preserve_mean=True`` keeps the mean correction at zero, matching
+    the absolute-level convention used by Gwyddion.
     """
-    z = channel.data
-    if method == "median":
-        baseline = np.median(z, axis=1, keepdims=True)
-    elif method == "mean":
-        baseline = np.mean(z, axis=1, keepdims=True)
-    else:
-        raise ValueError("method debe ser 'median' o 'mean'")
-    return channel.with_data(z - baseline)
+    data = _validated_data(channel, operation="align_rows")
+
+    allowed_methods = {"median", "mean", "trimmed_mean"}
+    if method not in allowed_methods:
+        raise ValueError("align_rows method must be 'median', 'mean', " "or 'trimmed_mean'")
+
+    if not isinstance(preserve_mean, (bool, np.bool_)):
+        raise TypeError("align_rows requires preserve_mean to be boolean")
+
+    fraction = _trim_fraction(
+        trim_fraction,
+        operation="align_rows",
+    )
+
+    selection = _fit_selection(
+        data,
+        mask=mask,
+        mask_mode=mask_mode,
+        operation="align_rows",
+        minimum_points=1,
+    )
+
+    selected_per_row = np.count_nonzero(selection, axis=1)
+    if np.any(selected_per_row < 1):
+        raise ValueError("align_rows requires at least 1 selected point in every row")
+
+    baselines = np.empty(data.shape[0], dtype=float)
+
+    for row_index in range(data.shape[0]):
+        row_values = data[row_index, selection[row_index]]
+
+        if method == "median":
+            baselines[row_index] = np.median(row_values)
+        elif method == "mean":
+            baselines[row_index] = np.mean(row_values)
+        else:
+            baselines[row_index] = _trimmed_mean(
+                row_values,
+                fraction,
+            )
+
+    corrections = baselines
+
+    if preserve_mean:
+        corrections = corrections - np.mean(corrections)
+
+    return channel.with_data(data - corrections[:, np.newaxis])
