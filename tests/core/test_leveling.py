@@ -37,3 +37,35 @@ def test_align_rows() -> None:
     ch = SPMChannel(name="Z", data=data, unit="m", x_range=1e-6, y_range=1e-6)
     leveled = leveling.align_rows(ch, method="median")
     assert np.allclose(leveled.data, 0.0)
+
+
+def test_plane_fit_returns_new_channel_without_mutating_input(
+    tilted_surface: SPMChannel,
+) -> None:
+    """Plane fitting must preserve the input and channel identity metadata."""
+    original_data = tilted_surface.data.copy()
+    original_metadata = dict(tilted_surface.metadata)
+
+    leveled = leveling.plane_fit(tilted_surface)
+
+    # Un objeto nuevo, no el mismo canal.
+    assert leveled is not tilted_surface
+
+    # El canal original no fue alterado.
+    assert np.array_equal(tilted_surface.data, original_data)
+    assert tilted_surface.metadata == original_metadata
+
+    # Los datos nivelados viven en otro array.
+    assert leveled.data is not tilted_surface.data
+
+    # Se conserva la identidad física del canal.
+    assert leveled.name == tilted_surface.name
+    assert leveled.unit == tilted_surface.unit
+    assert leveled.x_range == tilted_surface.x_range
+    assert leveled.y_range == tilted_surface.y_range
+    assert leveled.direction == tilted_surface.direction
+    assert leveled.group == tilted_surface.group
+
+    # with_data crea un diccionario exterior nuevo.
+    assert leveled.metadata == tilted_surface.metadata
+    assert leveled.metadata is not tilted_surface.metadata
