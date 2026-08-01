@@ -508,3 +508,194 @@ def test_horizontal_kernel_does_not_mutate_input_and_returns_read_only() -> None
     np.testing.assert_array_equal(data, original)
     assert result.dtype == np.float64
     assert not result.flags.writeable
+
+
+@pytest.mark.parametrize(
+    ("direction", "inverted"),
+    [
+        ("horizontal", False),
+        ("horizontal", True),
+        ("vertical", False),
+        ("vertical", True),
+        ("both", False),
+        ("both", True),
+    ],
+)
+def test_directional_background_matches_explicit_composition(
+    direction: str,
+    inverted: bool,
+) -> None:
+    from spmkit.core.analysis._gwyddion_arc_revolution import (
+        _gwyddion_arc_background,
+        _gwyddion_arc_horizontal,
+    )
+
+    data = _asymmetric_reference_field()
+    working = -data if inverted else data
+
+    if direction == "horizontal":
+        expected = _gwyddion_arc_horizontal(
+            working,
+            2.5,
+        )
+    elif direction == "vertical":
+        expected = _gwyddion_arc_horizontal(
+            working.T,
+            2.5,
+        ).T
+    else:
+        horizontal = _gwyddion_arc_horizontal(
+            working,
+            2.5,
+        )
+        expected = _gwyddion_arc_horizontal(
+            horizontal.T,
+            2.5,
+        ).T
+
+    if inverted:
+        expected = -expected
+
+    result = _gwyddion_arc_background(
+        data,
+        2.5,
+        direction=direction,  # type: ignore[arg-type]
+        inverted=inverted,
+    )
+
+    np.testing.assert_array_equal(result, expected)
+
+
+@pytest.mark.parametrize(
+    ("direction", "inverted"),
+    [
+        ("horizontal", False),
+        ("horizontal", True),
+        ("vertical", False),
+        ("vertical", True),
+        ("both", False),
+        ("both", True),
+    ],
+)
+def test_directional_corrected_reconstructs_input(
+    direction: str,
+    inverted: bool,
+) -> None:
+    from spmkit.core.analysis._gwyddion_arc_revolution import (
+        _gwyddion_arc_background,
+        _gwyddion_arc_corrected,
+    )
+
+    data = _asymmetric_reference_field()
+    original = data.copy()
+
+    background = _gwyddion_arc_background(
+        data,
+        2.5,
+        direction=direction,  # type: ignore[arg-type]
+        inverted=inverted,
+    )
+    corrected = _gwyddion_arc_corrected(
+        data,
+        2.5,
+        direction=direction,  # type: ignore[arg-type]
+        inverted=inverted,
+    )
+
+    np.testing.assert_array_equal(data, original)
+    np.testing.assert_allclose(
+        corrected + background,
+        data,
+        atol=5e-15,
+        rtol=0.0,
+    )
+
+    assert background.dtype == np.float64
+    assert corrected.dtype == np.float64
+    assert background.flags.c_contiguous
+    assert corrected.flags.c_contiguous
+    assert not background.flags.writeable
+    assert not corrected.flags.writeable
+
+
+@pytest.mark.parametrize(
+    "direction",
+    ["horizontal", "vertical", "both"],
+)
+@pytest.mark.parametrize(
+    "inverted",
+    [False, True],
+)
+def test_directional_one_by_one_field_is_identity(
+    direction: str,
+    inverted: bool,
+) -> None:
+    from spmkit.core.analysis._gwyddion_arc_revolution import (
+        _gwyddion_arc_background,
+        _gwyddion_arc_corrected,
+    )
+
+    data = np.array([[4.25]])
+
+    background = _gwyddion_arc_background(
+        data,
+        2.5,
+        direction=direction,  # type: ignore[arg-type]
+        inverted=inverted,
+    )
+    corrected = _gwyddion_arc_corrected(
+        data,
+        2.5,
+        direction=direction,  # type: ignore[arg-type]
+        inverted=inverted,
+    )
+
+    np.testing.assert_array_equal(background, data)
+    np.testing.assert_array_equal(
+        corrected,
+        np.zeros_like(data),
+    )
+
+
+@pytest.mark.parametrize(
+    "direction",
+    ["diagonal", "", 1],
+)
+def test_directional_background_rejects_invalid_direction(
+    direction: object,
+) -> None:
+    from spmkit.core.analysis._gwyddion_arc_revolution import (
+        _gwyddion_arc_background,
+    )
+
+    expected_exception = (
+        TypeError
+        if not isinstance(direction, str)
+        else ValueError
+    )
+
+    with pytest.raises(expected_exception):
+        _gwyddion_arc_background(
+            np.ones((2, 3)),
+            2.5,
+            direction=direction,  # type: ignore[arg-type]
+        )
+
+
+@pytest.mark.parametrize(
+    "inverted",
+    [0, 1, "yes", None],
+)
+def test_directional_background_rejects_non_boolean_inversion(
+    inverted: object,
+) -> None:
+    from spmkit.core.analysis._gwyddion_arc_revolution import (
+        _gwyddion_arc_background,
+    )
+
+    with pytest.raises(TypeError):
+        _gwyddion_arc_background(
+            np.ones((2, 3)),
+            2.5,
+            inverted=inverted,  # type: ignore[arg-type]
+        )

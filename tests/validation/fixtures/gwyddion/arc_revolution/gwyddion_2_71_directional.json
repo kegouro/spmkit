@@ -1,0 +1,102 @@
+{
+  "acceptance": {
+    "background_max_abs_error": 5e-14,
+    "corrected_max_abs_error": 5e-14,
+    "reconstruction_max_abs_error": 5e-14
+  },
+  "artifacts": {
+    "array_canonical_sha256": {
+      "background_both_inverted": "3adb462bfcba10d75dd4c0416424db686959c392b3885dff8824ab0097d1f55b",
+      "background_both_normal": "931b156e5c8c58c24642e89573105531263d4534d795a8809edfccf8d2b6c163",
+      "background_horizontal_inverted": "9ffd9fc84037d3230be9a4bf3a353534833e57a186abfe2e759e8a9cb15b1b55",
+      "background_horizontal_normal": "a4e795a383f8e495edbca5b3b6a2fd903dd6739f9515169178a749ab86cab327",
+      "background_vertical_inverted": "df9f61f8ed98f63d8ec20905ecb56009a7f47945bda5d4805dd055a331fd9f56",
+      "background_vertical_normal": "6d4d08a08c1752aca685a452d1ec143d555471905c1bdcda48bbeba940b7cc30",
+      "corrected_both_inverted": "aff71f2fa45bb29b35c6c4cc0412263d0095732b222376f2291f3604b676a4cc",
+      "corrected_both_normal": "88d4553c6b95637decc3cc7841c56cd0bec556801c4712b09767b343f108953d",
+      "corrected_horizontal_inverted": "abb1ce32e2a6e68e5f7175306edc51de4cd23bccbc697df68b5fa5721853ab0b",
+      "corrected_horizontal_normal": "35cc88b2c8e2e5aa060d4446c459e8cda6c8e6eb9c1a00f4a7209422b24c6a60",
+      "corrected_vertical_inverted": "25249844f021891d31b2acea23d9ca256ed64a7c81c15999fd1fcf444075ee46",
+      "corrected_vertical_normal": "a3251acde29315ee05883a47ed53f0730f859239d6efc3a297303234d47baf83",
+      "input": "69146737b4b7cb993261a33fabaff6adf3f1e47eb07f61431a48ac1b31f725fd"
+    },
+    "npz_filename": "gwyddion_2_71_directional.npz",
+    "npz_sha256": "50b263b8add97950ba1ef882f96d5ee3bc35001908c47a1dbb20b9428bc3bc5e"
+  },
+  "cases": {
+    "both_inverted": {
+      "corrected_reference_valid": true,
+      "direction": "both",
+      "inverted": true
+    },
+    "both_normal": {
+      "corrected_reference_valid": true,
+      "direction": "both",
+      "inverted": false
+    },
+    "horizontal_inverted": {
+      "corrected_reference_valid": false,
+      "direction": "horizontal",
+      "inverted": true,
+      "known_reference_defect": "Gwyddion 2.71 returns before populating the corrected result after computing and sign-restoring the background."
+    },
+    "horizontal_normal": {
+      "corrected_reference_valid": true,
+      "direction": "horizontal",
+      "inverted": false
+    },
+    "vertical_inverted": {
+      "corrected_reference_valid": true,
+      "direction": "vertical",
+      "inverted": true
+    },
+    "vertical_normal": {
+      "corrected_reference_valid": true,
+      "direction": "vertical",
+      "inverted": false
+    }
+  },
+  "field": {
+    "dtype": "float64",
+    "height_unit": "unspecified synthetic units",
+    "shape": [
+      5,
+      7
+    ],
+    "xreal": 5.6,
+    "yreal": 6.5
+  },
+  "fixture_id": "gwyddion-2.71-arc-revolution-directional",
+  "known_reference_defects": {
+    "horizontal_inverted_corrected_result": {
+      "classification": "KNOWN_REFERENCE_DEFECT",
+      "reference_result_untouched": true,
+      "sentinel": 123456789.0,
+      "spmkit_policy": "Preserve the validated background but return the scientifically consistent corrected field."
+    },
+    "single_sample_processing_axis": {
+      "classification": "KNOWN_REFERENCE_DEFECT",
+      "reference_behavior": "The historical moving-sums control flow can read before its output buffer.",
+      "spmkit_policy": "Define a one-sample processing axis as identity."
+    }
+  },
+  "parameters": {
+    "composition": {
+      "both": "horizontal followed by vertical",
+      "inverted": "negate input, process, negate background",
+      "vertical": "transpose, horizontal, transpose back"
+    },
+    "radius_px": 2.5
+  },
+  "reference": {
+    "operation": "Revolve Arc",
+    "probe_output_sha256": "1f8ee0535ac3b0d93e3b330ec4f96b39436e4da1853f5d3ce9ba45e1f2d0eca3",
+    "probe_source": ".reference/gwyddion-2.71/arc-revolve-parity/arc_revolve_behavior_probe.c",
+    "probe_source_sha256": "27e92376d7955f134a6d76091775dc28fe2e1ba8246936b27e2e924d3ba765f4",
+    "software": "Gwyddion",
+    "source_file": ".reference/gwyddion-2.71/source/modules/process/arc-revolve.c",
+    "source_sha256": "afb19a2382b0abb46595fa3dabc126ade50ec31c91ec9c96ea2284f42d0a67ac",
+    "version": "2.71"
+  },
+  "schema_version": 1
+}

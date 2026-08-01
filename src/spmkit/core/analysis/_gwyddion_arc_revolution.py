@@ -9,11 +9,13 @@ operations use different radius, scaling, and boundary conventions.
 from __future__ import annotations
 
 import math
+from typing import Literal
 
 import numpy as np
 from numpy.typing import NDArray
 
 FloatArray = NDArray[np.float64]
+GwyddionArcDirection = Literal["horizontal", "vertical", "both"]
 
 
 def _gwyddion_round_positive(value: object) -> int:
@@ -415,3 +417,108 @@ def _gwyddion_arc_horizontal(
 
     background.setflags(write=False)
     return background
+
+
+def _readonly_float_array(values: np.ndarray) -> FloatArray:
+    """Return an independent C-contiguous read-only ``float64`` array."""
+    result = np.array(
+        values,
+        dtype=np.float64,
+        copy=True,
+        order="C",
+    )
+    result.setflags(write=False)
+    return result
+
+
+def _gwyddion_arc_background(
+    data: np.ndarray,
+    radius: object,
+    *,
+    direction: GwyddionArcDirection = "horizontal",
+    inverted: bool = False,
+) -> FloatArray:
+    """Compose a complete Gwyddion-compatible Revolve Arc background.
+
+    ``"vertical"`` is implemented by transposing the field, applying the
+    horizontal kernel, and transposing the result back.  ``"both"`` applies
+    horizontal first and vertical second, matching Gwyddion 2.71.
+
+    Inversion follows the mathematically consistent dual ``-B(-data)``.
+    Gwyddion 2.71 computes this background correctly for all directions,
+    including its defective horizontal-inverted wrapper route.
+    """
+    if not isinstance(direction, str):
+        raise TypeError("Gwyddion arc direction must be a string")
+
+    if direction not in ("horizontal", "vertical", "both"):
+        raise ValueError(
+            "Gwyddion arc direction must be one of "
+            "'horizontal', 'vertical', or 'both'"
+        )
+
+    if not isinstance(inverted, (bool, np.bool_)):
+        raise TypeError("Gwyddion arc inverted must be a boolean")
+
+    inverted_value = bool(inverted)
+    source = np.asarray(data)
+
+    working = (
+        -np.asarray(source, dtype=np.float64)
+        if inverted_value
+        else source
+    )
+
+    if direction == "horizontal":
+        background = _gwyddion_arc_horizontal(
+            working,
+            radius,
+        )
+    elif direction == "vertical":
+        background = _gwyddion_arc_horizontal(
+            np.asarray(working).T,
+            radius,
+        ).T
+    else:
+        horizontal = _gwyddion_arc_horizontal(
+            working,
+            radius,
+        )
+        background = _gwyddion_arc_horizontal(
+            horizontal.T,
+            radius,
+        ).T
+
+    if inverted_value:
+        background = -background
+
+    return _readonly_float_array(background)
+
+
+def _gwyddion_arc_corrected(
+    data: np.ndarray,
+    radius: object,
+    *,
+    direction: GwyddionArcDirection = "horizontal",
+    inverted: bool = False,
+) -> FloatArray:
+    """Subtract a Gwyddion-compatible arc background from an input field.
+
+    Unlike the Gwyddion 2.71 module wrapper, this function also returns a
+    scientifically consistent result for ``direction="horizontal"`` with
+    ``inverted=True``.  The reference computes the background correctly in
+    that route but returns before populating its corrected result field.
+    """
+    background = _gwyddion_arc_background(
+        data,
+        radius,
+        direction=direction,
+        inverted=inverted,
+    )
+
+    corrected = (
+        np.asarray(data, dtype=np.float64)
+        - background
+    )
+
+    return _readonly_float_array(corrected)
