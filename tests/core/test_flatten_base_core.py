@@ -1814,3 +1814,348 @@ def test_polynomial_stage_records_unapplied_degree_before_peak_failure(
 
     assert not result.background.flags.writeable
     assert not result.corrected.flags.writeable
+
+
+def test_flatten_base_composes_stages_and_final_offsets(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    data = np.array(
+        [
+            [10.0, 11.0, 12.0],
+            [13.0, 14.0, 15.0],
+            [16.0, 17.0, 18.0],
+        ],
+        dtype=float,
+    )
+    original = data.copy()
+
+    class FacetPeak:
+        success = True
+        mean = 2.0
+        rms = 0.5
+
+    class FinalPeak:
+        success = True
+        mean = 1.5
+        rms = 0.2
+
+    facet_peak = FacetPeak()
+    final_peak = FinalPeak()
+
+    facet_background = np.full_like(data, 2.0)
+    facet_corrected = data - facet_background
+    facet_background.setflags(write=False)
+    facet_corrected.setflags(write=False)
+
+    facet_stage = flatten_base_core.FacetStageResult(
+        corrected=facet_corrected,
+        background=facet_background,
+        initial_peak=facet_peak,
+        iterations=(),
+        termination="degenerate_plane",
+    )
+
+    polynomial_background = np.full_like(data, 3.0)
+    polynomial_corrected = facet_corrected - polynomial_background
+    polynomial_background.setflags(write=False)
+    polynomial_corrected.setflags(write=False)
+
+    class FinalIteration:
+        degree = 5
+        peak = final_peak
+        applied = True
+
+    polynomial_stage = flatten_base_core.FlattenBasePolynomialStage(
+        corrected=polynomial_corrected,
+        background=polynomial_background,
+        initial_peak=facet_peak,
+        iterations=(FinalIteration(),),
+        termination="completed",
+    )
+
+    calls: dict[str, object] = {}
+
+    def fake_facet_stage(
+        received: np.ndarray,
+        *,
+        pixel_size_x: float,
+        pixel_size_y: float,
+    ) -> flatten_base_core.FacetStageResult:
+        np.testing.assert_array_equal(received, data)
+        assert pixel_size_x == 2.0
+        assert pixel_size_y == 0.5
+        calls["facet"] = True
+        return facet_stage
+
+    def fake_polynomial_stage(
+        received: np.ndarray,
+        *,
+        peak: FacetPeak,
+    ) -> flatten_base_core.FlattenBasePolynomialStage:
+        np.testing.assert_array_equal(received, facet_corrected)
+        assert peak is facet_peak
+        calls["polynomial"] = True
+        return polynomial_stage
+
+    monkeypatch.setattr(
+        flatten_base_core,
+        "_run_flatten_base_facet_stage",
+        fake_facet_stage,
+    )
+    monkeypatch.setattr(
+        flatten_base_core,
+        "_run_flatten_base_polynomial_stage",
+        fake_polynomial_stage,
+    )
+
+    result = flatten_base_core._run_flatten_base(
+        data,
+        pixel_size_x=2.0,
+        pixel_size_y=0.5,
+    )
+
+    after_mean_centering = polynomial_corrected - final_peak.mean
+    expected_minimum_offset = float(np.min(after_mean_centering))
+    expected_corrected = (
+        after_mean_centering
+        - expected_minimum_offset
+    )
+    expected_background = (
+        facet_background
+        + polynomial_background
+        + final_peak.mean
+        + expected_minimum_offset
+    )
+
+    assert calls == {
+        "facet": True,
+        "polynomial": True,
+    }
+    assert result.facet_stage is facet_stage
+    assert result.polynomial_stage is polynomial_stage
+    assert result.final_peak is final_peak
+    assert result.mean_centered
+    assert result.mean_offset == 1.5
+    assert result.minimum_offset == 3.5
+    assert result.total_offset == 5.0
+
+    np.testing.assert_allclose(
+        result.corrected,
+        expected_corrected,
+    )
+    np.testing.assert_allclose(
+        result.background,
+        expected_background,
+    )
+    np.testing.assert_allclose(
+        result.corrected + result.background,
+        data,
+    )
+    np.testing.assert_array_equal(data, original)
+
+    assert not result.corrected.flags.writeable
+    assert not result.background.flags.writeable
+
+
+def test_flatten_base_skips_mean_after_failed_final_peak() -> None:
+    data = np.array(
+        [
+            [8.0, 9.0],
+            [10.0, 11.0],
+        ],
+        dtype=float,
+    )
+    original = data.copy()
+
+    class FacetPeak:
+        success = True
+        mean = 1.0
+        rms = 0.25
+
+    class FailedPeak:
+        success = False
+        mean = 999.0
+        rms = 0.5
+
+    facet_peak = FacetPeak()
+    failed_peak = FailedPeak()
+
+    facet_background = np.full_like(data, 1.0)
+    facet_corrected = data - facet_background
+
+    facet_stage = flatten_base_core.FacetStageResult(
+        corrected=facet_corrected,
+        background=facet_background,
+        initial_peak=facet_peak,
+        iterations=(),
+        termination="completed",
+    )
+
+    polynomial_background = np.full_like(data, 2.0)
+    polynomial_corrected = facet_corrected - polynomial_background
+
+    class FinalIteration:
+        degree = 2
+        peak = failed_peak
+        applied = True
+
+    polynomial_stage = flatten_base_core.FlattenBasePolynomialStage(
+        corrected=polynomial_corrected,
+        background=polynomial_background,
+        initial_peak=facet_peak,
+        iterations=(FinalIteration(),),
+        termination="peak_failure",
+    )
+
+    with pytest.MonkeyPatch.context() as monkeypatch:
+        monkeypatch.setattr(
+            flatten_base_core,
+            "_run_flatten_base_facet_stage",
+            lambda *args, **kwargs: facet_stage,
+        )
+        monkeypatch.setattr(
+            flatten_base_core,
+            "_run_flatten_base_polynomial_stage",
+            lambda *args, **kwargs: polynomial_stage,
+        )
+
+        result = flatten_base_core._run_flatten_base(
+            data,
+            pixel_size_x=1.0,
+            pixel_size_y=1.0,
+        )
+
+    expected_minimum_offset = 5.0
+    expected_corrected = polynomial_corrected - expected_minimum_offset
+    expected_background = (
+        facet_background
+        + polynomial_background
+        + expected_minimum_offset
+    )
+
+    assert result.final_peak is failed_peak
+    assert not result.mean_centered
+    assert result.mean_offset == 0.0
+    assert result.minimum_offset == expected_minimum_offset
+    assert result.total_offset == expected_minimum_offset
+
+    np.testing.assert_array_equal(
+        result.corrected,
+        expected_corrected,
+    )
+    np.testing.assert_array_equal(
+        result.background,
+        expected_background,
+    )
+    np.testing.assert_array_equal(
+        result.corrected + result.background,
+        data,
+    )
+    np.testing.assert_array_equal(data, original)
+
+    assert not result.corrected.flags.writeable
+    assert not result.background.flags.writeable
+
+
+def test_flatten_base_preserves_nonpositive_minimum_after_mean_centering(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    data = np.array(
+        [
+            [2.0, 3.0],
+            [4.0, 5.0],
+        ],
+        dtype=float,
+    )
+    original = data.copy()
+
+    class FacetPeak:
+        success = True
+        mean = 0.0
+        rms = 0.25
+
+    class FinalPeak:
+        success = True
+        mean = 0.5
+        rms = 0.2
+
+    facet_peak = FacetPeak()
+    final_peak = FinalPeak()
+
+    facet_background = np.full_like(data, 1.0)
+    facet_corrected = data - facet_background
+
+    facet_stage = flatten_base_core.FacetStageResult(
+        corrected=facet_corrected,
+        background=facet_background,
+        initial_peak=facet_peak,
+        iterations=(),
+        termination="completed",
+    )
+
+    polynomial_background = np.full_like(data, 2.0)
+    polynomial_corrected = (
+        facet_corrected
+        - polynomial_background
+    )
+
+    class FinalIteration:
+        degree = 5
+        peak = final_peak
+        applied = True
+
+    polynomial_stage = flatten_base_core.FlattenBasePolynomialStage(
+        corrected=polynomial_corrected,
+        background=polynomial_background,
+        initial_peak=facet_peak,
+        iterations=(FinalIteration(),),
+        termination="completed",
+    )
+
+    monkeypatch.setattr(
+        flatten_base_core,
+        "_run_flatten_base_facet_stage",
+        lambda *args, **kwargs: facet_stage,
+    )
+    monkeypatch.setattr(
+        flatten_base_core,
+        "_run_flatten_base_polynomial_stage",
+        lambda *args, **kwargs: polynomial_stage,
+    )
+
+    result = flatten_base_core._run_flatten_base(
+        data,
+        pixel_size_x=1.0,
+        pixel_size_y=1.0,
+    )
+
+    expected_corrected = polynomial_corrected - final_peak.mean
+    expected_background = (
+        facet_background
+        + polynomial_background
+        + final_peak.mean
+    )
+
+    assert result.final_peak is final_peak
+    assert result.mean_centered
+    assert result.mean_offset == 0.5
+    assert result.minimum_offset == 0.0
+    assert result.total_offset == 0.5
+    assert float(np.min(result.corrected)) == -1.5
+
+    np.testing.assert_allclose(
+        result.corrected,
+        expected_corrected,
+    )
+    np.testing.assert_allclose(
+        result.background,
+        expected_background,
+    )
+    np.testing.assert_allclose(
+        result.corrected + result.background,
+        data,
+    )
+    np.testing.assert_array_equal(data, original)
+
+    assert not result.corrected.flags.writeable
+    assert not result.background.flags.writeable

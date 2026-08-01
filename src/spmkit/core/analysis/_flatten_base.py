@@ -1192,3 +1192,133 @@ def _run_flatten_base_polynomial_stage(
         iterations=tuple(iterations),
         termination=termination,
     )
+
+
+@dataclass(frozen=True)
+class FlattenBaseResult:
+    """Complete Flatten Base result and stage-level evidence."""
+
+    corrected: np.ndarray
+    background: np.ndarray
+    facet_stage: FacetStageResult
+    polynomial_stage: FlattenBasePolynomialStage
+    final_peak: BasePeakEstimate
+    mean_offset: float
+    minimum_offset: float
+    mean_centered: bool
+
+    @property
+    def total_offset(self) -> float:
+        """Total constant offset subtracted after background leveling."""
+        return self.mean_offset + self.minimum_offset
+
+
+def _run_flatten_base(
+    data: np.ndarray,
+    *,
+    pixel_size_x: float,
+    pixel_size_y: float,
+) -> FlattenBaseResult:
+    """Run the complete Gwyddion-compatible Flatten Base pipeline."""
+    facet_stage = _run_flatten_base_facet_stage(
+        data,
+        pixel_size_x=pixel_size_x,
+        pixel_size_y=pixel_size_y,
+    )
+
+    if facet_stage.iterations:
+        polynomial_input_peak = facet_stage.iterations[-1].peak
+    else:
+        polynomial_input_peak = facet_stage.initial_peak
+
+    polynomial_stage = _run_flatten_base_polynomial_stage(
+        facet_stage.corrected,
+        peak=polynomial_input_peak,
+    )
+
+    if polynomial_stage.iterations:
+        final_peak = polynomial_stage.iterations[-1].peak
+    else:
+        final_peak = polynomial_stage.initial_peak
+
+    corrected = np.array(
+        polynomial_stage.corrected,
+        dtype=float,
+        copy=True,
+    )
+    background = np.array(
+        facet_stage.background,
+        dtype=float,
+        copy=True,
+    )
+    polynomial_background = np.asarray(
+        polynomial_stage.background,
+        dtype=float,
+    )
+
+    if background.shape != corrected.shape:
+        raise ValueError(
+            "Flatten Base facet stage returned incompatible shapes"
+        )
+    if polynomial_background.shape != corrected.shape:
+        raise ValueError(
+            "Flatten Base polynomial stage returned "
+            "incompatible shapes"
+        )
+    if corrected.size == 0:
+        raise ValueError(
+            "Flatten Base requires non-empty corrected data"
+        )
+    if not np.all(np.isfinite(corrected)):
+        raise ValueError(
+            "Flatten Base polynomial stage returned "
+            "non-finite corrected data"
+        )
+    if not np.all(np.isfinite(background)):
+        raise ValueError(
+            "Flatten Base facet stage returned "
+            "a non-finite background"
+        )
+    if not np.all(np.isfinite(polynomial_background)):
+        raise ValueError(
+            "Flatten Base polynomial stage returned "
+            "a non-finite background"
+        )
+
+    background += polynomial_background
+
+    mean_centered = bool(final_peak.success)
+    mean_offset = (
+        float(final_peak.mean)
+        if mean_centered
+        else 0.0
+    )
+
+    if mean_centered:
+        corrected -= mean_offset
+        background += mean_offset
+
+    remaining_minimum = float(np.min(corrected))
+    minimum_offset = (
+        remaining_minimum
+        if remaining_minimum > 0.0
+        else 0.0
+    )
+
+    if minimum_offset > 0.0:
+        corrected -= minimum_offset
+        background += minimum_offset
+
+    corrected.setflags(write=False)
+    background.setflags(write=False)
+
+    return FlattenBaseResult(
+        corrected=corrected,
+        background=background,
+        facet_stage=facet_stage,
+        polynomial_stage=polynomial_stage,
+        final_peak=final_peak,
+        mean_offset=mean_offset,
+        minimum_offset=minimum_offset,
+        mean_centered=mean_centered,
+    )
