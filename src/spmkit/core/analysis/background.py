@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from typing import Literal
 
 import numpy as np
-from scipy.ndimage import generic_filter, grey_opening
+from scipy.ndimage import generic_filter, grey_erosion, grey_opening
 
 from spmkit.core.geometry import (
     length_values_from_metres,
@@ -26,6 +26,7 @@ ArcBorder = Literal["nearest", "reflect"]
 BackgroundMethod = Literal[
     "arc_revolution",
     "sphere_revolution",
+    "rolling_ball",
     "median",
 ]
 
@@ -114,6 +115,33 @@ def _positive_radius(
 
     if value <= 0.0:
         raise ValueError(f"{operation} requires radius to be positive")
+
+    return value
+
+
+def _positive_vertical_radius(
+    vertical_radius: object,
+    *,
+    operation: str,
+) -> float:
+    """Validate a vertical rolling-ball semiaxis in channel units."""
+    radius_data = np.asarray(vertical_radius)
+
+    if (
+        radius_data.ndim != 0
+        or not np.issubdtype(radius_data.dtype, np.number)
+        or np.iscomplexobj(radius_data)
+        or isinstance(vertical_radius, (bool, np.bool_))
+    ):
+        raise TypeError(f"{operation} requires vertical_radius to be a positive real scalar")
+
+    value = float(radius_data.item())
+
+    if not np.isfinite(value):
+        raise ValueError(f"{operation} requires vertical_radius to be finite")
+
+    if value <= 0.0:
+        raise ValueError(f"{operation} requires vertical_radius to be positive")
 
     return value
 
@@ -636,6 +664,259 @@ def remove_sphere_revolution_background(
     return channel.with_data(corrected)
 
 
+def _rolling_ball_structure(
+    *,
+    radius: float,
+    vertical_radius: float,
+    x_spacing: float,
+    y_spacing: float,
+    shape: tuple[int, int],
+    spherical: bool,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Return a physical rolling-ball structure and footprint."""
+    rows, columns = shape
+
+    maximum_x_offset = columns - 1
+    radius_in_x_pixels = radius / x_spacing
+
+    if not np.isfinite(radius_in_x_pixels) or radius_in_x_pixels >= maximum_x_offset:
+        x_offset = maximum_x_offset
+    else:
+        x_offset = int(np.floor(radius_in_x_pixels))
+
+    maximum_y_offset = rows - 1
+    radius_in_y_pixels = radius / y_spacing
+
+    if not np.isfinite(radius_in_y_pixels) or radius_in_y_pixels >= maximum_y_offset:
+        y_offset = maximum_y_offset
+    else:
+        y_offset = int(np.floor(radius_in_y_pixels))
+
+    x_offsets = np.arange(
+        -x_offset,
+        x_offset + 1,
+        dtype=float,
+    )
+    y_offsets = np.arange(
+        -y_offset,
+        y_offset + 1,
+        dtype=float,
+    )
+
+    x_distances = x_offsets * x_spacing
+    y_distances = y_offsets * y_spacing
+
+    squared_distance = np.square(y_distances)[:, np.newaxis] + np.square(x_distances)[np.newaxis, :]
+    squared_radius = radius * radius
+    squared_ratio = squared_distance / squared_radius
+
+    tolerance = 8.0 * np.finfo(float).eps
+    footprint = squared_ratio <= 1.0 + tolerance
+
+    if spherical:
+        # Physical sphere and scikit-image ball_kernel arithmetic:
+        # height = sqrt(radius**2 - distance**2).
+        clipped_distance = np.minimum(
+            squared_distance,
+            squared_radius,
+        )
+        height = np.sqrt(
+            np.maximum(
+                squared_radius - clipped_distance,
+                0.0,
+            )
+        )
+        sagitta = radius - height
+    else:
+        # General ellipsoid and scikit-image ellipsoid_kernel arithmetic:
+        # height = vertical_radius * sqrt(1 - normalized distance**2).
+        clipped_ratio = np.minimum(
+            squared_ratio,
+            1.0,
+        )
+        root = np.sqrt(
+            np.maximum(
+                1.0 - clipped_ratio,
+                0.0,
+            )
+        )
+        height = vertical_radius * root
+        sagitta = vertical_radius - height
+
+    # scipy.ndimage.grey_erosion calculates min(image - structure).
+    # A negative sagitta therefore evaluates min(image + sagitta).
+    structure = np.where(
+        footprint,
+        -sagitta,
+        0.0,
+    )
+
+    return structure, footprint
+
+
+def _estimate_rolling_ball_below(
+    data: np.ndarray,
+    channel: SPMChannel,
+    *,
+    radius: float,
+    vertical_radius: float,
+    spherical: bool,
+    operation: str,
+) -> np.ndarray:
+    """Evaluate the rolling-ball apex field below a surface."""
+    x_spacing = _axis_spacing(
+        channel,
+        axis=1,
+        operation=operation,
+    )
+    y_spacing = _axis_spacing(
+        channel,
+        axis=0,
+        operation=operation,
+    )
+
+    structure, footprint = _rolling_ball_structure(
+        radius=radius,
+        vertical_radius=vertical_radius,
+        x_spacing=x_spacing,
+        y_spacing=y_spacing,
+        shape=data.shape,
+        spherical=spherical,
+    )
+
+    if footprint.size == 1:
+        return data.copy()
+
+    return np.asarray(
+        grey_erosion(
+            data,
+            footprint=footprint,
+            structure=structure,
+            mode="constant",
+            cval=np.inf,
+        ),
+        dtype=float,
+    )
+
+
+def estimate_rolling_ball_background(
+    channel: SPMChannel,
+    radius: float,
+    *,
+    vertical_radius: float | None = None,
+    side: ArcSide = "below",
+) -> SPMChannel:
+    """Estimate a background using a physical rolling ball.
+
+    The lateral semiaxis ``radius`` is expressed in metres.  When
+    ``vertical_radius`` is omitted, channel Z values must represent length;
+    they are converted to metres and a physical sphere with equal lateral
+    and vertical radii is used.
+
+    An explicit ``vertical_radius`` is interpreted in the native channel
+    unit, permitting ellipsoidal kernels for voltage, phase, current and
+    other non-geometric channels.
+
+    The estimator is the apex-height rolling-ball operation described by
+    Sternberg (1983), equivalent to non-flat grey erosion.  Samples outside
+    the image are ignored by assigning them positive infinity.
+
+    References
+    ----------
+    S. R. Sternberg, "Biomedical Image Processing", Computer 16(1),
+    22-34 (1983), doi:10.1109/MC.1983.1654163.
+    """
+    operation = "estimate_rolling_ball_background"
+
+    data = _validated_channel_data(
+        channel,
+        operation=operation,
+    )
+    radius_value = _positive_radius(
+        radius,
+        operation=operation,
+    )
+    side_value = _validated_choice(
+        side,
+        name="side",
+        allowed=("below", "above"),
+        operation=operation,
+    )
+
+    use_geometric_z = vertical_radius is None
+
+    if use_geometric_z:
+        working_data = length_values_to_metres(
+            data,
+            unit=channel.unit,
+        )
+        vertical_radius_value = radius_value
+    else:
+        working_data = np.asarray(
+            data,
+            dtype=float,
+        )
+        vertical_radius_value = _positive_vertical_radius(
+            vertical_radius,
+            operation=operation,
+        )
+
+    if side_value == "below":
+        working_background = _estimate_rolling_ball_below(
+            working_data,
+            channel,
+            radius=radius_value,
+            vertical_radius=vertical_radius_value,
+            spherical=use_geometric_z,
+            operation=operation,
+        )
+    else:
+        working_background = -_estimate_rolling_ball_below(
+            -working_data,
+            channel,
+            radius=radius_value,
+            vertical_radius=vertical_radius_value,
+            spherical=use_geometric_z,
+            operation=operation,
+        )
+
+    if use_geometric_z:
+        background = length_values_from_metres(
+            working_background,
+            unit=channel.unit,
+        )
+    else:
+        background = working_background
+
+    return channel.with_data(background)
+
+
+def remove_rolling_ball_background(
+    channel: SPMChannel,
+    radius: float,
+    *,
+    vertical_radius: float | None = None,
+    side: ArcSide = "below",
+) -> SPMChannel:
+    """Subtract a rolling-ball background from a channel."""
+    background = estimate_rolling_ball_background(
+        channel,
+        radius,
+        vertical_radius=vertical_radius,
+        side=side,
+    )
+
+    corrected = np.asarray(
+        channel.data,
+        dtype=float,
+    ) - np.asarray(
+        background.data,
+        dtype=float,
+    )
+
+    return channel.with_data(corrected)
+
+
 def _positive_pixel_radius(
     radius_pixels: object,
     *,
@@ -842,6 +1123,34 @@ def analyze_sphere_revolution_background(
             "radius": float(radius),
             "side": side,
             "border": border,
+        },
+    )
+
+
+def analyze_rolling_ball_background(
+    channel: SPMChannel,
+    radius: float,
+    *,
+    vertical_radius: float | None = None,
+    side: ArcSide = "below",
+) -> BackgroundResult:
+    """Estimate and subtract a rolling-ball background in one pass."""
+    background = estimate_rolling_ball_background(
+        channel,
+        radius,
+        vertical_radius=vertical_radius,
+        side=side,
+    )
+
+    return _build_background_result(
+        channel,
+        background,
+        method="rolling_ball",
+        parameters={
+            "radius": float(radius),
+            "vertical_radius": (None if vertical_radius is None else float(vertical_radius)),
+            "side": side,
+            "boundary": "ignore",
         },
     )
 
