@@ -5,7 +5,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import numpy as np
-from scipy.optimize import least_squares
 
 
 @dataclass(frozen=True)
@@ -202,6 +201,630 @@ class BasePeakFit:
         return self.solver_success and self.covariance_available
 
 
+def _packed_lower_index(row: int, column: int) -> int:
+    """Index a row-packed lower-triangular symmetric matrix."""
+    return row * (row + 1) // 2 + column
+
+
+def _gwyddion_cholesky_decompose(
+    dimension: int,
+    packed: np.ndarray,
+) -> bool:
+    """Decompose a packed SPD matrix using Gwyddion's loop order."""
+    for diagonal in range(dimension):
+        value = float(
+            packed[_packed_lower_index(diagonal, diagonal)]
+        )
+
+        for index in range(diagonal):
+            factor = float(
+                packed[_packed_lower_index(diagonal, index)]
+            )
+            value -= factor * factor
+
+        if value <= 0.0:
+            return False
+
+        root = float(np.sqrt(value))
+        packed[_packed_lower_index(diagonal, diagonal)] = root
+
+        for row in range(diagonal + 1, dimension):
+            value = float(
+                packed[_packed_lower_index(row, diagonal)]
+            )
+
+            for index in range(diagonal):
+                value -= (
+                    float(
+                        packed[
+                            _packed_lower_index(diagonal, index)
+                        ]
+                    )
+                    * float(
+                        packed[
+                            _packed_lower_index(row, index)
+                        ]
+                    )
+                )
+
+            packed[_packed_lower_index(row, diagonal)] = (
+                value / root
+            )
+
+    return True
+
+
+def _gwyddion_cholesky_solve(
+    dimension: int,
+    decomposition: np.ndarray,
+    right_hand_side: np.ndarray,
+) -> None:
+    """Solve an SPD system using Gwyddion's substitution order."""
+    for row in range(dimension):
+        for column in range(row):
+            right_hand_side[row] -= (
+                decomposition[
+                    _packed_lower_index(row, column)
+                ]
+                * right_hand_side[column]
+            )
+
+        right_hand_side[row] /= decomposition[
+            _packed_lower_index(row, row)
+        ]
+
+    for row in range(dimension - 1, -1, -1):
+        for column in range(row + 1, dimension):
+            right_hand_side[row] -= (
+                decomposition[
+                    _packed_lower_index(column, row)
+                ]
+                * right_hand_side[column]
+            )
+
+        right_hand_side[row] /= decomposition[
+            _packed_lower_index(row, row)
+        ]
+
+
+def _gwyddion_cholesky_invert(
+    dimension: int,
+    packed: np.ndarray,
+) -> bool:
+    """Invert a packed SPD matrix using Gwyddion's algorithm."""
+    temporary = np.empty(dimension, dtype=float)
+    packed_offset = 0
+
+    for pivot in range(dimension - 1, -1, -1):
+        scale = float(packed[0])
+
+        if scale <= 0.0:
+            return False
+
+        row_end = 0
+
+        for row in range(dimension - 1):
+            packed_offset = row_end + 1
+            row_end += row + 2
+            element = float(packed[packed_offset])
+
+            temporary[row] = -element / scale
+
+            if row >= pivot:
+                temporary[row] = -temporary[row]
+
+            for index in range(packed_offset, row_end):
+                packed[index - (row + 1)] = (
+                    packed[index + 1]
+                    + element
+                    * temporary[index - packed_offset]
+                )
+
+        packed[row_end] = 1.0 / scale
+
+        for row in range(dimension - 1):
+            packed[packed_offset + row] = temporary[row]
+
+    return True
+
+
+def _fit_base_peak_gwyddion_lm(
+    window: BasePeakWindow,
+) -> BasePeakFit:
+    """Fit a Gaussian using Gwyddion's nonlinear-fit semantics."""
+    centers = np.asarray(window.centers, dtype=float)
+    density = np.asarray(window.density, dtype=float)
+
+    if centers.ndim != 1 or density.ndim != 1:
+        raise ValueError(
+            "base peak fitting requires one-dimensional data"
+        )
+    if centers.size != density.size:
+        raise ValueError(
+            "base peak fitting requires matching centers and density"
+        )
+    if centers.size < 4:
+        raise ValueError(
+            "base peak fitting requires at least four samples"
+        )
+    if (
+        not np.all(np.isfinite(centers))
+        or not np.all(np.isfinite(density))
+    ):
+        raise ValueError(
+            "base peak fitting requires finite data"
+        )
+
+    parameters = np.array(
+        [
+            window.initial_mean,
+            window.initial_offset,
+            window.initial_amplitude,
+            window.initial_width,
+        ],
+        dtype=float,
+    )
+
+    if not np.all(np.isfinite(parameters)):
+        raise ValueError(
+            "base peak fitting requires finite initial parameters"
+        )
+    if parameters[3] == 0.0:
+        raise ValueError(
+            "base peak fitting requires a non-zero initial width"
+        )
+
+    parameter_count = 4
+    packed_size = parameter_count * (parameter_count + 1) // 2
+    finite_limit = np.finfo(float).max
+
+    damping = 1.0e-4
+    damping_decrease = 0.4
+    damping_increase = 10.0
+    damping_zero_replacement = 1.0e-6
+    convergence_tolerance = 1.0e-16
+    derivative_scale = 1.0e-5
+    maximum_iterations = 100
+    maximum_unimproved = 12
+
+    evaluations = 0
+
+    def gaussian_value(
+        coordinate: float,
+        current: np.ndarray,
+    ) -> tuple[float, bool]:
+        nonlocal evaluations
+        evaluations += 1
+
+        width = float(current[3])
+
+        if width == 0.0:
+            return 0.0, False
+
+        scaled = (
+            float(coordinate) - float(current[0])
+        ) / width
+
+        with np.errstate(
+            over="ignore",
+            invalid="ignore",
+        ):
+            value = (
+                float(current[2])
+                * float(np.exp(-(scaled * scaled)))
+                + float(current[1])
+            )
+
+        return value, True
+
+    def calculate_residuals(
+        current: np.ndarray,
+    ) -> tuple[np.ndarray, float, bool]:
+        residuals = np.empty(centers.size, dtype=float)
+        residual_sum = 0.0
+
+        for index in range(centers.size):
+            value, valid = gaussian_value(
+                float(centers[index]),
+                current,
+            )
+
+            if not valid:
+                return residuals, -1.0, False
+
+            residual = value - float(density[index])
+            residuals[index] = residual
+            residual_sum += residual * residual
+
+        if not np.isfinite(residual_sum):
+            return residuals, -1.0, False
+
+        return residuals, residual_sum, True
+
+    def calculate_derivatives(
+        coordinate: float,
+        current: np.ndarray,
+    ) -> tuple[np.ndarray, bool]:
+        derivatives = np.empty(parameter_count, dtype=float)
+        perturbed = current.copy()
+
+        for parameter_index in range(parameter_count):
+            step = (
+                abs(float(perturbed[parameter_index]))
+                * derivative_scale
+            )
+
+            if step == 0.0:
+                step = derivative_scale
+
+            perturbed[parameter_index] -= step
+            left, valid = gaussian_value(
+                coordinate,
+                perturbed,
+            )
+
+            if not valid:
+                return derivatives, False
+
+            perturbed[parameter_index] += 2.0 * step
+            right, valid = gaussian_value(
+                coordinate,
+                perturbed,
+            )
+
+            if not valid:
+                return derivatives, False
+
+            derivatives[parameter_index] = (
+                (right - left) / (2.0 * step)
+            )
+            perturbed[parameter_index] = current[
+                parameter_index
+            ]
+
+        return derivatives, True
+
+    def rank_and_condition(
+        current: np.ndarray,
+    ) -> tuple[int, float]:
+        jacobian = np.empty(
+            (centers.size, parameter_count),
+            dtype=float,
+        )
+
+        for index in range(centers.size):
+            derivatives, valid = calculate_derivatives(
+                float(centers[index]),
+                current,
+            )
+
+            if not valid:
+                return 0, float("inf")
+
+            jacobian[index, :] = derivatives
+
+        singular_values = np.linalg.svd(
+            jacobian,
+            compute_uv=False,
+        )
+
+        if (
+            singular_values.size == 0
+            or singular_values[0] == 0.0
+        ):
+            return 0, float("inf")
+
+        tolerance = (
+            np.finfo(float).eps
+            * max(jacobian.shape)
+            * singular_values[0]
+        )
+        rank = int(
+            np.count_nonzero(
+                singular_values > tolerance
+            )
+        )
+
+        if (
+            rank < parameter_count
+            or singular_values[-1] <= tolerance
+        ):
+            return rank, float("inf")
+
+        condition = float(
+            singular_values[0] / singular_values[-1]
+        )
+        return rank, condition
+
+    residuals, residual_sum_new, evaluation_valid = (
+        calculate_residuals(parameters)
+    )
+
+    if not evaluation_valid:
+        width = abs(float(parameters[3]))
+
+        return BasePeakFit(
+            mean=float(parameters[0]),
+            rms=width / np.sqrt(2.0),
+            offset=float(parameters[1]),
+            amplitude=float(parameters[2]),
+            width=width,
+            residual_norm=float("inf"),
+            solver_success=False,
+            covariance_available=False,
+            evaluations=evaluations,
+            jacobian_rank=0,
+            condition_estimate=float("inf"),
+        )
+
+    best_parameters = parameters.copy()
+    residual_sum_best = finite_limit
+
+    gradient = np.empty(parameter_count, dtype=float)
+    normal = np.empty(packed_size, dtype=float)
+    saved_normal: np.ndarray | None = None
+    saved_parameters: np.ndarray | None = None
+
+    iteration = 0
+    unimproved = 0
+    finished = False
+
+    while True:
+        if unimproved == 0:
+            damping *= damping_decrease
+            residual_sum_best = residual_sum_new
+            best_parameters = parameters.copy()
+
+            gradient.fill(0.0)
+            normal.fill(0.0)
+
+            for sample_index in range(centers.size):
+                derivatives, valid = calculate_derivatives(
+                    float(centers[sample_index]),
+                    parameters,
+                )
+
+                if not valid:
+                    evaluation_valid = False
+                    residual_sum_best = -1.0
+                    break
+
+                for row in range(parameter_count):
+                    gradient[row] += (
+                        derivatives[row]
+                        * residuals[sample_index]
+                    )
+
+                    packed_row = row * (row + 1) // 2
+
+                    for column in range(row + 1):
+                        normal[packed_row + column] += (
+                            derivatives[row]
+                            * derivatives[column]
+                        )
+
+            if not evaluation_valid:
+                break
+
+            saved_normal = normal.copy()
+            saved_parameters = parameters.copy()
+
+        if saved_normal is None or saved_parameters is None:
+            evaluation_valid = False
+            residual_sum_best = -1.0
+            break
+
+        positive_definite = False
+        first_pass = True
+
+        while (
+            not positive_definite
+            and np.isfinite(damping)
+        ):
+            if not first_pass:
+                normal[:] = saved_normal
+            else:
+                first_pass = False
+
+            step = -gradient.copy()
+
+            for parameter_index in range(parameter_count):
+                diagonal = (
+                    parameter_index
+                    * (parameter_index + 3)
+                    // 2
+                )
+
+                if saved_normal[diagonal] == 0.0:
+                    normal[diagonal] = damping
+                else:
+                    normal[diagonal] = (
+                        saved_normal[diagonal]
+                        * (1.0 + damping)
+                    )
+
+            positive_definite = (
+                _gwyddion_cholesky_decompose(
+                    parameter_count,
+                    normal,
+                )
+            )
+
+            if not positive_definite:
+                damping *= damping_increase
+
+                if damping == 0.0:
+                    damping = damping_zero_replacement
+
+        if not np.isfinite(damping):
+            evaluation_valid = False
+            residual_sum_best = -1.0
+            break
+
+        _gwyddion_cholesky_solve(
+            parameter_count,
+            normal,
+            step,
+        )
+
+        parameters = saved_parameters + step
+
+        unchanged = 0
+
+        for parameter_index in range(parameter_count):
+            if (
+                abs(
+                    float(parameters[parameter_index])
+                    - float(
+                        saved_parameters[parameter_index]
+                    )
+                )
+                == 0.0
+            ):
+                unchanged += 1
+
+        if unchanged == parameter_count:
+            break
+
+        (
+            residuals,
+            residual_sum_new,
+            evaluation_valid,
+        ) = calculate_residuals(parameters)
+
+        if not evaluation_valid:
+            residual_sum_best = -1.0
+            break
+
+        if (
+            residual_sum_new == 0.0
+            or (
+                iteration > 2
+                and abs(
+                    (
+                        residual_sum_best
+                        - residual_sum_new
+                    )
+                    / residual_sum_best
+                )
+                < convergence_tolerance
+            )
+        ):
+            finished = True
+
+        if residual_sum_new >= residual_sum_best:
+            damping *= damping_increase
+
+            if damping == 0.0:
+                damping = damping_zero_replacement
+
+            unimproved += 1
+        else:
+            unimproved = 0
+
+        if unimproved >= maximum_unimproved:
+            break
+
+        iteration += 1
+
+        if iteration >= maximum_iterations:
+            break
+
+        if finished:
+            break
+
+    parameters = best_parameters.copy()
+    solver_evaluations = evaluations
+
+    covariance_available = False
+
+    if evaluation_valid and saved_normal is not None:
+        original_normal = saved_normal.copy()
+        covariance = saved_normal.copy()
+
+        for parameter_index in range(parameter_count):
+            diagonal = (
+                parameter_index
+                * (parameter_index + 3)
+                // 2
+            )
+
+            if original_normal[diagonal] == 0.0:
+                covariance[diagonal] = 1.0
+
+        covariance_available = (
+            _gwyddion_cholesky_invert(
+                parameter_count,
+                covariance,
+            )
+        )
+
+        if not covariance_available:
+            covariance = original_normal.copy()
+
+            for parameter_index in range(parameter_count):
+                diagonal = (
+                    parameter_index
+                    * (parameter_index + 3)
+                    // 2
+                )
+
+                if original_normal[diagonal] == 0.0:
+                    covariance[diagonal] = 1.0
+
+                covariance[diagonal] *= 1.0001
+
+            covariance_available = (
+                _gwyddion_cholesky_invert(
+                    parameter_count,
+                    covariance,
+                )
+            )
+
+        covariance_available = bool(
+            covariance_available
+            and np.all(np.isfinite(covariance))
+        )
+
+    finite_parameters = bool(
+        np.all(np.isfinite(parameters))
+    )
+
+    if not finite_parameters:
+        covariance_available = False
+
+    jacobian_rank, condition_estimate = (
+        rank_and_condition(parameters)
+    )
+
+    width = abs(float(parameters[3]))
+    solver_success = bool(
+        covariance_available
+        and finite_parameters
+        and residual_sum_best >= 0.0
+    )
+
+    residual_norm = (
+        float(np.sqrt(residual_sum_best))
+        if residual_sum_best >= 0.0
+        else float("inf")
+    )
+
+    return BasePeakFit(
+        mean=float(parameters[0]),
+        rms=width / np.sqrt(2.0),
+        offset=float(parameters[1]),
+        amplitude=float(parameters[2]),
+        width=width,
+        residual_norm=residual_norm,
+        solver_success=solver_success,
+        covariance_available=covariance_available,
+        evaluations=solver_evaluations,
+        jacobian_rank=jacobian_rank,
+        condition_estimate=condition_estimate,
+    )
+
+
 def _fit_base_peak(window: BasePeakWindow) -> BasePeakFit:
     """Fit Gwyddion's Gaussian parameterization to a selected peak window."""
     centers = np.asarray(window.centers, dtype=float)
@@ -319,46 +942,20 @@ def _fit_base_peak(window: BasePeakWindow) -> BasePeakFit:
             condition_estimate=condition_estimate,
         )
 
-    solution = least_squares(
-        residuals,
-        initial,
-        jac=jacobian,
-        method="lm",
-        ftol=1e-12,
-        xtol=1e-12,
-        gtol=1e-12,
-        max_nfev=2000,
+    normalized_window = BasePeakWindow(
+        centers=window.centers,
+        density=window.density,
+        peak_index=window.peak_index,
+        start_index=window.start_index,
+        stop_index=window.stop_index,
+        initial_mean=window.initial_mean,
+        initial_offset=window.initial_offset,
+        initial_amplitude=window.initial_amplitude,
+        initial_width=initial_width,
     )
 
-    parameters = np.asarray(solution.x, dtype=float)
-    width = abs(float(parameters[3]))
-    jacobian_rank, condition_estimate = rank_and_condition(
-        np.asarray(solution.jac, dtype=float)
-    )
-
-    solver_success = bool(
-        solution.success
-        and np.all(np.isfinite(parameters))
-        and np.all(np.isfinite(solution.fun))
-    )
-    covariance_available = bool(
-        solver_success
-        and jacobian_rank == 4
-        and width > width_floor
-    )
-
-    return BasePeakFit(
-        mean=float(parameters[0]),
-        rms=width / np.sqrt(2.0),
-        offset=float(parameters[1]),
-        amplitude=float(parameters[2]),
-        width=width,
-        residual_norm=float(np.linalg.norm(solution.fun)),
-        solver_success=solver_success,
-        covariance_available=covariance_available,
-        evaluations=int(solution.nfev),
-        jacobian_rank=jacobian_rank,
-        condition_estimate=condition_estimate,
+    return _fit_base_peak_gwyddion_lm(
+        normalized_window
     )
 
 
@@ -384,6 +981,7 @@ class BasePeakEstimate:
     def rms(self) -> float:
         """Fitted base-peak RMS width."""
         return self.fit.rms
+
 
 
 def _estimate_base_peak(data: np.ndarray) -> BasePeakEstimate:

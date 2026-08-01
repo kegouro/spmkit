@@ -2159,3 +2159,161 @@ def test_flatten_base_preserves_nonpositive_minimum_after_mean_centering(
 
     assert not result.corrected.flags.writeable
     assert not result.background.flags.writeable
+
+
+def test_gwyddion_lm_reproduces_edge_peak_solution() -> None:
+    centers = np.array(
+        [
+            0.075611686318400137,
+            0.26307892775469505,
+            0.45054616919099005,
+            0.638013410627285,
+            0.82548065206358001,
+            1.0129478934998748,
+            1.2004151349361698,
+        ],
+        dtype=float,
+    )
+    density = np.array(
+        [
+            4.514677658785919,
+            0.18058710635143677,
+            0.13891315873187443,
+            0.076402237302530943,
+            0.0,
+            0.083347895239124656,
+            0.041673947619562328,
+        ],
+        dtype=float,
+    )
+
+    original_centers = centers.copy()
+    original_density = density.copy()
+
+    window = flatten_base_core.BasePeakWindow(
+        centers=centers,
+        density=density,
+        peak_index=0,
+        start_index=0,
+        stop_index=7,
+        initial_mean=0.075611686318400137,
+        initial_offset=0.0,
+        initial_amplitude=4.514677658785919,
+        initial_width=0.39368120701621939,
+    )
+
+    result = flatten_base_core._fit_base_peak_gwyddion_lm(
+        window
+    )
+
+    assert result.solver_success
+    assert result.covariance_available
+    assert result.jacobian_rank == 4
+    assert np.isfinite(result.condition_estimate)
+
+    assert result.mean == pytest.approx(
+        -0.38015369096654944,
+        abs=5e-10,
+        rel=0.0,
+    )
+    assert result.offset == pytest.approx(
+        0.067658206848585964,
+        abs=5e-10,
+        rel=0.0,
+    )
+    assert result.amplitude == pytest.approx(
+        178.54320058289358,
+        abs=5e-7,
+        rel=0.0,
+    )
+    assert result.width == pytest.approx(
+        0.23717840912131738,
+        abs=5e-10,
+        rel=0.0,
+    )
+    assert result.rms == pytest.approx(
+        0.1677104614407208,
+        abs=5e-10,
+        rel=0.0,
+    )
+
+    np.testing.assert_array_equal(
+        centers,
+        original_centers,
+    )
+    np.testing.assert_array_equal(
+        density,
+        original_density,
+    )
+
+
+def test_gwyddion_packed_cholesky_matches_dense_reference() -> None:
+    matrix = np.array(
+        [
+            [7.0, 1.2, 0.4, -0.3],
+            [1.2, 5.0, 0.8, 0.2],
+            [0.4, 0.8, 4.0, 0.6],
+            [-0.3, 0.2, 0.6, 3.0],
+        ],
+        dtype=float,
+    )
+    right_hand_side = np.array(
+        [1.0, -2.0, 0.5, 3.0],
+        dtype=float,
+    )
+
+    packed = np.array(
+        [
+            matrix[row, column]
+            for row in range(matrix.shape[0])
+            for column in range(row + 1)
+        ],
+        dtype=float,
+    )
+
+    decomposition = packed.copy()
+
+    assert flatten_base_core._gwyddion_cholesky_decompose(
+        4,
+        decomposition,
+    )
+
+    solution = right_hand_side.copy()
+
+    flatten_base_core._gwyddion_cholesky_solve(
+        4,
+        decomposition,
+        solution,
+    )
+
+    np.testing.assert_allclose(
+        solution,
+        np.linalg.solve(matrix, right_hand_side),
+        atol=5e-15,
+        rtol=5e-15,
+    )
+
+    inverse = packed.copy()
+
+    assert flatten_base_core._gwyddion_cholesky_invert(
+        4,
+        inverse,
+    )
+
+    expected_inverse = np.linalg.inv(matrix)
+
+    expected_packed_inverse = np.array(
+        [
+            expected_inverse[row, column]
+            for row in range(matrix.shape[0])
+            for column in range(row + 1)
+        ],
+        dtype=float,
+    )
+
+    np.testing.assert_allclose(
+        inverse,
+        expected_packed_inverse,
+        atol=5e-15,
+        rtol=5e-15,
+    )

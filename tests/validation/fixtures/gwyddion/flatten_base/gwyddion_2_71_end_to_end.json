@@ -1,0 +1,50 @@
+{
+  "acceptance": {
+    "corrected_max_abs_error": 5e-13,
+    "final_peak_mean_abs_error": 5e-10,
+    "final_peak_rms_abs_error": 5e-10
+  },
+  "artifacts": {
+    "corrected_canonical_sha256": "0cdfcb4315ed0bb231890e80cb00845d63f4264be2b7dcdb4f9ed9230f2d003d",
+    "input_canonical_sha256": "b323b21a248a4882b324b189c9198eb140138bf729a3f483d27887f1b51db802",
+    "npz_filename": "gwyddion_2_71_end_to_end.npz",
+    "npz_sha256": "e92fe35ceaeaf166457efacb72a310ed5e012608946a604bdffba6e9df13d058"
+  },
+  "expected_control_flow": {
+    "facet_iterations": 5,
+    "final_peak_success": true,
+    "polynomial_applied": 4,
+    "polynomial_attempted": 4,
+    "polynomial_degrees": [
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  "expected_result": {
+    "corrected_maximum": 6.0000618910655525,
+    "corrected_minimum": 0.0,
+    "final_peak_mean": -0.38253115055779424,
+    "final_peak_rms": 0.16615659800631805
+  },
+  "field": {
+    "dtype": "float64",
+    "height_unit": "unspecified synthetic units",
+    "pixel_size_x": 0.8,
+    "pixel_size_y": 1.3,
+    "shape": [
+      24,
+      32
+    ]
+  },
+  "fixture_id": "gwyddion-2.71-flatten-base-end-to-end",
+  "reference": {
+    "operation": "Flatten Base",
+    "probe_output_sha256": "51ead932b37381b8c0cdd4b0df6b4f9e8962cf638c1cfaad96d0b178118a70a0",
+    "probe_source": ".reference/gwyddion-2.71/flatten-base-parity/flatten_base_end_to_end_probe.c",
+    "software": "Gwyddion",
+    "version": "2.71"
+  },
+  "schema_version": 1
+}
