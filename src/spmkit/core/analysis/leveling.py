@@ -655,6 +655,72 @@ def three_point_level(
     return channel.with_data(data - plane)
 
 
+def _fit_polynomial_surface_data(
+    data: np.ndarray,
+    *,
+    powers: tuple[tuple[int, int], ...],
+    selection: np.ndarray,
+    operation: str,
+) -> tuple[np.ndarray, np.ndarray, int, np.ndarray]:
+    """Fit and evaluate polynomial terms on normalized pixel coordinates."""
+    values = np.asarray(data, dtype=float)
+    selected_points = np.asarray(selection, dtype=bool)
+
+    if values.ndim != 2:
+        raise ValueError(f"{operation} requires a two-dimensional array")
+    if selected_points.shape != values.shape:
+        raise ValueError(f"{operation} requires selection to match data shape")
+    if not powers:
+        raise ValueError(f"{operation} requires at least one polynomial term")
+
+    selected_count = int(np.count_nonzero(selected_points))
+    if selected_count < len(powers):
+        raise ValueError(
+            f"{operation} requires at least {len(powers)} selected points"
+        )
+
+    rows, columns = values.shape
+    x_coordinates = (
+        np.linspace(-1.0, 1.0, columns)
+        if columns > 1
+        else np.zeros(columns)
+    )
+    y_coordinates = (
+        np.linspace(-1.0, 1.0, rows)
+        if rows > 1
+        else np.zeros(rows)
+    )
+    xx, yy = np.meshgrid(x_coordinates, y_coordinates)
+
+    terms = [
+        (xx**x_power) * (yy**y_power)
+        for x_power, y_power in powers
+    ]
+    design = np.column_stack([term.ravel() for term in terms])
+    selected = selected_points.ravel()
+
+    coefficients, _, rank, singular_values = np.linalg.lstsq(
+        design[selected],
+        values.ravel()[selected],
+        rcond=None,
+    )
+
+    if rank < len(powers):
+        raise ValueError(
+            f"{operation} selected points do not define "
+            "a unique polynomial background"
+        )
+
+    background = (design @ coefficients).reshape(values.shape)
+
+    return (
+        background,
+        coefficients,
+        int(rank),
+        singular_values,
+    )
+
+
 def _estimate_polynomial_background_data(
     channel: SPMChannel,
     *,
@@ -722,28 +788,13 @@ def _estimate_polynomial_background_data(
         minimum_points=len(powers),
     )
 
-    rows, columns = data.shape
-
-    x_coordinates = np.linspace(-1.0, 1.0, columns) if columns > 1 else np.zeros(columns)
-    y_coordinates = np.linspace(-1.0, 1.0, rows) if rows > 1 else np.zeros(rows)
-    xx, yy = np.meshgrid(x_coordinates, y_coordinates)
-
-    terms = [(xx**x_power) * (yy**y_power) for x_power, y_power in powers]
-    design = np.column_stack([term.ravel() for term in terms])
-    selected = selection.ravel()
-
-    coefficients, _, rank, _ = np.linalg.lstsq(
-        design[selected],
-        data.ravel()[selected],
-        rcond=None,
+    background, _, _, _ = _fit_polynomial_surface_data(
+        data,
+        powers=tuple(powers),
+        selection=selection,
+        operation="polynomial_background",
     )
 
-    if rank < len(powers):
-        raise ValueError(
-            "polynomial_background selected points do not define a unique polynomial background"
-        )
-
-    background = (design @ coefficients).reshape(data.shape)
     return background
 
 
