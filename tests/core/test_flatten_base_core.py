@@ -1570,3 +1570,247 @@ def test_flatten_base_polynomial_stage_stops_after_peak_failure(
 
     assert not result.background.flags.writeable
     assert not result.corrected.flags.writeable
+
+
+def test_flatten_base_mask_uses_parameters_from_unsuccessful_peak() -> None:
+    data = np.zeros((5, 5), dtype=float)
+    data[2, 2] = 4.0
+
+    class Peak:
+        success = False
+        mean = 1.0
+        rms = 0.5
+
+    result = flatten_base_core._build_flatten_base_mask(
+        data,
+        peak=Peak(),
+        degree=2,
+    )
+
+    assert result.threshold == 2.5
+    assert result.raw_count == 1
+    assert result.grown_count == 13
+    assert result.raw[2, 2]
+
+
+def test_polynomial_stage_runs_degree_two_with_failed_incoming_peak(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    data = np.arange(20, dtype=float).reshape(4, 5)
+
+    class Peak:
+        def __init__(self, success: bool) -> None:
+            self.success = success
+
+    incoming_peak = Peak(success=False)
+    failed_updated_peak = Peak(success=False)
+    calls: list[int] = []
+
+    class Iteration:
+        degree = 2
+        background = np.ones_like(data)
+        corrected = data - 1.0
+        peak = failed_updated_peak
+
+    def fake_iteration(
+        received: np.ndarray,
+        *,
+        peak: Peak,
+        degree: int,
+    ) -> Iteration:
+        np.testing.assert_array_equal(received, data)
+        assert peak is incoming_peak
+        assert degree == 2
+        calls.append(degree)
+        return Iteration()
+
+    monkeypatch.setattr(
+        flatten_base_core,
+        "_run_flatten_base_polynomial_iteration",
+        fake_iteration,
+    )
+
+    result = flatten_base_core._run_flatten_base_polynomial_stage(
+        data,
+        peak=incoming_peak,
+    )
+
+    assert calls == [2]
+    assert result.completed_degrees == (2,)
+    assert result.termination == "peak_failure"
+
+    np.testing.assert_array_equal(
+        result.background,
+        np.ones_like(data),
+    )
+    np.testing.assert_array_equal(
+        result.corrected,
+        data - 1.0,
+    )
+
+
+def test_polynomial_iteration_skips_constant_field_and_reestimates_peak(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    data = np.full((5, 5), 2.5, dtype=float)
+    original = data.copy()
+
+    class IncomingPeak:
+        success = True
+        mean = 2.5
+        rms = 0.0
+
+    class UpdatedPeak:
+        success = False
+        mean = 2.5
+        rms = 0.0
+
+    incoming_peak = IncomingPeak()
+    updated_peak = UpdatedPeak()
+    peak_calls: list[np.ndarray] = []
+
+    def forbidden_mask(*args: object, **kwargs: object) -> None:
+        del args, kwargs
+        raise AssertionError(
+            "constant-field iteration must not construct a mask"
+        )
+
+    def forbidden_fit(*args: object, **kwargs: object) -> None:
+        del args, kwargs
+        raise AssertionError(
+            "constant-field iteration must not fit a polynomial"
+        )
+
+    def fake_peak(received: np.ndarray) -> UpdatedPeak:
+        peak_calls.append(received.copy())
+        np.testing.assert_array_equal(received, data)
+        return updated_peak
+
+    monkeypatch.setattr(
+        flatten_base_core,
+        "_build_flatten_base_mask",
+        forbidden_mask,
+    )
+    monkeypatch.setattr(
+        flatten_base_core,
+        "_estimate_base_peak",
+        fake_peak,
+    )
+
+    import spmkit.core.analysis.leveling as leveling
+
+    monkeypatch.setattr(
+        leveling,
+        "_fit_polynomial_surface_data",
+        forbidden_fit,
+    )
+
+    result = flatten_base_core._run_flatten_base_polynomial_iteration(
+        data,
+        peak=incoming_peak,
+        degree=2,
+    )
+
+    assert not result.applied
+    assert result.degree == 2
+    assert result.powers == ()
+    assert result.mask is None
+    assert result.selected_count == 0
+    assert result.rank == 0
+    assert result.coefficients.size == 0
+    assert result.singular_values.size == 0
+    assert result.peak is updated_peak
+    assert len(peak_calls) == 1
+
+    np.testing.assert_array_equal(
+        result.background,
+        np.zeros_like(data),
+    )
+    np.testing.assert_array_equal(result.corrected, data)
+    np.testing.assert_array_equal(data, original)
+
+    assert not result.coefficients.flags.writeable
+    assert not result.singular_values.flags.writeable
+    assert not result.background.flags.writeable
+    assert not result.corrected.flags.writeable
+
+
+def test_polynomial_stage_records_unapplied_degree_before_peak_failure(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    data = np.arange(20, dtype=float).reshape(4, 5)
+    original = data.copy()
+
+    class Peak:
+        def __init__(self, success: bool) -> None:
+            self.success = success
+
+    incoming_peak = Peak(success=True)
+    failed_peak = Peak(success=False)
+
+    background = np.zeros_like(data)
+    corrected = data.copy()
+    coefficients = np.empty(0, dtype=float)
+    singular_values = np.empty(0, dtype=float)
+
+    background.setflags(write=False)
+    corrected.setflags(write=False)
+    coefficients.setflags(write=False)
+    singular_values.setflags(write=False)
+
+    skipped_iteration = (
+        flatten_base_core.FlattenBasePolynomialIteration(
+            degree=2,
+            powers=(),
+            mask=None,
+            selected_count=0,
+            coefficients=coefficients,
+            rank=0,
+            singular_values=singular_values,
+            background=background,
+            corrected=corrected,
+            peak=failed_peak,
+            applied=False,
+        )
+    )
+
+    calls: list[int] = []
+
+    def fake_iteration(
+        received: np.ndarray,
+        *,
+        peak: Peak,
+        degree: int,
+    ) -> flatten_base_core.FlattenBasePolynomialIteration:
+        np.testing.assert_array_equal(received, data)
+        assert peak is incoming_peak
+        assert degree == 2
+        calls.append(degree)
+        return skipped_iteration
+
+    monkeypatch.setattr(
+        flatten_base_core,
+        "_run_flatten_base_polynomial_iteration",
+        fake_iteration,
+    )
+
+    result = flatten_base_core._run_flatten_base_polynomial_stage(
+        data,
+        peak=incoming_peak,
+    )
+
+    assert calls == [2]
+    assert result.attempted_degrees == (2,)
+    assert result.completed_degrees == ()
+    assert result.iterations == (skipped_iteration,)
+    assert result.termination == "peak_failure"
+
+    np.testing.assert_array_equal(
+        result.background,
+        np.zeros_like(data),
+    )
+    np.testing.assert_array_equal(result.corrected, data)
+    np.testing.assert_array_equal(data, original)
+
+    assert not result.background.flags.writeable
+    assert not result.corrected.flags.writeable

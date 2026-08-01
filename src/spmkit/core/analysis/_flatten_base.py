@@ -811,10 +811,6 @@ def _build_flatten_base_mask(
         raise ValueError(
             "Flatten Base masking requires a non-negative degree"
         )
-    if not peak.success:
-        raise ValueError(
-            "Flatten Base masking requires a successful base-peak estimate"
-        )
 
     try:
         numeric = np.asarray(values, dtype=float)
@@ -879,7 +875,7 @@ class FlattenBasePolynomialIteration:
 
     degree: int
     powers: tuple[tuple[int, int], ...]
-    mask: FlattenBaseMask
+    mask: FlattenBaseMask | None
     selected_count: int
     coefficients: np.ndarray
     rank: int
@@ -887,6 +883,7 @@ class FlattenBasePolynomialIteration:
     background: np.ndarray
     corrected: np.ndarray
     peak: BasePeakEstimate
+    applied: bool = True
 
 
 def _run_flatten_base_polynomial_iteration(
@@ -896,10 +893,80 @@ def _run_flatten_base_polynomial_iteration(
     degree: int,
 ) -> FlattenBasePolynomialIteration:
     """Run one masked polynomial correction used by Flatten Base."""
+    values = np.asarray(data)
+
+    if np.issubdtype(values.dtype, np.bool_) or np.iscomplexobj(values):
+        raise TypeError(
+            "Flatten Base polynomial iteration requires real-valued data"
+        )
+    if values.ndim != 2:
+        raise ValueError(
+            "Flatten Base polynomial iteration requires "
+            "a two-dimensional array"
+        )
+    if values.size == 0:
+        raise ValueError(
+            "Flatten Base polynomial iteration requires non-empty data"
+        )
+    if isinstance(degree, (bool, np.bool_)) or not isinstance(
+        degree,
+        (int, np.integer),
+    ):
+        raise TypeError(
+            "Flatten Base polynomial iteration requires an integer degree"
+        )
+
+    degree_value = int(degree)
+
+    if degree_value < 0:
+        raise ValueError(
+            "Flatten Base polynomial iteration requires "
+            "a non-negative degree"
+        )
+
+    try:
+        numeric = np.asarray(values, dtype=float)
+    except (TypeError, ValueError) as exc:
+        raise TypeError(
+            "Flatten Base polynomial iteration requires numeric data"
+        ) from exc
+
+    if not np.all(np.isfinite(numeric)):
+        raise ValueError(
+            "Flatten Base polynomial iteration requires finite data"
+        )
+
+    if float(np.max(numeric)) <= float(np.min(numeric)):
+        background = np.zeros_like(numeric)
+        corrected = np.array(numeric, dtype=float, copy=True)
+        coefficients = np.empty(0, dtype=float)
+        singular_values = np.empty(0, dtype=float)
+
+        updated_peak = _estimate_base_peak(corrected)
+
+        background.setflags(write=False)
+        corrected.setflags(write=False)
+        coefficients.setflags(write=False)
+        singular_values.setflags(write=False)
+
+        return FlattenBasePolynomialIteration(
+            degree=degree_value,
+            powers=(),
+            mask=None,
+            selected_count=0,
+            coefficients=coefficients,
+            rank=0,
+            singular_values=singular_values,
+            background=background,
+            corrected=corrected,
+            peak=updated_peak,
+            applied=False,
+        )
+
     automatic_mask = _build_flatten_base_mask(
-        data,
+        numeric,
         peak=peak,
-        degree=degree,
+        degree=degree_value,
     )
     degree_value = automatic_mask.degree
 
@@ -1007,11 +1074,20 @@ class FlattenBasePolynomialStage:
     termination: str
 
     @property
-    def completed_degrees(self) -> tuple[int, ...]:
-        """Polynomial degrees successfully applied."""
+    def attempted_degrees(self) -> tuple[int, ...]:
+        """Polynomial degrees attempted by the stage."""
         return tuple(
             iteration.degree
             for iteration in self.iterations
+        )
+
+    @property
+    def completed_degrees(self) -> tuple[int, ...]:
+        """Polynomial degrees that actually subtracted a background."""
+        return tuple(
+            iteration.degree
+            for iteration in self.iterations
+            if getattr(iteration, "applied", True)
         )
 
 
@@ -1050,10 +1126,6 @@ def _run_flatten_base_polynomial_stage(
     termination = "completed"
 
     for degree in (2, 3, 4, 5):
-        if not current_peak.success:
-            termination = "peak_failure"
-            break
-
         iteration = _run_flatten_base_polynomial_iteration(
             working,
             peak=current_peak,
