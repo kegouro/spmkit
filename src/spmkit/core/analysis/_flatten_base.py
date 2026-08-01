@@ -5,7 +5,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import numpy as np
-from scipy.ndimage import binary_dilation
 from scipy.optimize import least_squares
 
 
@@ -653,7 +652,13 @@ def _grow_mask_conn4(
     *,
     radius: int,
 ) -> np.ndarray:
-    """Grow a binary mask by an inclusive four-connectivity distance."""
+    """Reproduce Gwyddion 2.71 CONN4 mask growth.
+
+    This intentionally follows ``gwy_data_field_grains_grow()`` with
+    ``from_border=FALSE``, including its special image-border behaviour.
+    It is therefore not equivalent to ordinary city-block dilation when
+    grains are absent from, or touch, the field boundary.
+    """
     values = np.asarray(mask)
 
     if values.ndim != 2:
@@ -670,29 +675,100 @@ def _grow_mask_conn4(
 
     if radius_value < 0:
         raise ValueError("conn4 mask growth requires a non-negative radius")
+    if values.shape[0] == 0 or values.shape[1] == 0:
+        raise ValueError("conn4 mask growth requires a non-empty mask")
 
     seeds = np.array(values, dtype=bool, copy=True)
 
-    if radius_value == 0 or not np.any(seeds):
+    # Gwyddion returns immediately for growth amounts below 0.5.
+    if radius_value == 0:
         return seeds
 
-    connectivity = np.array(
-        [
-            [False, True,  False],
-            [True,  True,  True ],
-            [False, True,  False],
-        ],
-        dtype=bool,
-    )
+    rows, columns = seeds.shape
+    unreachable = int(np.iinfo(np.uint32).max)
 
-    grown = binary_dilation(
+    # grains_grow() duplicates and inverts the original mask before the
+    # distance transform.  Consequently original mask pixels are zeros,
+    # while the surrounding region starts as G_MAXUINT.
+    distances = np.where(
         seeds,
-        structure=connectivity,
-        iterations=radius_value,
-        border_value=0,
-    )
+        0,
+        unreachable,
+    ).astype(np.int64, copy=False)
 
-    return np.asarray(grown, dtype=bool)
+    queue: list[tuple[int, int]] = []
+
+    # init_erosion_4(..., from_border=FALSE) scans only interior pixels.
+    for row in range(1, rows - 1):
+        for column in range(1, columns - 1):
+            if distances[row, column] != unreachable:
+                continue
+
+            if (
+                distances[row - 1, column] == 0
+                or distances[row, column - 1] == 0
+                or distances[row, column + 1] == 0
+                or distances[row + 1, column] == 0
+            ):
+                distances[row, column] = 1
+                queue.append((row, column))
+
+    distance = 1
+
+    while queue:
+        next_queue: list[tuple[int, int]] = []
+        next_distance = distance + 1
+
+        for row, column in queue:
+            neighbours = (
+                (row - 1, column),
+                (row, column - 1),
+                (row, column + 1),
+                (row + 1, column),
+            )
+
+            for neighbour_row, neighbour_column in neighbours:
+                if not (
+                    0 <= neighbour_row < rows
+                    and 0 <= neighbour_column < columns
+                ):
+                    continue
+
+                if (
+                    distances[neighbour_row, neighbour_column]
+                    != unreachable
+                ):
+                    continue
+
+                distances[neighbour_row, neighbour_column] = next_distance
+                next_queue.append(
+                    (neighbour_row, neighbour_column)
+                )
+
+        if not next_queue:
+            break
+
+        queue = next_queue
+        distance = next_distance
+
+    # Gwyddion's post-pass gives distance 1 to border pixels that were
+    # never reached by the interior erosion queues.
+    top_unreached = distances[0, :] == unreachable
+    distances[0, top_unreached] = 1
+
+    bottom_unreached = distances[-1, :] == unreachable
+    distances[-1, bottom_unreached] = 1
+
+    left_unreached = distances[:, 0] == unreachable
+    distances[left_unreached, 0] = 1
+
+    right_unreached = distances[:, -1] == unreachable
+    distances[right_unreached, -1] = 1
+
+    grown = seeds.copy()
+    grown[distances <= radius_value] = True
+
+    return grown
 
 
 @dataclass(frozen=True)
@@ -793,4 +869,128 @@ def _build_flatten_base_mask(
         grown=grown,
         raw_count=raw_count,
         grown_count=grown_count,
+    )
+
+
+
+@dataclass(frozen=True)
+class FlattenBasePolynomialIteration:
+    """Evidence from one masked polynomial correction."""
+
+    degree: int
+    powers: tuple[tuple[int, int], ...]
+    mask: FlattenBaseMask
+    selected_count: int
+    coefficients: np.ndarray
+    rank: int
+    singular_values: np.ndarray
+    background: np.ndarray
+    corrected: np.ndarray
+    peak: BasePeakEstimate
+
+
+def _run_flatten_base_polynomial_iteration(
+    data: np.ndarray,
+    *,
+    peak: BasePeakEstimate,
+    degree: int,
+) -> FlattenBasePolynomialIteration:
+    """Run one masked polynomial correction used by Flatten Base."""
+    automatic_mask = _build_flatten_base_mask(
+        data,
+        peak=peak,
+        degree=degree,
+    )
+    degree_value = automatic_mask.degree
+
+    powers = tuple(
+        (x_power, y_power)
+        for x_power in range(degree_value + 1)
+        for y_power in range(degree_value + 1 - x_power)
+    )
+
+    selection = np.logical_not(automatic_mask.grown)
+    selected_count = int(np.count_nonzero(selection))
+
+    from spmkit.core.analysis.leveling import (
+        _fit_polynomial_surface_data,
+    )
+
+    (
+        fitted_background,
+        fitted_coefficients,
+        rank,
+        fitted_singular_values,
+    ) = _fit_polynomial_surface_data(
+        data,
+        powers=powers,
+        selection=selection,
+        operation=f"Flatten Base degree {degree_value}",
+    )
+
+    values = np.asarray(data, dtype=float)
+    background = np.array(
+        fitted_background,
+        dtype=float,
+        copy=True,
+    )
+    coefficients = np.array(
+        fitted_coefficients,
+        dtype=float,
+        copy=True,
+    )
+    singular_values = np.array(
+        fitted_singular_values,
+        dtype=float,
+        copy=True,
+    )
+
+    if background.shape != values.shape:
+        raise ValueError(
+            "Flatten Base polynomial fit returned an invalid background shape"
+        )
+    if coefficients.ndim != 1 or coefficients.size != len(powers):
+        raise ValueError(
+            "Flatten Base polynomial fit returned invalid coefficients"
+        )
+    if singular_values.ndim != 1:
+        raise ValueError(
+            "Flatten Base polynomial fit returned invalid singular values"
+        )
+    if not np.all(np.isfinite(background)):
+        raise ValueError(
+            "Flatten Base polynomial fit returned a non-finite background"
+        )
+    if not np.all(np.isfinite(coefficients)):
+        raise ValueError(
+            "Flatten Base polynomial fit returned non-finite coefficients"
+        )
+    if not np.all(np.isfinite(singular_values)):
+        raise ValueError(
+            "Flatten Base polynomial fit returned non-finite singular values"
+        )
+
+    corrected = np.array(
+        values - background,
+        dtype=float,
+        copy=True,
+    )
+    updated_peak = _estimate_base_peak(corrected)
+
+    coefficients.setflags(write=False)
+    singular_values.setflags(write=False)
+    background.setflags(write=False)
+    corrected.setflags(write=False)
+
+    return FlattenBasePolynomialIteration(
+        degree=degree_value,
+        powers=powers,
+        mask=automatic_mask,
+        selected_count=selected_count,
+        coefficients=coefficients,
+        rank=int(rank),
+        singular_values=singular_values,
+        background=background,
+        corrected=corrected,
+        peak=updated_peak,
     )

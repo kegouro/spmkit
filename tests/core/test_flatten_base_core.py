@@ -717,7 +717,7 @@ def test_grow_mask_conn4_forms_inclusive_city_block_diamond() -> None:
     np.testing.assert_array_equal(observed, expected)
 
 
-def test_grow_mask_conn4_crops_at_image_boundaries() -> None:
+def test_grow_mask_conn4_matches_gwyddion_corner_handling() -> None:
     mask = np.zeros((5, 5), dtype=bool)
     mask[0, 0] = True
 
@@ -728,19 +728,20 @@ def test_grow_mask_conn4_crops_at_image_boundaries() -> None:
 
     expected = np.array(
         [
-            [True,  True,  True,  False, False],
-            [True,  True,  False, False, False],
-            [True,  False, False, False, False],
-            [False, False, False, False, False],
-            [False, False, False, False, False],
+            [True, True,  True,  True,  True],
+            [True, False, False, False, True],
+            [True, False, False, False, True],
+            [True, False, False, False, True],
+            [True, True,  True,  True,  True],
         ],
         dtype=bool,
     )
 
     np.testing.assert_array_equal(observed, expected)
+    assert np.count_nonzero(observed) == 16
 
 
-def test_grow_mask_conn4_allows_regions_to_merge() -> None:
+def test_grow_mask_conn4_matches_gwyddion_interior_merge_reference() -> None:
     mask = np.zeros((5, 5), dtype=bool)
     mask[2, 1] = True
     mask[2, 3] = True
@@ -754,7 +755,7 @@ def test_grow_mask_conn4_allows_regions_to_merge() -> None:
         [
             [False, False, False, False, False],
             [False, True,  False, True,  False],
-            [True,  True,  True,  True,  True ],
+            [False, True,  True,  True,  False],
             [False, True,  False, True,  False],
             [False, False, False, False, False],
         ],
@@ -762,6 +763,7 @@ def test_grow_mask_conn4_allows_regions_to_merge() -> None:
     )
 
     np.testing.assert_array_equal(observed, expected)
+    assert np.count_nonzero(observed) == 7
 
 
 def test_grow_mask_conn4_zero_radius_returns_independent_copy() -> None:
@@ -782,7 +784,7 @@ def test_grow_mask_conn4_zero_radius_returns_independent_copy() -> None:
     assert not mask[0, 0]
 
 
-def test_grow_mask_conn4_preserves_empty_mask() -> None:
+def test_grow_mask_conn4_matches_gwyddion_empty_mask_handling() -> None:
     mask = np.zeros((4, 5), dtype=bool)
 
     observed = flatten_base_core._grow_mask_conn4(
@@ -790,8 +792,18 @@ def test_grow_mask_conn4_preserves_empty_mask() -> None:
         radius=3,
     )
 
-    np.testing.assert_array_equal(observed, mask)
-    assert not np.any(observed)
+    expected = np.array(
+        [
+            [True, True,  True,  True,  True],
+            [True, False, False, False, True],
+            [True, False, False, False, True],
+            [True, True,  True,  True,  True],
+        ],
+        dtype=bool,
+    )
+
+    np.testing.assert_array_equal(observed, expected)
+    assert np.count_nonzero(observed) == 14
     assert not np.shares_memory(observed, mask)
 
 
@@ -906,3 +918,428 @@ def test_flatten_base_mask_integrates_threshold_and_conn4_growth() -> None:
 
     np.testing.assert_array_equal(result.raw, expected_raw)
     np.testing.assert_array_equal(result.grown, expected_grown)
+
+
+def test_flatten_base_polynomial_iteration_composes_mask_fit_and_peak(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    rows = 4
+    columns = 5
+    data = np.arange(rows * columns, dtype=float).reshape(rows, columns)
+    original = data.copy()
+
+    raw_mask = np.zeros_like(data, dtype=bool)
+    raw_mask[1, 2] = True
+
+    grown_mask = raw_mask.copy()
+    grown_mask[1, 1:4] = True
+    grown_mask[0, 2] = True
+    grown_mask[2, 2] = True
+
+    raw_mask.setflags(write=False)
+    grown_mask.setflags(write=False)
+
+    automatic_mask = flatten_base_core.FlattenBaseMask(
+        degree=2,
+        threshold=7.0,
+        growth_radius=2,
+        raw=raw_mask,
+        grown=grown_mask,
+        raw_count=1,
+        grown_count=5,
+    )
+
+    class InitialPeak:
+        success = True
+        mean = 1.0
+        rms = 2.0
+
+    class UpdatedPeak:
+        success = True
+        mean = 0.2
+        rms = 0.4
+
+    initial_peak = InitialPeak()
+    updated_peak = UpdatedPeak()
+
+    expected_background = np.full_like(data, 1.25)
+    coefficients = np.arange(6, dtype=float)
+    singular_values = np.linspace(6.0, 1.0, 6)
+
+    captured: dict[str, object] = {}
+
+    def fake_mask(
+        received: np.ndarray,
+        *,
+        peak: InitialPeak,
+        degree: int,
+    ) -> flatten_base_core.FlattenBaseMask:
+        np.testing.assert_array_equal(received, data)
+        assert peak is initial_peak
+        assert degree == 2
+        return automatic_mask
+
+    def fake_fit(
+        received: np.ndarray,
+        *,
+        powers: tuple[tuple[int, int], ...],
+        selection: np.ndarray,
+        operation: str,
+    ) -> tuple[np.ndarray, np.ndarray, int, np.ndarray]:
+        np.testing.assert_array_equal(received, data)
+
+        captured["powers"] = powers
+        captured["selection"] = selection.copy()
+        captured["operation"] = operation
+
+        return (
+            expected_background.copy(),
+            coefficients.copy(),
+            6,
+            singular_values.copy(),
+        )
+
+    def fake_peak(received: np.ndarray) -> UpdatedPeak:
+        np.testing.assert_allclose(
+            received,
+            data - expected_background,
+        )
+        return updated_peak
+
+    monkeypatch.setattr(
+        flatten_base_core,
+        "_build_flatten_base_mask",
+        fake_mask,
+    )
+    monkeypatch.setattr(
+        flatten_base_core,
+        "_estimate_base_peak",
+        fake_peak,
+    )
+
+    import spmkit.core.analysis.leveling as leveling
+
+    monkeypatch.setattr(
+        leveling,
+        "_fit_polynomial_surface_data",
+        fake_fit,
+    )
+
+    result = flatten_base_core._run_flatten_base_polynomial_iteration(
+        data,
+        peak=initial_peak,
+        degree=2,
+    )
+
+    expected_powers = (
+        (0, 0),
+        (0, 1),
+        (0, 2),
+        (1, 0),
+        (1, 1),
+        (2, 0),
+    )
+
+    assert captured["powers"] == expected_powers
+    assert captured["operation"] == "Flatten Base degree 2"
+    np.testing.assert_array_equal(
+        captured["selection"],
+        ~grown_mask,
+    )
+
+    assert result.degree == 2
+    assert result.powers == expected_powers
+    assert result.mask is automatic_mask
+    assert result.selected_count == data.size - 5
+    assert result.rank == 6
+    assert result.peak is updated_peak
+
+    np.testing.assert_array_equal(result.coefficients, coefficients)
+    np.testing.assert_array_equal(
+        result.singular_values,
+        singular_values,
+    )
+    np.testing.assert_allclose(
+        result.background,
+        expected_background,
+    )
+    np.testing.assert_allclose(
+        result.corrected,
+        data - expected_background,
+    )
+
+    assert not result.coefficients.flags.writeable
+    assert not result.singular_values.flags.writeable
+    assert not result.background.flags.writeable
+    assert not result.corrected.flags.writeable
+
+    np.testing.assert_array_equal(data, original)
+
+
+def test_flatten_base_polynomial_iteration_recovers_exact_surface(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    rows = 11
+    columns = 11
+    x = np.linspace(-1.0, 1.0, columns)
+    y = np.linspace(-1.0, 1.0, rows)
+    xx, yy = np.meshgrid(x, y)
+
+    expected_background = (
+        0.10
+        + 0.05 * xx
+        - 0.04 * yy
+        + 0.03 * xx * yy
+        + 0.02 * xx**2
+        - 0.01 * yy**2
+    )
+
+    data = expected_background.copy()
+    data[5, 5] += 5.0
+    original = data.copy()
+
+    class InitialPeak:
+        success = True
+        mean = 0.0
+        rms = 0.2
+
+    class UpdatedPeak:
+        success = True
+
+    updated_peak = UpdatedPeak()
+
+    def fake_updated_peak(received: np.ndarray) -> UpdatedPeak:
+        expected_corrected = np.zeros_like(data)
+        expected_corrected[5, 5] = 5.0
+        np.testing.assert_allclose(
+            received,
+            expected_corrected,
+            atol=2e-13,
+        )
+        return updated_peak
+
+    monkeypatch.setattr(
+        flatten_base_core,
+        "_estimate_base_peak",
+        fake_updated_peak,
+    )
+
+    result = flatten_base_core._run_flatten_base_polynomial_iteration(
+        data,
+        peak=InitialPeak(),
+        degree=2,
+    )
+
+    expected_coefficients = np.array(
+        [
+            0.10,
+            -0.04,
+            -0.01,
+            0.05,
+            0.03,
+            0.02,
+        ],
+        dtype=float,
+    )
+    expected_corrected = np.zeros_like(data)
+    expected_corrected[5, 5] = 5.0
+
+    assert result.powers == (
+        (0, 0),
+        (0, 1),
+        (0, 2),
+        (1, 0),
+        (1, 1),
+        (2, 0),
+    )
+    assert result.mask.raw_count == 1
+    assert result.mask.grown_count == 13
+    assert result.selected_count == data.size - 13
+    assert result.rank == 6
+    assert result.peak is updated_peak
+
+    np.testing.assert_allclose(
+        result.coefficients,
+        expected_coefficients,
+        atol=2e-13,
+    )
+    np.testing.assert_allclose(
+        result.background,
+        expected_background,
+        atol=2e-13,
+    )
+    np.testing.assert_allclose(
+        result.corrected,
+        expected_corrected,
+        atol=2e-13,
+    )
+    np.testing.assert_array_equal(data, original)
+
+
+
+def test_grow_mask_conn4_matches_gwyddion_271_right_edge_reference() -> None:
+    mask = np.zeros((8, 9), dtype=bool)
+    mask[2, 4] = True
+    mask[5, 7] = True
+
+    observed = flatten_base_core._grow_mask_conn4(
+        mask,
+        radius=2,
+    )
+
+    frozen = (
+        "000010000"
+        "000111000"
+        "001111100"
+        "000111010"
+        "000010111"
+        "000001110"
+        "000000111"
+        "000000010"
+    )
+    expected = np.array(
+        [value == "1" for value in frozen],
+        dtype=bool,
+    ).reshape(8, 9)
+
+    np.testing.assert_array_equal(observed, expected)
+    assert np.count_nonzero(observed) == 24
+    assert not observed[5, 8]
+
+
+def test_flatten_base_polynomial_iteration_matches_gwyddion_271(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    rows = 8
+    columns = 9
+    data = np.empty((rows, columns), dtype=float)
+
+    for row in range(rows):
+        y = 2.0 * row / (rows - 1.0) - 1.0
+
+        for column in range(columns):
+            x = 2.0 * column / (columns - 1.0) - 1.0
+            value = (
+                0.72
+                + 0.18 * x
+                - 0.11 * y
+                + 0.07 * x * y
+                + 0.035 * x**2
+                - 0.02 * y**2
+                + 0.025 * np.sin(0.9 * column + 0.4 * row)
+            )
+
+            if row == 2 and column == 4:
+                value += 1.5
+            if row == 5 and column == 7:
+                value += 1.0
+
+            data[row, column] = value
+
+    original = data.copy()
+
+    class InitialPeak:
+        success = True
+        mean = 0.75
+        rms = 0.10
+
+    class UpdatedPeak:
+        success = True
+
+    updated_peak = UpdatedPeak()
+
+    monkeypatch.setattr(
+        flatten_base_core,
+        "_estimate_base_peak",
+        lambda received: updated_peak,
+    )
+
+    result = flatten_base_core._run_flatten_base_polynomial_iteration(
+        data,
+        peak=InitialPeak(),
+        degree=2,
+    )
+
+    raw_frozen = (
+        "000000000"
+        "000000000"
+        "000010000"
+        "000000000"
+        "000000000"
+        "000000010"
+        "000000000"
+        "000000000"
+    )
+    grown_frozen = (
+        "000010000"
+        "000111000"
+        "001111100"
+        "000111010"
+        "000010111"
+        "000001110"
+        "000000111"
+        "000000010"
+    )
+
+    expected_raw = np.array(
+        [value == "1" for value in raw_frozen],
+        dtype=bool,
+    ).reshape(rows, columns)
+    expected_grown = np.array(
+        [value == "1" for value in grown_frozen],
+        dtype=bool,
+    ).reshape(rows, columns)
+
+    expected_coefficients = np.array(
+        [
+            0.71670865227920233,
+            -0.11459538697342461,
+            -0.024654671854024313,
+            0.18007084915965604,
+            0.0761606492072983,
+            0.056803123388348246,
+        ],
+        dtype=float,
+    )
+
+    x = np.linspace(-1.0, 1.0, columns)
+    y = np.linspace(-1.0, 1.0, rows)
+    xx, yy = np.meshgrid(x, y)
+
+    expected_background = (
+        expected_coefficients[0]
+        + expected_coefficients[1] * yy
+        + expected_coefficients[2] * yy**2
+        + expected_coefficients[3] * xx
+        + expected_coefficients[4] * xx * yy
+        + expected_coefficients[5] * xx**2
+    )
+
+    assert result.degree == 2
+    assert result.rank == 6
+    assert result.selected_count == 48
+    assert result.mask.raw_count == 2
+    assert result.mask.grown_count == 24
+    assert result.peak is updated_peak
+
+    np.testing.assert_array_equal(result.mask.raw, expected_raw)
+    np.testing.assert_array_equal(result.mask.grown, expected_grown)
+    np.testing.assert_allclose(
+        result.coefficients,
+        expected_coefficients,
+        atol=5e-13,
+        rtol=0.0,
+    )
+    np.testing.assert_allclose(
+        result.background,
+        expected_background,
+        atol=5e-13,
+        rtol=0.0,
+    )
+    np.testing.assert_allclose(
+        result.corrected,
+        data - expected_background,
+        atol=5e-13,
+        rtol=0.0,
+    )
+    np.testing.assert_array_equal(data, original)
