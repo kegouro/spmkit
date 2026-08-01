@@ -360,3 +360,40 @@ def _fit_base_peak(window: BasePeakWindow) -> BasePeakFit:
         jacobian_rank=jacobian_rank,
         condition_estimate=condition_estimate,
     )
+
+
+@dataclass(frozen=True)
+class BasePeakEstimate:
+    """Complete base-peak estimate with intermediate numerical evidence."""
+
+    distribution: HeightDistribution
+    window: BasePeakWindow
+    fit: BasePeakFit
+
+    @property
+    def success(self) -> bool:
+        """Whether the Gaussian base peak is identifiable."""
+        return self.fit.success
+
+    @property
+    def mean(self) -> float:
+        """Fitted base-peak position."""
+        return self.fit.mean
+
+    @property
+    def rms(self) -> float:
+        """Fitted base-peak RMS width."""
+        return self.fit.rms
+
+
+def _estimate_base_peak(data: np.ndarray) -> BasePeakEstimate:
+    """Estimate the dominant base peak from a two-dimensional field."""
+    distribution = _gwyddion_height_distribution(data)
+    window = _select_base_peak_window(distribution)
+    fit = _fit_base_peak(window)
+
+    return BasePeakEstimate(
+        distribution=distribution,
+        window=window,
+        fit=fit,
+    )

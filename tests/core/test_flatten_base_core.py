@@ -3,7 +3,9 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
+import spmkit.core.analysis._flatten_base as flatten_base_core
 from spmkit.core.analysis._flatten_base import (
+    BasePeakFit,
     BasePeakWindow,
     HeightDistribution,
     _fit_base_peak,
@@ -218,3 +220,87 @@ def test_base_peak_fit_matches_gwyddion_271_reference() -> None:
         1.0937119849061023,
         abs=5e-10,
     )
+
+
+def test_estimate_base_peak_composes_verified_stages(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    data = np.arange(64, dtype=float).reshape(8, 8)
+    original = data.copy()
+
+    distribution = HeightDistribution(
+        centers=np.arange(7, dtype=float) + 0.5,
+        density=np.array([0.1, 0.3, 1.0, 0.4, 0.2, 0.1, 0.0]),
+        bin_width=1.0,
+        minimum=0.0,
+        maximum=7.0,
+        sample_count=data.size,
+    )
+    window = BasePeakWindow(
+        centers=distribution.centers,
+        density=distribution.density,
+        peak_index=2,
+        start_index=0,
+        stop_index=7,
+        initial_mean=2.5,
+        initial_offset=0.0,
+        initial_amplitude=1.0,
+        initial_width=2.1,
+    )
+    fit = BasePeakFit(
+        mean=2.45,
+        rms=0.4,
+        offset=0.01,
+        amplitude=0.99,
+        width=0.4 * np.sqrt(2.0),
+        residual_norm=1e-8,
+        solver_success=True,
+        covariance_available=True,
+        evaluations=12,
+        jacobian_rank=4,
+        condition_estimate=8.0,
+    )
+
+    calls: list[str] = []
+
+    def fake_distribution(received: np.ndarray) -> HeightDistribution:
+        assert received is data
+        calls.append("distribution")
+        return distribution
+
+    def fake_window(received: HeightDistribution) -> BasePeakWindow:
+        assert received is distribution
+        calls.append("window")
+        return window
+
+    def fake_fit(received: BasePeakWindow) -> BasePeakFit:
+        assert received is window
+        calls.append("fit")
+        return fit
+
+    monkeypatch.setattr(
+        flatten_base_core,
+        "_gwyddion_height_distribution",
+        fake_distribution,
+    )
+    monkeypatch.setattr(
+        flatten_base_core,
+        "_select_base_peak_window",
+        fake_window,
+    )
+    monkeypatch.setattr(
+        flatten_base_core,
+        "_fit_base_peak",
+        fake_fit,
+    )
+
+    result = flatten_base_core._estimate_base_peak(data)
+
+    assert calls == ["distribution", "window", "fit"]
+    assert result.distribution is distribution
+    assert result.window is window
+    assert result.fit is fit
+    assert result.success
+    assert result.mean == fit.mean
+    assert result.rms == fit.rms
+    np.testing.assert_array_equal(data, original)
