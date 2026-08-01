@@ -131,3 +131,287 @@ def _make_gwyddion_arc(
 
     arc.setflags(write=False)
     return arc
+
+
+def _gwyddion_population_rms(data: np.ndarray) -> float:
+    """Return Gwyddion's population RMS with respect to the global mean.
+
+    The mean and squared deviations are accumulated sequentially in C order,
+    matching ``gwy_data_field_get_rms()``.  The divisor is the complete sample
+    count, equivalent to ``ddof=0``.
+    """
+    data_array = np.asarray(data)
+
+    if data_array.size == 0:
+        raise ValueError("Gwyddion RMS requires non-empty data")
+
+    if not np.issubdtype(data_array.dtype, np.number) or np.iscomplexobj(data_array):
+        raise TypeError("Gwyddion RMS requires real numeric data")
+
+    if not np.all(np.isfinite(data_array)):
+        raise ValueError("Gwyddion RMS requires finite data")
+
+    flattened = np.asarray(
+        data_array,
+        dtype=np.float64,
+    ).ravel(order="C")
+
+    total = 0.0
+    for value in flattened:
+        total += float(value)
+
+    mean = total / flattened.size
+
+    squared_deviation_sum = 0.0
+    for value in flattened:
+        deviation = float(value) - mean
+        squared_deviation_sum += deviation * deviation
+
+    return math.sqrt(squared_deviation_sum / flattened.size)
+
+
+def _moving_sums(
+    row: np.ndarray,
+    size: object,
+) -> tuple[FloatArray, FloatArray]:
+    """Return Gwyddion-compatible moving sums and squared sums.
+
+    ``size`` is Gwyddion's historical moving-window parameter.  For ordinary
+    sizes the operation is equivalent to an asymmetric truncated window.
+    When the window becomes comparable to the complete row, the reference
+    enters its distinct ``Moving a whale`` control-flow branch; this behaviour
+    is reproduced explicitly rather than replaced by a conventional window.
+
+    Notes
+    -----
+    Gwyddion 2.71 accesses memory before the output buffer for certain
+    one-sample and out-of-domain combinations.  Such undefined combinations
+    are rejected here.  The horizontal kernel handles a one-sample processing
+    axis explicitly as identity.
+    """
+    row_array = np.asarray(row)
+
+    if row_array.ndim != 1:
+        raise ValueError("Gwyddion moving sums require a one-dimensional row")
+
+    if row_array.size == 0:
+        raise ValueError("Gwyddion moving sums require a non-empty row")
+
+    if not np.issubdtype(row_array.dtype, np.number) or np.iscomplexobj(row_array):
+        raise TypeError("Gwyddion moving sums require real numeric data")
+
+    if not np.all(np.isfinite(row_array)):
+        raise ValueError("Gwyddion moving sums require finite data")
+
+    size_data = np.asarray(size)
+
+    if (
+        size_data.ndim != 0
+        or not np.issubdtype(size_data.dtype, np.integer)
+        or isinstance(size, (bool, np.bool_))
+    ):
+        raise TypeError("Gwyddion moving-sum size must be a non-negative integer")
+
+    size_value = int(size_data.item())
+
+    if size_value < 0:
+        raise ValueError("Gwyddion moving-sum size must be non-negative")
+
+    values = np.asarray(
+        row_array,
+        dtype=np.float64,
+    )
+    resolution = values.size
+
+    sums = np.zeros(resolution, dtype=np.float64)
+    squared_sums = np.zeros(resolution, dtype=np.float64)
+
+    left_half = size_value // 2
+    right_half = 0 if size_value == 0 else (size_value - 1) // 2
+
+    # Exact historical shortcut.  It is unreachable from make_arc() because
+    # the generated half-width never exceeds the processed resolution.
+    if right_half >= resolution:
+        first_value = float(values[0])
+        sums.fill(first_value)
+        squared_sums.fill(first_value * first_value)
+        return sums, squared_sums
+
+    phase_3b_start = resolution - 1 - right_half
+    if phase_3b_start <= 0 and phase_3b_start <= left_half:
+        raise ValueError(
+            "Gwyddion 2.71 moving sums are undefined for this "
+            "resolution and window size"
+        )
+
+    # Phase 1: fill the first output element.
+    for index in range(right_half + 1):
+        value = float(values[index])
+        sums[0] += value
+        squared_sums[0] += value * value
+
+    # Phase 2: gather new values without dropping old ones.
+    phase_2_end = min(
+        left_half,
+        resolution - 1 - right_half,
+    )
+    for index in range(1, phase_2_end + 1):
+        value = float(values[index + right_half])
+        sums[index] = sums[index - 1] + value
+        squared_sums[index] = squared_sums[index - 1] + value * value
+
+    # Phase 3a: move a complete window.
+    for index in range(
+        left_half + 1,
+        resolution - right_half,
+    ):
+        entering = float(values[index + right_half])
+        leaving = float(values[index - left_half - 1])
+
+        sums[index] = sums[index - 1] + entering - leaving
+        squared_sums[index] = (
+            squared_sums[index - 1]
+            + entering * entering
+            - leaving * leaving
+        )
+
+    # Phase 3b: a window larger than the available interior remains fixed.
+    for index in range(
+        phase_3b_start,
+        left_half + 1,
+    ):
+        sums[index] = sums[index - 1]
+        squared_sums[index] = squared_sums[index - 1]
+
+    # Phase 4: lose values without gathering new ones.
+    for index in range(
+        max(left_half + 1, resolution - right_half),
+        resolution,
+    ):
+        leaving = float(values[index - left_half - 1])
+        sums[index] = sums[index - 1] - leaving
+        squared_sums[index] = squared_sums[index - 1] - leaving * leaving
+
+    return sums, squared_sums
+
+
+def _gwyddion_arc_horizontal(
+    data: np.ndarray,
+    radius: object,
+) -> FloatArray:
+    """Estimate a horizontal background using Gwyddion 2.71 semantics.
+
+    The algorithm uses a global population RMS to scale the dimensionless arc,
+    clips downward protrusions against a local ``mean - 2.5*rms`` envelope,
+    and finds the minimum touching position using truncated edge support.
+
+    A processing axis containing one sample is defined as identity.  Gwyddion
+    2.71 performs an out-of-bounds read for this degenerate geometry, so no
+    stable external numerical result exists to reproduce.
+    """
+    data_array = np.asarray(data)
+
+    if data_array.ndim != 2:
+        raise ValueError("Gwyddion horizontal arc requires two-dimensional data")
+
+    if data_array.size == 0:
+        raise ValueError("Gwyddion horizontal arc requires non-empty data")
+
+    if not np.issubdtype(data_array.dtype, np.number) or np.iscomplexobj(data_array):
+        raise TypeError("Gwyddion horizontal arc requires real numeric data")
+
+    if not np.all(np.isfinite(data_array)):
+        raise ValueError("Gwyddion horizontal arc requires finite data")
+
+    values = np.array(
+        data_array,
+        dtype=np.float64,
+        copy=True,
+        order="C",
+    )
+    row_count, column_count = values.shape
+
+    # Defined SPMKit behaviour for a reference implementation defect.
+    if column_count == 1:
+        values.setflags(write=False)
+        return values
+
+    rms = _gwyddion_population_rms(values)
+    scale = rms / math.sqrt(2.0 / 3.0 - math.pi / 16.0)
+
+    arc = _make_gwyddion_arc(
+        radius,
+        column_count,
+    )
+    scaled_arc = np.asarray(
+        arc * -scale,
+        dtype=np.float64,
+    )
+    half_width = scaled_arc.size // 2
+
+    weights, _ = _moving_sums(
+        np.ones(column_count, dtype=np.float64),
+        half_width,
+    )
+
+    background = np.empty_like(values)
+    clipped_row = np.empty(column_count, dtype=np.float64)
+
+    for row_index in range(row_count):
+        source_row = values[row_index]
+        local_sums, local_squared_sums = _moving_sums(
+            source_row,
+            half_width,
+        )
+
+        for column_index in range(column_count):
+            local_mean = local_sums[column_index] / weights[column_index]
+            local_variance = (
+                local_squared_sums[column_index] / weights[column_index]
+                - local_mean * local_mean
+            )
+
+            local_rms = (
+                float("nan")
+                if local_variance < 0.0
+                else math.sqrt(local_variance)
+            )
+
+            lower_envelope = local_mean - 2.5 * local_rms
+            source_value = float(source_row[column_index])
+
+            # Preserve the argument ordering of GLib's MAX(a, b) macro.
+            clipped_row[column_index] = (
+                source_value
+                if source_value > lower_envelope
+                else lower_envelope
+            )
+
+        for column_index in range(column_count):
+            first_offset = max(
+                0,
+                column_index - half_width,
+            ) - column_index
+            final_offset = min(
+                column_index + half_width,
+                column_count - 1,
+            ) - column_index
+
+            minimum = math.inf
+
+            for offset in range(
+                first_offset,
+                final_offset + 1,
+            ):
+                candidate = (
+                    -scaled_arc[half_width + offset]
+                    + clipped_row[column_index + offset]
+                )
+
+                if candidate < minimum:
+                    minimum = float(candidate)
+
+            background[row_index, column_index] = minimum
+
+    background.setflags(write=False)
+    return background
