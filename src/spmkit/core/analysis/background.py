@@ -1228,6 +1228,43 @@ def estimate_spline_background(
     return channel.with_data(background)
 
 
+def remove_spline_background(
+    channel: SPMChannel,
+    *,
+    n_basis_x: int = 12,
+    n_basis_y: int = 12,
+    degree_x: int = 3,
+    degree_y: int = 3,
+    penalty_order_x: int = 2,
+    penalty_order_y: int = 2,
+    smoothing_x: float = 1.0,
+    smoothing_y: float = 1.0,
+    mask: np.ndarray | None = None,
+    mask_mode: Literal["ignore", "include", "exclude"] = "ignore",
+    weights: np.ndarray | None = None,
+) -> SPMChannel:
+    """Subtract a global anisotropic tensor-product P-spline background."""
+    background = estimate_spline_background(
+        channel,
+        n_basis_x=n_basis_x,
+        n_basis_y=n_basis_y,
+        degree_x=degree_x,
+        degree_y=degree_y,
+        penalty_order_x=penalty_order_x,
+        penalty_order_y=penalty_order_y,
+        smoothing_x=smoothing_x,
+        smoothing_y=smoothing_y,
+        mask=mask,
+        mask_mode=mask_mode,
+        weights=weights,
+    )
+
+    data = np.asarray(channel.data, dtype=float)
+    background_data = np.asarray(background.data, dtype=float)
+
+    return channel.with_data(data - background_data)
+
+
 def _build_background_result(
     channel: SPMChannel,
     background: SPMChannel,

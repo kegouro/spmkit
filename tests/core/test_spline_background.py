@@ -14,6 +14,7 @@ from spmkit.core.analysis._pspline import (
 from spmkit.core.analysis.background import (
     _fit_spline_background,
     estimate_spline_background,
+    remove_spline_background,
 )
 from spmkit.core.models import SPMChannel
 
@@ -301,3 +302,52 @@ def test_estimator_is_not_public_yet() -> None:
         "estimate_spline_background",
     )
     assert "estimate_spline_background" not in getattr(analysis, "__all__", ())
+
+
+def test_remove_matches_input_minus_estimate() -> None:
+    data = _zero_penalty_surface()
+    channel = _channel(data)
+
+    background = estimate_spline_background(
+        channel,
+        n_basis_x=6,
+        n_basis_y=6,
+    )
+    corrected = remove_spline_background(
+        channel,
+        n_basis_x=6,
+        n_basis_y=6,
+    )
+
+    np.testing.assert_allclose(
+        corrected.data,
+        channel.data - background.data,
+        rtol=0.0,
+        atol=1e-12,
+    )
+
+
+def test_remove_preserves_context_without_mutation() -> None:
+    data = _zero_penalty_surface()
+    channel = _channel(data)
+    original = channel.data.copy()
+
+    corrected = remove_spline_background(
+        channel,
+        n_basis_x=6,
+        n_basis_y=6,
+    )
+
+    assert corrected is not channel
+    assert corrected.name == channel.name
+    assert corrected.unit == channel.unit
+    assert corrected.x_range == channel.x_range
+    assert corrected.y_range == channel.y_range
+    assert corrected.direction == channel.direction
+    assert corrected.group == channel.group
+    assert corrected.metadata == channel.metadata
+
+    np.testing.assert_array_equal(
+        channel.data,
+        original,
+    )
