@@ -16,6 +16,10 @@ from spmkit.core.analysis import (
     spectral,
 )
 from spmkit.core.analysis.background import (
+    BackgroundResult,
+    analyze_arc_revolution_background,
+    analyze_median_background,
+    analyze_sphere_revolution_background,
     estimate_arc_revolution_background,
     estimate_median_background,
     estimate_sphere_revolution_background,
@@ -46,6 +50,10 @@ from spmkit.core.analysis.spectral import FractalResult, RadialPSD
 
 __all__ = [
     "background",
+    "BackgroundResult",
+    "analyze_arc_revolution_background",
+    "analyze_median_background",
+    "analyze_sphere_revolution_background",
     "estimate_arc_revolution_background",
     "estimate_median_background",
     "estimate_sphere_revolution_background",

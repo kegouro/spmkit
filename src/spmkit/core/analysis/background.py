@@ -8,6 +8,7 @@ methods declare their radii in pixels and preserve the original scalar Z unit.
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import Literal
 
 import numpy as np
@@ -22,6 +23,49 @@ from spmkit.core.models import SPMChannel
 ArcDirection = Literal["horizontal", "vertical", "both"]
 ArcSide = Literal["below", "above"]
 ArcBorder = Literal["nearest", "reflect"]
+BackgroundMethod = Literal[
+    "arc_revolution",
+    "sphere_revolution",
+    "median",
+]
+
+
+@dataclass(frozen=True)
+class BackgroundResult:
+    """Structured result of a background-removal operation.
+
+    The complete background and corrected channels are retained for inspection.
+    ``parameters`` records the effective public algorithm configuration.
+    """
+
+    background: SPMChannel
+    corrected: SPMChannel
+    method: BackgroundMethod
+    parameters: dict[str, object]
+
+    def to_dict(self) -> dict[str, object]:
+        """Return a serializable representation of the numerical result."""
+
+        def channel_payload(channel: SPMChannel) -> dict[str, object]:
+            data = np.asarray(channel.data)
+
+            return {
+                "name": channel.name,
+                "unit": channel.unit,
+                "shape": list(channel.shape),
+                "x_range": float(channel.x_range),
+                "y_range": float(channel.y_range),
+                "direction": channel.direction,
+                "group": channel.group,
+                "data": data.tolist(),
+            }
+
+        return {
+            "method": self.method,
+            "parameters": dict(self.parameters),
+            "background": channel_payload(self.background),
+            "corrected": channel_payload(self.corrected),
+        }
 
 
 def _validated_channel_data(
@@ -723,3 +767,101 @@ def remove_median_background(
     )
 
     return channel.with_data(corrected)
+
+
+def _build_background_result(
+    channel: SPMChannel,
+    background: SPMChannel,
+    *,
+    method: BackgroundMethod,
+    parameters: dict[str, object],
+) -> BackgroundResult:
+    """Build a structured result without recalculating the background."""
+    corrected = channel.with_data(
+        np.asarray(channel.data, dtype=float) - np.asarray(background.data, dtype=float)
+    )
+
+    return BackgroundResult(
+        background=background,
+        corrected=corrected,
+        method=method,
+        parameters=dict(parameters),
+    )
+
+
+def analyze_arc_revolution_background(
+    channel: SPMChannel,
+    radius: float,
+    *,
+    direction: ArcDirection = "both",
+    side: ArcSide = "below",
+    border: ArcBorder = "nearest",
+) -> BackgroundResult:
+    """Estimate and subtract an arc-revolution background in one pass."""
+    background = estimate_arc_revolution_background(
+        channel,
+        radius,
+        direction=direction,
+        side=side,
+        border=border,
+    )
+
+    return _build_background_result(
+        channel,
+        background,
+        method="arc_revolution",
+        parameters={
+            "radius": float(radius),
+            "direction": direction,
+            "side": side,
+            "border": border,
+        },
+    )
+
+
+def analyze_sphere_revolution_background(
+    channel: SPMChannel,
+    radius: float,
+    *,
+    side: ArcSide = "below",
+    border: ArcBorder = "nearest",
+) -> BackgroundResult:
+    """Estimate and subtract a spherical background in one pass."""
+    background = estimate_sphere_revolution_background(
+        channel,
+        radius,
+        side=side,
+        border=border,
+    )
+
+    return _build_background_result(
+        channel,
+        background,
+        method="sphere_revolution",
+        parameters={
+            "radius": float(radius),
+            "side": side,
+            "border": border,
+        },
+    )
+
+
+def analyze_median_background(
+    channel: SPMChannel,
+    radius_pixels: int,
+) -> BackgroundResult:
+    """Estimate and subtract a local-median background in one pass."""
+    background = estimate_median_background(
+        channel,
+        radius_pixels,
+    )
+
+    return _build_background_result(
+        channel,
+        background,
+        method="median",
+        parameters={
+            "radius_pixels": int(radius_pixels),
+            "border": "nearest",
+        },
+    )
