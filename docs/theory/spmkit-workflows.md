@@ -12,6 +12,7 @@
 | file inspection/routing | `core.io.load_any`, `core.plugins`, built-in readers | automatic open route | `spmkit info` | format-specific Level 1/2 | support is variant-specific |
 | leveling | `core.analysis.leveling` | Imagen (`image`) | `roughness --level`, `analyze --level` | Level 1 + synthetic cases | changes the reference surface |
 | arc-revolution background | `core.analysis.background` | not exposed | Python API | Level 1 with test-local 1D oracle and synthetic physical tests | finite geometric Z only; no masks, CLI, Fathom or external-equivalence claim |
+| sphere-revolution background | `core.analysis.background` | not exposed | Python API | Level 1 with independent 2D nearest/reflect oracles and synthetic physical tests | true 2D spherical cap; no masks, CLI, Fathom, external-equivalence or performance claim |
 | Sa/Sq/Sz/Ssk/Sku | `core.analysis.roughness.statistics` | Imagen (`image`) | `spmkit roughness`, `analyze` | scoped Level 3 for Sa/Sq/Sz | external campaigns do not cover Ssk/Sku or every preprocessing route |
 | line profile | `core.analysis.profiles.line` | Imagen (`image`) | Python API | Level 1 | interpolation and coordinate choice matter |
 | grain segmentation | `core.analysis.grains.detect` | Granos (`grains`) | `spmkit grains` | Level 1 + synthetic tests | threshold/overlap/tip effects |

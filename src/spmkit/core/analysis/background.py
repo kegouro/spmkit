@@ -372,3 +372,221 @@ def remove_arc_revolution_background(
     )
 
     return channel.with_data(corrected)
+
+
+def _sphere_structure(
+    *,
+    radius: float,
+    x_spacing: float,
+    y_spacing: float,
+    shape: tuple[int, int],
+) -> tuple[np.ndarray, np.ndarray]:
+    """Return a physical spherical-cap structure and its circular footprint."""
+    rows, columns = shape
+
+    maximum_x_offset = columns - 1
+    radius_in_x_pixels = radius / x_spacing
+
+    if not np.isfinite(radius_in_x_pixels) or radius_in_x_pixels >= maximum_x_offset:
+        x_offset = maximum_x_offset
+    else:
+        x_offset = int(np.floor(radius_in_x_pixels))
+
+    maximum_y_offset = rows - 1
+    radius_in_y_pixels = radius / y_spacing
+
+    if not np.isfinite(radius_in_y_pixels) or radius_in_y_pixels >= maximum_y_offset:
+        y_offset = maximum_y_offset
+    else:
+        y_offset = int(np.floor(radius_in_y_pixels))
+
+    x_offsets = np.arange(
+        -x_offset,
+        x_offset + 1,
+        dtype=float,
+    )
+    y_offsets = np.arange(
+        -y_offset,
+        y_offset + 1,
+        dtype=float,
+    )
+
+    normalized_x = x_offsets * x_spacing / radius
+    normalized_y = y_offsets * y_spacing / radius
+
+    squared_ratio = np.square(normalized_y)[:, np.newaxis] + np.square(normalized_x)[np.newaxis, :]
+
+    tolerance = 8.0 * np.finfo(float).eps
+    footprint = squared_ratio <= 1.0 + tolerance
+
+    clipped_ratio = np.minimum(
+        squared_ratio,
+        1.0,
+    )
+    root = np.sqrt(
+        np.maximum(
+            1.0 - clipped_ratio,
+            0.0,
+        )
+    )
+
+    # Stable form of radius - sqrt(radius**2 - distance**2).
+    sagitta = radius * clipped_ratio / (1.0 + root)
+
+    # Values outside the footprint are ignored by SciPy. Keeping them at zero
+    # prevents irrelevant invalid or extreme structure values.
+    structure = np.where(
+        footprint,
+        -sagitta,
+        0.0,
+    )
+
+    return structure, footprint
+
+
+def _opening_with_sphere(
+    data: np.ndarray,
+    *,
+    radius: float,
+    x_spacing: float,
+    y_spacing: float,
+    border: ArcBorder,
+) -> np.ndarray:
+    """Apply one physical two-dimensional spherical opening."""
+    structure, footprint = _sphere_structure(
+        radius=radius,
+        x_spacing=x_spacing,
+        y_spacing=y_spacing,
+        shape=data.shape,
+    )
+
+    if footprint.size == 1:
+        return data.copy()
+
+    return np.asarray(
+        grey_opening(
+            data,
+            footprint=footprint,
+            structure=structure,
+            mode=border,
+        ),
+        dtype=float,
+    )
+
+
+def _estimate_sphere_below_metres(
+    data_metres: np.ndarray,
+    channel: SPMChannel,
+    *,
+    radius: float,
+    border: ArcBorder,
+    operation: str,
+) -> np.ndarray:
+    """Estimate the spherical envelope rolling below a surface."""
+    x_spacing = _axis_spacing(
+        channel,
+        axis=1,
+        operation=operation,
+    )
+    y_spacing = _axis_spacing(
+        channel,
+        axis=0,
+        operation=operation,
+    )
+
+    return _opening_with_sphere(
+        data_metres,
+        radius=radius,
+        x_spacing=x_spacing,
+        y_spacing=y_spacing,
+        border=border,
+    )
+
+
+def estimate_sphere_revolution_background(
+    channel: SPMChannel,
+    radius: float,
+    *,
+    side: ArcSide = "below",
+    border: ArcBorder = "nearest",
+) -> SPMChannel:
+    """Estimate a physical spherical-revolution background.
+
+    The structuring surface is a true spherical cap in physical XY
+    coordinates. With anisotropic pixels its footprint can therefore appear
+    elliptical in index space while remaining circular in physical space.
+    """
+    operation = "estimate_sphere_revolution_background"
+
+    data = _validated_channel_data(
+        channel,
+        operation=operation,
+    )
+    radius_value = _positive_radius(
+        radius,
+        operation=operation,
+    )
+    side_value = _validated_choice(
+        side,
+        name="side",
+        allowed=("below", "above"),
+        operation=operation,
+    )
+    border_value = _validated_choice(
+        border,
+        name="border",
+        allowed=("nearest", "reflect"),
+        operation=operation,
+    )
+
+    data_metres = length_values_to_metres(
+        data,
+        unit=channel.unit,
+    )
+
+    if side_value == "below":
+        background_metres = _estimate_sphere_below_metres(
+            data_metres,
+            channel,
+            radius=radius_value,
+            border=border_value,
+            operation=operation,
+        )
+    else:
+        background_metres = -_estimate_sphere_below_metres(
+            -data_metres,
+            channel,
+            radius=radius_value,
+            border=border_value,
+            operation=operation,
+        )
+
+    background = length_values_from_metres(
+        background_metres,
+        unit=channel.unit,
+    )
+
+    return channel.with_data(background)
+
+
+def remove_sphere_revolution_background(
+    channel: SPMChannel,
+    radius: float,
+    *,
+    side: ArcSide = "below",
+    border: ArcBorder = "nearest",
+) -> SPMChannel:
+    """Subtract the estimated spherical-revolution background."""
+    background = estimate_sphere_revolution_background(
+        channel,
+        radius,
+        side=side,
+        border=border,
+    )
+
+    corrected = np.asarray(channel.data, dtype=float) - np.asarray(
+        background.data,
+        dtype=float,
+    )
+
+    return channel.with_data(corrected)

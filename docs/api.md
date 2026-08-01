@@ -133,6 +133,51 @@ This implementation is LEVEL 1 — SOFTWARE_VERIFIED through synthetic tests
 and an independent test-local one-dimensional oracle. Numerical equivalence
 with Gwyddion has not been established.
 
+## Sphere-revolution background
+
+Sphere Revolution uses a true two-dimensional spherical cap in physical XY
+coordinates:
+
+```python
+from spmkit.core.analysis import (
+    estimate_sphere_revolution_background,
+    remove_sphere_revolution_background,
+)
+
+background = estimate_sphere_revolution_background(
+    height,
+    radius=2e-6,
+    side="below",
+    border="nearest",
+)
+
+corrected = remove_sphere_revolution_background(
+    height,
+    radius=2e-6,
+    side="below",
+    border="nearest",
+)
+```
+
+`radius` is expressed in metres. Geometric Z values are converted internally
+to metres and returned in the channel's original unit.
+
+The spherical footprint is circular in physical coordinates. With anisotropic
+pixel spacing it can therefore appear elliptical in array-index coordinates.
+This operation is genuinely two-dimensional and is not equivalent to applying
+horizontal and vertical arc openings sequentially.
+
+`side="above"` is the exact inversion dual of `"below"`. The supported border
+policies are `"nearest"` and `"reflect"`. Finite data are required; masks, CLI
+and Fathom exposure are not available.
+
+The background remains separately inspectable and satisfies
+`corrected + background == original` within floating-point tolerance.
+
+This implementation is LEVEL 1 — SOFTWARE_VERIFIED through synthetic tests
+and independent test-local two-dimensional oracles for both supported border
+policies. Numerical equivalence with Gwyddion has not been established.
+
 ## KPFM statistics
 
 ```python
