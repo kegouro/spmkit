@@ -28,6 +28,7 @@ BackgroundMethod = Literal[
     "sphere_revolution",
     "rolling_ball",
     "median",
+    "polynomial",
 ]
 
 
@@ -1050,6 +1051,70 @@ def remove_median_background(
     return channel.with_data(corrected)
 
 
+def estimate_polynomial_background(
+    channel: SPMChannel,
+    *,
+    degree_mode: Literal["total", "independent"] = "total",
+    degree: int = 2,
+    x_degree: int | None = None,
+    y_degree: int | None = None,
+    mask: np.ndarray | None = None,
+    mask_mode: Literal["ignore", "include", "exclude"] = "ignore",
+) -> SPMChannel:
+    """Estimate a global two-dimensional polynomial background.
+
+    Pixel-centre coordinates are normalized independently to ``[-1, 1]``.
+    ``degree_mode="total"`` includes terms with ``x_power + y_power <= degree``.
+    ``degree_mode="independent"`` includes the full tensor-product basis up to
+    ``x_degree`` and ``y_degree``.
+
+    A mask controls only the points used for fitting.  The fitted model is
+    evaluated over the complete image.
+    """
+    from spmkit.core.analysis.leveling import (
+        _estimate_polynomial_background_data,
+    )
+
+    background = _estimate_polynomial_background_data(
+        channel,
+        degree_mode=degree_mode,
+        degree=degree,
+        x_degree=x_degree,
+        y_degree=y_degree,
+        mask=mask,
+        mask_mode=mask_mode,
+    )
+
+    return channel.with_data(background)
+
+
+def remove_polynomial_background(
+    channel: SPMChannel,
+    *,
+    degree_mode: Literal["total", "independent"] = "total",
+    degree: int = 2,
+    x_degree: int | None = None,
+    y_degree: int | None = None,
+    mask: np.ndarray | None = None,
+    mask_mode: Literal["ignore", "include", "exclude"] = "ignore",
+) -> SPMChannel:
+    """Subtract a global two-dimensional polynomial background."""
+    background = estimate_polynomial_background(
+        channel,
+        degree_mode=degree_mode,
+        degree=degree,
+        x_degree=x_degree,
+        y_degree=y_degree,
+        mask=mask,
+        mask_mode=mask_mode,
+    )
+
+    data = np.asarray(channel.data, dtype=float)
+    background_data = np.asarray(background.data, dtype=float)
+
+    return channel.with_data(data - background_data)
+
+
 def _build_background_result(
     channel: SPMChannel,
     background: SPMChannel,
@@ -1151,6 +1216,43 @@ def analyze_rolling_ball_background(
             "vertical_radius": (None if vertical_radius is None else float(vertical_radius)),
             "side": side,
             "boundary": "ignore",
+        },
+    )
+
+
+def analyze_polynomial_background(
+    channel: SPMChannel,
+    *,
+    degree_mode: Literal["total", "independent"] = "total",
+    degree: int = 2,
+    x_degree: int | None = None,
+    y_degree: int | None = None,
+    mask: np.ndarray | None = None,
+    mask_mode: Literal["ignore", "include", "exclude"] = "ignore",
+) -> BackgroundResult:
+    """Estimate and subtract a polynomial background in one fit."""
+    background = estimate_polynomial_background(
+        channel,
+        degree_mode=degree_mode,
+        degree=degree,
+        x_degree=x_degree,
+        y_degree=y_degree,
+        mask=mask,
+        mask_mode=mask_mode,
+    )
+
+    return _build_background_result(
+        channel,
+        background,
+        method="polynomial",
+        parameters={
+            "degree_mode": degree_mode,
+            "degree": (int(degree) if degree_mode == "total" else None),
+            "x_degree": (int(x_degree) if x_degree is not None else None),
+            "y_degree": (int(y_degree) if y_degree is not None else None),
+            "mask_mode": mask_mode,
+            "mask_provided": mask is not None,
+            "coordinates": "normalized_-1_1",
         },
     )
 

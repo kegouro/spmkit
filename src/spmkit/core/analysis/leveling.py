@@ -55,7 +55,7 @@ def _fit_selection(
         return np.ones(data.shape, dtype=bool)
 
     if mask is None:
-        raise ValueError(f"{operation} requires a mask when mask_mode is " f"'{mask_mode}'")
+        raise ValueError(f"{operation} requires a mask when mask_mode is '{mask_mode}'")
 
     mask_data = np.asarray(mask)
 
@@ -376,7 +376,7 @@ def rotate_level(
     )
 
     if rank < 3:
-        raise ValueError("rotate_level selected points do not define " "a unique plane")
+        raise ValueError("rotate_level selected points do not define a unique plane")
 
     x_slope = float(coefficients[0])
     y_slope = float(coefficients[1])
@@ -655,7 +655,7 @@ def three_point_level(
     return channel.with_data(data - plane)
 
 
-def polynomial_background(
+def _estimate_polynomial_background_data(
     channel: SPMChannel,
     *,
     degree_mode: Literal["total", "independent"] = "total",
@@ -664,20 +664,20 @@ def polynomial_background(
     y_degree: int | None = None,
     mask: np.ndarray | None = None,
     mask_mode: Literal["ignore", "include", "exclude"] = "ignore",
-) -> SPMChannel:
-    """Subtract a fitted two-dimensional polynomial background."""
+) -> np.ndarray:
+    """Estimate a fitted two-dimensional polynomial background array."""
     data = _validated_data(
         channel,
         operation="polynomial_background",
     )
 
     if degree_mode not in {"total", "independent"}:
-        raise ValueError("polynomial_background degree_mode must be " "'total' or 'independent'")
+        raise ValueError("polynomial_background degree_mode must be 'total' or 'independent'")
 
     if degree_mode == "total":
         if x_degree is not None or y_degree is not None:
             raise ValueError(
-                "polynomial_background total degree mode does not accept " "x_degree or y_degree"
+                "polynomial_background total degree mode does not accept x_degree or y_degree"
             )
 
         total_degree = _nonnegative_integer(
@@ -694,7 +694,7 @@ def polynomial_background(
     else:
         if x_degree is None or y_degree is None:
             raise ValueError(
-                "polynomial_background independent degree mode requires " "x_degree and y_degree"
+                "polynomial_background independent degree mode requires x_degree and y_degree"
             )
 
         horizontal_degree = _nonnegative_integer(
@@ -740,10 +740,34 @@ def polynomial_background(
 
     if rank < len(powers):
         raise ValueError(
-            "polynomial_background selected points do not define " "a unique polynomial background"
+            "polynomial_background selected points do not define a unique polynomial background"
         )
 
     background = (design @ coefficients).reshape(data.shape)
+    return background
+
+
+def polynomial_background(
+    channel: SPMChannel,
+    *,
+    degree_mode: Literal["total", "independent"] = "total",
+    degree: int = 2,
+    x_degree: int | None = None,
+    y_degree: int | None = None,
+    mask: np.ndarray | None = None,
+    mask_mode: Literal["ignore", "include", "exclude"] = "ignore",
+) -> SPMChannel:
+    """Subtract a fitted two-dimensional polynomial background."""
+    background = _estimate_polynomial_background_data(
+        channel,
+        degree_mode=degree_mode,
+        degree=degree,
+        x_degree=x_degree,
+        y_degree=y_degree,
+        mask=mask,
+        mask_mode=mask_mode,
+    )
+    data = np.asarray(channel.data, dtype=float)
     return channel.with_data(data - background)
 
 
@@ -809,9 +833,7 @@ def _facet_tilt_row_corrections(
     row_count, column_count = data.shape
 
     if column_count < 2:
-        raise ValueError(
-            "align_rows facet_tilt requires selected " "neighbouring pixels in every row"
-        )
+        raise ValueError("align_rows facet_tilt requires selected neighbouring pixels in every row")
 
     x_coordinates = np.linspace(
         -1.0,
@@ -828,7 +850,7 @@ def _facet_tilt_row_corrections(
 
         if not np.any(selected_edges):
             raise ValueError(
-                "align_rows facet_tilt requires selected " "neighbouring pixels in every row"
+                "align_rows facet_tilt requires selected neighbouring pixels in every row"
             )
 
         local_slopes = np.diff(data[row_index]) / x_steps
@@ -879,8 +901,7 @@ def _matching_row_corrections(
 
         if not np.any(shared_edges):
             raise ValueError(
-                "align_rows matching requires adjacent rows to share "
-                "selected neighbouring pixels"
+                "align_rows matching requires adjacent rows to share selected neighbouring pixels"
             )
 
         previous_row = data[row_index - 1]
@@ -936,21 +957,17 @@ def _difference_row_corrections(
     corrections = np.zeros(row_count, dtype=float)
 
     for row_index in range(1, row_count):
-
         shared_selection = selection[row_index - 1] & selection[row_index]
 
         if not np.any(shared_selection):
-
             raise ValueError("align_rows requires adjacent rows to share selected points")
 
         differences = data[row_index, shared_selection] - data[row_index - 1, shared_selection]
 
         if statistic == "median":
-
             increment = float(np.median(differences))
 
         else:
-
             increment = _trimmed_mean(
                 differences,
                 trim_fraction,
@@ -1047,7 +1064,7 @@ def align_rows(
     if np.any(selected_per_row < required_points):
         point_word = "point" if required_points == 1 else "points"
         raise ValueError(
-            f"align_rows requires at least {required_points} selected " f"{point_word} in every row"
+            f"align_rows requires at least {required_points} selected {point_word} in every row"
         )
 
     difference_methods = {
@@ -1106,7 +1123,7 @@ def align_rows(
 
             if rank < degree + 1:
                 raise ValueError(
-                    "align_rows selected points do not define " "a unique polynomial in every row"
+                    "align_rows selected points do not define a unique polynomial in every row"
                 )
 
             corrections[row_index] = design @ coefficients

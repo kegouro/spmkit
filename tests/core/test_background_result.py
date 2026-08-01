@@ -12,6 +12,7 @@ from spmkit.core.analysis import (
     BackgroundResult,
     analyze_arc_revolution_background,
     analyze_median_background,
+    analyze_polynomial_background,
     analyze_rolling_ball_background,
     analyze_sphere_revolution_background,
 )
@@ -185,6 +186,11 @@ def test_median_result_matches_existing_public_functions() -> None:
             channel,
             5e-6,
         ),
+        lambda channel: analyze_polynomial_background(
+            channel,
+            degree_mode="total",
+            degree=2,
+        ),
         lambda channel: analyze_median_background(
             channel,
             2,
@@ -250,4 +256,5 @@ def test_structured_background_api_is_public() -> None:
     assert analysis.analyze_arc_revolution_background is analyze_arc_revolution_background
     assert analysis.analyze_sphere_revolution_background is analyze_sphere_revolution_background
     assert analysis.analyze_rolling_ball_background is analyze_rolling_ball_background
+    assert analysis.analyze_polynomial_background is analyze_polynomial_background
     assert analysis.analyze_median_background is analyze_median_background
