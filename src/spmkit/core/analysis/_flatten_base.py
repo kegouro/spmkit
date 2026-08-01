@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import numpy as np
+from scipy.ndimage import binary_dilation
 from scipy.optimize import least_squares
 
 
@@ -645,3 +646,50 @@ def _run_flatten_base_facet_stage(
         iterations=tuple(iterations),
         termination=termination,
     )
+
+
+def _grow_mask_conn4(
+    mask: np.ndarray,
+    *,
+    radius: int,
+) -> np.ndarray:
+    """Grow a binary mask by an inclusive four-connectivity distance."""
+    values = np.asarray(mask)
+
+    if values.ndim != 2:
+        raise ValueError("conn4 mask growth requires a two-dimensional mask")
+    if not np.issubdtype(values.dtype, np.bool_):
+        raise TypeError("conn4 mask growth requires a boolean mask")
+    if isinstance(radius, (bool, np.bool_)) or not isinstance(
+        radius,
+        (int, np.integer),
+    ):
+        raise TypeError("conn4 mask growth requires an integer radius")
+
+    radius_value = int(radius)
+
+    if radius_value < 0:
+        raise ValueError("conn4 mask growth requires a non-negative radius")
+
+    seeds = np.array(values, dtype=bool, copy=True)
+
+    if radius_value == 0 or not np.any(seeds):
+        return seeds
+
+    connectivity = np.array(
+        [
+            [False, True,  False],
+            [True,  True,  True ],
+            [False, True,  False],
+        ],
+        dtype=bool,
+    )
+
+    grown = binary_dilation(
+        seeds,
+        structure=connectivity,
+        iterations=radius_value,
+        border_value=0,
+    )
+
+    return np.asarray(grown, dtype=bool)

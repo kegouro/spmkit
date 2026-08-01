@@ -692,3 +692,119 @@ def test_flatten_base_facet_stage_keeps_correction_before_peak_failure(
 
     np.testing.assert_allclose(result.background, expected_plane)
     np.testing.assert_allclose(result.corrected, data - expected_plane)
+
+
+def test_grow_mask_conn4_forms_inclusive_city_block_diamond() -> None:
+    mask = np.zeros((5, 5), dtype=bool)
+    mask[2, 2] = True
+
+    observed = flatten_base_core._grow_mask_conn4(
+        mask,
+        radius=2,
+    )
+
+    expected = np.array(
+        [
+            [False, False, True,  False, False],
+            [False, True,  True,  True,  False],
+            [True,  True,  True,  True,  True ],
+            [False, True,  True,  True,  False],
+            [False, False, True,  False, False],
+        ],
+        dtype=bool,
+    )
+
+    np.testing.assert_array_equal(observed, expected)
+
+
+def test_grow_mask_conn4_crops_at_image_boundaries() -> None:
+    mask = np.zeros((5, 5), dtype=bool)
+    mask[0, 0] = True
+
+    observed = flatten_base_core._grow_mask_conn4(
+        mask,
+        radius=2,
+    )
+
+    expected = np.array(
+        [
+            [True,  True,  True,  False, False],
+            [True,  True,  False, False, False],
+            [True,  False, False, False, False],
+            [False, False, False, False, False],
+            [False, False, False, False, False],
+        ],
+        dtype=bool,
+    )
+
+    np.testing.assert_array_equal(observed, expected)
+
+
+def test_grow_mask_conn4_allows_regions_to_merge() -> None:
+    mask = np.zeros((5, 5), dtype=bool)
+    mask[2, 1] = True
+    mask[2, 3] = True
+
+    observed = flatten_base_core._grow_mask_conn4(
+        mask,
+        radius=1,
+    )
+
+    expected = np.array(
+        [
+            [False, False, False, False, False],
+            [False, True,  False, True,  False],
+            [True,  True,  True,  True,  True ],
+            [False, True,  False, True,  False],
+            [False, False, False, False, False],
+        ],
+        dtype=bool,
+    )
+
+    np.testing.assert_array_equal(observed, expected)
+
+
+def test_grow_mask_conn4_zero_radius_returns_independent_copy() -> None:
+    mask = np.zeros((4, 5), dtype=bool)
+    mask[1, 3] = True
+    original = mask.copy()
+
+    observed = flatten_base_core._grow_mask_conn4(
+        mask,
+        radius=0,
+    )
+
+    np.testing.assert_array_equal(observed, original)
+    np.testing.assert_array_equal(mask, original)
+    assert not np.shares_memory(observed, mask)
+
+    observed[0, 0] = True
+    assert not mask[0, 0]
+
+
+def test_grow_mask_conn4_preserves_empty_mask() -> None:
+    mask = np.zeros((4, 5), dtype=bool)
+
+    observed = flatten_base_core._grow_mask_conn4(
+        mask,
+        radius=3,
+    )
+
+    np.testing.assert_array_equal(observed, mask)
+    assert not np.any(observed)
+    assert not np.shares_memory(observed, mask)
+
+
+def test_grow_mask_conn4_does_not_mutate_seed_mask() -> None:
+    mask = np.zeros((5, 5), dtype=bool)
+    mask[2, 2] = True
+    original = mask.copy()
+
+    observed = flatten_base_core._grow_mask_conn4(
+        mask,
+        radius=2,
+    )
+
+    np.testing.assert_array_equal(mask, original)
+    assert np.count_nonzero(observed) == 13
+    assert not np.shares_memory(observed, mask)
