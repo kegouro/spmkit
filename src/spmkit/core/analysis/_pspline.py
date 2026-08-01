@@ -71,6 +71,23 @@ class PSplineSurfaceFit:
     y_max: float
 
 
+def _as_real_numeric_array(
+    values: ArrayLike,
+    *,
+    name: str,
+) -> FloatArray:
+    """Convert real numeric input without discarding complex components."""
+    raw = np.asarray(values)
+
+    if not np.issubdtype(raw.dtype, np.number) or np.iscomplexobj(raw):
+        raise TypeError(f"{name} must be real numeric")
+
+    return np.asarray(
+        raw,
+        dtype=float,
+    )
+
+
 def _readonly_float_array(values: ArrayLike) -> FloatArray:
     result = np.array(
         values,
@@ -153,9 +170,9 @@ def _normalized_axis(
             dtype=float,
         )
     else:
-        original = np.asarray(
+        original = _as_real_numeric_array(
             values,
-            dtype=float,
+            name=f"{name} coordinates",
         )
 
         if original.ndim != 1:
@@ -187,7 +204,17 @@ def _validate_solver_parameter(
     *,
     name: str,
 ) -> float:
-    validated = float(value)
+    raw = np.asarray(value)
+
+    if (
+        raw.ndim != 0
+        or not np.issubdtype(raw.dtype, np.number)
+        or np.iscomplexobj(raw)
+        or raw.dtype == np.bool_
+    ):
+        raise TypeError(f"{name} must be a real numeric scalar")
+
+    validated = float(raw.item())
 
     if not np.isfinite(validated) or validated <= 0.0:
         raise ValueError(f"{name} must be finite and strictly positive")
@@ -271,9 +298,9 @@ def fit_pspline_surface(
     weight excludes a selected observation.
     """
 
-    values = np.asarray(
+    values = _as_real_numeric_array(
         data,
-        dtype=float,
+        name="P-spline surface data",
     )
 
     if values.ndim != 2:
@@ -380,9 +407,9 @@ def fit_pspline_surface(
             dtype=float,
         )
     else:
-        weight_values = np.asarray(
+        weight_values = _as_real_numeric_array(
             weights,
-            dtype=float,
+            name="P-spline weights",
         )
 
         if weight_values.shape != values.shape:

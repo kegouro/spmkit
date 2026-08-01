@@ -371,3 +371,90 @@ def test_invalid_configuration_is_rejected(
             n_basis_y=6,
             **kwargs,
         )
+
+
+def test_complex_surface_data_is_rejected() -> None:
+    data = np.ones(
+        (9, 11),
+        dtype=complex,
+    )
+
+    with pytest.raises(
+        TypeError,
+        match="P-spline surface data must be real numeric",
+    ):
+        fit_pspline_surface(
+            data,
+            n_basis_x=6,
+            n_basis_y=6,
+        )
+
+
+def test_complex_weights_are_rejected() -> None:
+    data = np.ones(
+        (9, 11),
+        dtype=float,
+    )
+    weights = np.ones(
+        data.shape,
+        dtype=complex,
+    )
+
+    with pytest.raises(
+        TypeError,
+        match="P-spline weights must be real numeric",
+    ):
+        fit_pspline_surface(
+            data,
+            weights=weights,
+            n_basis_x=6,
+            n_basis_y=6,
+        )
+
+
+def test_complex_coordinates_are_rejected() -> None:
+    data = np.ones(
+        (9, 11),
+        dtype=float,
+    )
+    x = np.linspace(
+        0.0,
+        1.0,
+        data.shape[1],
+    ).astype(complex)
+
+    with pytest.raises(
+        TypeError,
+        match="x coordinates must be real numeric",
+    ):
+        fit_pspline_surface(
+            data,
+            x=x,
+            n_basis_x=6,
+            n_basis_y=6,
+        )
+
+
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        {"smoothing_x": True},
+        {"atol": np.array(True)},
+    ],
+)
+def test_boolean_solver_parameters_are_rejected(
+    kwargs: dict[str, object],
+) -> None:
+    with pytest.raises(
+        TypeError,
+        match="must be a real numeric scalar",
+    ):
+        fit_pspline_surface(
+            np.ones(
+                (9, 11),
+                dtype=float,
+            ),
+            n_basis_x=6,
+            n_basis_y=6,
+            **kwargs,
+        )
