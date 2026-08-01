@@ -8,11 +8,15 @@ using explicitly documented coordinate and mask conventions.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Literal
+from typing import Literal, cast
 
 import numpy as np
 from scipy.ndimage import generic_filter, grey_erosion, grey_opening
 
+from spmkit.core.analysis._gwyddion_arc_revolution import (
+    GwyddionArcDirection,
+    _gwyddion_arc_result,
+)
 from spmkit.core.analysis._pspline import (
     PSplineSurfaceFit,
     fit_pspline_surface,
@@ -28,6 +32,7 @@ ArcSide = Literal["below", "above"]
 ArcBorder = Literal["nearest", "reflect"]
 BackgroundMethod = Literal[
     "arc_revolution",
+    "gwyddion_arc_revolution",
     "sphere_revolution",
     "rolling_ball",
     "median",
@@ -95,6 +100,40 @@ def _validated_channel_data(
         raise ValueError(f"{operation} requires finite data")
 
     return data
+
+
+def _validated_gwyddion_radius_px(
+    radius_px: object,
+    *,
+    operation: str,
+) -> float:
+    """Validate the public Gwyddion radius measured in samples."""
+    radius_data = np.asarray(radius_px)
+
+    if (
+        radius_data.ndim != 0
+        or not np.issubdtype(radius_data.dtype, np.number)
+        or np.iscomplexobj(radius_data)
+        or isinstance(radius_px, (bool, np.bool_))
+    ):
+        raise TypeError(
+            f"{operation} requires radius_px to be a real scalar"
+        )
+
+    value = float(radius_data.item())
+
+    if not np.isfinite(value):
+        raise ValueError(
+            f"{operation} requires radius_px to be finite"
+        )
+
+    if not 1.0 <= value <= 1000.0:
+        raise ValueError(
+            f"{operation} requires radius_px to be between "
+            "1.0 and 1000.0 inclusive"
+        )
+
+    return value
 
 
 def _positive_radius(
@@ -449,6 +488,119 @@ def remove_arc_revolution_background(
     )
 
     return channel.with_data(corrected)
+
+
+def _gwyddion_arc_channels(
+    channel: SPMChannel,
+    radius_px: object,
+    *,
+    direction: object,
+    inverted: object,
+    operation: str,
+) -> tuple[
+    SPMChannel,
+    SPMChannel,
+    float,
+    GwyddionArcDirection,
+    bool,
+]:
+    """Validate one request and return background and corrected channels."""
+    data = _validated_channel_data(
+        channel,
+        operation=operation,
+    )
+    radius_value = _validated_gwyddion_radius_px(
+        radius_px,
+        operation=operation,
+    )
+    direction_value = cast(
+        GwyddionArcDirection,
+        _validated_choice(
+            direction,
+            name="direction",
+            allowed=("horizontal", "vertical", "both"),
+            operation=operation,
+        ),
+    )
+
+    if not isinstance(inverted, (bool, np.bool_)):
+        raise TypeError(
+            f"{operation} requires inverted to be a boolean"
+        )
+
+    inverted_value = bool(inverted)
+
+    background_data, corrected_data = _gwyddion_arc_result(
+        data,
+        radius_value,
+        direction=direction_value,
+        inverted=inverted_value,
+    )
+
+    return (
+        channel.with_data(background_data),
+        channel.with_data(corrected_data),
+        radius_value,
+        direction_value,
+        inverted_value,
+    )
+
+
+def estimate_gwyddion_arc_revolution_background(
+    channel: SPMChannel,
+    radius_px: float = 20.0,
+    *,
+    direction: GwyddionArcDirection = "horizontal",
+    inverted: bool = False,
+) -> SPMChannel:
+    """Estimate a Gwyddion 2.71-compatible Revolve Arc background.
+
+    Parameters
+    ----------
+    channel:
+        Real, finite, non-empty two-dimensional channel.  The Z unit is
+        preserved and need not represent geometric length.
+    radius_px:
+        Arc radius in samples.  The public Gwyddion-compatible range is
+        inclusive from 1.0 through 1000.0.
+    direction:
+        ``"horizontal"`` processes rows, ``"vertical"`` processes columns,
+        and ``"both"`` applies horizontal followed by vertical.
+    inverted:
+        Apply the exact dual ``-B(-data)``.
+
+    Notes
+    -----
+    This is a data-adaptive compatibility estimator, not SPMKit's physical
+    arc-revolution model, tip deconvolution, or surface reconstruction.
+    Edges use the truncated support of Gwyddion 2.71; there is no border mode.
+    """
+    background, _, _, _, _ = _gwyddion_arc_channels(
+        channel,
+        radius_px,
+        direction=direction,
+        inverted=inverted,
+        operation="estimate_gwyddion_arc_revolution_background",
+    )
+    return background
+
+
+def remove_gwyddion_arc_revolution_background(
+    channel: SPMChannel,
+    radius_px: float = 20.0,
+    *,
+    direction: GwyddionArcDirection = "horizontal",
+    inverted: bool = False,
+) -> SPMChannel:
+    """Subtract a Gwyddion 2.71-compatible Revolve Arc background."""
+    _, corrected, _, _, _ = _gwyddion_arc_channels(
+        channel,
+        radius_px,
+        direction=direction,
+        inverted=inverted,
+        operation="remove_gwyddion_arc_revolution_background",
+    )
+    return corrected
 
 
 def _sphere_structure(
@@ -1312,6 +1464,40 @@ def analyze_arc_revolution_background(
             "direction": direction,
             "side": side,
             "border": border,
+        },
+    )
+
+
+def analyze_gwyddion_arc_revolution_background(
+    channel: SPMChannel,
+    radius_px: float = 20.0,
+    *,
+    direction: GwyddionArcDirection = "horizontal",
+    inverted: bool = False,
+) -> BackgroundResult:
+    """Estimate and subtract a compatible Revolve Arc background once."""
+    (
+        background,
+        corrected,
+        radius_value,
+        direction_value,
+        inverted_value,
+    ) = _gwyddion_arc_channels(
+        channel,
+        radius_px,
+        direction=direction,
+        inverted=inverted,
+        operation="analyze_gwyddion_arc_revolution_background",
+    )
+
+    return BackgroundResult(
+        background=background,
+        corrected=corrected,
+        method="gwyddion_arc_revolution",
+        parameters={
+            "radius_px": radius_value,
+            "direction": direction_value,
+            "inverted": inverted_value,
         },
     )
 

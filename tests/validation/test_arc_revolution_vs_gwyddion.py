@@ -198,3 +198,90 @@ def test_horizontal_inverted_reference_defect_is_preserved_and_repaired() -> Non
     assert not np.any(corrected == defect["sentinel"])
     assert not background.flags.writeable
     assert not corrected.flags.writeable
+
+
+@pytest.mark.parametrize("case_name", _CASE_NAMES)
+def test_public_arc_result_matches_gwyddion_2_71(
+    case_name: str,
+) -> None:
+    from spmkit.core.analysis import (
+        analyze_gwyddion_arc_revolution_background,
+    )
+    from spmkit.core.models import SPMChannel
+
+    fixture = _load_fixture()
+    case = _METADATA["cases"][case_name]
+    field = _METADATA["field"]
+    acceptance = _METADATA["acceptance"]
+
+    input_field = fixture["input"].copy()
+    original_input = input_field.copy()
+
+    channel = SPMChannel(
+        name="Gwyddion 2.71 frozen Revolve Arc field",
+        data=input_field,
+        unit="V",
+        x_range=float(field["xreal"]),
+        y_range=float(field["yreal"]),
+        direction="forward",
+        group="external-validation",
+        metadata={
+            "fixture_id": _METADATA["fixture_id"],
+            "reference": "Gwyddion 2.71",
+        },
+    )
+
+    result = analyze_gwyddion_arc_revolution_background(
+        channel,
+        _METADATA["parameters"]["radius_px"],
+        direction=case["direction"],
+        inverted=case["inverted"],
+    )
+
+    np.testing.assert_allclose(
+        result.background.data,
+        fixture[f"background_{case_name}"],
+        atol=acceptance["background_max_abs_error"],
+        rtol=0.0,
+    )
+
+    if case["corrected_reference_valid"]:
+        np.testing.assert_allclose(
+            result.corrected.data,
+            fixture[f"corrected_{case_name}"],
+            atol=acceptance["corrected_max_abs_error"],
+            rtol=0.0,
+        )
+    else:
+        defect = _METADATA["known_reference_defects"][
+            "horizontal_inverted_corrected_result"
+        ]
+        assert np.all(
+            fixture[f"corrected_{case_name}"]
+            == defect["sentinel"]
+        )
+        assert not np.any(
+            result.corrected.data == defect["sentinel"]
+        )
+
+    np.testing.assert_allclose(
+        result.corrected.data + result.background.data,
+        input_field,
+        atol=acceptance["reconstruction_max_abs_error"],
+        rtol=0.0,
+    )
+    np.testing.assert_array_equal(
+        input_field,
+        original_input,
+    )
+
+    assert result.method == "gwyddion_arc_revolution"
+    assert result.parameters == {
+        "radius_px": 2.5,
+        "direction": case["direction"],
+        "inverted": case["inverted"],
+    }
+    assert result.background.unit == "V"
+    assert result.corrected.unit == "V"
+    assert not result.background.data.flags.writeable
+    assert not result.corrected.data.flags.writeable

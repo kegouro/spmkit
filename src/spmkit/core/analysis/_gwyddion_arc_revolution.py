@@ -495,19 +495,18 @@ def _gwyddion_arc_background(
     return _readonly_float_array(background)
 
 
-def _gwyddion_arc_corrected(
+def _gwyddion_arc_result(
     data: np.ndarray,
     radius: object,
     *,
     direction: GwyddionArcDirection = "horizontal",
     inverted: bool = False,
-) -> FloatArray:
-    """Subtract a Gwyddion-compatible arc background from an input field.
+) -> tuple[FloatArray, FloatArray]:
+    """Return background and corrected fields through one numerical route.
 
-    Unlike the Gwyddion 2.71 module wrapper, this function also returns a
-    scientifically consistent result for ``direction="horizontal"`` with
-    ``inverted=True``.  The reference computes the background correctly in
-    that route but returns before populating its corrected result field.
+    The background is computed exactly once.  The corrected field is then
+    defined by the reconstruction identity ``corrected = input - background``.
+    Both arrays are independent, C-contiguous, ``float64`` and read-only.
     """
     background = _gwyddion_arc_background(
         data,
@@ -515,10 +514,31 @@ def _gwyddion_arc_corrected(
         direction=direction,
         inverted=inverted,
     )
-
-    corrected = (
-        np.asarray(data, dtype=np.float64)
-        - background
+    corrected = _readonly_float_array(
+        np.asarray(data, dtype=np.float64) - background
     )
 
-    return _readonly_float_array(corrected)
+    return background, corrected
+
+
+def _gwyddion_arc_corrected(
+    data: np.ndarray,
+    radius: object,
+    *,
+    direction: GwyddionArcDirection = "horizontal",
+    inverted: bool = False,
+) -> FloatArray:
+    """Return the corrected field from the authoritative result route.
+
+    Unlike the defective Gwyddion 2.71 horizontal-inverted wrapper, this
+    function always returns the scientifically consistent ``input-background``
+    result while preserving the externally validated background.
+    """
+    _, corrected = _gwyddion_arc_result(
+        data,
+        radius,
+        direction=direction,
+        inverted=inverted,
+    )
+
+    return corrected

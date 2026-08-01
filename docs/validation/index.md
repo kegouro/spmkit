@@ -36,6 +36,7 @@ references, tolerances, outputs, hashes, and limitations.
 |---|---|---:|---|---|
 | Gwyddion roughness 48 v0.1 | Sa, Sq, Sz on 48 canonical synthetic matrices | 144/144 within tolerance | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> | No preprocessing; shared matrices; not physical validation |
 | Real-data roughness pilot v0.1 | Sa, Sq, Sz on 12 public GWY matrices | 36/36 shared-matrix comparisons within tolerance | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> for the algorithm track | Parser/end-to-end observations are separate; real data are not ground truth |
+| Gwyddion Revolve Arc 2.71 v1 | Data-adaptive arc-envelope background on a frozen asymmetric 5×7 field, six direction/inversion routes and focal kernel cases | 6/6 backgrounds and 5/5 valid corrected outputs within `5e-14`; horizontal-inverted reference defect preserved as evidence and repaired by reconstruction | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> for the frozen campaign | Gwyddion 2.71 only; radius in samples; known wrapper and one-sample reference defects documented; not physical validation or universal equivalence |
 | Nanoscope `.spm` pilot v0.1 | Six demonstrated files | 18/18 metric comparisons within tolerance | <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> limited parser claim | Partial support and `ACCIDENTAL_PRE_FREEZE_UNBLINDING` |
 
 See [Scientific status](../scientific-status.md) for the complete mapping and
