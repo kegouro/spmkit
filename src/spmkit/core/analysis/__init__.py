@@ -17,8 +17,10 @@ from spmkit.core.analysis import (
 )
 from spmkit.core.analysis.background import (
     estimate_arc_revolution_background,
+    estimate_median_background,
     estimate_sphere_revolution_background,
     remove_arc_revolution_background,
+    remove_median_background,
     remove_sphere_revolution_background,
 )
 from spmkit.core.analysis.forcecurve import ForceCurveFit
@@ -45,8 +47,10 @@ from spmkit.core.analysis.spectral import FractalResult, RadialPSD
 __all__ = [
     "background",
     "estimate_arc_revolution_background",
+    "estimate_median_background",
     "estimate_sphere_revolution_background",
     "remove_arc_revolution_background",
+    "remove_median_background",
     "remove_sphere_revolution_background",
     "calibration",
     "leveling",

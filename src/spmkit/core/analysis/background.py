@@ -1,9 +1,9 @@
 """Physical background estimation for SPM images.
 
-This module contains local, physically dimensioned background estimators.
-All lateral ranges and algorithm radii are expressed in metres. Channel
-height values are converted to metres internally and returned in their
-original geometric unit.
+This module contains local background estimators with explicit geometry.
+Arc and sphere radii are expressed in metres; geometric channel heights are
+converted to metres internally and returned in their original unit. Rank-based
+methods declare their radii in pixels and preserve the original scalar Z unit.
 """
 
 from __future__ import annotations
@@ -11,7 +11,7 @@ from __future__ import annotations
 from typing import Literal
 
 import numpy as np
-from scipy.ndimage import grey_opening
+from scipy.ndimage import generic_filter, grey_opening
 
 from spmkit.core.geometry import (
     length_values_from_metres,
@@ -582,6 +582,139 @@ def remove_sphere_revolution_background(
         radius,
         side=side,
         border=border,
+    )
+
+    corrected = np.asarray(channel.data, dtype=float) - np.asarray(
+        background.data,
+        dtype=float,
+    )
+
+    return channel.with_data(corrected)
+
+
+def _positive_pixel_radius(
+    radius_pixels: object,
+    *,
+    operation: str,
+) -> int:
+    """Validate a strictly positive integer radius expressed in pixels."""
+    radius_data = np.asarray(radius_pixels)
+
+    if (
+        radius_data.ndim != 0
+        or not np.issubdtype(radius_data.dtype, np.integer)
+        or isinstance(radius_pixels, (bool, np.bool_))
+    ):
+        raise TypeError(f"{operation} requires radius_pixels to be a positive integer")
+
+    value = int(radius_data.item())
+
+    if value <= 0:
+        raise ValueError(f"{operation} requires radius_pixels to be positive")
+
+    return value
+
+
+def _validated_median_radius(
+    radius_pixels: int,
+    *,
+    operation: str,
+) -> int:
+    """Validate the Gwyddion Median Level integer-radius contract."""
+    maximum_radius = 1024
+
+    if radius_pixels > maximum_radius:
+        raise ValueError(f"{operation}: radius_pixels must be in the range [1, {maximum_radius}]")
+
+    return radius_pixels
+
+
+def _median_disk_footprint(
+    radius_pixels: int,
+) -> np.ndarray:
+    """Return Gwyddion's pixel-centre elliptic kernel rasterization.
+
+    Gwyddion creates a square bounding box of side ``2*r + 1`` and
+    includes pixel centres inside the corresponding ellipse.  For a
+    circular odd-sized kernel this is equivalent to
+
+    ``(2*x)**2 + (2*y)**2 <= (2*r + 1)**2``.
+
+    The integer form avoids floating-point boundary ambiguity.
+    """
+    coordinates = 2 * np.arange(
+        -radius_pixels,
+        radius_pixels + 1,
+        dtype=np.int64,
+    )
+    diameter = 2 * radius_pixels + 1
+
+    squared_distance = coordinates[:, np.newaxis] ** 2 + coordinates[np.newaxis, :] ** 2
+
+    return squared_distance <= diameter**2
+
+
+def _median_background_border_extend(
+    data: np.ndarray,
+    *,
+    radius_pixels: int,
+) -> np.ndarray:
+    """Calculate a circular local median using nearest border extension."""
+    footprint = _median_disk_footprint(radius_pixels)
+
+    return np.asarray(
+        generic_filter(
+            np.asarray(data, dtype=float),
+            function=np.median,
+            footprint=footprint,
+            mode="nearest",
+        ),
+        dtype=float,
+    )
+
+
+def estimate_median_background(
+    channel: SPMChannel,
+    radius_pixels: int,
+) -> SPMChannel:
+    """Estimate a local median background with a circular pixel kernel.
+
+    The neighbourhood radius is an integer number of pixels. At image edges
+    values are extended using the nearest boundary sample.
+    The operation is rank-based and therefore does not require a geometric Z
+    unit.
+    """
+    operation = "estimate_median_background"
+
+    data = _validated_channel_data(
+        channel,
+        operation=operation,
+    )
+    radius_value = _positive_pixel_radius(
+        radius_pixels,
+        operation=operation,
+    )
+    radius_value = _validated_median_radius(
+        radius_value,
+        operation=operation,
+    )
+
+    background = _median_background_border_extend(
+        data,
+        radius_pixels=radius_value,
+    )
+
+    return channel.with_data(background)
+
+
+def remove_median_background(
+    channel: SPMChannel,
+    radius_pixels: int,
+) -> SPMChannel:
+    """Subtract a circular local-median background from a channel."""
+    background = estimate_median_background(
+        channel,
+        radius_pixels,
     )
 
     corrected = np.asarray(channel.data, dtype=float) - np.asarray(
