@@ -32,6 +32,7 @@ BackgroundMethod = Literal[
     "rolling_ball",
     "median",
     "polynomial",
+    "spline",
 ]
 
 
@@ -1403,6 +1404,85 @@ def analyze_polynomial_background(
             "mask_mode": mask_mode,
             "mask_provided": mask is not None,
             "coordinates": "normalized_-1_1",
+        },
+    )
+
+
+def analyze_spline_background(
+    channel: SPMChannel,
+    *,
+    n_basis_x: int = 12,
+    n_basis_y: int = 12,
+    degree_x: int = 3,
+    degree_y: int = 3,
+    penalty_order_x: int = 2,
+    penalty_order_y: int = 2,
+    smoothing_x: float = 1.0,
+    smoothing_y: float = 1.0,
+    mask: np.ndarray | None = None,
+    mask_mode: Literal["ignore", "include", "exclude"] = "ignore",
+    weights: np.ndarray | None = None,
+) -> BackgroundResult:
+    """Estimate and subtract a P-spline background using one fit."""
+    fit = _fit_spline_background(
+        channel,
+        n_basis_x=n_basis_x,
+        n_basis_y=n_basis_y,
+        degree_x=degree_x,
+        degree_y=degree_y,
+        penalty_order_x=penalty_order_x,
+        penalty_order_y=penalty_order_y,
+        smoothing_x=smoothing_x,
+        smoothing_y=smoothing_y,
+        mask=mask,
+        mask_mode=mask_mode,
+        weights=weights,
+    )
+
+    background = channel.with_data(
+        np.array(
+            fit.model,
+            dtype=float,
+            copy=True,
+            order="C",
+        )
+    )
+
+    return _build_background_result(
+        channel,
+        background,
+        method="spline",
+        parameters={
+            "n_basis_x": int(fit.coefficients.shape[1]),
+            "n_basis_y": int(fit.coefficients.shape[0]),
+            "degree_x": int(fit.degree_x),
+            "degree_y": int(fit.degree_y),
+            "penalty_order_x": int(fit.penalty_order_x),
+            "penalty_order_y": int(fit.penalty_order_y),
+            "smoothing_x": float(fit.smoothing_x),
+            "smoothing_y": float(fit.smoothing_y),
+            "mask_mode": mask_mode,
+            "mask_provided": mask is not None,
+            "weights_provided": weights is not None,
+            "coordinates": "physical_pixel_centres_normalized_0_1",
+            "diagnostics": {
+                "selected_points": int(fit.selected_points),
+                "total_points": int(fit.total_points),
+                "solver_stop_code": int(fit.solver_stop_code),
+                "solver_iterations": int(fit.solver_iterations),
+                "augmented_residual_norm": float(fit.augmented_residual_norm),
+                "normal_residual_norm": float(fit.normal_residual_norm),
+                "operator_norm": float(fit.operator_norm),
+                "condition_estimate": float(fit.condition_estimate),
+                "coefficient_norm": float(fit.coefficient_norm),
+                "weighted_data_residual_norm": float(fit.weighted_data_residual_norm),
+                "penalty_x_norm": float(fit.penalty_x_norm),
+                "penalty_y_norm": float(fit.penalty_y_norm),
+                "x_min": float(fit.x_min),
+                "x_max": float(fit.x_max),
+                "y_min": float(fit.y_min),
+                "y_max": float(fit.y_max),
+            },
         },
     )
 

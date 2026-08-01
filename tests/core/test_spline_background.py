@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import json
+from unittest.mock import patch
+
 import numpy as np
 import pytest
 from scipy.interpolate import BSpline
@@ -12,7 +15,9 @@ from spmkit.core.analysis._pspline import (
     fit_pspline_surface,
 )
 from spmkit.core.analysis.background import (
+    BackgroundResult,
     _fit_spline_background,
+    analyze_spline_background,
     estimate_spline_background,
     remove_spline_background,
 )
@@ -351,3 +356,61 @@ def test_remove_preserves_context_without_mutation() -> None:
         channel.data,
         original,
     )
+
+
+def test_analyze_returns_serializable_structured_result() -> None:
+    data = _zero_penalty_surface()
+    channel = _channel(data)
+
+    result = analyze_spline_background(
+        channel,
+        n_basis_x=6,
+        n_basis_y=6,
+        smoothing_x=2.0,
+        smoothing_y=3.0,
+    )
+
+    assert isinstance(result, BackgroundResult)
+    assert result.method == "spline"
+
+    np.testing.assert_allclose(
+        result.corrected.data,
+        channel.data - result.background.data,
+        rtol=0.0,
+        atol=1e-12,
+    )
+
+    assert result.parameters["n_basis_x"] == 6
+    assert result.parameters["n_basis_y"] == 6
+    assert result.parameters["smoothing_x"] == 2.0
+    assert result.parameters["smoothing_y"] == 3.0
+    assert result.parameters["mask_provided"] is False
+    assert result.parameters["weights_provided"] is False
+
+    diagnostics = result.parameters["diagnostics"]
+
+    assert isinstance(diagnostics, dict)
+    assert diagnostics["selected_points"] == data.size
+    assert diagnostics["total_points"] == data.size
+    assert diagnostics["solver_iterations"] >= 0
+    assert diagnostics["condition_estimate"] >= 0.0
+
+    json.dumps(result.to_dict())
+
+
+def test_analyze_performs_exactly_one_fit() -> None:
+    data = _zero_penalty_surface()
+    channel = _channel(data)
+
+    with patch(
+        "spmkit.core.analysis.background._fit_spline_background",
+        wraps=_fit_spline_background,
+    ) as fit_mock:
+        result = analyze_spline_background(
+            channel,
+            n_basis_x=6,
+            n_basis_y=6,
+        )
+
+    assert fit_mock.call_count == 1
+    assert result.method == "spline"
