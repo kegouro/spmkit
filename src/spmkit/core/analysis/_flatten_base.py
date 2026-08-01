@@ -994,3 +994,129 @@ def _run_flatten_base_polynomial_iteration(
         corrected=corrected,
         peak=updated_peak,
     )
+
+
+@dataclass(frozen=True)
+class FlattenBasePolynomialStage:
+    """Evidence from the complete degree 2–5 polynomial stage."""
+
+    corrected: np.ndarray
+    background: np.ndarray
+    initial_peak: BasePeakEstimate
+    iterations: tuple[FlattenBasePolynomialIteration, ...]
+    termination: str
+
+    @property
+    def completed_degrees(self) -> tuple[int, ...]:
+        """Polynomial degrees successfully applied."""
+        return tuple(
+            iteration.degree
+            for iteration in self.iterations
+        )
+
+
+def _run_flatten_base_polynomial_stage(
+    data: np.ndarray,
+    *,
+    peak: BasePeakEstimate,
+) -> FlattenBasePolynomialStage:
+    """Run the degree 2, 3, 4 and 5 Flatten Base corrections."""
+    values = np.asarray(data)
+
+    if np.issubdtype(values.dtype, np.bool_) or np.iscomplexobj(values):
+        raise TypeError(
+            "Flatten Base polynomial stage requires real-valued data"
+        )
+    if values.ndim != 2:
+        raise ValueError(
+            "Flatten Base polynomial stage requires a two-dimensional array"
+        )
+
+    try:
+        working = np.array(values, dtype=float, copy=True)
+    except (TypeError, ValueError) as exc:
+        raise TypeError(
+            "Flatten Base polynomial stage requires numeric data"
+        ) from exc
+
+    if not np.all(np.isfinite(working)):
+        raise ValueError(
+            "Flatten Base polynomial stage requires finite data"
+        )
+
+    accumulated_background = np.zeros_like(working)
+    iterations: list[FlattenBasePolynomialIteration] = []
+    current_peak = peak
+    termination = "completed"
+
+    for degree in (2, 3, 4, 5):
+        if not current_peak.success:
+            termination = "peak_failure"
+            break
+
+        iteration = _run_flatten_base_polynomial_iteration(
+            working,
+            peak=current_peak,
+            degree=degree,
+        )
+
+        iteration_background = np.asarray(
+            iteration.background,
+            dtype=float,
+        )
+        iteration_corrected = np.asarray(
+            iteration.corrected,
+            dtype=float,
+        )
+
+        if iteration_background.shape != working.shape:
+            raise ValueError(
+                "Flatten Base polynomial iteration returned "
+                "an invalid background shape"
+            )
+        if iteration_corrected.shape != working.shape:
+            raise ValueError(
+                "Flatten Base polynomial iteration returned "
+                "an invalid corrected shape"
+            )
+        if not np.all(np.isfinite(iteration_background)):
+            raise ValueError(
+                "Flatten Base polynomial iteration returned "
+                "a non-finite background"
+            )
+        if not np.all(np.isfinite(iteration_corrected)):
+            raise ValueError(
+                "Flatten Base polynomial iteration returned "
+                "non-finite corrected data"
+            )
+
+        accumulated_background += iteration_background
+        working = np.array(
+            iteration_corrected,
+            dtype=float,
+            copy=True,
+        )
+        iterations.append(iteration)
+        current_peak = iteration.peak
+
+        if not current_peak.success:
+            termination = "peak_failure"
+            break
+
+    corrected = np.array(working, dtype=float, copy=True)
+    background = np.array(
+        accumulated_background,
+        dtype=float,
+        copy=True,
+    )
+
+    corrected.setflags(write=False)
+    background.setflags(write=False)
+
+    return FlattenBasePolynomialStage(
+        corrected=corrected,
+        background=background,
+        initial_peak=peak,
+        iterations=tuple(iterations),
+        termination=termination,
+    )
