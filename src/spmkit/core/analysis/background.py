@@ -1,9 +1,8 @@
-"""Physical background estimation for SPM images.
+"""Background estimation and removal for SPM images.
 
-This module contains local background estimators with explicit geometry.
-Arc and sphere radii are expressed in metres; geometric channel heights are
-converted to metres internally and returned in their original unit. Rank-based
-methods declare their radii in pixels and preserve the original scalar Z unit.
+Local geometric estimators use explicit physical or pixel-based scales.
+Global polynomial and spline estimators fit models over the complete image
+using explicitly documented coordinate and mask conventions.
 """
 
 from __future__ import annotations
@@ -14,6 +13,10 @@ from typing import Literal
 import numpy as np
 from scipy.ndimage import generic_filter, grey_erosion, grey_opening
 
+from spmkit.core.analysis._pspline import (
+    PSplineSurfaceFit,
+    fit_pspline_surface,
+)
 from spmkit.core.geometry import (
     length_values_from_metres,
     length_values_to_metres,
@@ -1113,6 +1116,116 @@ def remove_polynomial_background(
     background_data = np.asarray(background.data, dtype=float)
 
     return channel.with_data(data - background_data)
+
+
+def _fit_spline_background(
+    channel: SPMChannel,
+    *,
+    n_basis_x: int = 12,
+    n_basis_y: int = 12,
+    degree_x: int = 3,
+    degree_y: int = 3,
+    penalty_order_x: int = 2,
+    penalty_order_y: int = 2,
+    smoothing_x: float = 1.0,
+    smoothing_y: float = 1.0,
+    mask: np.ndarray | None = None,
+    mask_mode: Literal["ignore", "include", "exclude"] = "ignore",
+    weights: np.ndarray | None = None,
+    atol: float = 1e-12,
+    btol: float = 1e-12,
+    conlim: float = 1e12,
+    maxiter: int | None = None,
+) -> PSplineSurfaceFit:
+    """Fit a P-spline background while preserving complete diagnostics."""
+    from spmkit.core.analysis.leveling import _fit_selection
+
+    data = np.asarray(channel.data)
+
+    if data.ndim != 2:
+        raise ValueError("spline_background requires a 2D channel")
+
+    rows, columns = data.shape
+
+    if rows < 2 or columns < 2:
+        raise ValueError("spline_background requires at least two rows and two columns")
+
+    selection = _fit_selection(
+        data,
+        mask=mask,
+        mask_mode=mask_mode,
+        operation="spline_background",
+        minimum_points=1,
+    )
+
+    x_coordinates = (np.arange(columns, dtype=float) + 0.5) * float(channel.pixel_size_x)
+    y_coordinates = (np.arange(rows, dtype=float) + 0.5) * float(channel.pixel_size_y)
+
+    return fit_pspline_surface(
+        data,
+        x=x_coordinates,
+        y=y_coordinates,
+        mask=selection,
+        weights=weights,
+        n_basis_x=n_basis_x,
+        n_basis_y=n_basis_y,
+        degree_x=degree_x,
+        degree_y=degree_y,
+        penalty_order_x=penalty_order_x,
+        penalty_order_y=penalty_order_y,
+        smoothing_x=smoothing_x,
+        smoothing_y=smoothing_y,
+        atol=atol,
+        btol=btol,
+        conlim=conlim,
+        maxiter=maxiter,
+    )
+
+
+def estimate_spline_background(
+    channel: SPMChannel,
+    *,
+    n_basis_x: int = 12,
+    n_basis_y: int = 12,
+    degree_x: int = 3,
+    degree_y: int = 3,
+    penalty_order_x: int = 2,
+    penalty_order_y: int = 2,
+    smoothing_x: float = 1.0,
+    smoothing_y: float = 1.0,
+    mask: np.ndarray | None = None,
+    mask_mode: Literal["ignore", "include", "exclude"] = "ignore",
+    weights: np.ndarray | None = None,
+) -> SPMChannel:
+    """Estimate a global anisotropic tensor-product P-spline background.
+
+    The basis is evaluated at physical pixel-centre coordinates. Each axis is
+    normalized independently inside the P-spline solver. A mask controls only
+    observations used for fitting; the model is evaluated over the full image.
+    """
+    fit = _fit_spline_background(
+        channel,
+        n_basis_x=n_basis_x,
+        n_basis_y=n_basis_y,
+        degree_x=degree_x,
+        degree_y=degree_y,
+        penalty_order_x=penalty_order_x,
+        penalty_order_y=penalty_order_y,
+        smoothing_x=smoothing_x,
+        smoothing_y=smoothing_y,
+        mask=mask,
+        mask_mode=mask_mode,
+        weights=weights,
+    )
+
+    background = np.array(
+        fit.model,
+        dtype=float,
+        copy=True,
+        order="C",
+    )
+
+    return channel.with_data(background)
 
 
 def _build_background_result(
