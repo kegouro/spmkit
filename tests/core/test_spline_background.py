@@ -301,12 +301,16 @@ def test_output_preserves_context_without_mutation() -> None:
     assert channel.metadata == original_metadata
 
 
-def test_estimator_is_not_public_yet() -> None:
-    assert not hasattr(
-        analysis,
-        "estimate_spline_background",
-    )
-    assert "estimate_spline_background" not in getattr(analysis, "__all__", ())
+def test_spline_background_api_is_public() -> None:
+    assert analysis.estimate_spline_background is estimate_spline_background
+    assert analysis.remove_spline_background is remove_spline_background
+    assert analysis.analyze_spline_background is analyze_spline_background
+
+    exported = getattr(analysis, "__all__", ())
+
+    assert "estimate_spline_background" in exported
+    assert "remove_spline_background" in exported
+    assert "analyze_spline_background" in exported
 
 
 def test_remove_matches_input_minus_estimate() -> None:
