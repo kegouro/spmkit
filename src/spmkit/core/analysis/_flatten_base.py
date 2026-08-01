@@ -523,3 +523,125 @@ def _estimate_gwyddion_facet_plane(
         weight_sum=weight_sum,
         degenerate=False,
     )
+
+
+@dataclass(frozen=True)
+class FacetStageIteration:
+    """One facet correction and the base peak estimated afterwards."""
+
+    index: int
+    plane: FacetPlaneEstimate
+    peak: BasePeakEstimate
+
+
+@dataclass(frozen=True)
+class FacetStageResult:
+    """Result and evidence from the five-step Flatten Base facet stage."""
+
+    corrected: np.ndarray
+    background: np.ndarray
+    initial_peak: BasePeakEstimate
+    iterations: tuple[FacetStageIteration, ...]
+    termination: str
+
+    @property
+    def completed_iterations(self) -> int:
+        """Number of facet planes actually subtracted."""
+        return len(self.iterations)
+
+
+def _run_flatten_base_facet_stage(
+    data: np.ndarray,
+    *,
+    pixel_size_x: float,
+    pixel_size_y: float,
+) -> FacetStageResult:
+    """Run the facet-levelling stage used by Gwyddion Flatten Base."""
+    array = np.asarray(data)
+
+    if np.issubdtype(array.dtype, np.bool_) or np.iscomplexobj(array):
+        raise TypeError("flatten-base facet stage requires real-valued data")
+    if array.ndim != 2:
+        raise ValueError(
+            "flatten-base facet stage requires a two-dimensional array"
+        )
+    if array.shape[0] < 2 or array.shape[1] < 2:
+        raise ValueError(
+            "flatten-base facet stage requires at least one pixel cell"
+        )
+
+    try:
+        working = np.array(array, dtype=float, copy=True)
+    except (TypeError, ValueError) as exc:
+        raise TypeError(
+            "flatten-base facet stage requires numeric data"
+        ) from exc
+
+    if not np.all(np.isfinite(working)):
+        raise ValueError("flatten-base facet stage requires finite data")
+
+    background = np.zeros_like(working)
+    initial_peak = _estimate_base_peak(working)
+
+    rows, columns = working.shape
+    column_indices = np.arange(columns, dtype=float)
+    row_indices = np.arange(rows, dtype=float)
+    xx, yy = np.meshgrid(column_indices, row_indices)
+
+    iterations: list[FacetStageIteration] = []
+    termination = "maximum_iterations"
+
+    for index in range(5):
+        plane = _estimate_gwyddion_facet_plane(
+            working,
+            pixel_size_x=pixel_size_x,
+            pixel_size_y=pixel_size_y,
+        )
+
+        if plane.degenerate:
+            termination = "degenerate_plane"
+            break
+
+        plane_surface = (
+            plane.intercept
+            + plane.x_coefficient * xx
+            + plane.y_coefficient * yy
+        )
+
+        if not np.all(np.isfinite(plane_surface)):
+            raise ValueError(
+                "flatten-base facet stage produced a non-finite plane"
+            )
+
+        working -= plane_surface
+        background += plane_surface
+
+        peak = _estimate_base_peak(working)
+        iterations.append(
+            FacetStageIteration(
+                index=index,
+                plane=plane,
+                peak=peak,
+            )
+        )
+
+        if not peak.success:
+            termination = "peak_failure"
+            break
+
+    corrected = np.array(working, dtype=float, copy=True)
+    accumulated_background = np.array(
+        background,
+        dtype=float,
+        copy=True,
+    )
+    corrected.setflags(write=False)
+    accumulated_background.setflags(write=False)
+
+    return FacetStageResult(
+        corrected=corrected,
+        background=accumulated_background,
+        initial_peak=initial_peak,
+        iterations=tuple(iterations),
+        termination=termination,
+    )

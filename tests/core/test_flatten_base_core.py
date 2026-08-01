@@ -440,3 +440,255 @@ def test_gwyddion_facet_plane_matches_gwyddion_271_reference() -> None:
         9.9247467971063745,
         abs=5e-13,
     )
+
+
+def test_flatten_base_facet_stage_runs_exactly_five_iterations(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    rows = 4
+    columns = 5
+    data = np.arange(rows * columns, dtype=float).reshape(rows, columns)
+    original = data.copy()
+
+    plane = flatten_base_core.FacetPlaneEstimate(
+        intercept=0.4,
+        x_coefficient=0.2,
+        y_coefficient=-0.1,
+        physical_slope_x=0.1,
+        physical_slope_y=-0.2,
+        slope_scale_squared=0.03,
+        cell_count=(rows - 1) * (columns - 1),
+        weight_sum=6.0,
+        degenerate=False,
+    )
+
+    class SuccessfulPeak:
+        success = True
+
+    peak = SuccessfulPeak()
+    facet_inputs: list[np.ndarray] = []
+    peak_inputs: list[np.ndarray] = []
+
+    def fake_facet(
+        received: np.ndarray,
+        *,
+        pixel_size_x: float,
+        pixel_size_y: float,
+    ) -> flatten_base_core.FacetPlaneEstimate:
+        assert pixel_size_x == 2.0
+        assert pixel_size_y == 0.5
+        facet_inputs.append(received.copy())
+        return plane
+
+    def fake_peak(received: np.ndarray) -> SuccessfulPeak:
+        peak_inputs.append(received.copy())
+        return peak
+
+    monkeypatch.setattr(
+        flatten_base_core,
+        "_estimate_gwyddion_facet_plane",
+        fake_facet,
+    )
+    monkeypatch.setattr(
+        flatten_base_core,
+        "_estimate_base_peak",
+        fake_peak,
+    )
+
+    result = flatten_base_core._run_flatten_base_facet_stage(
+        data,
+        pixel_size_x=2.0,
+        pixel_size_y=0.5,
+    )
+
+    column_indices = np.arange(columns, dtype=float)
+    row_indices = np.arange(rows, dtype=float)
+    xx, yy = np.meshgrid(column_indices, row_indices)
+    single_plane = (
+        plane.intercept
+        + plane.x_coefficient * xx
+        + plane.y_coefficient * yy
+    )
+
+    np.testing.assert_allclose(
+        result.background,
+        5.0 * single_plane,
+    )
+    np.testing.assert_allclose(
+        result.corrected,
+        data - 5.0 * single_plane,
+    )
+
+    assert len(facet_inputs) == 5
+    assert len(peak_inputs) == 6
+    assert result.initial_peak is peak
+    assert result.completed_iterations == 5
+    assert len(result.iterations) == 5
+    assert result.termination == "maximum_iterations"
+
+    for index, iteration in enumerate(result.iterations):
+        assert iteration.index == index
+        assert iteration.plane is plane
+        assert iteration.peak is peak
+
+    np.testing.assert_array_equal(data, original)
+    assert not result.corrected.flags.writeable
+    assert not result.background.flags.writeable
+
+
+def test_flatten_base_facet_stage_stops_before_degenerate_plane(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    data = np.arange(20, dtype=float).reshape(4, 5)
+    original = data.copy()
+
+    class SuccessfulPeak:
+        success = True
+
+    peak = SuccessfulPeak()
+    degenerate_plane = flatten_base_core.FacetPlaneEstimate(
+        intercept=0.0,
+        x_coefficient=0.0,
+        y_coefficient=0.0,
+        physical_slope_x=0.0,
+        physical_slope_y=0.0,
+        slope_scale_squared=0.0,
+        cell_count=12,
+        weight_sum=12.0,
+        degenerate=True,
+    )
+
+    peak_calls: list[np.ndarray] = []
+    facet_calls: list[np.ndarray] = []
+
+    def fake_peak(received: np.ndarray) -> SuccessfulPeak:
+        peak_calls.append(received.copy())
+        return peak
+
+    def fake_facet(
+        received: np.ndarray,
+        *,
+        pixel_size_x: float,
+        pixel_size_y: float,
+    ) -> flatten_base_core.FacetPlaneEstimate:
+        assert pixel_size_x == 1.0
+        assert pixel_size_y == 1.0
+        facet_calls.append(received.copy())
+        return degenerate_plane
+
+    monkeypatch.setattr(
+        flatten_base_core,
+        "_estimate_base_peak",
+        fake_peak,
+    )
+    monkeypatch.setattr(
+        flatten_base_core,
+        "_estimate_gwyddion_facet_plane",
+        fake_facet,
+    )
+
+    result = flatten_base_core._run_flatten_base_facet_stage(
+        data,
+        pixel_size_x=1.0,
+        pixel_size_y=1.0,
+    )
+
+    assert result.initial_peak is peak
+    assert result.termination == "degenerate_plane"
+    assert result.completed_iterations == 0
+    assert result.iterations == ()
+    assert len(peak_calls) == 1
+    assert len(facet_calls) == 1
+
+    np.testing.assert_array_equal(result.corrected, data)
+    np.testing.assert_array_equal(
+        result.background,
+        np.zeros_like(data),
+    )
+    np.testing.assert_array_equal(data, original)
+    assert not result.corrected.flags.writeable
+    assert not result.background.flags.writeable
+
+
+def test_flatten_base_facet_stage_keeps_correction_before_peak_failure(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    rows = 4
+    columns = 5
+    data = np.arange(rows * columns, dtype=float).reshape(rows, columns)
+
+    class Peak:
+        def __init__(self, success: bool) -> None:
+            self.success = success
+
+    initial_peak = Peak(success=True)
+    failed_peak = Peak(success=False)
+    peak_results = [initial_peak, failed_peak]
+
+    plane = flatten_base_core.FacetPlaneEstimate(
+        intercept=0.3,
+        x_coefficient=0.15,
+        y_coefficient=-0.05,
+        physical_slope_x=0.075,
+        physical_slope_y=-0.1,
+        slope_scale_squared=0.02,
+        cell_count=12,
+        weight_sum=7.0,
+        degenerate=False,
+    )
+
+    facet_calls = 0
+
+    def fake_peak(received: np.ndarray) -> Peak:
+        del received
+        return peak_results.pop(0)
+
+    def fake_facet(
+        received: np.ndarray,
+        *,
+        pixel_size_x: float,
+        pixel_size_y: float,
+    ) -> flatten_base_core.FacetPlaneEstimate:
+        nonlocal facet_calls
+        del received, pixel_size_x, pixel_size_y
+        facet_calls += 1
+        return plane
+
+    monkeypatch.setattr(
+        flatten_base_core,
+        "_estimate_base_peak",
+        fake_peak,
+    )
+    monkeypatch.setattr(
+        flatten_base_core,
+        "_estimate_gwyddion_facet_plane",
+        fake_facet,
+    )
+
+    result = flatten_base_core._run_flatten_base_facet_stage(
+        data,
+        pixel_size_x=2.0,
+        pixel_size_y=0.5,
+    )
+
+    xx, yy = np.meshgrid(
+        np.arange(columns, dtype=float),
+        np.arange(rows, dtype=float),
+    )
+    expected_plane = (
+        plane.intercept
+        + plane.x_coefficient * xx
+        + plane.y_coefficient * yy
+    )
+
+    assert facet_calls == 1
+    assert peak_results == []
+    assert result.initial_peak is initial_peak
+    assert result.termination == "peak_failure"
+    assert result.completed_iterations == 1
+    assert result.iterations[0].index == 0
+    assert result.iterations[0].plane is plane
+    assert result.iterations[0].peak is failed_peak
+
+    np.testing.assert_allclose(result.background, expected_plane)
+    np.testing.assert_allclose(result.corrected, data - expected_plane)
