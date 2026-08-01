@@ -808,3 +808,101 @@ def test_grow_mask_conn4_does_not_mutate_seed_mask() -> None:
     np.testing.assert_array_equal(mask, original)
     assert np.count_nonzero(observed) == 13
     assert not np.shares_memory(observed, mask)
+
+
+def test_flatten_base_mask_uses_strict_threshold_and_degree_radius(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    data = np.array(
+        [
+            [6.0, 7.0, 8.0, 2.0],
+            [9.0, 1.0, 7.0, 10.0],
+            [0.0, 5.0, 3.0, 7.0],
+        ],
+        dtype=float,
+    )
+    original = data.copy()
+
+    class Peak:
+        success = True
+        mean = 1.0
+        rms = 2.0
+
+    captured: dict[str, object] = {}
+
+    def fake_grow(
+        mask: np.ndarray,
+        *,
+        radius: int,
+    ) -> np.ndarray:
+        captured["mask"] = mask.copy()
+        captured["radius"] = radius
+
+        grown = mask.copy()
+        grown[0, 0] = True
+        return grown
+
+    monkeypatch.setattr(
+        flatten_base_core,
+        "_grow_mask_conn4",
+        fake_grow,
+    )
+
+    result = flatten_base_core._build_flatten_base_mask(
+        data,
+        peak=Peak(),
+        degree=2,
+    )
+
+    expected_raw = data > 7.0
+    expected_grown = expected_raw.copy()
+    expected_grown[0, 0] = True
+
+    assert result.degree == 2
+    assert result.threshold == 7.0
+    assert result.growth_radius == 2
+    assert captured["radius"] == 2
+
+    np.testing.assert_array_equal(captured["mask"], expected_raw)
+    np.testing.assert_array_equal(result.raw, expected_raw)
+    np.testing.assert_array_equal(result.grown, expected_grown)
+
+    assert result.raw_count == 3
+    assert result.grown_count == 4
+    assert not result.raw.flags.writeable
+    assert not result.grown.flags.writeable
+
+    np.testing.assert_array_equal(data, original)
+
+
+def test_flatten_base_mask_integrates_threshold_and_conn4_growth() -> None:
+    data = np.zeros((7, 7), dtype=float)
+    data[3, 3] = 4.0
+    data[0, 0] = 3.0
+
+    class Peak:
+        success = True
+        mean = 0.0
+        rms = 1.0
+
+    result = flatten_base_core._build_flatten_base_mask(
+        data,
+        peak=Peak(),
+        degree=5,
+    )
+
+    expected_raw = np.zeros((7, 7), dtype=bool)
+    expected_raw[3, 3] = True
+
+    yy, xx = np.mgrid[0:7, 0:7]
+    expected_grown = (
+        np.abs(yy - 3) + np.abs(xx - 3)
+    ) <= 3
+
+    assert result.threshold == 3.0
+    assert result.growth_radius == 3
+    assert result.raw_count == 1
+    assert result.grown_count == 25
+
+    np.testing.assert_array_equal(result.raw, expected_raw)
+    np.testing.assert_array_equal(result.grown, expected_grown)

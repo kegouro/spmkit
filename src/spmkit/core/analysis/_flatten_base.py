@@ -693,3 +693,104 @@ def _grow_mask_conn4(
     )
 
     return np.asarray(grown, dtype=bool)
+
+
+@dataclass(frozen=True)
+class FlattenBaseMask:
+    """Automatic positive-feature mask for one polynomial stage."""
+
+    degree: int
+    threshold: float
+    growth_radius: int
+    raw: np.ndarray
+    grown: np.ndarray
+    raw_count: int
+    grown_count: int
+
+
+def _build_flatten_base_mask(
+    data: np.ndarray,
+    *,
+    peak: BasePeakEstimate,
+    degree: int,
+) -> FlattenBaseMask:
+    """Build the automatic exclusion mask used by Flatten Base."""
+    values = np.asarray(data)
+
+    if np.issubdtype(values.dtype, np.bool_) or np.iscomplexobj(values):
+        raise TypeError("Flatten Base masking requires real-valued data")
+    if values.ndim != 2:
+        raise ValueError(
+            "Flatten Base masking requires a two-dimensional array"
+        )
+    if isinstance(degree, (bool, np.bool_)) or not isinstance(
+        degree,
+        (int, np.integer),
+    ):
+        raise TypeError("Flatten Base masking requires an integer degree")
+
+    degree_value = int(degree)
+
+    if degree_value < 0:
+        raise ValueError(
+            "Flatten Base masking requires a non-negative degree"
+        )
+    if not peak.success:
+        raise ValueError(
+            "Flatten Base masking requires a successful base-peak estimate"
+        )
+
+    try:
+        numeric = np.asarray(values, dtype=float)
+    except (TypeError, ValueError) as exc:
+        raise TypeError(
+            "Flatten Base masking requires numeric data"
+        ) from exc
+
+    if not np.all(np.isfinite(numeric)):
+        raise ValueError("Flatten Base masking requires finite data")
+
+    mean = float(peak.mean)
+    rms = float(peak.rms)
+
+    if not np.isfinite(mean) or not np.isfinite(rms):
+        raise ValueError(
+            "Flatten Base masking requires finite peak parameters"
+        )
+    if rms < 0.0:
+        raise ValueError(
+            "Flatten Base masking requires non-negative peak RMS"
+        )
+
+    threshold = mean + 3.0 * rms
+    growth_radius = 1 + degree_value // 2
+
+    raw = np.array(
+        numeric > threshold,
+        dtype=bool,
+        copy=True,
+    )
+    grown = np.array(
+        _grow_mask_conn4(
+            raw,
+            radius=growth_radius,
+        ),
+        dtype=bool,
+        copy=True,
+    )
+
+    raw_count = int(np.count_nonzero(raw))
+    grown_count = int(np.count_nonzero(grown))
+
+    raw.setflags(write=False)
+    grown.setflags(write=False)
+
+    return FlattenBaseMask(
+        degree=degree_value,
+        threshold=float(threshold),
+        growth_radius=growth_radius,
+        raw=raw,
+        grown=grown,
+        raw_count=raw_count,
+        grown_count=grown_count,
+    )
