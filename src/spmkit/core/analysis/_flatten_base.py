@@ -397,3 +397,129 @@ def _estimate_base_peak(data: np.ndarray) -> BasePeakEstimate:
         window=window,
         fit=fit,
     )
+
+
+@dataclass(frozen=True)
+class FacetPlaneEstimate:
+    """Dominant-plane estimate using Gwyddion's facet weighting."""
+
+    intercept: float
+    x_coefficient: float
+    y_coefficient: float
+    physical_slope_x: float
+    physical_slope_y: float
+    slope_scale_squared: float
+    cell_count: int
+    weight_sum: float
+    degenerate: bool
+
+
+def _estimate_gwyddion_facet_plane(
+    data: np.ndarray,
+    *,
+    pixel_size_x: float,
+    pixel_size_y: float,
+) -> FacetPlaneEstimate:
+    """Estimate one dominant-plane correction without modifying the field."""
+    array = np.asarray(data)
+
+    if np.issubdtype(array.dtype, np.bool_):
+        raise TypeError("facet-plane estimation requires real-valued data")
+    if np.iscomplexobj(array):
+        raise TypeError("facet-plane estimation requires real-valued data")
+    if array.ndim != 2:
+        raise ValueError("facet-plane estimation requires a two-dimensional array")
+    if array.shape[0] < 2 or array.shape[1] < 2:
+        raise ValueError("facet-plane estimation requires at least one pixel cell")
+
+    try:
+        values = np.asarray(array, dtype=float)
+    except (TypeError, ValueError) as exc:
+        raise TypeError("facet-plane estimation requires numeric data") from exc
+
+    if not np.all(np.isfinite(values)):
+        raise ValueError("facet-plane estimation requires finite data")
+
+    def positive_pixel_size(value: float, *, name: str) -> float:
+        if isinstance(value, (bool, np.bool_)) or np.iscomplexobj(value):
+            raise TypeError(f"facet-plane estimation requires {name} to be real")
+
+        try:
+            scalar = float(value)
+        except (TypeError, ValueError) as exc:
+            raise TypeError(
+                f"facet-plane estimation requires {name} to be real"
+            ) from exc
+
+        if not np.isfinite(scalar) or scalar <= 0.0:
+            raise ValueError(
+                f"facet-plane estimation requires {name} to be positive"
+            )
+
+        return scalar
+
+    dx = positive_pixel_size(pixel_size_x, name="pixel_size_x")
+    dy = positive_pixel_size(pixel_size_y, name="pixel_size_y")
+
+    x_slopes = (
+        values[1:, 1:]
+        + values[:-1, 1:]
+        - values[1:, :-1]
+        - values[:-1, :-1]
+    ) / (2.0 * dx)
+
+    y_slopes = (
+        values[1:, :-1]
+        + values[1:, 1:]
+        - values[:-1, :-1]
+        - values[:-1, 1:]
+    ) / (2.0 * dy)
+
+    if not np.all(np.isfinite(x_slopes)) or not np.all(np.isfinite(y_slopes)):
+        raise ValueError("facet-plane estimation produced non-finite slopes")
+
+    squared_slopes = np.square(x_slopes) + np.square(y_slopes)
+    cell_count = int(squared_slopes.size)
+    slope_scale_squared = float(np.mean(squared_slopes) / 20.0)
+
+    if slope_scale_squared == 0.0:
+        return FacetPlaneEstimate(
+            intercept=0.0,
+            x_coefficient=0.0,
+            y_coefficient=0.0,
+            physical_slope_x=0.0,
+            physical_slope_y=0.0,
+            slope_scale_squared=0.0,
+            cell_count=cell_count,
+            weight_sum=float(cell_count),
+            degenerate=True,
+        )
+
+    weights = np.exp(-squared_slopes / slope_scale_squared)
+    weight_sum = float(np.sum(weights))
+
+    if not np.isfinite(weight_sum) or weight_sum <= 0.0:
+        raise ValueError("facet-plane estimation produced invalid weights")
+
+    physical_slope_x = float(np.sum(x_slopes * weights) / weight_sum)
+    physical_slope_y = float(np.sum(y_slopes * weights) / weight_sum)
+
+    x_coefficient = physical_slope_x * dx
+    y_coefficient = physical_slope_y * dy
+    rows, columns = values.shape
+    intercept = -0.5 * (
+        x_coefficient * columns
+        + y_coefficient * rows
+    )
+
+    return FacetPlaneEstimate(
+        intercept=float(intercept),
+        x_coefficient=float(x_coefficient),
+        y_coefficient=float(y_coefficient),
+        physical_slope_x=physical_slope_x,
+        physical_slope_y=physical_slope_y,
+        slope_scale_squared=slope_scale_squared,
+        cell_count=cell_count,
+        weight_sum=weight_sum,
+        degenerate=False,
+    )

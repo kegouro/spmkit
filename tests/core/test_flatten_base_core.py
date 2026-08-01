@@ -304,3 +304,139 @@ def test_estimate_base_peak_composes_verified_stages(
     assert result.mean == fit.mean
     assert result.rms == fit.rms
     np.testing.assert_array_equal(data, original)
+
+
+def test_gwyddion_facet_plane_recovers_exact_physical_tilt() -> None:
+    rows = 4
+    columns = 5
+    pixel_size_x = 2.0
+    pixel_size_y = 0.5
+    expected_physical_x = 0.3
+    expected_physical_y = -0.2
+
+    x = np.arange(columns, dtype=float) * pixel_size_x
+    y = np.arange(rows, dtype=float) * pixel_size_y
+    xx, yy = np.meshgrid(x, y)
+
+    data = 7.0 + expected_physical_x * xx + expected_physical_y * yy
+    original = data.copy()
+
+    result = flatten_base_core._estimate_gwyddion_facet_plane(
+        data,
+        pixel_size_x=pixel_size_x,
+        pixel_size_y=pixel_size_y,
+    )
+
+    expected_x_coefficient = expected_physical_x * pixel_size_x
+    expected_y_coefficient = expected_physical_y * pixel_size_y
+    expected_scale_squared = (
+        expected_physical_x**2 + expected_physical_y**2
+    ) / 20.0
+    expected_intercept = -0.5 * (
+        expected_x_coefficient * columns
+        + expected_y_coefficient * rows
+    )
+    expected_cells = (rows - 1) * (columns - 1)
+
+    assert not result.degenerate
+    assert result.cell_count == expected_cells
+    assert result.physical_slope_x == pytest.approx(expected_physical_x)
+    assert result.physical_slope_y == pytest.approx(expected_physical_y)
+    assert result.x_coefficient == pytest.approx(expected_x_coefficient)
+    assert result.y_coefficient == pytest.approx(expected_y_coefficient)
+    assert result.intercept == pytest.approx(expected_intercept)
+    assert result.slope_scale_squared == pytest.approx(
+        expected_scale_squared
+    )
+    assert result.weight_sum == pytest.approx(
+        expected_cells * np.exp(-20.0)
+    )
+
+    np.testing.assert_array_equal(data, original)
+
+
+def test_gwyddion_facet_plane_handles_flat_field_without_nan() -> None:
+    data = np.full((4, 5), 3.2)
+
+    result = flatten_base_core._estimate_gwyddion_facet_plane(
+        data,
+        pixel_size_x=0.4,
+        pixel_size_y=0.7,
+    )
+
+    assert result.degenerate
+    assert result.cell_count == 12
+    assert result.intercept == 0.0
+    assert result.x_coefficient == 0.0
+    assert result.y_coefficient == 0.0
+    assert result.physical_slope_x == 0.0
+    assert result.physical_slope_y == 0.0
+    assert result.slope_scale_squared == 0.0
+    assert result.weight_sum == pytest.approx(12.0)
+
+
+def test_gwyddion_facet_plane_matches_gwyddion_271_reference() -> None:
+    """Cross-check the facet estimator against direct libgwyddion 2.71."""
+    rows = 6
+    columns = 7
+    pixel_size_x = 2.0
+    pixel_size_y = 0.5
+
+    data = np.empty((rows, columns), dtype=float)
+
+    for row in range(rows):
+        for column in range(columns):
+            x = column * pixel_size_x
+            y = row * pixel_size_y
+            value = (
+                7.0
+                + 0.3 * x
+                - 0.2 * y
+                + 0.04 * np.sin(0.7 * column + 0.3 * row)
+            )
+
+            if row == 1 and column == 2:
+                value += 4.0
+            if row == 3 and column == 5:
+                value += 2.5
+
+            data[row, column] = value
+
+    result = flatten_base_core._estimate_gwyddion_facet_plane(
+        data,
+        pixel_size_x=pixel_size_x,
+        pixel_size_y=pixel_size_y,
+    )
+
+    # Frozen from a direct gwy_data_field_fit_facet_plane() probe.
+    assert not result.degenerate
+    assert result.intercept == pytest.approx(
+        -1.7454698947303242,
+        abs=5e-13,
+    )
+    assert result.x_coefficient == pytest.approx(
+        0.58850087792355377,
+        abs=5e-13,
+    )
+    assert result.y_coefficient == pytest.approx(
+        -0.10476105933403794,
+        abs=5e-13,
+    )
+    assert result.physical_slope_x == pytest.approx(
+        0.29425043896177688,
+        abs=5e-13,
+    )
+    assert result.physical_slope_y == pytest.approx(
+        -0.20952211866807588,
+        abs=5e-13,
+    )
+
+    assert result.cell_count == 30
+    assert result.slope_scale_squared == pytest.approx(
+        0.16422579481110028,
+        abs=5e-14,
+    )
+    assert result.weight_sum == pytest.approx(
+        9.9247467971063745,
+        abs=5e-13,
+    )
