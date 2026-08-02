@@ -178,6 +178,54 @@ This implementation is LEVEL 1 — SOFTWARE_VERIFIED through synthetic tests
 and independent test-local two-dimensional oracles for both supported border
 policies. Numerical equivalence with Gwyddion has not been established.
 
+## Gwyddion-compatible Sphere-revolution background
+
+SPM-Kit provides data-adaptive background estimation compatible with Gwyddion 2.71's
+Revolve Sphere module:
+
+```python
+from spmkit.core.analysis import (
+    analyze_gwyddion_sphere_revolution_background,
+    estimate_gwyddion_sphere_revolution_background,
+    remove_gwyddion_sphere_revolution_background,
+)
+
+background = estimate_gwyddion_sphere_revolution_background(
+    channel,
+    radius_px=20.0,
+    inverted=False,
+)
+
+corrected = remove_gwyddion_sphere_revolution_background(
+    channel,
+    radius_px=20.0,
+    inverted=False,
+)
+
+result = analyze_gwyddion_sphere_revolution_background(
+    channel,
+    radius_px=20.0,
+    inverted=False,
+)
+```
+
+`radius_px` is expressed in samples (array-index units). The public Gwyddion-compatible
+range is inclusive from 1.0 through 1000.0. `channel` must be a real, finite, non-empty
+`SPMChannel`.
+
+`inverted=False` executes Gwyddion 2.71's normal Sphere Revolution route. `inverted=True`
+applies the exact dual `-B(-data)` for background estimation. To avoid the internal crash
+occurring in Gwyddion 2.71's C module when `inverted=True`, the corrected channel uses
+the safe deliberate divergence `corrected = original - background`, guaranteeing exact
+reconstruction of the original channel data.
+
+`analyze_gwyddion_sphere_revolution_background` returns a `BackgroundResult` with
+`method="gwyddion_sphere_revolution"` and `parameters={"radius_px": float(radius_px), "inverted": bool(inverted)}`.
+
+This estimator is distinct from SPMKit's physical sphere-revolution model
+(`estimate_sphere_revolution_background`), which operates with physical metric radii in metres,
+circular footprints in physical coordinates, and explicit physical border policies.
+
 ## KPFM statistics
 
 ```python
