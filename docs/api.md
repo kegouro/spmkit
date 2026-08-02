@@ -281,6 +281,32 @@ This capability is CROSS_VALIDATED only within its frozen 36-case Gwyddion 2.71 
 scope, frozen evidence, semantics, and non-claims are specified in the
 [Gwyddion Median Background compatibility specification](design/GWYDDION_MEDIAN_BACKGROUND_COMPATIBILITY.md).
 
+## Gwyddion 2.71 Filter flat-disc morphology
+
+SPM-Kit exposes the frozen Gwyddion 2.71 Filter-tool flat-disc Opening and Closing:
+
+```python
+from spmkit.core.analysis import (
+    gwyddion_flat_disc_closing,
+    gwyddion_flat_disc_opening,
+)
+
+opened = gwyddion_flat_disc_opening(channel, size_px=5)
+closed = gwyddion_flat_disc_closing(channel, size_px=5)
+```
+
+Both functions accept a pixel-based `size_px` in the inclusive range `2..31`, defaulting to
+`5`, and return a new `SPMChannel`. The K×K digital ellipse, nearest-edge extension, and
+Gwyddion executable even-size anchoring are fixed; erosion, dilation, masks, ROI, ASF, and
+physical-radius options are not public parameters. Inputs must be finite, non-empty, and 2D;
+the source channel is not mutated, and shape, Z/XY units, ranges, direction, group, and copied
+metadata are preserved.
+
+This capability is `CROSS_VALIDATED` only within the frozen 12-field campaign and six sizes
+`2, 3, 4, 5, 30, 31` (72 Opening and 72 Closing cases). The complete scope, executable tie
+semantics, evidence identities, and non-claims are recorded in the
+[Gwyddion flat-disc morphology compatibility specification](design/GWYDDION_FLAT_DISC_MORPHOLOGY_COMPATIBILITY.md).
+
 ## KPFM statistics
 
 ```python

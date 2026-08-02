@@ -41,6 +41,7 @@ and tolerance. It never transfers automatically to an adjacent feature.
 | Physical sphere-revolution background | `core.analysis.background` | 51 unit and synthetic tests, including independent brute-force 2D oracles for nearest and reflect borders, physical anisotropy, non-separability, unit equivalence and reconstruction identity | <span class="spm-level spm-level--1" data-level="1">SOFTWARE_VERIFIED</span> | None | Python API only; finite geometric Z data; no masks, Gwyddion equivalence, performance campaign or physical-reference campaign |
 | Gwyddion-compatible Sphere-revolution background | `core.analysis.background`, `core.analysis._gwyddion_sphere_revolution` | Frozen Gwyddion 2.71 source semantics, focal probes, 10 original surfaces, 10 normal executions on negated inputs (20 valid external runs per build), 15/15 inverted runs failing in normal build and under ASan; direct external reference for normal, derived external cross-validation for inverted background, safe deliberate divergence for inverted corrected (`atol=5e-14`, `rtol=0.0`); independent Python oracle | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> for the frozen campaign | Gwyddion 2.71 source, compiled probes, independent Python oracle and frozen JSON/NPZ fixture | Radius is in samples; no non-finite data or masks; inverted corrected does not claim equivalence with Gwyddion's crashing wrapper; no physical validation, tip deconvolution or universal-equivalence claim; physical sphere-revolution maintains its independent software verification |
 | Gwyddion 2.71 Median Background | `core.analysis.background`, `core.analysis._median_background` | Frozen executable reference campaign: 36 logical cases, 72 executions (36 normal, 36 ASan), radii 1/2/3/4/20/1024, direct and radixtree reference paths; public background and corrected fields 36/36 bitwise exact, maximum absolute difference 0 and maximum ULP 0; input mutation maximum 0 and reconstruction maximum `4.4408920985006262e-16` | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen 36-case campaign | Gwyddion 2.71 source, executable probe, independent Python oracle, frozen NPZ/JSON fixture | Finite two-dimensional inputs only; no universal equivalence, performance-equivalence, future-Gwyddion, all-radii, or all-matrices claim; `rank_backend_reference` describes Gwyddion, not an SPM-Kit backend |
+| Gwyddion 2.71 Filter flat-disc morphology | `core.analysis.background`, `core.analysis._gwyddion_flat_disc_morphology` | Frozen executable reference campaign: 12 fields, six sizes 2/3/4/5/30/31, 72 Opening and 72 Closing cases; kernels 30/30, Opening 72/72 and Closing 72/72 bitwise exact; maximum absolute difference 0, maximum ULP 0, signed-zero mismatches 0, input mutation 0 | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen campaign | Audited Gwyddion 2.71 executable, corrected external probe V3, executable reduction trace, independent oracle V2, frozen NPZ/JSON fixture | Finite full-field data with masks ignored; no universal equivalence, NaN/Inf, ROI, masks, ASF, tip morphology, physical rolling-ball, performance, other builds/versions, public erosion/dilation, or source-only tie claim |
 | Hertz / conical contact and DMT paths | `core.analysis.forcecurve` | Unit and synthetic-recovery tests; Hertz/conical modulus recovery gates | <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> within synthetic test scope | Analytical construction | No certified cantilever/tip calibration or broad experimental campaign |
 | Adhesive JKR | `core.analysis.experimental` | Synthetic recovery of reduced modulus and work of adhesion; Hertz-limit test | <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> within synthetic scope | Analytical construction | Experimental module; no physical-reference campaign |
 | WLC and FJC chain models | `core.analysis.chain` | Analytical synthetic-recovery tests | <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> within synthetic scope | Analytical construction | No cross-software or experimental population campaign |
@@ -124,6 +125,42 @@ and `corrected_` prefixes. The campaign remains valid because both binaries exec
 processes returned, stderr was empty, normal and ASan stdout were byte-identical, outputs were
 parsed and recalculated independently, oracle/reference results were bitwise exact, and the
 fixture stores canonical hashes.
+
+### Gwyddion 2.71 Filter flat-disc morphology
+
+**Claim:** `CROSS_VALIDATED` only within the frozen executable campaign. The audited Gwyddion
+2.71 Filter path is represented by 12 deterministic finite fields at sizes 2, 3, 4, 5, 30,
+and 31. Opening and Closing each match the frozen external outputs bitwise in 72/72 cases;
+kernels match 30/30, maximum absolute difference and ULP distance are both 0, signed-zero
+mismatches are 0, and input mutation is 0.
+
+The fixed semantics are the K×K inclusive digital ellipse, nearest-edge extension, asymmetric
+even-size anchors, and the audited executable Each/Even plus RLE reduction hierarchy. The
+source strict ternaries and executable MINSD/MAXSD equality behavior are distinct; SPM-Kit
+reproduces the audited executable path. The rejected uninitialised-kernel microprobe is not
+evidence; the corrected zero-initialised probe is the valid external record.
+
+**Traceability:**
+
+```text
+.reference/gwyddion-2.71/source/libprocess/filters-minmax.c
+  → /tmp/spmkit_flat_disc_probe_v3
+  → /tmp/spmkit_flat_disc_reduction_trace_v1
+  → /tmp/spmkit_flat_disc_reduction_trace_v1/oracle_v2/flat_disc_morphology_oracle.py
+  → tests/validation/fixtures/gwyddion/flat_disc_morphology/flat_disc_morphology_reference.npz
+  → tests/validation/fixtures/gwyddion/flat_disc_morphology/flat_disc_morphology_reference.json
+  → src/spmkit/core/analysis/_gwyddion_flat_disc_morphology.py
+  → src/spmkit/core/analysis/background.py
+  → tests/core/test_gwyddion_flat_disc_morphology_private.py
+  → tests/core/test_gwyddion_flat_disc_morphology.py
+  → docs/scientific-status.md
+```
+
+Evidence was frozen in `2ba366e`; the private kernel is `05c5ae4`. No public or documentation
+commit is claimed here. **Non-claims:** no universal equivalence; no NaN or infinity coverage;
+no ROI, masks, ASF, tip morphology, physical rolling-ball equivalence, performance parity,
+other Gwyddion builds or versions, public erosion or dilation, or claim that source-level C
+tie semantics alone reproduce the audited binary.
 
 ## Test-count policy
 

@@ -39,6 +39,7 @@ references, tolerances, outputs, hashes, and limitations.
 | Gwyddion Revolve Arc 2.71 v1 | Data-adaptive arc-envelope background on a frozen asymmetric 5×7 field, six direction/inversion routes and focal kernel cases | 6/6 backgrounds and 5/5 valid corrected outputs within `5e-14`; horizontal-inverted reference defect preserved as evidence and repaired by reconstruction | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> for the frozen campaign | Gwyddion 2.71 only; radius in samples; known wrapper and one-sample reference defects documented; not physical validation or universal equivalence |
 | Gwyddion Revolve Sphere 2.71 v1 | Data-adaptive sphere-envelope background on 10 logical pairs (20 normal runs per build) and 15 failing inverted runs; direct normal external reference and derived inverted background within 5e-14; safe inverted corrected reconstruction | 20/20 valid external runs and 10/10 derived inverted backgrounds within 5e-14 | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> for the frozen campaign | Gwyddion 2.71 only; radius in samples; 15/15 inverted wrapper crashes documented as reference failures; not physical validation or universal equivalence |
 | Gwyddion Median Background 2.71 v1 | Local rank background on 36 frozen logical cases, 72 executions (36 normal, 36 ASan), radii 1/2/3/4/20/1024, and both direct/radixtree reference paths | Public background and corrected fields 36/36 bitwise exact; maximum absolute difference 0, maximum ULP 0, input mutation maximum 0, reconstruction maximum `4.4408920985006262e-16` | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen campaign | Gwyddion 2.71 only; finite inputs; no universal, performance, future-version, all-radii, or all-matrices claim; no public border/shape/rank configuration |
+| Gwyddion Filter flat-disc morphology 2.71 v1 | 12 frozen fields, six sizes 2/3/4/5/30/31, full-field mask-ignore Opening and Closing | Kernels 30/30; Opening 72/72 and Closing 72/72 bitwise exact; max absolute difference 0, max ULP 0, signed-zero mismatches 0, input mutation 0 | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen campaign | Gwyddion 2.71 executable only; finite full-field data; no universal, NaN/Inf, ROI, mask, ASF, tip, physical rolling-ball, performance, other-build, public erosion/dilation, or source-only tie claim |
 | Nanoscope `.spm` pilot v0.1 | Six demonstrated files | 18/18 metric comparisons within tolerance | <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> limited parser claim | Partial support and `ACCIDENTAL_PRE_FREEZE_UNBLINDING` |
 
 See [Scientific status](../scientific-status.md) for the complete mapping and
@@ -96,6 +97,38 @@ the parsed outputs, oracle/reference equality, and canonical hashes were indepen
 
 These counts describe the frozen focal validation campaign for this capability. They are not
 the global test total of the SPMKit project.
+
+### Gwyddion 2.71 Filter flat-disc morphology
+
+The frozen trace is:
+
+```text
+Gwyddion source
+→ corrected external probe V3
+→ executable reduction trace
+→ independent oracle V2
+→ frozen fixture
+→ private SPMKit kernel
+→ public bitwise tests
+→ CROSS_VALIDATED status
+```
+
+The records are `.reference/gwyddion-2.71/source/libprocess/filters-minmax.c`,
+`/tmp/spmkit_flat_disc_probe_v3`, `/tmp/spmkit_flat_disc_reduction_trace_v1`,
+`docs/design/GWYDDION_FLAT_DISC_MORPHOLOGY_COMPATIBILITY.md`,
+`tests/validation/fixtures/gwyddion/flat_disc_morphology/flat_disc_morphology_reference.npz`,
+`tests/validation/fixtures/gwyddion/flat_disc_morphology/flat_disc_morphology_reference.json`,
+`src/spmkit/core/analysis/_gwyddion_flat_disc_morphology.py`,
+`src/spmkit/core/analysis/background.py`,
+`tests/core/test_gwyddion_flat_disc_morphology_private.py`, and
+`tests/core/test_gwyddion_flat_disc_morphology.py`.
+
+The evidence commit is `2ba366e`; the private-kernel commit is `05c5ae4`. The claim is limited
+to the 12 frozen fields and six sizes. Source strict ternaries and executable MINSD/MAXSD
+equality behavior are distinguished; the rejected uninitialised-kernel probe is excluded, and
+the corrected zero-initialised probe is the valid external evidence. No claim is made for
+universal equivalence, non-finite data, ROI/masks, ASF, tip morphology, physical rolling-ball,
+performance, other Gwyddion builds, public erosion/dilation, or source-only tie semantics.
 
 ## What remains open
 
