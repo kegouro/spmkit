@@ -368,4 +368,3 @@ def test_gwyddion_sphere_physical_api_remains_distinct() -> None:
     gwy_estimate = analysis_mod.estimate_gwyddion_sphere_revolution_background
 
     assert phys_estimate is not gwy_estimate
-
