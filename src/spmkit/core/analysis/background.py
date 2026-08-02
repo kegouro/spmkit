@@ -20,6 +20,10 @@ from spmkit.core.analysis._gwyddion_arc_revolution import (
 from spmkit.core.analysis._gwyddion_sphere_revolution import (
     _gwyddion_sphere_result,
 )
+from spmkit.core.analysis._median_background import (
+    _gwyddion_median_background_result,
+    _MedianBackgroundKernelSpec,
+)
 from spmkit.core.analysis._pspline import (
     PSplineSurfaceFit,
     fit_pspline_surface,
@@ -36,6 +40,7 @@ ArcBorder = Literal["nearest", "reflect"]
 BackgroundMethod = Literal[
     "arc_revolution",
     "gwyddion_arc_revolution",
+    "gwyddion_median_background",
     "gwyddion_sphere_revolution",
     "sphere_revolution",
     "rolling_ball",
@@ -418,11 +423,14 @@ def estimate_arc_revolution_background(
         operation=operation,
     )
 
-    direction_value = _validated_choice(
-        direction,
-        name="direction",
-        allowed=("horizontal", "vertical", "both"),
-        operation=operation,
+    direction_value = cast(
+        ArcDirection,
+        _validated_choice(
+            direction,
+            name="direction",
+            allowed=("horizontal", "vertical", "both"),
+            operation=operation,
+        ),
     )
     side_value = _validated_choice(
         side,
@@ -430,11 +438,14 @@ def estimate_arc_revolution_background(
         allowed=("below", "above"),
         operation=operation,
     )
-    border_value = _validated_choice(
-        border,
-        name="border",
-        allowed=("nearest", "reflect"),
-        operation=operation,
+    border_value = cast(
+        ArcBorder,
+        _validated_choice(
+            border,
+            name="border",
+            allowed=("nearest", "reflect"),
+            operation=operation,
+        ),
     )
 
     data_metres = length_values_to_metres(
@@ -699,6 +710,73 @@ def remove_gwyddion_sphere_revolution_background(
     return corrected
 
 
+def _gwyddion_median_background_channels(
+    channel: SPMChannel,
+    radius_px: object,
+) -> tuple[
+    SPMChannel,
+    SPMChannel,
+    _MedianBackgroundKernelSpec,
+]:
+    """Calculate one Median Background result and preserve channel context."""
+    background_data, corrected_data, kernel_spec = _gwyddion_median_background_result(
+        channel.data,
+        radius_px,
+    )
+
+    return (
+        channel.with_data(background_data),
+        channel.with_data(corrected_data),
+        kernel_spec,
+    )
+
+
+def estimate_gwyddion_median_background(
+    channel: SPMChannel,
+    radius_px: object = 20,
+) -> SPMChannel:
+    """Estimate a Gwyddion 2.71-compatible Median Background.
+
+    ``radius_px`` is an integer pixel radius from 1 through 1024, with a
+    default of 20.  The digital ellipse and nearest-edge border extension
+    are fixed by Gwyddion semantics.  The input channel is not mutated;
+    finite two-dimensional input is required.
+
+    Returns
+    -------
+    SPMChannel
+        The estimated background with the input channel context preserved.
+    """
+    background, _, _ = _gwyddion_median_background_channels(
+        channel,
+        radius_px,
+    )
+    return background
+
+
+def remove_gwyddion_median_background(
+    channel: SPMChannel,
+    radius_px: object = 20,
+) -> SPMChannel:
+    """Return the corrected Gwyddion 2.71-compatible Median Background field.
+
+    ``radius_px`` is an integer pixel radius from 1 through 1024, with a
+    default of 20.  The digital ellipse and nearest-edge border extension
+    are fixed by Gwyddion semantics.  The input channel is not mutated;
+    finite two-dimensional input is required.
+
+    Returns
+    -------
+    SPMChannel
+        The corrected field with the input channel context preserved.
+    """
+    _, corrected, _ = _gwyddion_median_background_channels(
+        channel,
+        radius_px,
+    )
+    return corrected
+
+
 def _sphere_structure(
     *,
     radius: float,
@@ -857,11 +935,14 @@ def estimate_sphere_revolution_background(
         allowed=("below", "above"),
         operation=operation,
     )
-    border_value = _validated_choice(
-        border,
-        name="border",
-        allowed=("nearest", "reflect"),
-        operation=operation,
+    border_value = cast(
+        ArcBorder,
+        _validated_choice(
+            border,
+            name="border",
+            allowed=("nearest", "reflect"),
+            operation=operation,
+        ),
     )
 
     data_metres = length_values_to_metres(
@@ -1624,6 +1705,43 @@ def analyze_gwyddion_sphere_revolution_background(
         parameters={
             "radius_px": radius_value,
             "inverted": inverted_value,
+        },
+    )
+
+
+def analyze_gwyddion_median_background(
+    channel: SPMChannel,
+    radius_px: object = 20,
+) -> BackgroundResult:
+    """Estimate and remove a Gwyddion 2.71-compatible Median Background.
+
+    ``radius_px`` is an integer pixel radius from 1 through 1024, with a
+    default of 20.  The digital ellipse and nearest-edge border extension
+    are fixed; border, shape, rank, and backend are not public options.  The
+    input channel is not mutated and must contain finite two-dimensional data.
+
+    Returns
+    -------
+    BackgroundResult
+        The background, corrected field, method, and fixed kernel metadata.
+    """
+    background, corrected, kernel_spec = _gwyddion_median_background_channels(
+        channel,
+        radius_px,
+    )
+
+    return BackgroundResult(
+        background=background,
+        corrected=corrected,
+        method="gwyddion_median_background",
+        parameters={
+            "radius_px": kernel_spec.radius_px,
+            "kernel_resolution": kernel_spec.kernel_resolution,
+            "kernel_active_count": kernel_spec.kernel_active_count,
+            "rank_index": kernel_spec.rank_index,
+            "rank_backend_reference": kernel_spec.rank_backend_reference,
+            "border_policy": "gwyddion_border_extend",
+            "kernel_geometry": "gwyddion_digital_ellipse",
         },
     )
 
