@@ -226,6 +226,61 @@ This estimator is distinct from SPMKit's physical sphere-revolution model
 (`estimate_sphere_revolution_background`), which operates with physical metric radii in metres,
 circular footprints in physical coordinates, and explicit physical border policies.
 
+## Gwyddion 2.71 Median Background
+
+SPM-Kit provides the frozen Gwyddion 2.71 Median Background semantics through three public
+operations:
+
+- `estimate_gwyddion_median_background(channel, radius_px=20) -> SPMChannel`
+- `remove_gwyddion_median_background(channel, radius_px=20) -> SPMChannel`
+- `analyze_gwyddion_median_background(channel, radius_px=20) -> BackgroundResult`
+
+```python
+from spmkit.core.analysis import (
+    analyze_gwyddion_median_background,
+    estimate_gwyddion_median_background,
+    remove_gwyddion_median_background,
+)
+
+background = estimate_gwyddion_median_background(
+    channel,
+    radius_px=20,
+)
+
+corrected = remove_gwyddion_median_background(
+    channel,
+    radius_px=20,
+)
+
+result = analyze_gwyddion_median_background(
+    channel,
+    radius_px=20,
+)
+print(result.method, result.parameters)
+```
+
+`radius_px` is an integer pixel radius with default `20` and inclusive range `1..1024`.
+The kernel is Gwyddion's fixed inclusive digital ellipse and exterior samples use fixed
+nearest-edge `gwyddion_border_extend`; the public API intentionally exposes no border, shape,
+rank, or backend option. `estimate_gwyddion_median_background()` returns the background as an
+`SPMChannel`, `remove_gwyddion_median_background()` returns `input - background` as an
+`SPMChannel`, and `analyze_gwyddion_median_background()` returns a `BackgroundResult`.
+
+The result method is `"gwyddion_median_background"`. Its metadata records `radius_px`,
+`kernel_resolution`, `kernel_active_count`, `rank_index`, `rank_backend_reference`,
+`border_policy="gwyddion_border_extend"`, and
+`kernel_geometry="gwyddion_digital_ellipse"`. `rank_backend_reference` identifies the
+observed Gwyddion reference route, not an SPM-Kit backend.
+
+Inputs must be finite two-dimensional data; NaN and infinite values are rejected. The source
+channel is not mutated, and output channels preserve its shape, units, ranges, direction, group,
+and copied metadata according to the `SPMChannel` contract. The public implementation does not
+require Gwyddion at runtime.
+
+This capability is CROSS_VALIDATED only within its frozen 36-case Gwyddion 2.71 campaign. Its
+scope, frozen evidence, semantics, and non-claims are specified in the
+[Gwyddion Median Background compatibility specification](design/GWYDDION_MEDIAN_BACKGROUND_COMPATIBILITY.md).
+
 ## KPFM statistics
 
 ```python

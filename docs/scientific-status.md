@@ -40,6 +40,7 @@ and tolerance. It never transfers automatically to an adjacent feature.
 | Gwyddion-compatible Revolve Arc background | `core.analysis.background`, `core.analysis._gwyddion_arc_revolution` | Frozen Gwyddion 2.71 source semantics, focal kernel probes, one asymmetric 5×7 directional fixture, 6/6 background routes and 5/5 valid corrected routes within `5e-14`; repaired reconstruction for the defective horizontal-inverted wrapper | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> for the frozen campaign | Gwyddion 2.71 source, compiled probes and frozen JSON/NPZ fixture | Radius is in samples; no masks or non-finite data; one-sample processing axes use a documented safe definition; no physical validation, tip reconstruction, performance equivalence or universal-equivalence claim |
 | Physical sphere-revolution background | `core.analysis.background` | 51 unit and synthetic tests, including independent brute-force 2D oracles for nearest and reflect borders, physical anisotropy, non-separability, unit equivalence and reconstruction identity | <span class="spm-level spm-level--1" data-level="1">SOFTWARE_VERIFIED</span> | None | Python API only; finite geometric Z data; no masks, Gwyddion equivalence, performance campaign or physical-reference campaign |
 | Gwyddion-compatible Sphere-revolution background | `core.analysis.background`, `core.analysis._gwyddion_sphere_revolution` | Frozen Gwyddion 2.71 source semantics, focal probes, 10 original surfaces, 10 normal executions on negated inputs (20 valid external runs per build), 15/15 inverted runs failing in normal build and under ASan; direct external reference for normal, derived external cross-validation for inverted background, safe deliberate divergence for inverted corrected (`atol=5e-14`, `rtol=0.0`); independent Python oracle | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> for the frozen campaign | Gwyddion 2.71 source, compiled probes, independent Python oracle and frozen JSON/NPZ fixture | Radius is in samples; no non-finite data or masks; inverted corrected does not claim equivalence with Gwyddion's crashing wrapper; no physical validation, tip deconvolution or universal-equivalence claim; physical sphere-revolution maintains its independent software verification |
+| Gwyddion 2.71 Median Background | `core.analysis.background`, `core.analysis._median_background` | Frozen executable reference campaign: 36 logical cases, 72 executions (36 normal, 36 ASan), radii 1/2/3/4/20/1024, direct and radixtree reference paths; public background and corrected fields 36/36 bitwise exact, maximum absolute difference 0 and maximum ULP 0; input mutation maximum 0 and reconstruction maximum `4.4408920985006262e-16` | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen 36-case campaign | Gwyddion 2.71 source, executable probe, independent Python oracle, frozen NPZ/JSON fixture | Finite two-dimensional inputs only; no universal equivalence, performance-equivalence, future-Gwyddion, all-radii, or all-matrices claim; `rank_backend_reference` describes Gwyddion, not an SPM-Kit backend |
 | Hertz / conical contact and DMT paths | `core.analysis.forcecurve` | Unit and synthetic-recovery tests; Hertz/conical modulus recovery gates | <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> within synthetic test scope | Analytical construction | No certified cantilever/tip calibration or broad experimental campaign |
 | Adhesive JKR | `core.analysis.experimental` | Synthetic recovery of reduced modulus and work of adhesion; Hertz-limit test | <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> within synthetic scope | Analytical construction | Experimental module; no physical-reference campaign |
 | WLC and FJC chain models | `core.analysis.chain` | Analytical synthetic-recovery tests | <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> within synthetic scope | Analytical construction | No cross-software or experimental population campaign |
@@ -59,6 +60,7 @@ and tolerance. It never transfers automatically to an adjacent feature.
 - [Nanoscope incident and final audit](https://github.com/kegouro/spmkit-validation/blob/main/docs/campaigns/nanoscope_spm_parser_pilot_v0.1_audit.md)
 - [Flatten Base Gwyddion 2.71 frozen end-to-end fixture](https://github.com/kegouro/spmkit/blob/flatten-base-gwyddion-parity-v1/tests/validation/fixtures/gwyddion/flatten_base/gwyddion_2_71_end_to_end.json)
 - [Sphere Revolution Gwyddion 2.71 frozen fixture](https://github.com/kegouro/spmkit/blob/feat/gwyddion-leveling-parity/tests/validation/fixtures/gwyddion/sphere_revolution/sphere_revolution_reference.json)
+- [Median Background Gwyddion 2.71 frozen manifest](../tests/validation/fixtures/gwyddion/median_background/median_background_reference.json)
 
 ### Gwyddion Sphere Revolution
 
@@ -71,6 +73,57 @@ SPM-Kit's `gwyddion_sphere_revolution` implementation is maintained separately f
   - `inverted` corrected: Safe deliberate divergence (`original - background`) reconstructing original data without invoking Gwyddion's crashing subtract wrapper.
 - **Independent Oracle & Tolerances:** Verified against an independent Python oracle (`atol=5e-14`, `rtol=0.0`). The maximum observed numerical discrepancy across all comparisons is `8.881784e-16` (well below `5e-14`).
 - **Claim:** LEVEL 3 CROSS_VALIDATED within the frozen fixture scope. No universal equivalence or physical validation is claimed. Physical sphere revolution (`estimate_sphere_revolution_background`) maintains its independent software verification.
+
+### Gwyddion 2.71 Median Background
+
+**Claim:** `CROSS_VALIDATED` only for the frozen campaign. Gwyddion 2.71 is the executable
+external reference; the campaign contains 36 logical cases and 72 executions (36 normal and
+36 ASan) over radii 1, 2, 3, 4, 20, and 1024. Both Gwyddion reference paths are represented:
+`direct` and `radixtree`. Public `estimate_gwyddion_median_background`,
+`remove_gwyddion_median_background`, and `analyze_gwyddion_median_background` reproduce the
+frozen background and corrected arrays bitwise in 36/36 cases: maximum absolute difference 0,
+maximum ULP 0, input mutation maximum 0, and reconstruction maximum
+`4.4408920985006262e-16`.
+
+The fixed semantics are the inclusive digital ellipse, `gwyddion_border_extend`, middle rank
+`kernel_active_count//2`, and `corrected = input - background`. The public API preserves the
+`SPMChannel` context and requires finite two-dimensional data. The private kernel is independent
+of Gwyddion at runtime. The fixture and independent Python oracle remain frozen evidence outside
+production.
+
+**Traceability:**
+
+```text
+.reference/gwyddion-2.71/source/modules/process/median-bg.c
+  → .reference/gwyddion-2.71/median-background-parity/median_background_behavior_probe.c
+  → .reference/gwyddion-2.71/median-background-parity/run_median_background_probe_campaign.sh
+  → independent Python oracle recorded by docs/design/GWYDDION_MEDIAN_BACKGROUND_COMPATIBILITY.md
+  → tests/validation/fixtures/gwyddion/median_background/median_background_reference.npz
+  → tests/validation/fixtures/gwyddion/median_background/median_background_reference.json
+  → src/spmkit/core/analysis/_median_background.py
+  → src/spmkit/core/analysis/background.py
+  → tests/core/test_gwyddion_median_background_private.py
+  → tests/core/test_gwyddion_median_background.py
+  → tests/validation/test_median_background_fixture_integrity.py
+  → docs/scientific-status.md
+```
+
+The evidence was frozen in `818dbd3` (freeze evidence), the private kernel in `a53c3bb`, and
+the public API in `ed5c837`. The focal inventory is 20 fixture-integrity, 67 private Median
+Background, and 72 public Median Background tests; the preceding combined focal run collected
+442 tests. These are focal-campaign counts, not a project-wide total.
+
+**Non-claims:** no universal equivalence; no guarantee outside the 36 cases; no NaN or infinity
+coverage; no reproduction of Gwyddion's internal radixtree; no performance-equivalence claim;
+no claim for future Gwyddion versions; no claim for every radius or matrix; and no validation of
+configurable border, shape, or rank parameters because the API exposes none.
+
+**Non-blocking tooling limitations:** the probe runner uses `|| true` during compilation and does
+not retain the original compiler exit code; its auxiliary parser recognizes broad `background_`
+and `corrected_` prefixes. The campaign remains valid because both binaries executed, 72
+processes returned, stderr was empty, normal and ASan stdout were byte-identical, outputs were
+parsed and recalculated independently, oracle/reference results were bitwise exact, and the
+fixture stores canonical hashes.
 
 ## Test-count policy
 

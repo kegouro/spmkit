@@ -38,6 +38,7 @@ references, tolerances, outputs, hashes, and limitations.
 | Real-data roughness pilot v0.1 | Sa, Sq, Sz on 12 public GWY matrices | 36/36 shared-matrix comparisons within tolerance | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> for the algorithm track | Parser/end-to-end observations are separate; real data are not ground truth |
 | Gwyddion Revolve Arc 2.71 v1 | Data-adaptive arc-envelope background on a frozen asymmetric 5×7 field, six direction/inversion routes and focal kernel cases | 6/6 backgrounds and 5/5 valid corrected outputs within `5e-14`; horizontal-inverted reference defect preserved as evidence and repaired by reconstruction | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> for the frozen campaign | Gwyddion 2.71 only; radius in samples; known wrapper and one-sample reference defects documented; not physical validation or universal equivalence |
 | Gwyddion Revolve Sphere 2.71 v1 | Data-adaptive sphere-envelope background on 10 logical pairs (20 normal runs per build) and 15 failing inverted runs; direct normal external reference and derived inverted background within 5e-14; safe inverted corrected reconstruction | 20/20 valid external runs and 10/10 derived inverted backgrounds within 5e-14 | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> for the frozen campaign | Gwyddion 2.71 only; radius in samples; 15/15 inverted wrapper crashes documented as reference failures; not physical validation or universal equivalence |
+| Gwyddion Median Background 2.71 v1 | Local rank background on 36 frozen logical cases, 72 executions (36 normal, 36 ASan), radii 1/2/3/4/20/1024, and both direct/radixtree reference paths | Public background and corrected fields 36/36 bitwise exact; maximum absolute difference 0, maximum ULP 0, input mutation maximum 0, reconstruction maximum `4.4408920985006262e-16` | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen campaign | Gwyddion 2.71 only; finite inputs; no universal, performance, future-version, all-radii, or all-matrices claim; no public border/shape/rank configuration |
 | Nanoscope `.spm` pilot v0.1 | Six demonstrated files | 18/18 metric comparisons within tolerance | <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> limited parser claim | Partial support and `ACCIDENTAL_PRE_FREEZE_UNBLINDING` |
 
 See [Scientific status](../scientific-status.md) for the complete mapping and
@@ -49,6 +50,52 @@ The `.nid` path also provides byte-level inspection through `spmkit verify` and
 `spmkit.core.trace_nid`. This checks declared byte budgets, dimensions, numeric
 conversion, finiteness, and orientation rules. Integrity and parser traceability
 do not establish physical correctness.
+
+### Gwyddion 2.71 Median Background
+
+The frozen campaign trace is:
+
+```text
+Gwyddion source
+→ external probe
+→ independent Python oracle
+→ frozen fixture
+→ private SPMKit kernel
+→ public API
+→ public bitwise tests
+→ scientific status
+```
+
+The concrete records are `.reference/gwyddion-2.71/source/modules/process/median-bg.c`,
+`.reference/gwyddion-2.71/median-background-parity/median_background_behavior_probe.c`,
+`.reference/gwyddion-2.71/median-background-parity/run_median_background_probe_campaign.sh`,
+`docs/design/GWYDDION_MEDIAN_BACKGROUND_COMPATIBILITY.md`,
+`tests/validation/fixtures/gwyddion/median_background/median_background_reference.npz`,
+`tests/validation/fixtures/gwyddion/median_background/median_background_reference.json`,
+`src/spmkit/core/analysis/_median_background.py`,
+`src/spmkit/core/analysis/background.py`,
+`tests/core/test_gwyddion_median_background_private.py`,
+`tests/core/test_gwyddion_median_background.py`,
+`tests/validation/test_median_background_fixture_integrity.py`, and
+`docs/scientific-status.md`.
+
+The chain was frozen by `818dbd3` (evidence), `a53c3bb` (private kernel), and `ed5c837`
+(public API). The permanent fixture contains canonical hashes; the original oracle and its
+ephemeral source artifacts are identified in the fixture manifest. The campaign's runner
+limitations are non-blocking: `|| true` does not preserve an original compiler exit, and the
+auxiliary parser accepts broad `background_` and `corrected_` prefixes. Both binaries still
+executed; 72 processes returned with empty stderr; normal/ASan stdout was byte-identical; and
+the parsed outputs, oracle/reference equality, and canonical hashes were independently checked.
+
+#### Focal test inventory
+
+- Fixture integrity: 20 tests.
+- Private Median Background: 67 tests.
+- Public Median Background: 72 tests.
+- Combined focal campaign: 442 tests.
+
+These counts describe the frozen focal validation campaign for this capability. They are not
+the global test total of the SPMKit project.
 
 ## What remains open
 
