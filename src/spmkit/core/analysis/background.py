@@ -17,6 +17,9 @@ from spmkit.core.analysis._gwyddion_arc_revolution import (
     GwyddionArcDirection,
     _gwyddion_arc_result,
 )
+from spmkit.core.analysis._gwyddion_flat_disc_morphology import (
+    _gwyddion_flat_disc_morphology_result,
+)
 from spmkit.core.analysis._gwyddion_sphere_revolution import (
     _gwyddion_sphere_result,
 )
@@ -775,6 +778,57 @@ def remove_gwyddion_median_background(
         radius_px,
     )
     return corrected
+
+
+def _gwyddion_flat_disc_channels(
+    channel: SPMChannel,
+    size_px: object,
+) -> tuple[SPMChannel, SPMChannel]:
+    """Calculate flat-disc opening and closing while preserving context."""
+    result = _gwyddion_flat_disc_morphology_result(channel.data, size_px)
+    return channel.with_data(result.opening), channel.with_data(result.closing)
+
+
+def gwyddion_flat_disc_opening(
+    channel: SPMChannel,
+    *,
+    size_px: object = 5,
+) -> SPMChannel:
+    """Apply Gwyddion 2.71 Filter flat-disc Opening.
+
+    ``size_px`` is the pixel width of the fixed digital-ellipse kernel, from
+    2 through 31 inclusive, with default ``5``.  Nearest-edge extension and
+    the executable Gwyddion even-size anchor are fixed.  Finite, non-empty
+    two-dimensional data are required and the input channel is not mutated.
+
+    Returns
+    -------
+    SPMChannel
+        The opening field with the input channel context preserved.
+    """
+    opening, _ = _gwyddion_flat_disc_channels(channel, size_px)
+    return opening
+
+
+def gwyddion_flat_disc_closing(
+    channel: SPMChannel,
+    *,
+    size_px: object = 5,
+) -> SPMChannel:
+    """Apply Gwyddion 2.71 Filter flat-disc Closing.
+
+    ``size_px`` is the pixel width of the fixed digital-ellipse kernel, from
+    2 through 31 inclusive, with default ``5``.  Nearest-edge extension and
+    the executable Gwyddion even-size anchor are fixed.  Finite, non-empty
+    two-dimensional data are required and the input channel is not mutated.
+
+    Returns
+    -------
+    SPMChannel
+        The closing field with the input channel context preserved.
+    """
+    _, closing = _gwyddion_flat_disc_channels(channel, size_px)
+    return closing
 
 
 def _sphere_structure(
