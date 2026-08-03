@@ -11,6 +11,12 @@ from typing import Literal
 
 import numpy as np
 
+from spmkit.core.analysis._gwyddion_align_rows_statistics import (
+    _gwyddion_align_rows_statistics_result,
+    _GwyddionAlignRowsDirection,
+    _GwyddionAlignRowsMethod,
+    _GwyddionMaskMode,
+)
 from spmkit.core.analysis._gwyddion_path_level import _gwyddion_path_level_result
 from spmkit.core.geometry import (
     bilinear_sample,
@@ -20,6 +26,19 @@ from spmkit.core.geometry import (
     pixel_center_axes,
 )
 from spmkit.core.models import SPMChannel
+
+GwyddionAlignRowsMaskMode = Literal["exclude", "include", "ignore"]
+GwyddionAlignRowsDirection = Literal["horizontal", "vertical"]
+
+_GWYDDION_ALIGN_ROWS_MASK_MODES: dict[str, _GwyddionMaskMode] = {
+    "exclude": _GwyddionMaskMode.EXCLUDE,
+    "include": _GwyddionMaskMode.INCLUDE,
+    "ignore": _GwyddionMaskMode.IGNORE,
+}
+_GWYDDION_ALIGN_ROWS_DIRECTIONS: dict[str, _GwyddionAlignRowsDirection] = {
+    "horizontal": _GwyddionAlignRowsDirection.HORIZONTAL,
+    "vertical": _GwyddionAlignRowsDirection.VERTICAL,
+}
 
 
 def _validated_data(channel: SPMChannel, *, operation: str) -> np.ndarray:
@@ -224,6 +243,131 @@ def gwyddion_path_level(
         thickness_px=thickness_px,
     )
     return channel.with_data(result.corrected)
+
+
+def _gwyddion_align_rows_statistics_channel(
+    channel: SPMChannel,
+    *,
+    method: _GwyddionAlignRowsMethod,
+    mask: np.ndarray | None,
+    mask_mode: GwyddionAlignRowsMaskMode,
+    direction: GwyddionAlignRowsDirection,
+    trim_fraction: float,
+) -> SPMChannel:
+    """Apply one fixed private Align Rows method and preserve channel context."""
+    if not isinstance(channel, SPMChannel):
+        raise TypeError("Gwyddion Align Rows requires an SPMChannel")
+    if not isinstance(mask_mode, str) or mask_mode not in _GWYDDION_ALIGN_ROWS_MASK_MODES:
+        raise ValueError("Gwyddion Align Rows mask_mode must be 'exclude', 'include', or 'ignore'")
+    if not isinstance(direction, str) or direction not in _GWYDDION_ALIGN_ROWS_DIRECTIONS:
+        raise ValueError("Gwyddion Align Rows direction must be 'horizontal' or 'vertical'")
+
+    result = _gwyddion_align_rows_statistics_result(
+        channel.data,
+        method=method,
+        masking_mode=_GWYDDION_ALIGN_ROWS_MASK_MODES[mask_mode],
+        direction=_GWYDDION_ALIGN_ROWS_DIRECTIONS[direction],
+        trim_fraction=trim_fraction,
+        mask=mask,
+    )
+    return channel.with_data(result.corrected)
+
+
+def gwyddion_align_rows_median(
+    channel: SPMChannel,
+    *,
+    mask: np.ndarray | None = None,
+    mask_mode: GwyddionAlignRowsMaskMode = "ignore",
+    direction: GwyddionAlignRowsDirection = "horizontal",
+) -> SPMChannel:
+    """Apply Gwyddion 2.71 Align Rows Median with portable source semantics.
+
+    ``mask`` is an optional finite numeric array matching the channel shape.
+    ``mask_mode`` is ``"exclude"``, ``"include"``, or ``"ignore"``; an absent
+    mask always selects all values.  ``direction`` selects horizontal rows or
+    source-equivalent vertical transpose/restore processing.  The result is a
+    new ``SPMChannel`` with the input context preserved.
+    """
+    return _gwyddion_align_rows_statistics_channel(
+        channel,
+        method=_GwyddionAlignRowsMethod.MEDIAN,
+        mask=mask,
+        mask_mode=mask_mode,
+        direction=direction,
+        trim_fraction=0.05,
+    )
+
+
+def gwyddion_align_rows_median_of_differences(
+    channel: SPMChannel,
+    *,
+    mask: np.ndarray | None = None,
+    mask_mode: GwyddionAlignRowsMaskMode = "ignore",
+    direction: GwyddionAlignRowsDirection = "horizontal",
+) -> SPMChannel:
+    """Apply Gwyddion 2.71 Align Rows Median of differences.
+
+    The optional numeric mask and orientation use the same public contract as
+    :func:`gwyddion_align_rows_median`.  This wrapper retains the private
+    engine's portable source-semantic cumulative correction and slope removal.
+    """
+    return _gwyddion_align_rows_statistics_channel(
+        channel,
+        method=_GwyddionAlignRowsMethod.MEDIAN_OF_DIFFERENCES,
+        mask=mask,
+        mask_mode=mask_mode,
+        direction=direction,
+        trim_fraction=0.05,
+    )
+
+
+def gwyddion_align_rows_trimmed_mean(
+    channel: SPMChannel,
+    *,
+    trim_fraction: float = 0.05,
+    mask: np.ndarray | None = None,
+    mask_mode: GwyddionAlignRowsMaskMode = "ignore",
+    direction: GwyddionAlignRowsDirection = "horizontal",
+) -> SPMChannel:
+    """Apply Gwyddion 2.71 Align Rows Trimmed mean.
+
+    ``trim_fraction`` is a finite real value in the inclusive range ``0.0`` to
+    ``0.5``.  The optional numeric mask and orientation use the public Median
+    contract.  The result is a new context-preserving ``SPMChannel``.
+    """
+    return _gwyddion_align_rows_statistics_channel(
+        channel,
+        method=_GwyddionAlignRowsMethod.TRIMMED_MEAN,
+        mask=mask,
+        mask_mode=mask_mode,
+        direction=direction,
+        trim_fraction=trim_fraction,
+    )
+
+
+def gwyddion_align_rows_trimmed_mean_of_differences(
+    channel: SPMChannel,
+    *,
+    trim_fraction: float = 0.05,
+    mask: np.ndarray | None = None,
+    mask_mode: GwyddionAlignRowsMaskMode = "ignore",
+    direction: GwyddionAlignRowsDirection = "horizontal",
+) -> SPMChannel:
+    """Apply Gwyddion 2.71 Align Rows Trimmed mean of differences.
+
+    ``trim_fraction`` is a finite real value in the inclusive range ``0.0`` to
+    ``0.5``.  The optional numeric mask and orientation use the public Median
+    contract.  Portable source semantics, rather than an installed
+    package-specific reassociation profile, define the returned channel.
+    """
+    return _gwyddion_align_rows_statistics_channel(
+        channel,
+        method=_GwyddionAlignRowsMethod.TRIMMED_MEAN_OF_DIFFERENCES,
+        mask=mask,
+        mask_mode=mask_mode,
+        direction=direction,
+        trim_fraction=trim_fraction,
+    )
 
 
 def shift_vertical(channel: SPMChannel, *, offset: float) -> SPMChannel:
