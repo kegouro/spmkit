@@ -22,6 +22,14 @@ def _canonical_hash(array: np.ndarray) -> str:
 
 def test_path_level_fixture_integrity() -> None:
     manifest = json.loads((ROOT / "path_level_reference.json").read_text())
+    serialized = json.dumps(manifest, sort_keys=True)
+    forbidden_markers = (
+        "/" + "tmp/",
+        "/" + "home/",
+        "." + "reference",
+        "_" + "_" + "pycache__",
+    )
+    assert not any(marker in serialized for marker in forbidden_markers)
     assert manifest["schema_version"] == 1
     assert manifest["capability"] == "gwyddion_path_level"
     assert len(manifest["bases"]) == 18
@@ -33,8 +41,7 @@ def test_path_level_fixture_integrity() -> None:
     assert len({case["case_id"] for case in manifest["cases"]}) == 72
     assert all(len(case["lines_hex"]) == 4 * case["line_count"] for case in manifest["cases"])
     assert all(
-        len(case["normalized_endpoints"]) == 4 * case["line_count"]
-        for case in manifest["cases"]
+        len(case["normalized_endpoints"]) == 4 * case["line_count"] for case in manifest["cases"]
     )
     external_artifacts = manifest["evidence"]["source_hashes"]["external_artifacts"]
     assert external_artifacts["canonical_reference.json"] == (
@@ -58,6 +65,4 @@ def test_path_level_fixture_integrity() -> None:
             assert list(archive[base["input_key"]].shape) == base["shape"]
         for case in manifest["cases"]:
             assert case["output_key"] in archive.files
-            assert archive[case["output_key"]].shape == archive[
-                f"input__{case['base_id']}"
-            ].shape
+            assert archive[case["output_key"]].shape == archive[f"input__{case['base_id']}"].shape

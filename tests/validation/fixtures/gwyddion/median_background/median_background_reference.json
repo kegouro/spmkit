@@ -1521,49 +1521,49 @@
   "source_artifacts": {
     "campaign_summary": {
       "note": "ephemeral source artifact; identity frozen by SHA-256",
-      "path": "/tmp/spmkit_gwyddion_median_background_probe/campaign-summary.tsv",
+      "path": "frozen-evidence/median-background/campaign-summary.tsv",
       "sha256": "7876d9cf3bc61375ecff5ca42c16789e11f4f0cc651f330ed7da57b36fc493b2"
     },
     "median_bg_c": {
-      "path": "/home/kegouro/HIBRIS/Workshop \u2044 Proyectos/SPMKIT ALL/spmkit-core-first-audit/.reference/gwyddion-2.71/source/modules/process/median-bg.c",
+      "path": "gwyddion-2.71/source/modules/process/median-bg.c",
       "sha256": "5021fff407531459ed47aff7a47e4f5b2ce2ea7df13d04ca4405f05581258729"
     },
     "oracle_log": {
       "note": "ephemeral source artifact; identity frozen by SHA-256",
-      "path": "/tmp/spmkit_gwyddion_median_background_oracle.log",
+      "path": "frozen-evidence/median-background/oracle.log",
       "sha256": "87eec8d8509d6d879ab41d748e9c21cc1ae428e6157131320c5fe7de0635d059"
     },
     "oracle_provenance": {
       "note": "ephemeral source artifact; identity frozen by SHA-256",
-      "path": "/tmp/spmkit_gwyddion_median_background_oracle_provenance.json",
+      "path": "frozen-evidence/median-background/oracle_provenance.json",
       "sha256": "fe759bafbd7180394f3262da13e19275475ae569c3f79f879a51c6b8025e0d74"
     },
     "oracle_report": {
       "note": "ephemeral source artifact; identity frozen by SHA-256",
-      "path": "/tmp/spmkit_gwyddion_median_background_oracle_report.md",
+      "path": "frozen-evidence/median-background/oracle_report.md",
       "sha256": "1a11f8caec6456de78feb9679e3fe0bec81e101058bfd73806d9953665b8dd31"
     },
     "oracle_script": {
       "note": "ephemeral source artifact; identity frozen by SHA-256",
-      "path": "/tmp/spmkit_gwyddion_median_background_oracle.py",
+      "path": "frozen-evidence/median-background/oracle.py",
       "sha256": "2696798b180fcce779bbded49131d106cdc8f159c30aa1df873008f04d66084b"
     },
     "oracle_source_npz": {
       "note": "ephemeral source artifact; identity frozen by SHA-256",
-      "path": "/tmp/spmkit_gwyddion_median_background_oracle_arrays.npz",
+      "path": "frozen-evidence/median-background/oracle_arrays.npz",
       "sha256": "d56117cb4bbfc182d9fdfb8a9f6d2b400b5d5d8c17e051075342387b98dacc09"
     },
     "oracle_summary": {
       "note": "ephemeral source artifact; identity frozen by SHA-256",
-      "path": "/tmp/spmkit_gwyddion_median_background_oracle_summary.tsv",
+      "path": "frozen-evidence/median-background/oracle_summary.tsv",
       "sha256": "0325066fd9a13cbc2b70d21473d2aeca783faa469a37d867fc6c11801c51b69f"
     },
     "probe_c": {
-      "path": "/home/kegouro/HIBRIS/Workshop \u2044 Proyectos/SPMKIT ALL/spmkit-core-first-audit/.reference/gwyddion-2.71/median-background-parity/median_background_behavior_probe.c",
+      "path": "gwyddion-2.71/median-background-parity/median_background_behavior_probe.c",
       "sha256": "8e1956a6dbc69afcf5244098bc930f529c733bdec2768909cb7372ccea260f10"
     },
     "runner": {
-      "path": "/home/kegouro/HIBRIS/Workshop \u2044 Proyectos/SPMKIT ALL/spmkit-core-first-audit/.reference/gwyddion-2.71/median-background-parity/run_median_background_probe_campaign.sh",
+      "path": "gwyddion-2.71/median-background-parity/run_median_background_probe_campaign.sh",
       "sha256": "8c1c42dba8fc8a36bb93d1a82e60257dca3ff5044a2987b452608f99115ab594"
     }
   }

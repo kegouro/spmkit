@@ -42,7 +42,7 @@
   "reference": {
     "operation": "Flatten Base",
     "probe_output_sha256": "51ead932b37381b8c0cdd4b0df6b4f9e8962cf638c1cfaad96d0b178118a70a0",
-    "probe_source": ".reference/gwyddion-2.71/flatten-base-parity/flatten_base_end_to_end_probe.c",
+    "probe_source": "gwyddion-2.71/flatten-base-parity/flatten_base_end_to_end_probe.c",
     "software": "Gwyddion",
     "version": "2.71"
   },

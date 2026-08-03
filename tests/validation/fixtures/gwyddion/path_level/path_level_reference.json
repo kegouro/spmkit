@@ -4814,8 +4814,6 @@
       },
       "external_sha256sums": "8aa6a3e68403d3b67fedc63c725b81bfa4b9f391621681da9decf152c3cdc8d8",
       "oracle_artifacts": {
-        "__pycache__/path_level_oracle.cpython-312.pyc": "dad726b661f7ab295a2c4c969d3aaa294d0310bae00b19b02987bff84ce3b4ea",
-        "__pycache__/regenerate_path_level_cases.cpython-312.pyc": "d2b0a61a13bfe2a08b440a556ae88c808d5ffef3a839252bb8a55ad7e0651722",
         "compare_external_reference.py": "3240c45edf7295a34b9b71774157cb910eafd4e99b47f2ee1d47ada718bb87d8",
         "comparison_execution.log": "49a9b02fa0c7edfad9b9098465f06eb3f2129b349a20c8e93200e2289129ff6e",
         "comparison_ledger.json": "ff6aa434f193263b21fe13a8a76e795565b0838ea6288900eb79c26f056436a8",

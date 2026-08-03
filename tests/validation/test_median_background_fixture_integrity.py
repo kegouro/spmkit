@@ -1,4 +1,5 @@
 """Integrity checks for frozen Gwyddion 2.71 Median Background evidence."""
+
 from __future__ import annotations
 
 import hashlib
@@ -11,17 +12,42 @@ _FIXTURE_DIR = Path(__file__).parent / "fixtures" / "gwyddion" / "median_backgro
 _NPZ_PATH = _FIXTURE_DIR / "median_background_reference.npz"
 _MANIFEST_PATH = _FIXTURE_DIR / "median_background_reference.json"
 _EXPECTED_CASES = [
-    "wide_r1", "wide_r2", "wide_r3", "wide_r4", "wide_r20",
-    "tall_r1", "tall_r2", "tall_r3", "tall_r4", "tall_r20",
-    "constant_r1", "constant_r3", "constant_r20",
-    "signed_r1", "signed_r2", "signed_r3", "signed_r20",
-    "singleton_1x1_r1", "singleton_1x1_r3", "singleton_1x1_r20",
+    "wide_r1",
+    "wide_r2",
+    "wide_r3",
+    "wide_r4",
+    "wide_r20",
+    "tall_r1",
+    "tall_r2",
+    "tall_r3",
+    "tall_r4",
+    "tall_r20",
+    "constant_r1",
+    "constant_r3",
+    "constant_r20",
+    "signed_r1",
+    "signed_r2",
+    "signed_r3",
+    "signed_r20",
+    "singleton_1x1_r1",
+    "singleton_1x1_r3",
+    "singleton_1x1_r20",
     "singleton_1x1_r1024",
-    "singleton_row_r1", "singleton_row_r3", "singleton_row_r20",
-    "singleton_column_r1", "singleton_column_r3", "singleton_column_r20",
-    "impulse_positive_r1", "impulse_positive_r2", "impulse_positive_r3",
-    "impulse_negative_r1", "impulse_negative_r2", "impulse_negative_r3",
-    "monotonic_r1", "monotonic_r2", "monotonic_r3",
+    "singleton_row_r1",
+    "singleton_row_r3",
+    "singleton_row_r20",
+    "singleton_column_r1",
+    "singleton_column_r3",
+    "singleton_column_r20",
+    "impulse_positive_r1",
+    "impulse_positive_r2",
+    "impulse_positive_r3",
+    "impulse_negative_r1",
+    "impulse_negative_r2",
+    "impulse_negative_r3",
+    "monotonic_r1",
+    "monotonic_r2",
+    "monotonic_r3",
 ]
 _EXPECTED_RADIUS_INVENTORY = {
     "1": {"active_count": 9, "backend": "direct", "rank": 4, "resolution": 3},
@@ -87,6 +113,14 @@ def test_manifest_schema_and_identity() -> None:
     assert manifest["oracle"]["canonical_source_array_hash_count"] == 180
     assert len(manifest["oracle"]["canonical_source_array_hashes"]) == 180
     assert "manifest_self_hash" not in manifest["fixture"]
+    serialized = json.dumps(manifest, sort_keys=True)
+    forbidden_markers = (
+        "/" + "tmp/",
+        "/" + "home/",
+        "." + "reference",
+        "_" + "_" + "pycache__",
+    )
+    assert not any(marker in serialized for marker in forbidden_markers)
 
 
 def test_case_order_is_exact() -> None:

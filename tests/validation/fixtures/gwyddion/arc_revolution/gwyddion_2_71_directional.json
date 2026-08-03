@@ -91,10 +91,10 @@
   "reference": {
     "operation": "Revolve Arc",
     "probe_output_sha256": "1f8ee0535ac3b0d93e3b330ec4f96b39436e4da1853f5d3ce9ba45e1f2d0eca3",
-    "probe_source": ".reference/gwyddion-2.71/arc-revolve-parity/arc_revolve_behavior_probe.c",
+    "probe_source": "gwyddion-2.71/arc-revolve-parity/arc_revolve_behavior_probe.c",
     "probe_source_sha256": "27e92376d7955f134a6d76091775dc28fe2e1ba8246936b27e2e924d3ba765f4",
     "software": "Gwyddion",
-    "source_file": ".reference/gwyddion-2.71/source/modules/process/arc-revolve.c",
+    "source_file": "gwyddion-2.71/source/modules/process/arc-revolve.c",
     "source_sha256": "afb19a2382b0abb46595fa3dabc126ade50ec31c91ec9c96ea2284f42d0a67ac",
     "version": "2.71"
   },
