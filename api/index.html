@@ -1420,6 +1420,83 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#arc-revolution-background" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Arc-revolution background
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sphere-revolution-background" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sphere-revolution background
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gwyddion-compatible-sphere-revolution-background" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gwyddion-compatible Sphere-revolution background
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gwyddion-271-median-background" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gwyddion 2.71 Median Background
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gwyddion-271-filter-flat-disc-morphology" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gwyddion 2.71 Filter flat-disc morphology
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gwyddion-271-path-level" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gwyddion 2.71 Path Level
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gwyddion-271-align-rows-statistics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gwyddion 2.71 Align Rows statistics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#kpfm-statistics" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2424,7 +2501,7 @@ alpha software: pin a version or commit for reproducible work and consult the
 instrument variant.</p>
 <h2 id="install">Install<a class="headerlink" href="#install" title="Permanent link">&para;</a></h2>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>spmkit<span class="w">                    </span><span class="c1"># PyPI 0.1.2</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;spmkit[gwy,hdf5,grains]&quot;</span><span class="w"> </span><span class="c1"># selected optional features</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;spmkit[gwy,hdf5]&quot;</span><span class="w">        </span><span class="c1"># selected optional features</span>
 </span></code></pre></div>
 <p>The current source and GitHub-release options are listed in the
 <a href="../getting-started/installation/">installation guide</a>.</p>
@@ -2481,44 +2558,293 @@ the <a href="../FILE_FORMATS/">format matrix</a> for evidence and limitations.</
 <p>Roughness expects a previously levelled spatial image. The result fields use the
 ISO-style capitalization shown above. The current implementation excludes non-finite
 values and centres the finite height population before calculating the metrics.</p>
+<h2 id="arc-revolution-background">Arc-revolution background<a class="headerlink" href="#arc-revolution-background" title="Permanent link">&para;</a></h2>
+<p>SPM-Kit exposes physical arc-revolution background estimation through the
+public Python API:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">estimate_arc_revolution_background</span><span class="p">,</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">remove_arc_revolution_background</span><span class="p">,</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="p">)</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="n">background</span> <span class="o">=</span> <span class="n">estimate_arc_revolution_background</span><span class="p">(</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="n">height</span><span class="p">,</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="n">radius</span><span class="o">=</span><span class="mf">2e-6</span><span class="p">,</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    <span class="n">direction</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    <span class="n">side</span><span class="o">=</span><span class="s2">&quot;below&quot;</span><span class="p">,</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>    <span class="n">border</span><span class="o">=</span><span class="s2">&quot;nearest&quot;</span><span class="p">,</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="p">)</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="n">corrected</span> <span class="o">=</span> <span class="n">remove_arc_revolution_background</span><span class="p">(</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>    <span class="n">height</span><span class="p">,</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>    <span class="n">radius</span><span class="o">=</span><span class="mf">2e-6</span><span class="p">,</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>    <span class="n">direction</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>    <span class="n">side</span><span class="o">=</span><span class="s2">&quot;below&quot;</span><span class="p">,</span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>    <span class="n">border</span><span class="o">=</span><span class="s2">&quot;nearest&quot;</span><span class="p">,</span>
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="p">)</span>
+</span></code></pre></div>
+<p><code>radius</code> is expressed in metres. Channel heights must use a supported
+geometric Z unit. Heights are converted internally to metres and returned in
+the original unit while preserving the channel context.</p>
+<p><code>direction="horizontal"</code> processes rows, <code>"vertical"</code> processes columns, and
+<code>"both"</code> applies horizontal followed by vertical. <code>side="above"</code> is defined
+as the inversion dual of <code>"below"</code>.</p>
+<p>The current contract accepts finite data and the <code>"nearest"</code> and <code>"reflect"</code>
+border policies. Masks, CLI and Fathom exposure are not available. The
+estimated background remains separately inspectable and satisfies
+<code>corrected + background == original</code> within floating-point tolerance.</p>
+<p>This implementation is LEVEL 1 — SOFTWARE_VERIFIED through synthetic tests
+and an independent test-local one-dimensional oracle. Numerical equivalence
+with Gwyddion has not been established.</p>
+<h2 id="sphere-revolution-background">Sphere-revolution background<a class="headerlink" href="#sphere-revolution-background" title="Permanent link">&para;</a></h2>
+<p>Sphere Revolution uses a true two-dimensional spherical cap in physical XY
+coordinates:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">estimate_sphere_revolution_background</span><span class="p">,</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">remove_sphere_revolution_background</span><span class="p">,</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="p">)</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="n">background</span> <span class="o">=</span> <span class="n">estimate_sphere_revolution_background</span><span class="p">(</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    <span class="n">height</span><span class="p">,</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    <span class="n">radius</span><span class="o">=</span><span class="mf">2e-6</span><span class="p">,</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    <span class="n">side</span><span class="o">=</span><span class="s2">&quot;below&quot;</span><span class="p">,</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    <span class="n">border</span><span class="o">=</span><span class="s2">&quot;nearest&quot;</span><span class="p">,</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="p">)</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="n">corrected</span> <span class="o">=</span> <span class="n">remove_sphere_revolution_background</span><span class="p">(</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>    <span class="n">height</span><span class="p">,</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>    <span class="n">radius</span><span class="o">=</span><span class="mf">2e-6</span><span class="p">,</span>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>    <span class="n">side</span><span class="o">=</span><span class="s2">&quot;below&quot;</span><span class="p">,</span>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>    <span class="n">border</span><span class="o">=</span><span class="s2">&quot;nearest&quot;</span><span class="p">,</span>
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="p">)</span>
+</span></code></pre></div>
+<p><code>radius</code> is expressed in metres. Geometric Z values are converted internally
+to metres and returned in the channel's original unit.</p>
+<p>The spherical footprint is circular in physical coordinates. With anisotropic
+pixel spacing it can therefore appear elliptical in array-index coordinates.
+This operation is genuinely two-dimensional and is not equivalent to applying
+horizontal and vertical arc openings sequentially.</p>
+<p><code>side="above"</code> is the exact inversion dual of <code>"below"</code>. The supported border
+policies are <code>"nearest"</code> and <code>"reflect"</code>. Finite data are required; masks, CLI
+and Fathom exposure are not available.</p>
+<p>The background remains separately inspectable and satisfies
+<code>corrected + background == original</code> within floating-point tolerance.</p>
+<p>This implementation is LEVEL 1 — SOFTWARE_VERIFIED through synthetic tests
+and independent test-local two-dimensional oracles for both supported border
+policies. Numerical equivalence with Gwyddion has not been established.</p>
+<h2 id="gwyddion-compatible-sphere-revolution-background">Gwyddion-compatible Sphere-revolution background<a class="headerlink" href="#gwyddion-compatible-sphere-revolution-background" title="Permanent link">&para;</a></h2>
+<p>SPM-Kit provides data-adaptive background estimation compatible with Gwyddion 2.71's
+Revolve Sphere module:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="n">analyze_gwyddion_sphere_revolution_background</span><span class="p">,</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">estimate_gwyddion_sphere_revolution_background</span><span class="p">,</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="n">remove_gwyddion_sphere_revolution_background</span><span class="p">,</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="p">)</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="n">background</span> <span class="o">=</span> <span class="n">estimate_gwyddion_sphere_revolution_background</span><span class="p">(</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="n">channel</span><span class="p">,</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>    <span class="n">radius_px</span><span class="o">=</span><span class="mf">20.0</span><span class="p">,</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>    <span class="n">inverted</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="p">)</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="n">corrected</span> <span class="o">=</span> <span class="n">remove_gwyddion_sphere_revolution_background</span><span class="p">(</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>    <span class="n">channel</span><span class="p">,</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>    <span class="n">radius_px</span><span class="o">=</span><span class="mf">20.0</span><span class="p">,</span>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>    <span class="n">inverted</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="p">)</span>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="n">result</span> <span class="o">=</span> <span class="n">analyze_gwyddion_sphere_revolution_background</span><span class="p">(</span>
+</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>    <span class="n">channel</span><span class="p">,</span>
+</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>    <span class="n">radius_px</span><span class="o">=</span><span class="mf">20.0</span><span class="p">,</span>
+</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a>    <span class="n">inverted</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-6-23"><a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a><span class="p">)</span>
+</span></code></pre></div>
+<p><code>radius_px</code> is expressed in samples (array-index units). The public Gwyddion-compatible
+range is inclusive from 1.0 through 1000.0. <code>channel</code> must be a real, finite, non-empty
+<code>SPMChannel</code>.</p>
+<p><code>inverted=False</code> executes Gwyddion 2.71's normal Sphere Revolution route. <code>inverted=True</code>
+applies the exact dual <code>-B(-data)</code> for background estimation. To avoid the internal crash
+occurring in Gwyddion 2.71's C module when <code>inverted=True</code>, the corrected channel uses
+the safe deliberate divergence <code>corrected = original - background</code>, guaranteeing exact
+reconstruction of the original channel data.</p>
+<p><code>analyze_gwyddion_sphere_revolution_background</code> returns a <code>BackgroundResult</code> with
+<code>method="gwyddion_sphere_revolution"</code> and <code>parameters={"radius_px": float(radius_px), "inverted": bool(inverted)}</code>.</p>
+<p>This estimator is distinct from SPMKit's physical sphere-revolution model
+(<code>estimate_sphere_revolution_background</code>), which operates with physical metric radii in metres,
+circular footprints in physical coordinates, and explicit physical border policies.</p>
+<h2 id="gwyddion-271-median-background">Gwyddion 2.71 Median Background<a class="headerlink" href="#gwyddion-271-median-background" title="Permanent link">&para;</a></h2>
+<p>SPM-Kit provides the frozen Gwyddion 2.71 Median Background semantics through three public
+operations:</p>
+<ul>
+<li><code>estimate_gwyddion_median_background(channel, radius_px=20) -&gt; SPMChannel</code></li>
+<li><code>remove_gwyddion_median_background(channel, radius_px=20) -&gt; SPMChannel</code></li>
+<li><code>analyze_gwyddion_median_background(channel, radius_px=20) -&gt; BackgroundResult</code></li>
+</ul>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="n">analyze_gwyddion_median_background</span><span class="p">,</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">estimate_gwyddion_median_background</span><span class="p">,</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="n">remove_gwyddion_median_background</span><span class="p">,</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="p">)</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="n">background</span> <span class="o">=</span> <span class="n">estimate_gwyddion_median_background</span><span class="p">(</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>    <span class="n">channel</span><span class="p">,</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>    <span class="n">radius_px</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="p">)</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="n">corrected</span> <span class="o">=</span> <span class="n">remove_gwyddion_median_background</span><span class="p">(</span>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>    <span class="n">channel</span><span class="p">,</span>
+</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>    <span class="n">radius_px</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="p">)</span>
+</span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>
+</span><span id="__span-7-17"><a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a><span class="n">result</span> <span class="o">=</span> <span class="n">analyze_gwyddion_median_background</span><span class="p">(</span>
+</span><span id="__span-7-18"><a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>    <span class="n">channel</span><span class="p">,</span>
+</span><span id="__span-7-19"><a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>    <span class="n">radius_px</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+</span><span id="__span-7-20"><a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="p">)</span>
+</span><span id="__span-7-21"><a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">method</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
+</span></code></pre></div>
+<p><code>radius_px</code> is an integer pixel radius with default <code>20</code> and inclusive range <code>1..1024</code>.
+The kernel is Gwyddion's fixed inclusive digital ellipse and exterior samples use fixed
+nearest-edge <code>gwyddion_border_extend</code>; the public API intentionally exposes no border, shape,
+rank, or backend option. <code>estimate_gwyddion_median_background()</code> returns the background as an
+<code>SPMChannel</code>, <code>remove_gwyddion_median_background()</code> returns <code>input - background</code> as an
+<code>SPMChannel</code>, and <code>analyze_gwyddion_median_background()</code> returns a <code>BackgroundResult</code>.</p>
+<p>The result method is <code>"gwyddion_median_background"</code>. Its metadata records <code>radius_px</code>,
+<code>kernel_resolution</code>, <code>kernel_active_count</code>, <code>rank_index</code>, <code>rank_backend_reference</code>,
+<code>border_policy="gwyddion_border_extend"</code>, and
+<code>kernel_geometry="gwyddion_digital_ellipse"</code>. <code>rank_backend_reference</code> identifies the
+observed Gwyddion reference route, not an SPM-Kit backend.</p>
+<p>Inputs must be finite two-dimensional data; NaN and infinite values are rejected. The source
+channel is not mutated, and output channels preserve its shape, units, ranges, direction, group,
+and copied metadata according to the <code>SPMChannel</code> contract. The public implementation does not
+require Gwyddion at runtime.</p>
+<p>This capability is CROSS_VALIDATED only within its frozen 36-case Gwyddion 2.71 campaign. Its
+scope, frozen evidence, semantics, and non-claims are specified in the
+<a href="../design/GWYDDION_MEDIAN_BACKGROUND_COMPATIBILITY/">Gwyddion Median Background compatibility specification</a>.</p>
+<h2 id="gwyddion-271-filter-flat-disc-morphology">Gwyddion 2.71 Filter flat-disc morphology<a class="headerlink" href="#gwyddion-271-filter-flat-disc-morphology" title="Permanent link">&para;</a></h2>
+<p>SPM-Kit exposes the frozen Gwyddion 2.71 Filter-tool flat-disc Opening and Closing:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">gwyddion_flat_disc_closing</span><span class="p">,</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">gwyddion_flat_disc_opening</span><span class="p">,</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="p">)</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="n">opened</span> <span class="o">=</span> <span class="n">gwyddion_flat_disc_opening</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">size_px</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="n">closed</span> <span class="o">=</span> <span class="n">gwyddion_flat_disc_closing</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">size_px</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Both functions accept a pixel-based <code>size_px</code> in the inclusive range <code>2..31</code>, defaulting to
+<code>5</code>, and return a new <code>SPMChannel</code>. The K×K digital ellipse, nearest-edge extension, and
+Gwyddion executable even-size anchoring are fixed; erosion, dilation, masks, ROI, ASF, and
+physical-radius options are not public parameters. Inputs must be finite, non-empty, and 2D;
+the source channel is not mutated, and shape, Z/XY units, ranges, direction, group, and copied
+metadata are preserved.</p>
+<p>This capability is <code>CROSS_VALIDATED</code> only within the frozen 12-field campaign and six sizes
+<code>2, 3, 4, 5, 30, 31</code> (72 Opening and 72 Closing cases). The complete scope, executable tie
+semantics, evidence identities, and non-claims are recorded in the
+<a href="../design/GWYDDION_FLAT_DISC_MORPHOLOGY_COMPATIBILITY/">Gwyddion flat-disc morphology compatibility specification</a>.</p>
+<h2 id="gwyddion-271-path-level">Gwyddion 2.71 Path Level<a class="headerlink" href="#gwyddion-271-path-level" title="Permanent link">&para;</a></h2>
+<p>SPM-Kit exposes the frozen Gwyddion Path Level operation as a non-mutating channel transform:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">gwyddion_path_level</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">lines</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">4.0e-6</span><span class="p">,</span> <span class="mf">3.0e-6</span><span class="p">)]</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="n">levelled</span> <span class="o">=</span> <span class="n">gwyddion_path_level</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">thickness_px</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span></code></pre></div>
+<p><code>gwyddion_path_level(channel, lines, *, thickness_px=1) -&gt; SPMChannel</code> accepts an ordered
+collection of straight physical-coordinate selections <code>(x0, y0, x1, y1)</code>. Duplicates and order
+are meaningful. <code>thickness_px</code> is an integer in the inclusive range <code>1..128</code>, defaulting to
+<code>1</code>. The operation has fixed endpoint conversion, no interpolation, horizontal-line exclusion,
+and cumulative row-level correction semantics. It requires finite, non-empty 2D data and finite
+positive channel ranges.</p>
+<p>The result is a new <code>SPMChannel</code>: shape, Z/XY units, ranges, name, direction, group, and copied
+metadata are preserved, while the input remains unchanged. Masks, ROI, <code>GwySelectionPath</code>,
+splines, polylines, profiles, and GUI publication parameters are not part of this API. The scope,
+executable evidence, and non-claims are defined in the
+<a href="../design/GWYDDION_PATH_LEVEL_COMPATIBILITY/">Gwyddion Path Level compatibility specification</a>.</p>
+<h2 id="gwyddion-271-align-rows-statistics">Gwyddion 2.71 Align Rows statistics<a class="headerlink" href="#gwyddion-271-align-rows-statistics" title="Permanent link">&para;</a></h2>
+<p>SPM-Kit exposes four explicit, non-mutating Gwyddion Align Rows statistics transforms.  They are
+separate from the existing generic <code>align_rows</code>, whose semantics are not described as
+Gwyddion-compatible.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="n">gwyddion_align_rows_median</span><span class="p">,</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">gwyddion_align_rows_median_of_differences</span><span class="p">,</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="n">gwyddion_align_rows_trimmed_mean</span><span class="p">,</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">gwyddion_align_rows_trimmed_mean_of_differences</span><span class="p">,</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="p">)</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="n">median</span> <span class="o">=</span> <span class="n">gwyddion_align_rows_median</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span> <span class="n">mask_mode</span><span class="o">=</span><span class="s2">&quot;include&quot;</span><span class="p">)</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="n">differences</span> <span class="o">=</span> <span class="n">gwyddion_align_rows_median_of_differences</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s2">&quot;vertical&quot;</span><span class="p">)</span>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="n">trimmed</span> <span class="o">=</span> <span class="n">gwyddion_align_rows_trimmed_mean</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">trim_fraction</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="n">trimmed_differences</span> <span class="o">=</span> <span class="n">gwyddion_align_rows_trimmed_mean_of_differences</span><span class="p">(</span>
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>    <span class="n">channel</span><span class="p">,</span> <span class="n">trim_fraction</span><span class="o">=</span><span class="mf">0.05</span>
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="p">)</span>
+</span></code></pre></div>
+<p>The public signatures are
+<code>gwyddion_align_rows_median(channel, *, mask=None, mask_mode="ignore", direction="horizontal")</code>
+and <code>gwyddion_align_rows_median_of_differences(channel, *, mask=None, mask_mode="ignore",
+direction="horizontal")</code>; the two trimmed variants add the keyword-only
+<code>trim_fraction=0.05</code>.  <code>GwyddionAlignRowsMaskMode</code> is the typed literal
+<code>"exclude" | "include" | "ignore"</code>; <code>GwyddionAlignRowsDirection</code> is
+<code>"horizontal" | "vertical"</code>.  A mask is optional, finite, numeric, and exactly channel-shaped.
+Without a mask, every stored mode selects all samples.  Outputs are independent C-contiguous
+<code>float64</code> fields in a new <code>SPMChannel</code>, preserving name, units, physical ranges, direction,
+group, and copied metadata.</p>
+<p>The fixed source semantics are: <code>Exclude = 0</code>, <code>Include = 1</code>, and <code>Ignore = 2</code>; vertical
+processing is transpose/restore.  For absolute methods Include selects mask values <code>&gt; 0.0</code>,
+Exclude selects values <code>&lt; 1.0</code>, and undersampled rows use the global masked upper-median fallback
+before mean centring all row shifts.  Difference methods require both adjacent mask values <code>&gt; 1.0</code>
+(Include) or <code>&lt; 1.0</code> (Exclude), use <code>+0.0</code> for undersampled pairs, accumulate from row zero, and
+remove an unweighted least-squares row-index slope.  Median is upper median.  Trimmed methods use
+<code>floor(fraction*n + 0.5)</code> and use upper median when trimming would leave no retained value.
+The current public boundary returns only the corrected channel; private correction/background
+diagnostics are intentionally not a new public result architecture.</p>
+<p><code>portable_source_semantics</code> is the production contract.  Public end-to-end tests are
+<code>CROSS_VALIDATED</code> only within the frozen finite 64-case campaign: all <code>64/64</code> corrected arrays and
+<code>3888/3888</code> elements are bitwise exact to the independent portable V2 oracle.  The secondary
+<code>installed_gwyddion_2_71_fast_math_profile</code> is bitwise exact in <code>61/64</code> arrays and <code>3757/3888</code>
+elements.  Its only recorded differences are three signed-zero elements in
+<code>median__plateaus_signed_zero__10</code> and 64 finite elements in each of
+<code>median_of_differences__irregular__11</code> and
+<code>trimmed_mean_of_differences__irregular__11</code>, bounded by absolute difference
+<code>5.329070518200751e-15</code>.  The installed <code>process.so</code>
+(<code>c21d52375807ae096e34a3469c2f20c4c66ea3197479e13215a6d7b9d465b451</code>) was built with GCC 16.1.1
+<code>-ffast-math</code>, associative reassociation, and LTO.  SPM-Kit does not emulate that local build;
+no V3 was justified.  The complete evidence, profile policy, and non-claims are in the
+<a href="../design/GWYDDION_ALIGN_ROWS_STATISTICS_COMPATIBILITY/">Gwyddion Align Rows statistics compatibility specification</a>.</p>
 <h2 id="kpfm-statistics">KPFM statistics<a class="headerlink" href="#kpfm-statistics" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">kpfm</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">cpd</span> <span class="o">=</span> <span class="n">kpfm</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;CPD&quot;</span><span class="p">],</span> <span class="n">tip_work_function</span><span class="o">=</span><span class="mf">4.8</span><span class="p">)</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="nb">print</span><span class="p">(</span><span class="n">cpd</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">cpd</span><span class="o">.</span><span class="n">std</span><span class="p">,</span> <span class="n">cpd</span><span class="o">.</span><span class="n">minimum</span><span class="p">,</span> <span class="n">cpd</span><span class="o">.</span><span class="n">maximum</span><span class="p">,</span> <span class="n">cpd</span><span class="o">.</span><span class="n">contrast</span><span class="p">)</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">cpd</span><span class="o">.</span><span class="n">work_function</span><span class="p">,</span> <span class="n">cpd</span><span class="o">.</span><span class="n">work_function_unit</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">kpfm</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="n">cpd</span> <span class="o">=</span> <span class="n">kpfm</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;CPD&quot;</span><span class="p">],</span> <span class="n">tip_work_function</span><span class="o">=</span><span class="mf">4.8</span><span class="p">)</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="nb">print</span><span class="p">(</span><span class="n">cpd</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">cpd</span><span class="o">.</span><span class="n">std</span><span class="p">,</span> <span class="n">cpd</span><span class="o">.</span><span class="n">minimum</span><span class="p">,</span> <span class="n">cpd</span><span class="o">.</span><span class="n">maximum</span><span class="p">,</span> <span class="n">cpd</span><span class="o">.</span><span class="n">contrast</span><span class="p">)</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">cpd</span><span class="o">.</span><span class="n">work_function</span><span class="p">,</span> <span class="n">cpd</span><span class="o">.</span><span class="n">work_function_unit</span><span class="p">)</span>
 </span></code></pre></div>
 <p><code>tip_work_function</code> is expressed in eV. With CPD in volts, the implementation uses
 <code>sample_work_function = tip_work_function - mean_CPD</code>. This sign convention and the
 channel's calibration must match the instrument workflow; SPM-Kit cannot infer them
 from an arbitrary label.</p>
 <h2 id="spectral-and-grain-analysis">Spectral and grain analysis<a class="headerlink" href="#spectral-and-grain-analysis" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">grains</span><span class="p">,</span> <span class="n">spectral</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">psd</span> <span class="o">=</span> <span class="n">spectral</span><span class="o">.</span><span class="n">radial_psd</span><span class="p">(</span><span class="n">levelled</span><span class="p">)</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">fractal</span> <span class="o">=</span> <span class="n">spectral</span><span class="o">.</span><span class="n">fractal_dimension</span><span class="p">(</span><span class="n">levelled</span><span class="p">,</span> <span class="n">q_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">q_max</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">correlation_length_m</span> <span class="o">=</span> <span class="n">spectral</span><span class="o">.</span><span class="n">correlation_length</span><span class="p">(</span><span class="n">levelled</span><span class="p">)</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="n">segmentation</span> <span class="o">=</span> <span class="n">grains</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span>
-</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    <span class="n">levelled</span><span class="p">,</span>
-</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    <span class="n">min_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>    <span class="n">relative_height</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="p">)</span>
-</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="nb">print</span><span class="p">(</span><span class="n">segmentation</span><span class="o">.</span><span class="n">n_grains</span><span class="p">,</span> <span class="n">segmentation</span><span class="o">.</span><span class="n">mean_diameter</span><span class="p">)</span>
-</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="nb">print</span><span class="p">(</span><span class="n">segmentation</span><span class="o">.</span><span class="n">coverage</span><span class="p">,</span> <span class="n">segmentation</span><span class="o">.</span><span class="n">density</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">grains</span><span class="p">,</span> <span class="n">spectral</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="n">psd</span> <span class="o">=</span> <span class="n">spectral</span><span class="o">.</span><span class="n">radial_psd</span><span class="p">(</span><span class="n">levelled</span><span class="p">)</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="n">fractal</span> <span class="o">=</span> <span class="n">spectral</span><span class="o">.</span><span class="n">fractal_dimension</span><span class="p">(</span><span class="n">levelled</span><span class="p">,</span> <span class="n">q_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">q_max</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="n">correlation_length_m</span> <span class="o">=</span> <span class="n">spectral</span><span class="o">.</span><span class="n">correlation_length</span><span class="p">(</span><span class="n">levelled</span><span class="p">)</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="n">segmentation</span> <span class="o">=</span> <span class="n">grains</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>    <span class="n">levelled</span><span class="p">,</span>
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>    <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>    <span class="n">min_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>    <span class="n">relative_height</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="p">)</span>
+</span><span id="__span-12-13"><a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="nb">print</span><span class="p">(</span><span class="n">segmentation</span><span class="o">.</span><span class="n">n_grains</span><span class="p">,</span> <span class="n">segmentation</span><span class="o">.</span><span class="n">mean_diameter</span><span class="p">)</span>
+</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="nb">print</span><span class="p">(</span><span class="n">segmentation</span><span class="o">.</span><span class="n">coverage</span><span class="p">,</span> <span class="n">segmentation</span><span class="o">.</span><span class="n">density</span><span class="p">)</span>
 </span></code></pre></div>
-<p><code>radial_psd()</code> returns <code>q</code> in <code>1/m</code>. Grain detection requires the <code>grains</code> extra,
+<p><code>radial_psd()</code> returns <code>q</code> in <code>1/m</code>. Grain detection uses SciPy, a required SPMKit dependency,
 uses eight-connected components, and reports density in grains per µm². Automatic
 thresholding is an algorithmic default, not a scientifically universal segmentation
 rule; record or override it for a campaign.</p>
 <h2 id="force-data">Force data<a class="headerlink" href="#force-data" title="Permanent link">&para;</a></h2>
 <p>Force curves and force volumes are a separate domain from <code>SPMData</code> images.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_force</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">volume</span> <span class="o">=</span> <span class="n">load_force</span><span class="p">(</span><span class="s2">&quot;curve.jpk-force&quot;</span><span class="p">)</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">curve</span> <span class="o">=</span> <span class="n">volume</span><span class="o">.</span><span class="n">curve</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">volume</span><span class="o">.</span><span class="n">grid_shape</span><span class="p">,</span> <span class="n">curve</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_force</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">volume</span> <span class="o">=</span> <span class="n">load_force</span><span class="p">(</span><span class="s2">&quot;curve.jpk-force&quot;</span><span class="p">)</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="n">curve</span> <span class="o">=</span> <span class="n">volume</span><span class="o">.</span><span class="n">curve</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">volume</span><span class="o">.</span><span class="n">grid_shape</span><span class="p">,</span> <span class="n">curve</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
 </span></code></pre></div>
 <p><code>load_force()</code> currently covers <code>.nid</code>, <code>.jpk-force</code>, and <code>.jpk</code>. A single curve is
 wrapped as a <code>1 × 1</code> <code>ForceVolume</code>. Raw force segments preserve calibration state;
@@ -2526,65 +2852,65 @@ operations that require calibrated force or tip-sample separation fail explicitl
 those values have not been produced. Model choice, tip geometry, Poisson ratio,
 calibration, contact detection, and fit window remain scientific inputs.</p>
 <p>The older array-oriented mechanics API is also public in this alpha release:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">mechanics</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">curves</span> <span class="o">=</span> <span class="n">mechanics</span><span class="o">.</span><span class="n">extract_curves</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;Deflection&quot;</span><span class="p">])</span>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">fit</span> <span class="o">=</span> <span class="n">mechanics</span><span class="o">.</span><span class="n">fit_hertz</span><span class="p">(</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="n">curves</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="n">tip_radius</span><span class="o">=</span><span class="mf">10e-9</span><span class="p">,</span>
-</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    <span class="n">poisson</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
-</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;sphere&quot;</span><span class="p">,</span>
-</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>    <span class="n">spring_constant</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
-</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>    <span class="n">contact_method</span><span class="o">=</span><span class="s2">&quot;rov&quot;</span><span class="p">,</span>
-</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="p">)</span>
-</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="nb">print</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">young_modulus</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">young_modulus_std</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">r_squared</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">rmse</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">mechanics</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="n">curves</span> <span class="o">=</span> <span class="n">mechanics</span><span class="o">.</span><span class="n">extract_curves</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;Deflection&quot;</span><span class="p">])</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="n">fit</span> <span class="o">=</span> <span class="n">mechanics</span><span class="o">.</span><span class="n">fit_hertz</span><span class="p">(</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>    <span class="n">curves</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>    <span class="n">tip_radius</span><span class="o">=</span><span class="mf">10e-9</span><span class="p">,</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>    <span class="n">poisson</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;sphere&quot;</span><span class="p">,</span>
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>    <span class="n">spring_constant</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>    <span class="n">contact_method</span><span class="o">=</span><span class="s2">&quot;rov&quot;</span><span class="p">,</span>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="p">)</span>
+</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="nb">print</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">young_modulus</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">young_modulus_std</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">r_squared</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">rmse</span><span class="p">)</span>
 </span></code></pre></div>
 <p>Do not treat a successful fit as evidence that the chosen contact model or calibration
 is valid for the sample.</p>
 <h2 id="export">Export<a class="headerlink" href="#export" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core.export</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_csv</span><span class="p">,</span> <span class="n">to_hdf5</span><span class="p">,</span> <span class="n">to_json</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_gwy</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="n">to_csv</span><span class="p">(</span><span class="n">stats</span><span class="p">,</span> <span class="s2">&quot;roughness.csv&quot;</span><span class="p">)</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="n">to_json</span><span class="p">(</span><span class="n">stats</span><span class="p">,</span> <span class="s2">&quot;roughness.json&quot;</span><span class="p">)</span>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="n">to_hdf5</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;scan.h5&quot;</span><span class="p">)</span>       <span class="c1"># requires h5py</span>
-</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="n">save_gwy</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;scan.gwy&quot;</span><span class="p">)</span>     <span class="c1"># requires gwyfile</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core.export</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_csv</span><span class="p">,</span> <span class="n">to_hdf5</span><span class="p">,</span> <span class="n">to_json</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_gwy</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="n">to_csv</span><span class="p">(</span><span class="n">stats</span><span class="p">,</span> <span class="s2">&quot;roughness.csv&quot;</span><span class="p">)</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="n">to_json</span><span class="p">(</span><span class="n">stats</span><span class="p">,</span> <span class="s2">&quot;roughness.json&quot;</span><span class="p">)</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="n">to_hdf5</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;scan.h5&quot;</span><span class="p">)</span>       <span class="c1"># requires h5py</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="n">save_gwy</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;scan.gwy&quot;</span><span class="p">)</span>     <span class="c1"># requires gwyfile</span>
 </span></code></pre></div>
 <p>CSV is a presentation/interchange export and does not preserve the complete source
 object. HDF5 and GWY output do not establish universal lossless round-trip equivalence;
 retain the original instrument file, checksums, versions, and processing parameters.</p>
 <h2 id="batch-image-analysis">Batch image analysis<a class="headerlink" href="#batch-image-analysis" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">batch</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="n">files</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;measurements&quot;</span><span class="p">))</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="n">result</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="s2">&quot;Z-Axis&quot;</span><span class="p">,</span> <span class="n">cpd_channel</span><span class="o">=</span><span class="s2">&quot;CPD&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;plane&quot;</span><span class="p">)</span>
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">n_ok</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">n_failed</span><span class="p">)</span>
-</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="n">result</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;summary.csv&quot;</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">batch</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="n">files</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;measurements&quot;</span><span class="p">))</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="n">result</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="s2">&quot;Z-Axis&quot;</span><span class="p">,</span> <span class="n">cpd_channel</span><span class="o">=</span><span class="s2">&quot;CPD&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;plane&quot;</span><span class="p">)</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">n_ok</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">n_failed</span><span class="p">)</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="n">result</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;summary.csv&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <p><code>find_files()</code> is non-recursive and follows the compact built-in image registry.
 <code>BatchResult.rows</code> retains an error string for each failed file rather than hiding it.</p>
 <h2 id="reader-plugins">Reader plugins<a class="headerlink" href="#reader-plugins" title="Permanent link">&para;</a></h2>
 <p>Reader plugins implement the versioned <code>Reader</code> protocol and register through the
 <code>spmkit.plugins.v1</code> entry-point group.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core.plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatasetInfo</span><span class="p">,</span> <span class="n">register_reader</span>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="k">class</span><span class="w"> </span><span class="nc">ExampleReader</span><span class="p">:</span>
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">extensions</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;.example&quot;</span><span class="p">,)</span>
-</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
-</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">inspect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
-</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>        <span class="k">return</span> <span class="n">DatasetInfo</span><span class="p">(</span>
-</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>            <span class="n">path</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">),</span>
-</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>            <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;example&quot;</span><span class="p">,</span>
-</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>            <span class="n">kinds</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">,),</span>
-</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>            <span class="n">channels</span><span class="o">=</span><span class="p">(),</span>
-</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>        <span class="p">)</span>
-</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>
-</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;return an SPMData instance here&quot;</span><span class="p">)</span>
-</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>
-</span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="n">register_reader</span><span class="p">(</span><span class="n">ExampleReader</span><span class="p">())</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spmkit.core.plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatasetInfo</span><span class="p">,</span> <span class="n">register_reader</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="k">class</span><span class="w"> </span><span class="nc">ExampleReader</span><span class="p">:</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>    <span class="n">extensions</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;.example&quot;</span><span class="p">,)</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">inspect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a>        <span class="k">return</span> <span class="n">DatasetInfo</span><span class="p">(</span>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>            <span class="n">path</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">),</span>
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a>            <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;example&quot;</span><span class="p">,</span>
+</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a>            <span class="n">kinds</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">,),</span>
+</span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a>            <span class="n">channels</span><span class="o">=</span><span class="p">(),</span>
+</span><span id="__span-17-13"><a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a>        <span class="p">)</span>
+</span><span id="__span-17-14"><a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a>
+</span><span id="__span-17-15"><a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="__span-17-16"><a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;return an SPMData instance here&quot;</span><span class="p">)</span>
+</span><span id="__span-17-17"><a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a>
+</span><span id="__span-17-18"><a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a><span class="n">register_reader</span><span class="p">(</span><span class="n">ExampleReader</span><span class="p">())</span>
 </span></code></pre></div>
 <p><code>inspect()</code> should be inexpensive; <code>load()</code> returns the requested data kind. Production
 plugins should publish an entry point rather than relying on process-local registration.
@@ -2621,7 +2947,7 @@ The plugin contract is versioned, but the surrounding package remains alpha.</p>
 </tr>
 <tr>
 <td>image preprocessing</td>
-<td><code>analysis.leveling.*</code></td>
+<td><code>analysis.leveling.*</code>, <code>analysis.background.*</code></td>
 <td>new <code>SPMChannel</code></td>
 </tr>
 <tr>

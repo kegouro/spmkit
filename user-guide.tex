@@ -421,7 +421,7 @@ panels relevant to its workflow.
 \multicolumn{2}{c}{\textbf{Module: image}}\\
 \midrule
 image & Channel viewer, leveling (plane/poly/align-rows), colormap, line profile ROI, roughness + KPFM analysis, profile export.\\
-grains & Particle/grain detection on levelled topography; colour overlay, size statistics. Requires \texttt{grains} extra.\\
+grains & Particle/grain detection on levelled topography; colour overlay, size statistics. Uses SciPy, which is installed as a required SPMKit dependency.\\
 spectral & Radial PSD (log-log), fractal dimension~D, Hurst exponent~H, correlation length.\\
 resonance & Thermal tune: SHO fit $\rightarrow$ f$_0$, Q, spring constant by equipartition.\\
 evaporation & Mass sensing: load series of tuning .nid files $\rightarrow$ f(t), mass, d\textsuperscript{2} law fit.\\
@@ -812,7 +812,7 @@ register via \texttt{spmkit.gui.modules}. See \texttt{docs/extending.md} for ful
   \item[Missing GUI extra] \hfill \\ \texttt{pip install "spmkit[gui]"}
   \item[Qt platform plugin error] \hfill \\ Install Qt dependencies or set \texttt{QT\_QPA\_PLATFORM=offscreen}.
   \item[Unsupported format] \hfill \\ Check extension matches \texttt{.nid/.nhf/.gwy/.jpk-force}. For experimental readers, install \texttt{afm} or \texttt{jpk}.
-  \item[Missing optional dependency] \hfill \\ Install the relevant extra (e.g. \texttt{pip install "spmkit[grains]"}).
+  \item[Missing optional dependency] \hfill \\ Reinstall SPMKit so its required dependencies are restored (for a development checkout: \texttt{python -m pip install -e .}).
   \item[Large force-volume memory] \hfill \\ Use lazy loading or the \texttt{--fast} CPU vectorised path.
   \item[GPU fallback] \hfill \\ CuPy is not bundled. Install separately: \texttt{pip install cupy-cuda12x}.
   \item[Export failure] \hfill \\ Check write permissions. Use \texttt{--output} with a writable path.

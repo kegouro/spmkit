@@ -1,14 +1,14 @@
 {
   "artifacts": [
     {
-      "bytes": 56415,
+      "bytes": 56482,
       "path": "docs/user-guide.md",
-      "sha256": "dbbfa1fddffd5f25b3b880c80b33f6b8b1e37b0c15dd85af25c7aacef9f8fe08"
+      "sha256": "2af676b1a962202ec7c5424a95d7477a6b99621c88ad433720cff46b2e117a43"
     },
     {
-      "bytes": 39873,
+      "bytes": 39958,
       "path": "docs/user-guide.tex",
-      "sha256": "d11a27d1889510c6beaed2f1055216b54366e737cbfbfc4bbbaaa5e6617bd6db"
+      "sha256": "9a8de11a62874301eee6a7797149146f5fe8057374b7c8008c1463da1e1e0314"
     },
     {
       "bytes": 117821,

@@ -4598,7 +4598,7 @@ application. The <strong>Log</strong> panel (in Batch perspective) collects diag
 KPFM work‑function calculation uses <code>Φ_sample = Φ_tip - e·CPD</code>.</p>
 <h3 id="grains-grains">Grains (<code>grains</code>)<a class="headerlink" href="#grains-grains" title="Permanent link">&para;</a></h3>
 <p><strong>Purpose:</strong> Detect particles/grains on a levelled topography channel.</p>
-<p>Requires the <code>grains</code> extra (scipy).</p>
+<p>Uses SciPy, which is a required SPMKit dependency.</p>
 <table>
 <thead>
 <tr>
@@ -5763,7 +5763,7 @@ set <code>QT_QPA_PLATFORM=offscreen</code> for headless environments.</p>
 <h3 id="missing-optional-dependency">Missing optional dependency<a class="headerlink" href="#missing-optional-dependency" title="Permanent link">&para;</a></h3>
 <p><div class="language-text highlight"><pre><span></span><code><span id="__span-67-1"><a id="__codelineno-67-1" name="__codelineno-67-1" href="#__codelineno-67-1"></a>ModuleNotFoundError: No module named &#39;scipy&#39;
 </span></code></pre></div>
-<strong>Fix:</strong> Install the relevant extra (e.g. <code>pip install "spmkit[grains]"</code>).</p>
+<strong>Fix:</strong> Reinstall SPMKit so its required dependencies are restored (for a development checkout: <code>python -m pip install -e .</code>).</p>
 <h3 id="empty-or-unexpected-channels">Empty or unexpected channels<a class="headerlink" href="#empty-or-unexpected-channels" title="Permanent link">&para;</a></h3>
 <p><div class="language-text highlight"><pre><span></span><code><span id="__span-68-1"><a id="__codelineno-68-1" name="__codelineno-68-1" href="#__codelineno-68-1"></a>data.names → [&#39;Z-Axis&#39;, &#39;Phase&#39;] but expected CPD
 </span></code></pre></div>
