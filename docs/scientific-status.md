@@ -63,7 +63,7 @@ and tolerance. It never transfers automatically to an adjacent feature.
 - [Nanoscope incident and final audit](https://github.com/kegouro/spmkit-validation/blob/main/docs/campaigns/nanoscope_spm_parser_pilot_v0.1_audit.md)
 - [Flatten Base Gwyddion 2.71 frozen end-to-end fixture](https://github.com/kegouro/spmkit/blob/flatten-base-gwyddion-parity-v1/tests/validation/fixtures/gwyddion/flatten_base/gwyddion_2_71_end_to_end.json)
 - [Sphere Revolution Gwyddion 2.71 frozen fixture](https://github.com/kegouro/spmkit/blob/feat/gwyddion-leveling-parity/tests/validation/fixtures/gwyddion/sphere_revolution/sphere_revolution_reference.json)
-- [Median Background Gwyddion 2.71 frozen manifest](../tests/validation/fixtures/gwyddion/median_background/median_background_reference.json)
+- [Median Background Gwyddion 2.71 frozen manifest](https://github.com/kegouro/spmkit/blob/main/tests/validation/fixtures/gwyddion/median_background/median_background_reference.json)
 
 ### Gwyddion Sphere Revolution
 
