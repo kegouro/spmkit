@@ -11,6 +11,7 @@ from typing import Literal
 
 import numpy as np
 
+from spmkit.core.analysis._gwyddion_path_level import _gwyddion_path_level_result
 from spmkit.core.geometry import (
     bilinear_sample,
     length_values_from_metres,
@@ -192,6 +193,37 @@ def zero_minimum(channel: SPMChannel) -> SPMChannel:
     data = _validated_data(channel, operation="zero_minimum")
     minimum_height = np.min(data)
     return channel.with_data(data - minimum_height)
+
+
+def gwyddion_path_level(
+    channel: SPMChannel,
+    lines: object,
+    *,
+    thickness_px: object = 1,
+) -> SPMChannel:
+    """Apply the frozen Gwyddion 2.71 Path Level operation.
+
+    ``lines`` is an ordered collection of straight physical-coordinate
+    selections ``(x0, y0, x1, y1)``.  Duplicates and ordering are meaningful.
+    ``thickness_px`` is an integer from 1 through 128, with default ``1``.
+    The operation has fixed Gwyddion Path Level semantics: no interpolation,
+    horizontal-line exclusion, and a cumulative row correction.  Finite,
+    non-empty two-dimensional data and finite positive channel ranges are
+    required.  The input channel is not mutated.
+
+    Returns
+    -------
+    SPMChannel
+        A corrected channel with the input context preserved.
+    """
+    result = _gwyddion_path_level_result(
+        channel.data,
+        lines,
+        xreal=channel.x_range,
+        yreal=channel.y_range,
+        thickness_px=thickness_px,
+    )
+    return channel.with_data(result.corrected)
 
 
 def shift_vertical(channel: SPMChannel, *, offset: float) -> SPMChannel:

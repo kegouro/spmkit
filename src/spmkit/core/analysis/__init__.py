@@ -52,6 +52,7 @@ from spmkit.core.analysis.forcecurve import ForceCurveFit
 from spmkit.core.analysis.forcevolume import VolumeResult, analyze_volume
 from spmkit.core.analysis.grains import GrainResult
 from spmkit.core.analysis.kpfm import CPDResult
+from spmkit.core.analysis.leveling import gwyddion_path_level
 from spmkit.core.analysis.mechanics import (
     ForceCurve,
     IndentationResult,
@@ -88,6 +89,7 @@ __all__ = [
     "estimate_gwyddion_sphere_revolution_background",
     "gwyddion_flat_disc_closing",
     "gwyddion_flat_disc_opening",
+    "gwyddion_path_level",
     "estimate_median_background",
     "estimate_polynomial_background",
     "estimate_rolling_ball_background",
