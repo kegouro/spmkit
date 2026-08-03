@@ -331,6 +331,63 @@ splines, polylines, profiles, and GUI publication parameters are not part of thi
 executable evidence, and non-claims are defined in the
 [Gwyddion Path Level compatibility specification](design/GWYDDION_PATH_LEVEL_COMPATIBILITY.md).
 
+## Gwyddion 2.71 Align Rows statistics
+
+SPM-Kit exposes four explicit, non-mutating Gwyddion Align Rows statistics transforms.  They are
+separate from the existing generic `align_rows`, whose semantics are not described as
+Gwyddion-compatible.
+
+```python
+from spmkit.core.analysis import (
+    gwyddion_align_rows_median,
+    gwyddion_align_rows_median_of_differences,
+    gwyddion_align_rows_trimmed_mean,
+    gwyddion_align_rows_trimmed_mean_of_differences,
+)
+
+median = gwyddion_align_rows_median(channel, mask=mask, mask_mode="include")
+differences = gwyddion_align_rows_median_of_differences(channel, direction="vertical")
+trimmed = gwyddion_align_rows_trimmed_mean(channel, trim_fraction=0.05)
+trimmed_differences = gwyddion_align_rows_trimmed_mean_of_differences(
+    channel, trim_fraction=0.05
+)
+```
+
+The public signatures are
+`gwyddion_align_rows_median(channel, *, mask=None, mask_mode="ignore", direction="horizontal")`
+and `gwyddion_align_rows_median_of_differences(channel, *, mask=None, mask_mode="ignore",
+direction="horizontal")`; the two trimmed variants add the keyword-only
+`trim_fraction=0.05`.  `GwyddionAlignRowsMaskMode` is the typed literal
+`"exclude" | "include" | "ignore"`; `GwyddionAlignRowsDirection` is
+`"horizontal" | "vertical"`.  A mask is optional, finite, numeric, and exactly channel-shaped.
+Without a mask, every stored mode selects all samples.  Outputs are independent C-contiguous
+`float64` fields in a new `SPMChannel`, preserving name, units, physical ranges, direction,
+group, and copied metadata.
+
+The fixed source semantics are: `Exclude = 0`, `Include = 1`, and `Ignore = 2`; vertical
+processing is transpose/restore.  For absolute methods Include selects mask values `> 0.0`,
+Exclude selects values `< 1.0`, and undersampled rows use the global masked upper-median fallback
+before mean centring all row shifts.  Difference methods require both adjacent mask values `> 1.0`
+(Include) or `< 1.0` (Exclude), use `+0.0` for undersampled pairs, accumulate from row zero, and
+remove an unweighted least-squares row-index slope.  Median is upper median.  Trimmed methods use
+`floor(fraction*n + 0.5)` and use upper median when trimming would leave no retained value.
+The current public boundary returns only the corrected channel; private correction/background
+diagnostics are intentionally not a new public result architecture.
+
+`portable_source_semantics` is the production contract.  Public end-to-end tests are
+`CROSS_VALIDATED` only within the frozen finite 64-case campaign: all `64/64` corrected arrays and
+`3888/3888` elements are bitwise exact to the independent portable V2 oracle.  The secondary
+`installed_gwyddion_2_71_fast_math_profile` is bitwise exact in `61/64` arrays and `3757/3888`
+elements.  Its only recorded differences are three signed-zero elements in
+`median__plateaus_signed_zero__10` and 64 finite elements in each of
+`median_of_differences__irregular__11` and
+`trimmed_mean_of_differences__irregular__11`, bounded by absolute difference
+`5.329070518200751e-15`.  The installed `process.so`
+(`c21d52375807ae096e34a3469c2f20c4c66ea3197479e13215a6d7b9d465b451`) was built with GCC 16.1.1
+`-ffast-math`, associative reassociation, and LTO.  SPM-Kit does not emulate that local build;
+no V3 was justified.  The complete evidence, profile policy, and non-claims are in the
+[Gwyddion Align Rows statistics compatibility specification](design/GWYDDION_ALIGN_ROWS_STATISTICS_COMPATIBILITY.md).
+
 ## KPFM statistics
 
 ```python

@@ -43,6 +43,7 @@ and tolerance. It never transfers automatically to an adjacent feature.
 | Gwyddion 2.71 Median Background | `core.analysis.background`, `core.analysis._median_background` | Frozen executable reference campaign: 36 logical cases, 72 executions (36 normal, 36 ASan), radii 1/2/3/4/20/1024, direct and radixtree reference paths; public background and corrected fields 36/36 bitwise exact, maximum absolute difference 0 and maximum ULP 0; input mutation maximum 0 and reconstruction maximum `4.4408920985006262e-16` | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen 36-case campaign | Gwyddion 2.71 source, executable probe, independent Python oracle, frozen NPZ/JSON fixture | Finite two-dimensional inputs only; no universal equivalence, performance-equivalence, future-Gwyddion, all-radii, or all-matrices claim; `rank_backend_reference` describes Gwyddion, not an SPM-Kit backend |
 | Gwyddion 2.71 Filter flat-disc morphology | `core.analysis.background`, `core.analysis._gwyddion_flat_disc_morphology` | Frozen executable reference campaign: 12 fields, six sizes 2/3/4/5/30/31, 72 Opening and 72 Closing cases; kernels 30/30, Opening 72/72 and Closing 72/72 bitwise exact; maximum absolute difference 0, maximum ULP 0, signed-zero mismatches 0, input mutation 0 | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen campaign | Audited Gwyddion 2.71 executable, corrected external probe V3, executable reduction trace, independent oracle V2, frozen NPZ/JSON fixture | Finite full-field data with masks ignored; no universal equivalence, NaN/Inf, ROI, masks, ASF, tip morphology, physical rolling-ball, performance, other builds/versions, public erosion/dilation, or source-only tie claim |
 | Gwyddion 2.71 Path Level | `core.analysis.leveling`, `core.analysis._gwyddion_path_level` | Audited executable campaign: 18 base families, thicknesses 1/2/3/128, 72 logical cases, 144 fresh external executions and 72 deterministic repeat pairs; private and public arrays 72/72 bitwise exact, 4,652/4,652 elements exact, max absolute/ULP 0, signed-zero mismatches 0, normalized endpoints and mutation/no-op classifications 72/72 | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen campaign | Audited Gwyddion 2.71 Path Level tool, external probe, independent oracle V1, frozen NPZ/JSON fixture | Finite non-empty full fields and ordered straight selections only; no universal equivalence, NaN/Inf, masks/ROI, paths/splines, profiles, align-rows, volume, GUI, performance, or other-build/version claim |
+| Gwyddion 2.71 Align Rows statistics | `core.analysis.leveling`, `core.analysis._gwyddion_align_rows_statistics` | Public 64-case finite campaign: portable source semantics 64/64 arrays and 3,888/3,888 elements bitwise exact; installed fast-math profile 61/64 arrays and 3,757/3,888 elements exact, with only three signed-zero and 128 independently explained reassociation differences | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen dual-profile campaign | Gwyddion 2.71 source, external executable probe, independent portable V2 oracle, frozen NPZ/JSON fixture, installed-build diagnosis | Four methods only; finite full fields, frozen masks/directions/trims; no universal, non-finite, performance, other-version/build, GUI, or generic-`align_rows` compatibility claim |
 | Hertz / conical contact and DMT paths | `core.analysis.forcecurve` | Unit and synthetic-recovery tests; Hertz/conical modulus recovery gates | <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> within synthetic test scope | Analytical construction | No certified cantilever/tip calibration or broad experimental campaign |
 | Adhesive JKR | `core.analysis.experimental` | Synthetic recovery of reduced modulus and work of adhesion; Hertz-limit test | <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> within synthetic scope | Analytical construction | Experimental module; no physical-reference campaign |
 | WLC and FJC chain models | `core.analysis.chain` | Analytical synthetic-recovery tests | <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> within synthetic scope | Analytical construction | No cross-software or experimental population campaign |
@@ -204,6 +205,51 @@ documentation commit hash is claimed. **Non-claims:** no universal equivalence; 
 infinity coverage; no masks or ROI; no GwySelectionPath, splines, or polylines; no profile
 extraction, align-rows equivalence, volume line-leveling, GUI/undo/logging/selection-widget
 parity, performance parity, or guarantee for other Gwyddion versions or builds.
+
+### Gwyddion 2.71 Align Rows statistics
+
+**Claim:** `CROSS_VALIDATED` only within the frozen finite 64-case public campaign, with sixteen
+cases each for Median, Median of differences, Trimmed mean, and Trimmed mean of differences.
+The production contract is `portable_source_semantics`: the public wrappers are bitwise exact to
+the independent V2 oracle in `64/64` corrected arrays and `3888/3888` elements, retaining all
+frozen mask modes, absent-mask routes, horizontal/vertical orientations, trim fractions `0.0`,
+`0.05`, and `0.5`, mutation/no-op classifications, and deterministic output.  The wrappers return
+new context-preserving `SPMChannel` instances and do not claim Gwyddion GUI, publication, undo,
+or mutation behavior.
+
+The secondary `installed_gwyddion_2_71_fast_math_profile` is external executable evidence from
+`/usr/lib/gwyddion/modules/process/process.so`
+(`c21d52375807ae096e34a3469c2f20c4c66ea3197479e13215a6d7b9d465b451`).  It is bitwise exact for
+`61/64` arrays and `3757/3888` elements.  The complete and bounded exception set is three
+signed-zero-only Median elements in `median__plateaus_signed_zero__10` plus 64 finite elements in
+each of `median_of_differences__irregular__11` and
+`trimmed_mean_of_differences__irregular__11`; their maximum absolute difference is
+`5.329070518200751e-15`, with no NaN or infinity discrepancy.  All eight requested backgrounds
+(`504/504` elements) are bitwise exact and mutation/no-op classifications agree `64/64`.
+
+The installed package build diagnosis is `INSTALLED_BUILD_ROOT_CAUSE_CONFIRMED` and
+`V3_NOT_JUSTIFIED`: GCC 16.1.1 `-ffast-math`, associative floating-point reassociation, and LTO
+produce the two irregular difference-method residuals.  The portable source-semantic arithmetic
+is deliberate; SPM-Kit does not emulate that package-specific transformation and introduces no
+named-case or signed-zero patch.  The public functions are explicit alternatives to, not a
+compatibility claim for, the existing generic `align_rows`.
+
+**Traceability:**
+
+```text
+.reference/gwyddion-2.71/source/modules/process/linematch.c
+  → /tmp/spmkit_align_rows_probe_v1
+  → /tmp/spmkit_align_rows_oracle_stats_v2
+  → tests/validation/fixtures/gwyddion/align_rows_statistics/
+  → src/spmkit/core/analysis/_gwyddion_align_rows_statistics.py
+  → src/spmkit/core/analysis/leveling.py
+  → tests/core/test_gwyddion_align_rows_statistics.py
+  → docs/design/GWYDDION_ALIGN_ROWS_STATISTICS_COMPATIBILITY.md
+```
+
+**Non-claims:** no universal equivalence; no NaN/Inf, other Gwyddion version or build, untested
+matrix, performance, ROI/GUI, adapter, or other Align Rows method-family claim.  This finite
+campaign does not establish physical validation or general SPMKit parity.
 
 ## Test-count policy
 

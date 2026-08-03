@@ -9,7 +9,7 @@ This private SPMKit kernel covers only four Gwyddion Align Rows row-shift statis
 3. Trimmed mean (`5`)
 4. Trimmed mean of differences (`6`)
 
-The frozen campaign contains 64 finite `float64` cases, sixteen per method.  It is evidence for this bounded domain, not a public API commitment or a claim of universal, non-finite, other-version, performance, or adapter equivalence.  The production contract is `portable_source_semantics`, represented by the frozen independent V2 oracle.  The private implementation is tested against that profile; no public `align_rows` code is changed or exposed here.
+The frozen campaign contains 64 finite `float64` cases, sixteen per method.  It is evidence for this bounded domain, not a claim of universal, non-finite, other-version, performance, or adapter equivalence.  The production contract is `portable_source_semantics`, represented by the frozen independent V2 oracle.  Four explicit public `SPMChannel` wrappers delegate once to this private implementation; the existing generic `align_rows` code is unchanged and is not described as Gwyddion-compatible.
 
 The repository fixture freezes a secondary profile, `installed_gwyddion_2_71_fast_math_profile`.  It was executed by the installed Gwyddion 2.71 module and is retained as external executable evidence, not as the production arithmetic contract.
 
@@ -71,4 +71,4 @@ The installed package was built with GCC 16.1.1, `-ffast-math`, associative floa
 
 ## Evidence maturity and non-claims
 
-This design records `SOURCE_CONFIRMED`, frozen external-probe evidence, and a bounded V2-oracle production contract.  Private-kernel test success establishes software evidence only for the listed fixture domain.  It does not claim SPMKit numerical verification, cross-validation, universal Gwyddion parity, non-finite equivalence, public API support, or correctness for any other Align Rows method family.  Adapter/context needs remain deliberately unimplemented; GwyCompat is unchanged in this batch.
+This design records `SOURCE_CONFIRMED`, frozen external-probe evidence, and a bounded V2-oracle production contract.  Public end-to-end tests are `CROSS_VALIDATED` only for the listed finite 64-case campaign: the portable profile is bitwise exact, while the installed fast-math profile retains its explicit bounded exceptions.  It does not claim universal Gwyddion parity, non-finite equivalence, other-version/build or performance equivalence, adapter support, or correctness for any other Align Rows method family.  GwyCompat is unchanged in this batch.
