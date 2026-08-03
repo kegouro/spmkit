@@ -558,7 +558,7 @@ def _fit_base_peak_gwyddion_lm(
         )
 
     best_parameters = parameters.copy()
-    residual_sum_best = finite_limit
+    residual_sum_best: float = finite_limit
 
     gradient = np.empty(parameter_count, dtype=float)
     normal = np.empty(packed_size, dtype=float)
