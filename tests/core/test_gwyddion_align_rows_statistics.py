@@ -144,6 +144,24 @@ def test_public_exports_types_and_signatures() -> None:
         assert not hasattr(analysis, private_name)
 
 
+def test_explicit_gwyddion_wrappers_remain_separate_from_generic_align_rows() -> None:
+    """The validated Gwyddion entry point is explicit and returns a new channel."""
+    channel = _channel(
+        np.array([[1.0, 2.0], [4.0, 8.0]], dtype=np.float64),
+        xreal=2.0,
+        yreal=2.0,
+    )
+
+    gwyddion_result = gwyddion_align_rows_median(channel)
+    generic_result = leveling_module.align_rows(channel, method="median")
+
+    assert gwyddion_result is not generic_result
+    assert gwyddion_result is not channel
+    assert generic_result is not channel
+    assert not np.shares_memory(gwyddion_result.data, generic_result.data)
+    assert not np.array_equal(_bits(gwyddion_result.data), _bits(generic_result.data))
+
+
 def test_all_portable_cases_are_bitwise_exact_deterministic_and_non_mutating() -> None:
     manifest, arrays = _load()
     exact_elements = mutation_matches = no_op_matches = 0

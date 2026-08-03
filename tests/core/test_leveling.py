@@ -40,6 +40,76 @@ def test_align_rows() -> None:
     assert np.allclose(leveled.data, 0.0)
 
 
+def test_align_rows_preserves_historical_median_mean_calls() -> None:
+    """The original default, positional, and keyword calls remain equivalent."""
+    data = np.array(
+        [[1.0, 3.0, 5.0], [10.0, 20.0, 30.0]],
+        dtype=np.float64,
+    )
+    channel = SPMChannel(
+        name="legacy",
+        data=data,
+        unit="nm",
+        x_range=3e-6,
+        y_range=2e-6,
+        direction="backward",
+        group="legacy-group",
+        metadata={"source": "legacy"},
+    )
+    original = data.copy()
+
+    expected_median = data - np.median(data, axis=1, keepdims=True)
+    expected_mean = data - np.mean(data, axis=1, keepdims=True)
+    results = (
+        leveling.align_rows(channel),
+        leveling.align_rows(channel, "median"),
+        leveling.align_rows(channel, method="median"),
+        leveling.align_rows(channel, "mean"),
+        leveling.align_rows(channel, method="mean"),
+    )
+
+    for result in results[:3]:
+        assert np.array_equal(result.data, expected_median)
+        assert result is not channel
+        assert not np.shares_memory(result.data, channel.data)
+        assert result.name == channel.name
+        assert result.unit == channel.unit
+        assert result.x_range == channel.x_range
+        assert result.y_range == channel.y_range
+        assert result.direction == channel.direction
+        assert result.group == channel.group
+        assert result.metadata == channel.metadata
+
+    assert np.array_equal(results[3].data, expected_mean)
+    assert np.array_equal(results[4].data, expected_mean)
+    assert np.array_equal(channel.data, original)
+
+    with pytest.raises(ValueError):
+        leveling.align_rows(channel, method="unknown")  # type: ignore[arg-type]
+
+
+@pytest.mark.parametrize("method", ["median", "mean"])
+def test_align_rows_legacy_calls_retain_nonfinite_behavior(method: str) -> None:
+    """Legacy defaults retain origin/main handling outside the strict extension."""
+    data = np.array([[1.0, np.nan], [np.inf, 4.0]], dtype=np.float64)
+    channel = SPMChannel(
+        name="legacy-nonfinite",
+        data=data,
+        unit="nm",
+        x_range=2e-6,
+        y_range=2e-6,
+    )
+
+    with np.errstate(all="ignore"):
+        result = leveling.align_rows(channel, method=method)  # type: ignore[arg-type]
+
+    if method == "median":
+        expected = data - np.median(data, axis=1, keepdims=True)
+    else:
+        expected = data - np.mean(data, axis=1, keepdims=True)
+    assert np.array_equal(result.data, expected, equal_nan=True)
+
+
 def test_plane_fit_returns_new_channel_without_mutating_input(
     tilted_surface: SPMChannel,
 ) -> None:

@@ -9,7 +9,7 @@ This private SPMKit kernel covers only four Gwyddion Align Rows row-shift statis
 3. Trimmed mean (`5`)
 4. Trimmed mean of differences (`6`)
 
-The frozen campaign contains 64 finite `float64` cases, sixteen per method.  It is evidence for this bounded domain, not a claim of universal, non-finite, other-version, performance, or adapter equivalence.  The production contract is `portable_source_semantics`, represented by the frozen independent V2 oracle.  Four explicit public `SPMChannel` wrappers delegate once to this private implementation; the existing generic `align_rows` code is unchanged and is not described as Gwyddion-compatible.
+The frozen campaign contains 64 finite `float64` cases, sixteen per method.  It is evidence for this bounded domain, not a claim of universal, non-finite, other-version, performance, or adapter equivalence.  The production contract is `portable_source_semantics`, represented by the frozen independent V2 oracle.  Four explicit public `SPMChannel` wrappers delegate once to this private implementation.  The generic SPMKit `align_rows` dispatcher remains a separate backward-compatible extension for historical median/mean calls and is not described as Gwyddion-compatible.
 
 The repository fixture freezes a secondary profile, `installed_gwyddion_2_71_fast_math_profile`.  It was executed by the installed Gwyddion 2.71 module and is retained as external executable evidence, not as the production arithmetic contract.
 

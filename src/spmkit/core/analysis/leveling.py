@@ -1169,6 +1169,19 @@ def _matching_row_corrections(
     return corrections
 
 
+def _legacy_align_rows(
+    channel: SPMChannel,
+    method: Literal["median", "mean"],
+) -> SPMChannel:
+    """Preserve the origin/main default median/mean call semantics."""
+    data = channel.data
+    if method == "median":
+        baseline = np.median(data, axis=1, keepdims=True)
+    else:
+        baseline = np.mean(data, axis=1, keepdims=True)
+    return channel.with_data(data - baseline)
+
+
 def _difference_row_corrections(
     data: np.ndarray,
     selection: np.ndarray,
@@ -1231,10 +1244,33 @@ def align_rows(
 ) -> SPMChannel:
     """Align rows by subtracting a fitted or representative row background.
 
+    Historical ``method="median"``/``"mean"`` calls, including positional
+    method arguments, retain their SPMKit behavior.  The additional methods
+    and keyword options are a backward-compatible SPMKit extension; this
+    dispatcher is not the Gwyddion compatibility contract.  Use the four
+    explicit ``gwyddion_align_rows_*`` functions for that contract.
+
     ``preserve_mean=False`` retains the historical SPMKit behaviour.
     ``preserve_mean=True`` keeps the mean correction at zero, matching
     the absolute-level convention used by Gwyddion.
     """
+    legacy_defaults = (
+        method in {"median", "mean"}
+        and mask is None
+        and mask_mode == "ignore"
+        and preserve_mean is False
+        and preserve_tilt is True
+        and isinstance(trim_fraction, (int, float, np.integer, np.floating))
+        and float(trim_fraction) == 0.0
+        and isinstance(polynomial_degree, (int, np.integer))
+        and not isinstance(polynomial_degree, (bool, np.bool_))
+        and int(polynomial_degree) == 1
+    )
+    if legacy_defaults and method == "median":
+        return _legacy_align_rows(channel, "median")
+    if legacy_defaults and method == "mean":
+        return _legacy_align_rows(channel, "mean")
+
     data = _validated_data(channel, operation="align_rows")
 
     allowed_methods = {
