@@ -8,7 +8,7 @@ de fuerza sigue siendo la joya.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Literal, cast
 
 from PyQt6.QtCore import QObject, pyqtSignal
 
@@ -16,6 +16,8 @@ from spmkit.core.analysis import kpfm, leveling, roughness
 from spmkit.core.analysis.profiles import Profile
 from spmkit.core.analysis.profiles import line as profile_line
 from spmkit.core.models import SPMChannel, SPMData
+
+RowStatistic = Literal["median", "mean"]
 
 
 def channel_labels(data: SPMData | None) -> list[str]:
@@ -52,7 +54,7 @@ class ImageViewModel(QObject):
         self._channel_index = 0  # identidad del canal activo (por posición, no por nombre)
         self._leveling = "plane"
         self._poly_order = 2  # grado del nivelado polinómico
-        self._row_stat = "median"  # estadístico del alineado por filas
+        self._row_stat: RowStatistic = "median"  # estadístico del alineado por filas
         self._tip_work_function: float | None = None  # eV; para phi de la muestra (KPFM)
         self._last_profile: Profile | None = None
 
@@ -131,7 +133,7 @@ class ImageViewModel(QObject):
         return self._poly_order
 
     @property
-    def row_stat(self) -> str:
+    def row_stat(self) -> RowStatistic:
         return self._row_stat
 
     def set_poly_order(self, order: int) -> None:
@@ -144,7 +146,7 @@ class ImageViewModel(QObject):
     def set_row_stat(self, stat: str) -> None:
         """Estadístico del alineado por filas (``"median"``/``"mean"``)."""
         if stat != self._row_stat and stat in ("median", "mean"):
-            self._row_stat = stat
+            self._row_stat = cast(RowStatistic, stat)
             if self._leveling == "rows":
                 self.channelChanged.emit(self.channel)
 

@@ -14,7 +14,7 @@ instrument variant.
 
 ```bash
 python -m pip install spmkit                    # PyPI 0.1.2
-python -m pip install "spmkit[gwy,hdf5,grains]" # selected optional features
+python -m pip install "spmkit[gwy,hdf5]"        # selected optional features
 ```
 
 The current source and GitHub-release options are listed in the
@@ -88,6 +88,306 @@ Roughness expects a previously levelled spatial image. The result fields use the
 ISO-style capitalization shown above. The current implementation excludes non-finite
 values and centres the finite height population before calculating the metrics.
 
+## Arc-revolution background
+
+SPM-Kit exposes physical arc-revolution background estimation through the
+public Python API:
+
+```python
+from spmkit.core.analysis import (
+    estimate_arc_revolution_background,
+    remove_arc_revolution_background,
+)
+
+background = estimate_arc_revolution_background(
+    height,
+    radius=2e-6,
+    direction="both",
+    side="below",
+    border="nearest",
+)
+
+corrected = remove_arc_revolution_background(
+    height,
+    radius=2e-6,
+    direction="both",
+    side="below",
+    border="nearest",
+)
+```
+
+`radius` is expressed in metres. Channel heights must use a supported
+geometric Z unit. Heights are converted internally to metres and returned in
+the original unit while preserving the channel context.
+
+`direction="horizontal"` processes rows, `"vertical"` processes columns, and
+`"both"` applies horizontal followed by vertical. `side="above"` is defined
+as the inversion dual of `"below"`.
+
+The current contract accepts finite data and the `"nearest"` and `"reflect"`
+border policies. Masks, CLI and Fathom exposure are not available. The
+estimated background remains separately inspectable and satisfies
+`corrected + background == original` within floating-point tolerance.
+
+This implementation is LEVEL 1 — SOFTWARE_VERIFIED through synthetic tests
+and an independent test-local one-dimensional oracle. Numerical equivalence
+with Gwyddion has not been established.
+
+## Sphere-revolution background
+
+Sphere Revolution uses a true two-dimensional spherical cap in physical XY
+coordinates:
+
+```python
+from spmkit.core.analysis import (
+    estimate_sphere_revolution_background,
+    remove_sphere_revolution_background,
+)
+
+background = estimate_sphere_revolution_background(
+    height,
+    radius=2e-6,
+    side="below",
+    border="nearest",
+)
+
+corrected = remove_sphere_revolution_background(
+    height,
+    radius=2e-6,
+    side="below",
+    border="nearest",
+)
+```
+
+`radius` is expressed in metres. Geometric Z values are converted internally
+to metres and returned in the channel's original unit.
+
+The spherical footprint is circular in physical coordinates. With anisotropic
+pixel spacing it can therefore appear elliptical in array-index coordinates.
+This operation is genuinely two-dimensional and is not equivalent to applying
+horizontal and vertical arc openings sequentially.
+
+`side="above"` is the exact inversion dual of `"below"`. The supported border
+policies are `"nearest"` and `"reflect"`. Finite data are required; masks, CLI
+and Fathom exposure are not available.
+
+The background remains separately inspectable and satisfies
+`corrected + background == original` within floating-point tolerance.
+
+This implementation is LEVEL 1 — SOFTWARE_VERIFIED through synthetic tests
+and independent test-local two-dimensional oracles for both supported border
+policies. Numerical equivalence with Gwyddion has not been established.
+
+## Gwyddion-compatible Sphere-revolution background
+
+SPM-Kit provides data-adaptive background estimation compatible with Gwyddion 2.71's
+Revolve Sphere module:
+
+```python
+from spmkit.core.analysis import (
+    analyze_gwyddion_sphere_revolution_background,
+    estimate_gwyddion_sphere_revolution_background,
+    remove_gwyddion_sphere_revolution_background,
+)
+
+background = estimate_gwyddion_sphere_revolution_background(
+    channel,
+    radius_px=20.0,
+    inverted=False,
+)
+
+corrected = remove_gwyddion_sphere_revolution_background(
+    channel,
+    radius_px=20.0,
+    inverted=False,
+)
+
+result = analyze_gwyddion_sphere_revolution_background(
+    channel,
+    radius_px=20.0,
+    inverted=False,
+)
+```
+
+`radius_px` is expressed in samples (array-index units). The public Gwyddion-compatible
+range is inclusive from 1.0 through 1000.0. `channel` must be a real, finite, non-empty
+`SPMChannel`.
+
+`inverted=False` executes Gwyddion 2.71's normal Sphere Revolution route. `inverted=True`
+applies the exact dual `-B(-data)` for background estimation. To avoid the internal crash
+occurring in Gwyddion 2.71's C module when `inverted=True`, the corrected channel uses
+the safe deliberate divergence `corrected = original - background`, guaranteeing exact
+reconstruction of the original channel data.
+
+`analyze_gwyddion_sphere_revolution_background` returns a `BackgroundResult` with
+`method="gwyddion_sphere_revolution"` and `parameters={"radius_px": float(radius_px), "inverted": bool(inverted)}`.
+
+This estimator is distinct from SPMKit's physical sphere-revolution model
+(`estimate_sphere_revolution_background`), which operates with physical metric radii in metres,
+circular footprints in physical coordinates, and explicit physical border policies.
+
+## Gwyddion 2.71 Median Background
+
+SPM-Kit provides the frozen Gwyddion 2.71 Median Background semantics through three public
+operations:
+
+- `estimate_gwyddion_median_background(channel, radius_px=20) -> SPMChannel`
+- `remove_gwyddion_median_background(channel, radius_px=20) -> SPMChannel`
+- `analyze_gwyddion_median_background(channel, radius_px=20) -> BackgroundResult`
+
+```python
+from spmkit.core.analysis import (
+    analyze_gwyddion_median_background,
+    estimate_gwyddion_median_background,
+    remove_gwyddion_median_background,
+)
+
+background = estimate_gwyddion_median_background(
+    channel,
+    radius_px=20,
+)
+
+corrected = remove_gwyddion_median_background(
+    channel,
+    radius_px=20,
+)
+
+result = analyze_gwyddion_median_background(
+    channel,
+    radius_px=20,
+)
+print(result.method, result.parameters)
+```
+
+`radius_px` is an integer pixel radius with default `20` and inclusive range `1..1024`.
+The kernel is Gwyddion's fixed inclusive digital ellipse and exterior samples use fixed
+nearest-edge `gwyddion_border_extend`; the public API intentionally exposes no border, shape,
+rank, or backend option. `estimate_gwyddion_median_background()` returns the background as an
+`SPMChannel`, `remove_gwyddion_median_background()` returns `input - background` as an
+`SPMChannel`, and `analyze_gwyddion_median_background()` returns a `BackgroundResult`.
+
+The result method is `"gwyddion_median_background"`. Its metadata records `radius_px`,
+`kernel_resolution`, `kernel_active_count`, `rank_index`, `rank_backend_reference`,
+`border_policy="gwyddion_border_extend"`, and
+`kernel_geometry="gwyddion_digital_ellipse"`. `rank_backend_reference` identifies the
+observed Gwyddion reference route, not an SPM-Kit backend.
+
+Inputs must be finite two-dimensional data; NaN and infinite values are rejected. The source
+channel is not mutated, and output channels preserve its shape, units, ranges, direction, group,
+and copied metadata according to the `SPMChannel` contract. The public implementation does not
+require Gwyddion at runtime.
+
+This capability is CROSS_VALIDATED only within its frozen 36-case Gwyddion 2.71 campaign. Its
+scope, frozen evidence, semantics, and non-claims are specified in the
+[Gwyddion Median Background compatibility specification](design/GWYDDION_MEDIAN_BACKGROUND_COMPATIBILITY.md).
+
+## Gwyddion 2.71 Filter flat-disc morphology
+
+SPM-Kit exposes the frozen Gwyddion 2.71 Filter-tool flat-disc Opening and Closing:
+
+```python
+from spmkit.core.analysis import (
+    gwyddion_flat_disc_closing,
+    gwyddion_flat_disc_opening,
+)
+
+opened = gwyddion_flat_disc_opening(channel, size_px=5)
+closed = gwyddion_flat_disc_closing(channel, size_px=5)
+```
+
+Both functions accept a pixel-based `size_px` in the inclusive range `2..31`, defaulting to
+`5`, and return a new `SPMChannel`. The K×K digital ellipse, nearest-edge extension, and
+Gwyddion executable even-size anchoring are fixed; erosion, dilation, masks, ROI, ASF, and
+physical-radius options are not public parameters. Inputs must be finite, non-empty, and 2D;
+the source channel is not mutated, and shape, Z/XY units, ranges, direction, group, and copied
+metadata are preserved.
+
+This capability is `CROSS_VALIDATED` only within the frozen 12-field campaign and six sizes
+`2, 3, 4, 5, 30, 31` (72 Opening and 72 Closing cases). The complete scope, executable tie
+semantics, evidence identities, and non-claims are recorded in the
+[Gwyddion flat-disc morphology compatibility specification](design/GWYDDION_FLAT_DISC_MORPHOLOGY_COMPATIBILITY.md).
+
+## Gwyddion 2.71 Path Level
+
+SPM-Kit exposes the frozen Gwyddion Path Level operation as a non-mutating channel transform:
+
+```python
+from spmkit.core.analysis import gwyddion_path_level
+
+lines = [(0.0, 0.0, 4.0e-6, 3.0e-6)]
+levelled = gwyddion_path_level(channel, lines, thickness_px=1)
+```
+
+`gwyddion_path_level(channel, lines, *, thickness_px=1) -> SPMChannel` accepts an ordered
+collection of straight physical-coordinate selections `(x0, y0, x1, y1)`. Duplicates and order
+are meaningful. `thickness_px` is an integer in the inclusive range `1..128`, defaulting to
+`1`. The operation has fixed endpoint conversion, no interpolation, horizontal-line exclusion,
+and cumulative row-level correction semantics. It requires finite, non-empty 2D data and finite
+positive channel ranges.
+
+The result is a new `SPMChannel`: shape, Z/XY units, ranges, name, direction, group, and copied
+metadata are preserved, while the input remains unchanged. Masks, ROI, `GwySelectionPath`,
+splines, polylines, profiles, and GUI publication parameters are not part of this API. The scope,
+executable evidence, and non-claims are defined in the
+[Gwyddion Path Level compatibility specification](design/GWYDDION_PATH_LEVEL_COMPATIBILITY.md).
+
+## Gwyddion 2.71 Align Rows statistics
+
+SPM-Kit exposes four explicit, non-mutating Gwyddion Align Rows statistics transforms.  They are
+separate from the existing generic `align_rows`, whose semantics are not described as
+Gwyddion-compatible.
+
+```python
+from spmkit.core.analysis import (
+    gwyddion_align_rows_median,
+    gwyddion_align_rows_median_of_differences,
+    gwyddion_align_rows_trimmed_mean,
+    gwyddion_align_rows_trimmed_mean_of_differences,
+)
+
+median = gwyddion_align_rows_median(channel, mask=mask, mask_mode="include")
+differences = gwyddion_align_rows_median_of_differences(channel, direction="vertical")
+trimmed = gwyddion_align_rows_trimmed_mean(channel, trim_fraction=0.05)
+trimmed_differences = gwyddion_align_rows_trimmed_mean_of_differences(
+    channel, trim_fraction=0.05
+)
+```
+
+The public signatures are
+`gwyddion_align_rows_median(channel, *, mask=None, mask_mode="ignore", direction="horizontal")`
+and `gwyddion_align_rows_median_of_differences(channel, *, mask=None, mask_mode="ignore",
+direction="horizontal")`; the two trimmed variants add the keyword-only
+`trim_fraction=0.05`.  `GwyddionAlignRowsMaskMode` is the typed literal
+`"exclude" | "include" | "ignore"`; `GwyddionAlignRowsDirection` is
+`"horizontal" | "vertical"`.  A mask is optional, finite, numeric, and exactly channel-shaped.
+Without a mask, every stored mode selects all samples.  Outputs are independent C-contiguous
+`float64` fields in a new `SPMChannel`, preserving name, units, physical ranges, direction,
+group, and copied metadata.
+
+The fixed source semantics are: `Exclude = 0`, `Include = 1`, and `Ignore = 2`; vertical
+processing is transpose/restore.  For absolute methods Include selects mask values `> 0.0`,
+Exclude selects values `< 1.0`, and undersampled rows use the global masked upper-median fallback
+before mean centring all row shifts.  Difference methods require both adjacent mask values `> 1.0`
+(Include) or `< 1.0` (Exclude), use `+0.0` for undersampled pairs, accumulate from row zero, and
+remove an unweighted least-squares row-index slope.  Median is upper median.  Trimmed methods use
+`floor(fraction*n + 0.5)` and use upper median when trimming would leave no retained value.
+The current public boundary returns only the corrected channel; private correction/background
+diagnostics are intentionally not a new public result architecture.
+
+`portable_source_semantics` is the production contract.  Public end-to-end tests are
+`CROSS_VALIDATED` only within the frozen finite 64-case campaign: all `64/64` corrected arrays and
+`3888/3888` elements are bitwise exact to the independent portable V2 oracle.  The secondary
+`installed_gwyddion_2_71_fast_math_profile` is bitwise exact in `61/64` arrays and `3757/3888`
+elements.  Its only recorded differences are three signed-zero elements in
+`median__plateaus_signed_zero__10` and 64 finite elements in each of
+`median_of_differences__irregular__11` and
+`trimmed_mean_of_differences__irregular__11`, bounded by absolute difference
+`5.329070518200751e-15`.  The installed `process.so`
+(`c21d52375807ae096e34a3469c2f20c4c66ea3197479e13215a6d7b9d465b451`) was built with GCC 16.1.1
+`-ffast-math`, associative reassociation, and LTO.  SPM-Kit does not emulate that local build;
+no V3 was justified.  The complete evidence, profile policy, and non-claims are in the
+[Gwyddion Align Rows statistics compatibility specification](design/GWYDDION_ALIGN_ROWS_STATISTICS_COMPATIBILITY.md).
+
 ## KPFM statistics
 
 ```python
@@ -122,7 +422,7 @@ print(segmentation.n_grains, segmentation.mean_diameter)
 print(segmentation.coverage, segmentation.density)
 ```
 
-`radial_psd()` returns `q` in `1/m`. Grain detection requires the `grains` extra,
+`radial_psd()` returns `q` in `1/m`. Grain detection uses SciPy, a required SPMKit dependency,
 uses eight-connected components, and reports density in grains per µm². Automatic
 thresholding is an algorithmic default, not a scientifically universal segmentation
 rule; record or override it for a campaign.
@@ -234,7 +534,7 @@ The plugin contract is versioned, but the surrounding package remains alpha.
 | capability inspection | `inspect_any(path)` | `DatasetInfo` |
 | capability loading | `load_any(path, kind)` | `(payload, kind)` |
 | force loading | `load_force(path)` | `ForceVolume` |
-| image preprocessing | `analysis.leveling.*` | new `SPMChannel` |
+| image preprocessing | `analysis.leveling.*`, `analysis.background.*` | new `SPMChannel` |
 | numerical results | `analysis.*` | immutable result dataclasses or arrays |
 | open exports | `core.export.*`, `save_gwy()` | file path/output artifact |
 | extension discovery | `spmkit.plugins.v1` | registered `Reader`/`Domain` |

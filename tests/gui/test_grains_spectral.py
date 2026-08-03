@@ -2,17 +2,12 @@
 
 from __future__ import annotations
 
-import importlib.util
-
 import numpy as np
-import pytest
 
 from spmkit.core.models import SPMChannel, SPMData
 from spmkit.gui.panels.grains_canvas import GrainsCanvasPanel
 from spmkit.gui.panels.spectral_canvas import SpectralCanvasPanel
 from spmkit.gui.viewmodels import GrainsViewModel, ImageViewModel, SpectralViewModel
-
-_HAS_SCIPY = importlib.util.find_spec("scipy") is not None
 
 
 def _bumps() -> SPMData:
@@ -117,7 +112,6 @@ def test_grains_panel_auto_toggle(qtbot) -> None:  # type: ignore[no-untyped-def
     assert vm.threshold is not None and abs(vm.threshold - 12e-9) < 1e-15  # nm → m
 
 
-@pytest.mark.skipif(not _HAS_SCIPY, reason="grains requiere scipy (extra 'grains')")
 def test_grains_vm_detects() -> None:
     image_vm = ImageViewModel()
     image_vm.set_data(_bumps())
@@ -131,7 +125,6 @@ def test_grains_vm_detects() -> None:
     assert seen[-1] is vm.result
 
 
-@pytest.mark.skipif(not _HAS_SCIPY, reason="grains requiere scipy (extra 'grains')")
 def test_grains_panel_overlay(qtbot) -> None:  # type: ignore[no-untyped-def]
     image_vm = ImageViewModel()
     image_vm.set_data(_bumps())

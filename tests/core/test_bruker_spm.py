@@ -188,6 +188,13 @@ def test_bruker_spm_uses_versioned_32bit_scale(tmp_path) -> None:  # type: ignor
 def test_bruker_spm_does_not_import_gui(tmp_path) -> None:  # type: ignore[no-untyped-def]
     p = tmp_path / "nogui.spm"
     _write_spm(p, np.ones((2, 2), dtype=np.int16), hard=1.0, sens=1.0, scan_um=1.0)
+    before_modules = set(sys.modules)
+
     with pytest.warns(UserWarning):
         load_bruker_spm(p)
-    assert not any(name.startswith(("PyQt", "pyqtgraph")) for name in sys.modules)
+
+    imported_modules = set(sys.modules) - before_modules
+    unexpected_gui_modules = sorted(
+        name for name in imported_modules if name.startswith(("PyQt", "pyqtgraph"))
+    )
+    assert unexpected_gui_modules == []
