@@ -223,9 +223,7 @@ def report_from_dict(value: dict[str, Any]) -> GwyddionModuleAuditReport:
                 classification=SymbolClassification(item["classification"]),
                 support_status=SymbolSupportStatus(item["support_status"]),
                 occurrences=tuple(_span_from_dict(span) for span in item["occurrences"]),
-                call_occurrences=tuple(
-                    _span_from_dict(span) for span in item["call_occurrences"]
-                ),
+                call_occurrences=tuple(_span_from_dict(span) for span in item["call_occurrences"]),
             )
             for item in value["gwyddion_symbols"]
         ),

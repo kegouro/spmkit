@@ -128,21 +128,16 @@ def _validated_gwyddion_radius_px(
         or np.iscomplexobj(radius_data)
         or isinstance(radius_px, (bool, np.bool_))
     ):
-        raise TypeError(
-            f"{operation} requires radius_px to be a real scalar"
-        )
+        raise TypeError(f"{operation} requires radius_px to be a real scalar")
 
     value = float(radius_data.item())
 
     if not np.isfinite(value):
-        raise ValueError(
-            f"{operation} requires radius_px to be finite"
-        )
+        raise ValueError(f"{operation} requires radius_px to be finite")
 
     if not 1.0 <= value <= 1000.0:
         raise ValueError(
-            f"{operation} requires radius_px to be between "
-            "1.0 and 1000.0 inclusive"
+            f"{operation} requires radius_px to be between " "1.0 and 1000.0 inclusive"
         )
 
     return value
@@ -542,9 +537,7 @@ def _gwyddion_arc_channels(
     )
 
     if not isinstance(inverted, (bool, np.bool_)):
-        raise TypeError(
-            f"{operation} requires inverted to be a boolean"
-        )
+        raise TypeError(f"{operation} requires inverted to be a boolean")
 
     inverted_value = bool(inverted)
 
@@ -644,9 +637,7 @@ def _gwyddion_sphere_channels(
     )
 
     if not isinstance(inverted, (bool, np.bool_)):
-        raise TypeError(
-            f"{operation} requires inverted to be a boolean"
-        )
+        raise TypeError(f"{operation} requires inverted to be a boolean")
 
     inverted_value = bool(inverted)
 

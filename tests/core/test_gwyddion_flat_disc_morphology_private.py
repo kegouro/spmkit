@@ -82,11 +82,7 @@ def _requirement_signature(plan: Plan) -> tuple[tuple[object, ...], ...]:
 
 
 def test_requirement_tree_is_complete_and_deterministic() -> None:
-    lengths = {
-        int(segment[2])
-        for size_px in range(2, 32)
-        for segment in _segments(size_px, False)
-    }
+    lengths = {int(segment[2]) for size_px in range(2, 32) for segment in _segments(size_px, False)}
     first = Plan()
     for length in sorted(lengths):
         _build_requirement(first, length, False)

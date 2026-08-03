@@ -112,21 +112,12 @@ def _make_gwyddion_arc(
         if use_flat_arc_expansion:
             squared_offset = normalized_offset * normalized_offset
             height = (
-                squared_offset
-                / 2.0
-                * (
-                    1.0
-                    + squared_offset
-                    / 4.0
-                    * (1.0 + squared_offset / 2.0)
-                )
+                squared_offset / 2.0 * (1.0 + squared_offset / 4.0 * (1.0 + squared_offset / 2.0))
             )
         elif normalized_offset > 1.0:
             height = 1.0
         else:
-            height = 1.0 - math.sqrt(
-                1.0 - normalized_offset * normalized_offset
-            )
+            height = 1.0 - math.sqrt(1.0 - normalized_offset * normalized_offset)
 
         arc[size + offset] = height
         arc[size - offset] = height
@@ -242,8 +233,7 @@ def _moving_sums(
     phase_3b_start = resolution - 1 - right_half
     if phase_3b_start <= 0 and phase_3b_start <= left_half:
         raise ValueError(
-            "Gwyddion 2.71 moving sums are undefined for this "
-            "resolution and window size"
+            "Gwyddion 2.71 moving sums are undefined for this " "resolution and window size"
         )
 
     # Phase 1: fill the first output element.
@@ -271,11 +261,7 @@ def _moving_sums(
         leaving = float(values[index - left_half - 1])
 
         sums[index] = sums[index - 1] + entering - leaving
-        squared_sums[index] = (
-            squared_sums[index - 1]
-            + entering * entering
-            - leaving * leaving
-        )
+        squared_sums[index] = squared_sums[index - 1] + entering * entering - leaving * leaving
 
     # Phase 3b: a window larger than the available interior remains fixed.
     for index in range(
@@ -369,35 +355,34 @@ def _gwyddion_arc_horizontal(
         for column_index in range(column_count):
             local_mean = local_sums[column_index] / weights[column_index]
             local_variance = (
-                local_squared_sums[column_index] / weights[column_index]
-                - local_mean * local_mean
+                local_squared_sums[column_index] / weights[column_index] - local_mean * local_mean
             )
 
-            local_rms = (
-                float("nan")
-                if local_variance < 0.0
-                else math.sqrt(local_variance)
-            )
+            local_rms = float("nan") if local_variance < 0.0 else math.sqrt(local_variance)
 
             lower_envelope = local_mean - 2.5 * local_rms
             source_value = float(source_row[column_index])
 
             # Preserve the argument ordering of GLib's MAX(a, b) macro.
             clipped_row[column_index] = (
-                source_value
-                if source_value > lower_envelope
-                else lower_envelope
+                source_value if source_value > lower_envelope else lower_envelope
             )
 
         for column_index in range(column_count):
-            first_offset = max(
-                0,
-                column_index - half_width,
-            ) - column_index
-            final_offset = min(
-                column_index + half_width,
-                column_count - 1,
-            ) - column_index
+            first_offset = (
+                max(
+                    0,
+                    column_index - half_width,
+                )
+                - column_index
+            )
+            final_offset = (
+                min(
+                    column_index + half_width,
+                    column_count - 1,
+                )
+                - column_index
+            )
 
             minimum = math.inf
 
@@ -405,10 +390,7 @@ def _gwyddion_arc_horizontal(
                 first_offset,
                 final_offset + 1,
             ):
-                candidate = (
-                    -scaled_arc[half_width + offset]
-                    + clipped_row[column_index + offset]
-                )
+                candidate = -scaled_arc[half_width + offset] + clipped_row[column_index + offset]
 
                 if candidate < minimum:
                     minimum = float(candidate)
@@ -453,8 +435,7 @@ def _gwyddion_arc_background(
 
     if direction not in ("horizontal", "vertical", "both"):
         raise ValueError(
-            "Gwyddion arc direction must be one of "
-            "'horizontal', 'vertical', or 'both'"
+            "Gwyddion arc direction must be one of " "'horizontal', 'vertical', or 'both'"
         )
 
     if not isinstance(inverted, (bool, np.bool_)):
@@ -463,11 +444,7 @@ def _gwyddion_arc_background(
     inverted_value = bool(inverted)
     source = np.asarray(data)
 
-    working = (
-        -np.asarray(source, dtype=np.float64)
-        if inverted_value
-        else source
-    )
+    working = -np.asarray(source, dtype=np.float64) if inverted_value else source
 
     if direction == "horizontal":
         background = _gwyddion_arc_horizontal(
@@ -514,9 +491,7 @@ def _gwyddion_arc_result(
         direction=direction,
         inverted=inverted,
     )
-    corrected = _readonly_float_array(
-        np.asarray(data, dtype=np.float64) - background
-    )
+    corrected = _readonly_float_array(np.asarray(data, dtype=np.float64) - background)
 
     return background, corrected
 

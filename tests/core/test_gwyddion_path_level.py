@@ -15,11 +15,7 @@ from spmkit.core.analysis import gwyddion_path_level
 from spmkit.core.models import SPMChannel
 
 _FIXTURE_DIRECTORY = (
-    Path(__file__).resolve().parents[1]
-    / "validation"
-    / "fixtures"
-    / "gwyddion"
-    / "path_level"
+    Path(__file__).resolve().parents[1] / "validation" / "fixtures" / "gwyddion" / "path_level"
 )
 _FIXTURE_PATH = _FIXTURE_DIRECTORY / "path_level_reference.npz"
 _MANIFEST_PATH = _FIXTURE_DIRECTORY / "path_level_reference.json"
@@ -166,9 +162,7 @@ def test_all_frozen_public_outputs_are_bitwise_exact() -> None:
 def test_context_is_preserved_with_independent_metadata_and_data() -> None:
     manifest = _manifest()
     base = next(
-        base
-        for base in manifest["bases"]
-        if base["base_id"] == "signed_gradient_positive_slope"
+        base for base in manifest["bases"] if base["base_id"] == "signed_gradient_positive_slope"
     )  # type: ignore[index]
     case = next(case for case in manifest["cases"] if case["base_id"] == base["base_id"])  # type: ignore[index]
     with np.load(_FIXTURE_PATH, allow_pickle=False) as archive:

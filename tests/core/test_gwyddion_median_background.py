@@ -100,9 +100,7 @@ def _assert_bitwise_equal(
     row, column = np.argwhere(actual_bits != expected_bits)[0]
     actual_bit_value = int(actual_bits[row, column])
     expected_bit_value = int(expected_bits[row, column])
-    ulp_distance = abs(
-        _ordered_bits(actual_bit_value) - _ordered_bits(expected_bit_value)
-    )
+    ulp_distance = abs(_ordered_bits(actual_bit_value) - _ordered_bits(expected_bit_value))
     pytest.fail(
         f"case={case} operation={operation} array={array} "
         f"coordinate=({row}, {column}) expected={expected[row, column]!r} "

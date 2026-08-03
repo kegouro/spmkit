@@ -59,9 +59,7 @@ def _gwyddion_height_distribution(data: np.ndarray) -> HeightDistribution:
         centers = minimum + (np.arange(bin_count, dtype=float) + 0.5) * bin_width
 
         flat_values = values.ravel()
-        indices = np.floor(
-            (flat_values - minimum) * bin_count / histogram_range
-        ).astype(np.intp)
+        indices = np.floor((flat_values - minimum) * bin_count / histogram_range).astype(np.intp)
 
         indices[flat_values == maximum] = bin_count - 1
         valid = (indices >= 0) & (indices < bin_count)
@@ -114,9 +112,7 @@ def _select_base_peak_window(
     if centers.size != density.size:
         raise ValueError("base peak estimation requires matching centers and density")
     if centers.size < 7:
-        raise ValueError(
-            "base peak estimation requires at least seven histogram bins"
-        )
+        raise ValueError("base peak estimation requires at least seven histogram bins")
     if not np.all(np.isfinite(centers)) or not np.all(np.isfinite(density)):
         raise ValueError("base peak estimation requires finite histogram data")
     if not np.isfinite(distribution.bin_width) or distribution.bin_width <= 0.0:
@@ -212,14 +208,10 @@ def _gwyddion_cholesky_decompose(
 ) -> bool:
     """Decompose a packed SPD matrix using Gwyddion's loop order."""
     for diagonal in range(dimension):
-        value = float(
-            packed[_packed_lower_index(diagonal, diagonal)]
-        )
+        value = float(packed[_packed_lower_index(diagonal, diagonal)])
 
         for index in range(diagonal):
-            factor = float(
-                packed[_packed_lower_index(diagonal, index)]
-            )
+            factor = float(packed[_packed_lower_index(diagonal, index)])
             value -= factor * factor
 
         if value <= 0.0:
@@ -229,27 +221,14 @@ def _gwyddion_cholesky_decompose(
         packed[_packed_lower_index(diagonal, diagonal)] = root
 
         for row in range(diagonal + 1, dimension):
-            value = float(
-                packed[_packed_lower_index(row, diagonal)]
-            )
+            value = float(packed[_packed_lower_index(row, diagonal)])
 
             for index in range(diagonal):
-                value -= (
-                    float(
-                        packed[
-                            _packed_lower_index(diagonal, index)
-                        ]
-                    )
-                    * float(
-                        packed[
-                            _packed_lower_index(row, index)
-                        ]
-                    )
+                value -= float(packed[_packed_lower_index(diagonal, index)]) * float(
+                    packed[_packed_lower_index(row, index)]
                 )
 
-            packed[_packed_lower_index(row, diagonal)] = (
-                value / root
-            )
+            packed[_packed_lower_index(row, diagonal)] = value / root
 
     return True
 
@@ -263,28 +242,18 @@ def _gwyddion_cholesky_solve(
     for row in range(dimension):
         for column in range(row):
             right_hand_side[row] -= (
-                decomposition[
-                    _packed_lower_index(row, column)
-                ]
-                * right_hand_side[column]
+                decomposition[_packed_lower_index(row, column)] * right_hand_side[column]
             )
 
-        right_hand_side[row] /= decomposition[
-            _packed_lower_index(row, row)
-        ]
+        right_hand_side[row] /= decomposition[_packed_lower_index(row, row)]
 
     for row in range(dimension - 1, -1, -1):
         for column in range(row + 1, dimension):
             right_hand_side[row] -= (
-                decomposition[
-                    _packed_lower_index(column, row)
-                ]
-                * right_hand_side[column]
+                decomposition[_packed_lower_index(column, row)] * right_hand_side[column]
             )
 
-        right_hand_side[row] /= decomposition[
-            _packed_lower_index(row, row)
-        ]
+        right_hand_side[row] /= decomposition[_packed_lower_index(row, row)]
 
 
 def _gwyddion_cholesky_invert(
@@ -315,9 +284,7 @@ def _gwyddion_cholesky_invert(
 
             for index in range(packed_offset, row_end):
                 packed[index - (row + 1)] = (
-                    packed[index + 1]
-                    + element
-                    * temporary[index - packed_offset]
+                    packed[index + 1] + element * temporary[index - packed_offset]
                 )
 
         packed[row_end] = 1.0 / scale
@@ -336,24 +303,13 @@ def _fit_base_peak_gwyddion_lm(
     density = np.asarray(window.density, dtype=float)
 
     if centers.ndim != 1 or density.ndim != 1:
-        raise ValueError(
-            "base peak fitting requires one-dimensional data"
-        )
+        raise ValueError("base peak fitting requires one-dimensional data")
     if centers.size != density.size:
-        raise ValueError(
-            "base peak fitting requires matching centers and density"
-        )
+        raise ValueError("base peak fitting requires matching centers and density")
     if centers.size < 4:
-        raise ValueError(
-            "base peak fitting requires at least four samples"
-        )
-    if (
-        not np.all(np.isfinite(centers))
-        or not np.all(np.isfinite(density))
-    ):
-        raise ValueError(
-            "base peak fitting requires finite data"
-        )
+        raise ValueError("base peak fitting requires at least four samples")
+    if not np.all(np.isfinite(centers)) or not np.all(np.isfinite(density)):
+        raise ValueError("base peak fitting requires finite data")
 
     parameters = np.array(
         [
@@ -366,13 +322,9 @@ def _fit_base_peak_gwyddion_lm(
     )
 
     if not np.all(np.isfinite(parameters)):
-        raise ValueError(
-            "base peak fitting requires finite initial parameters"
-        )
+        raise ValueError("base peak fitting requires finite initial parameters")
     if parameters[3] == 0.0:
-        raise ValueError(
-            "base peak fitting requires a non-zero initial width"
-        )
+        raise ValueError("base peak fitting requires a non-zero initial width")
 
     parameter_count = 4
     packed_size = parameter_count * (parameter_count + 1) // 2
@@ -401,19 +353,13 @@ def _fit_base_peak_gwyddion_lm(
         if width == 0.0:
             return 0.0, False
 
-        scaled = (
-            float(coordinate) - float(current[0])
-        ) / width
+        scaled = (float(coordinate) - float(current[0])) / width
 
         with np.errstate(
             over="ignore",
             invalid="ignore",
         ):
-            value = (
-                float(current[2])
-                * float(np.exp(-(scaled * scaled)))
-                + float(current[1])
-            )
+            value = float(current[2]) * float(np.exp(-(scaled * scaled))) + float(current[1])
 
         return value, True
 
@@ -449,10 +395,7 @@ def _fit_base_peak_gwyddion_lm(
         perturbed = current.copy()
 
         for parameter_index in range(parameter_count):
-            step = (
-                abs(float(perturbed[parameter_index]))
-                * derivative_scale
-            )
+            step = abs(float(perturbed[parameter_index])) * derivative_scale
 
             if step == 0.0:
                 step = derivative_scale
@@ -475,12 +418,8 @@ def _fit_base_peak_gwyddion_lm(
             if not valid:
                 return derivatives, False
 
-            derivatives[parameter_index] = (
-                (right - left) / (2.0 * step)
-            )
-            perturbed[parameter_index] = current[
-                parameter_index
-            ]
+            derivatives[parameter_index] = (right - left) / (2.0 * step)
+            perturbed[parameter_index] = current[parameter_index]
 
         return derivatives, True
 
@@ -508,37 +447,19 @@ def _fit_base_peak_gwyddion_lm(
             compute_uv=False,
         )
 
-        if (
-            singular_values.size == 0
-            or singular_values[0] == 0.0
-        ):
+        if singular_values.size == 0 or singular_values[0] == 0.0:
             return 0, float("inf")
 
-        tolerance = (
-            np.finfo(float).eps
-            * max(jacobian.shape)
-            * singular_values[0]
-        )
-        rank = int(
-            np.count_nonzero(
-                singular_values > tolerance
-            )
-        )
+        tolerance = np.finfo(float).eps * max(jacobian.shape) * singular_values[0]
+        rank = int(np.count_nonzero(singular_values > tolerance))
 
-        if (
-            rank < parameter_count
-            or singular_values[-1] <= tolerance
-        ):
+        if rank < parameter_count or singular_values[-1] <= tolerance:
             return rank, float("inf")
 
-        condition = float(
-            singular_values[0] / singular_values[-1]
-        )
+        condition = float(singular_values[0] / singular_values[-1])
         return rank, condition
 
-    residuals, residual_sum_new, evaluation_valid = (
-        calculate_residuals(parameters)
-    )
+    residuals, residual_sum_new, evaluation_valid = calculate_residuals(parameters)
 
     if not evaluation_valid:
         width = abs(float(parameters[3]))
@@ -590,18 +511,12 @@ def _fit_base_peak_gwyddion_lm(
                     break
 
                 for row in range(parameter_count):
-                    gradient[row] += (
-                        derivatives[row]
-                        * residuals[sample_index]
-                    )
+                    gradient[row] += derivatives[row] * residuals[sample_index]
 
                     packed_row = row * (row + 1) // 2
 
                     for column in range(row + 1):
-                        normal[packed_row + column] += (
-                            derivatives[row]
-                            * derivatives[column]
-                        )
+                        normal[packed_row + column] += derivatives[row] * derivatives[column]
 
             if not evaluation_valid:
                 break
@@ -617,10 +532,7 @@ def _fit_base_peak_gwyddion_lm(
         positive_definite = False
         first_pass = True
 
-        while (
-            not positive_definite
-            and np.isfinite(damping)
-        ):
+        while not positive_definite and np.isfinite(damping):
             if not first_pass:
                 normal[:] = saved_normal
             else:
@@ -629,25 +541,16 @@ def _fit_base_peak_gwyddion_lm(
             step = -gradient.copy()
 
             for parameter_index in range(parameter_count):
-                diagonal = (
-                    parameter_index
-                    * (parameter_index + 3)
-                    // 2
-                )
+                diagonal = parameter_index * (parameter_index + 3) // 2
 
                 if saved_normal[diagonal] == 0.0:
                     normal[diagonal] = damping
                 else:
-                    normal[diagonal] = (
-                        saved_normal[diagonal]
-                        * (1.0 + damping)
-                    )
+                    normal[diagonal] = saved_normal[diagonal] * (1.0 + damping)
 
-            positive_definite = (
-                _gwyddion_cholesky_decompose(
-                    parameter_count,
-                    normal,
-                )
+            positive_definite = _gwyddion_cholesky_decompose(
+                parameter_count,
+                normal,
             )
 
             if not positive_definite:
@@ -673,12 +576,7 @@ def _fit_base_peak_gwyddion_lm(
 
         for parameter_index in range(parameter_count):
             if (
-                abs(
-                    float(parameters[parameter_index])
-                    - float(
-                        saved_parameters[parameter_index]
-                    )
-                )
+                abs(float(parameters[parameter_index]) - float(saved_parameters[parameter_index]))
                 == 0.0
             ):
                 unchanged += 1
@@ -696,19 +594,10 @@ def _fit_base_peak_gwyddion_lm(
             residual_sum_best = -1.0
             break
 
-        if (
-            residual_sum_new == 0.0
-            or (
-                iteration > 2
-                and abs(
-                    (
-                        residual_sum_best
-                        - residual_sum_new
-                    )
-                    / residual_sum_best
-                )
-                < convergence_tolerance
-            )
+        if residual_sum_new == 0.0 or (
+            iteration > 2
+            and abs((residual_sum_best - residual_sum_new) / residual_sum_best)
+            < convergence_tolerance
         ):
             finished = True
 
@@ -743,72 +632,45 @@ def _fit_base_peak_gwyddion_lm(
         covariance = saved_normal.copy()
 
         for parameter_index in range(parameter_count):
-            diagonal = (
-                parameter_index
-                * (parameter_index + 3)
-                // 2
-            )
+            diagonal = parameter_index * (parameter_index + 3) // 2
 
             if original_normal[diagonal] == 0.0:
                 covariance[diagonal] = 1.0
 
-        covariance_available = (
-            _gwyddion_cholesky_invert(
-                parameter_count,
-                covariance,
-            )
+        covariance_available = _gwyddion_cholesky_invert(
+            parameter_count,
+            covariance,
         )
 
         if not covariance_available:
             covariance = original_normal.copy()
 
             for parameter_index in range(parameter_count):
-                diagonal = (
-                    parameter_index
-                    * (parameter_index + 3)
-                    // 2
-                )
+                diagonal = parameter_index * (parameter_index + 3) // 2
 
                 if original_normal[diagonal] == 0.0:
                     covariance[diagonal] = 1.0
 
                 covariance[diagonal] *= 1.0001
 
-            covariance_available = (
-                _gwyddion_cholesky_invert(
-                    parameter_count,
-                    covariance,
-                )
+            covariance_available = _gwyddion_cholesky_invert(
+                parameter_count,
+                covariance,
             )
 
-        covariance_available = bool(
-            covariance_available
-            and np.all(np.isfinite(covariance))
-        )
+        covariance_available = bool(covariance_available and np.all(np.isfinite(covariance)))
 
-    finite_parameters = bool(
-        np.all(np.isfinite(parameters))
-    )
+    finite_parameters = bool(np.all(np.isfinite(parameters)))
 
     if not finite_parameters:
         covariance_available = False
 
-    jacobian_rank, condition_estimate = (
-        rank_and_condition(parameters)
-    )
+    jacobian_rank, condition_estimate = rank_and_condition(parameters)
 
     width = abs(float(parameters[3]))
-    solver_success = bool(
-        covariance_available
-        and finite_parameters
-        and residual_sum_best >= 0.0
-    )
+    solver_success = bool(covariance_available and finite_parameters and residual_sum_best >= 0.0)
 
-    residual_norm = (
-        float(np.sqrt(residual_sum_best))
-        if residual_sum_best >= 0.0
-        else float("inf")
-    )
+    residual_norm = float(np.sqrt(residual_sum_best)) if residual_sum_best >= 0.0 else float("inf")
 
     return BasePeakFit(
         mean=float(parameters[0]),
@@ -899,11 +761,7 @@ def _fit_base_peak(window: BasePeakWindow) -> BasePeakFit:
         if singular_values.size == 0 or singular_values[0] == 0.0:
             return 0, float("inf")
 
-        tolerance = (
-            np.finfo(float).eps
-            * max(matrix.shape)
-            * singular_values[0]
-        )
+        tolerance = np.finfo(float).eps * max(matrix.shape) * singular_values[0]
         rank = int(np.count_nonzero(singular_values > tolerance))
 
         if rank < 4 or singular_values[-1] <= tolerance:
@@ -924,9 +782,7 @@ def _fit_base_peak(window: BasePeakWindow) -> BasePeakFit:
             ],
             dtype=float,
         )
-        jacobian_rank, condition_estimate = rank_and_condition(
-            jacobian(parameters)
-        )
+        jacobian_rank, condition_estimate = rank_and_condition(jacobian(parameters))
 
         return BasePeakFit(
             mean=float(parameters[0]),
@@ -954,9 +810,7 @@ def _fit_base_peak(window: BasePeakWindow) -> BasePeakFit:
         initial_width=initial_width,
     )
 
-    return _fit_base_peak_gwyddion_lm(
-        normalized_window
-    )
+    return _fit_base_peak_gwyddion_lm(normalized_window)
 
 
 @dataclass(frozen=True)
@@ -981,7 +835,6 @@ class BasePeakEstimate:
     def rms(self) -> float:
         """Fitted base-peak RMS width."""
         return self.fit.rms
-
 
 
 def _estimate_base_peak(data: np.ndarray) -> BasePeakEstimate:
@@ -1045,33 +898,19 @@ def _estimate_gwyddion_facet_plane(
         try:
             scalar = float(value)
         except (TypeError, ValueError) as exc:
-            raise TypeError(
-                f"facet-plane estimation requires {name} to be real"
-            ) from exc
+            raise TypeError(f"facet-plane estimation requires {name} to be real") from exc
 
         if not np.isfinite(scalar) or scalar <= 0.0:
-            raise ValueError(
-                f"facet-plane estimation requires {name} to be positive"
-            )
+            raise ValueError(f"facet-plane estimation requires {name} to be positive")
 
         return scalar
 
     dx = positive_pixel_size(pixel_size_x, name="pixel_size_x")
     dy = positive_pixel_size(pixel_size_y, name="pixel_size_y")
 
-    x_slopes = (
-        values[1:, 1:]
-        + values[:-1, 1:]
-        - values[1:, :-1]
-        - values[:-1, :-1]
-    ) / (2.0 * dx)
+    x_slopes = (values[1:, 1:] + values[:-1, 1:] - values[1:, :-1] - values[:-1, :-1]) / (2.0 * dx)
 
-    y_slopes = (
-        values[1:, :-1]
-        + values[1:, 1:]
-        - values[:-1, :-1]
-        - values[:-1, 1:]
-    ) / (2.0 * dy)
+    y_slopes = (values[1:, :-1] + values[1:, 1:] - values[:-1, :-1] - values[:-1, 1:]) / (2.0 * dy)
 
     if not np.all(np.isfinite(x_slopes)) or not np.all(np.isfinite(y_slopes)):
         raise ValueError("facet-plane estimation produced non-finite slopes")
@@ -1105,10 +944,7 @@ def _estimate_gwyddion_facet_plane(
     x_coefficient = physical_slope_x * dx
     y_coefficient = physical_slope_y * dy
     rows, columns = values.shape
-    intercept = -0.5 * (
-        x_coefficient * columns
-        + y_coefficient * rows
-    )
+    intercept = -0.5 * (x_coefficient * columns + y_coefficient * rows)
 
     return FacetPlaneEstimate(
         intercept=float(intercept),
@@ -1160,20 +996,14 @@ def _run_flatten_base_facet_stage(
     if np.issubdtype(array.dtype, np.bool_) or np.iscomplexobj(array):
         raise TypeError("flatten-base facet stage requires real-valued data")
     if array.ndim != 2:
-        raise ValueError(
-            "flatten-base facet stage requires a two-dimensional array"
-        )
+        raise ValueError("flatten-base facet stage requires a two-dimensional array")
     if array.shape[0] < 2 or array.shape[1] < 2:
-        raise ValueError(
-            "flatten-base facet stage requires at least one pixel cell"
-        )
+        raise ValueError("flatten-base facet stage requires at least one pixel cell")
 
     try:
         working = np.array(array, dtype=float, copy=True)
     except (TypeError, ValueError) as exc:
-        raise TypeError(
-            "flatten-base facet stage requires numeric data"
-        ) from exc
+        raise TypeError("flatten-base facet stage requires numeric data") from exc
 
     if not np.all(np.isfinite(working)):
         raise ValueError("flatten-base facet stage requires finite data")
@@ -1200,16 +1030,10 @@ def _run_flatten_base_facet_stage(
             termination = "degenerate_plane"
             break
 
-        plane_surface = (
-            plane.intercept
-            + plane.x_coefficient * xx
-            + plane.y_coefficient * yy
-        )
+        plane_surface = plane.intercept + plane.x_coefficient * xx + plane.y_coefficient * yy
 
         if not np.all(np.isfinite(plane_surface)):
-            raise ValueError(
-                "flatten-base facet stage produced a non-finite plane"
-            )
+            raise ValueError("flatten-base facet stage produced a non-finite plane")
 
         working -= plane_surface
         background += plane_surface
@@ -1326,22 +1150,14 @@ def _grow_mask_conn4(
             )
 
             for neighbour_row, neighbour_column in neighbours:
-                if not (
-                    0 <= neighbour_row < rows
-                    and 0 <= neighbour_column < columns
-                ):
+                if not (0 <= neighbour_row < rows and 0 <= neighbour_column < columns):
                     continue
 
-                if (
-                    distances[neighbour_row, neighbour_column]
-                    != unreachable
-                ):
+                if distances[neighbour_row, neighbour_column] != unreachable:
                     continue
 
                 distances[neighbour_row, neighbour_column] = next_distance
-                next_queue.append(
-                    (neighbour_row, neighbour_column)
-                )
+                next_queue.append((neighbour_row, neighbour_column))
 
         if not next_queue:
             break
@@ -1394,9 +1210,7 @@ def _build_flatten_base_mask(
     if np.issubdtype(values.dtype, np.bool_) or np.iscomplexobj(values):
         raise TypeError("Flatten Base masking requires real-valued data")
     if values.ndim != 2:
-        raise ValueError(
-            "Flatten Base masking requires a two-dimensional array"
-        )
+        raise ValueError("Flatten Base masking requires a two-dimensional array")
     if isinstance(degree, (bool, np.bool_)) or not isinstance(
         degree,
         (int, np.integer),
@@ -1406,16 +1220,12 @@ def _build_flatten_base_mask(
     degree_value = int(degree)
 
     if degree_value < 0:
-        raise ValueError(
-            "Flatten Base masking requires a non-negative degree"
-        )
+        raise ValueError("Flatten Base masking requires a non-negative degree")
 
     try:
         numeric = np.asarray(values, dtype=float)
     except (TypeError, ValueError) as exc:
-        raise TypeError(
-            "Flatten Base masking requires numeric data"
-        ) from exc
+        raise TypeError("Flatten Base masking requires numeric data") from exc
 
     if not np.all(np.isfinite(numeric)):
         raise ValueError("Flatten Base masking requires finite data")
@@ -1424,13 +1234,9 @@ def _build_flatten_base_mask(
     rms = float(peak.rms)
 
     if not np.isfinite(mean) or not np.isfinite(rms):
-        raise ValueError(
-            "Flatten Base masking requires finite peak parameters"
-        )
+        raise ValueError("Flatten Base masking requires finite peak parameters")
     if rms < 0.0:
-        raise ValueError(
-            "Flatten Base masking requires non-negative peak RMS"
-        )
+        raise ValueError("Flatten Base masking requires non-negative peak RMS")
 
     threshold = mean + 3.0 * rms
     growth_radius = 1 + degree_value // 2
@@ -1466,7 +1272,6 @@ def _build_flatten_base_mask(
     )
 
 
-
 @dataclass(frozen=True)
 class FlattenBasePolynomialIteration:
     """Evidence from one masked polynomial correction."""
@@ -1494,45 +1299,29 @@ def _run_flatten_base_polynomial_iteration(
     values = np.asarray(data)
 
     if np.issubdtype(values.dtype, np.bool_) or np.iscomplexobj(values):
-        raise TypeError(
-            "Flatten Base polynomial iteration requires real-valued data"
-        )
+        raise TypeError("Flatten Base polynomial iteration requires real-valued data")
     if values.ndim != 2:
-        raise ValueError(
-            "Flatten Base polynomial iteration requires "
-            "a two-dimensional array"
-        )
+        raise ValueError("Flatten Base polynomial iteration requires " "a two-dimensional array")
     if values.size == 0:
-        raise ValueError(
-            "Flatten Base polynomial iteration requires non-empty data"
-        )
+        raise ValueError("Flatten Base polynomial iteration requires non-empty data")
     if isinstance(degree, (bool, np.bool_)) or not isinstance(
         degree,
         (int, np.integer),
     ):
-        raise TypeError(
-            "Flatten Base polynomial iteration requires an integer degree"
-        )
+        raise TypeError("Flatten Base polynomial iteration requires an integer degree")
 
     degree_value = int(degree)
 
     if degree_value < 0:
-        raise ValueError(
-            "Flatten Base polynomial iteration requires "
-            "a non-negative degree"
-        )
+        raise ValueError("Flatten Base polynomial iteration requires " "a non-negative degree")
 
     try:
         numeric = np.asarray(values, dtype=float)
     except (TypeError, ValueError) as exc:
-        raise TypeError(
-            "Flatten Base polynomial iteration requires numeric data"
-        ) from exc
+        raise TypeError("Flatten Base polynomial iteration requires numeric data") from exc
 
     if not np.all(np.isfinite(numeric)):
-        raise ValueError(
-            "Flatten Base polynomial iteration requires finite data"
-        )
+        raise ValueError("Flatten Base polynomial iteration requires finite data")
 
     if float(np.max(numeric)) <= float(np.min(numeric)):
         background = np.zeros_like(numeric)
@@ -1611,29 +1400,17 @@ def _run_flatten_base_polynomial_iteration(
     )
 
     if background.shape != values.shape:
-        raise ValueError(
-            "Flatten Base polynomial fit returned an invalid background shape"
-        )
+        raise ValueError("Flatten Base polynomial fit returned an invalid background shape")
     if coefficients.ndim != 1 or coefficients.size != len(powers):
-        raise ValueError(
-            "Flatten Base polynomial fit returned invalid coefficients"
-        )
+        raise ValueError("Flatten Base polynomial fit returned invalid coefficients")
     if singular_values.ndim != 1:
-        raise ValueError(
-            "Flatten Base polynomial fit returned invalid singular values"
-        )
+        raise ValueError("Flatten Base polynomial fit returned invalid singular values")
     if not np.all(np.isfinite(background)):
-        raise ValueError(
-            "Flatten Base polynomial fit returned a non-finite background"
-        )
+        raise ValueError("Flatten Base polynomial fit returned a non-finite background")
     if not np.all(np.isfinite(coefficients)):
-        raise ValueError(
-            "Flatten Base polynomial fit returned non-finite coefficients"
-        )
+        raise ValueError("Flatten Base polynomial fit returned non-finite coefficients")
     if not np.all(np.isfinite(singular_values)):
-        raise ValueError(
-            "Flatten Base polynomial fit returned non-finite singular values"
-        )
+        raise ValueError("Flatten Base polynomial fit returned non-finite singular values")
 
     corrected = np.array(
         values - background,
@@ -1674,18 +1451,13 @@ class FlattenBasePolynomialStage:
     @property
     def attempted_degrees(self) -> tuple[int, ...]:
         """Polynomial degrees attempted by the stage."""
-        return tuple(
-            iteration.degree
-            for iteration in self.iterations
-        )
+        return tuple(iteration.degree for iteration in self.iterations)
 
     @property
     def completed_degrees(self) -> tuple[int, ...]:
         """Polynomial degrees that actually subtracted a background."""
         return tuple(
-            iteration.degree
-            for iteration in self.iterations
-            if getattr(iteration, "applied", True)
+            iteration.degree for iteration in self.iterations if getattr(iteration, "applied", True)
         )
 
 
@@ -1698,25 +1470,17 @@ def _run_flatten_base_polynomial_stage(
     values = np.asarray(data)
 
     if np.issubdtype(values.dtype, np.bool_) or np.iscomplexobj(values):
-        raise TypeError(
-            "Flatten Base polynomial stage requires real-valued data"
-        )
+        raise TypeError("Flatten Base polynomial stage requires real-valued data")
     if values.ndim != 2:
-        raise ValueError(
-            "Flatten Base polynomial stage requires a two-dimensional array"
-        )
+        raise ValueError("Flatten Base polynomial stage requires a two-dimensional array")
 
     try:
         working = np.array(values, dtype=float, copy=True)
     except (TypeError, ValueError) as exc:
-        raise TypeError(
-            "Flatten Base polynomial stage requires numeric data"
-        ) from exc
+        raise TypeError("Flatten Base polynomial stage requires numeric data") from exc
 
     if not np.all(np.isfinite(working)):
-        raise ValueError(
-            "Flatten Base polynomial stage requires finite data"
-        )
+        raise ValueError("Flatten Base polynomial stage requires finite data")
 
     accumulated_background = np.zeros_like(working)
     iterations: list[FlattenBasePolynomialIteration] = []
@@ -1741,23 +1505,19 @@ def _run_flatten_base_polynomial_stage(
 
         if iteration_background.shape != working.shape:
             raise ValueError(
-                "Flatten Base polynomial iteration returned "
-                "an invalid background shape"
+                "Flatten Base polynomial iteration returned " "an invalid background shape"
             )
         if iteration_corrected.shape != working.shape:
             raise ValueError(
-                "Flatten Base polynomial iteration returned "
-                "an invalid corrected shape"
+                "Flatten Base polynomial iteration returned " "an invalid corrected shape"
             )
         if not np.all(np.isfinite(iteration_background)):
             raise ValueError(
-                "Flatten Base polynomial iteration returned "
-                "a non-finite background"
+                "Flatten Base polynomial iteration returned " "a non-finite background"
             )
         if not np.all(np.isfinite(iteration_corrected)):
             raise ValueError(
-                "Flatten Base polynomial iteration returned "
-                "non-finite corrected data"
+                "Flatten Base polynomial iteration returned " "non-finite corrected data"
             )
 
         accumulated_background += iteration_background
@@ -1855,53 +1615,29 @@ def _run_flatten_base(
     )
 
     if background.shape != corrected.shape:
-        raise ValueError(
-            "Flatten Base facet stage returned incompatible shapes"
-        )
+        raise ValueError("Flatten Base facet stage returned incompatible shapes")
     if polynomial_background.shape != corrected.shape:
-        raise ValueError(
-            "Flatten Base polynomial stage returned "
-            "incompatible shapes"
-        )
+        raise ValueError("Flatten Base polynomial stage returned " "incompatible shapes")
     if corrected.size == 0:
-        raise ValueError(
-            "Flatten Base requires non-empty corrected data"
-        )
+        raise ValueError("Flatten Base requires non-empty corrected data")
     if not np.all(np.isfinite(corrected)):
-        raise ValueError(
-            "Flatten Base polynomial stage returned "
-            "non-finite corrected data"
-        )
+        raise ValueError("Flatten Base polynomial stage returned " "non-finite corrected data")
     if not np.all(np.isfinite(background)):
-        raise ValueError(
-            "Flatten Base facet stage returned "
-            "a non-finite background"
-        )
+        raise ValueError("Flatten Base facet stage returned " "a non-finite background")
     if not np.all(np.isfinite(polynomial_background)):
-        raise ValueError(
-            "Flatten Base polynomial stage returned "
-            "a non-finite background"
-        )
+        raise ValueError("Flatten Base polynomial stage returned " "a non-finite background")
 
     background += polynomial_background
 
     mean_centered = bool(final_peak.success)
-    mean_offset = (
-        float(final_peak.mean)
-        if mean_centered
-        else 0.0
-    )
+    mean_offset = float(final_peak.mean) if mean_centered else 0.0
 
     if mean_centered:
         corrected -= mean_offset
         background += mean_offset
 
     remaining_minimum = float(np.min(corrected))
-    minimum_offset = (
-        remaining_minimum
-        if remaining_minimum > 0.0
-        else 0.0
-    )
+    minimum_offset = remaining_minimum if remaining_minimum > 0.0 else 0.0
 
     if minimum_offset > 0.0:
         corrected -= minimum_offset

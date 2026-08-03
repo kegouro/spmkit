@@ -47,8 +47,7 @@ def _validated_median_background_radius(radius_px: object) -> int:
     radius = int(radius_px)
     if not 1 <= radius <= 1024:
         raise ValueError(
-            "Gwyddion Median Background radius_px must be in the inclusive "
-            "range 1..1024"
+            "Gwyddion Median Background radius_px must be in the inclusive " "range 1..1024"
         )
 
     return radius
@@ -95,9 +94,7 @@ def _cached_median_background_active_offsets(radius_px: int) -> IntArray:
 
     offsets = np.empty((active_count, 2), dtype=np.int_, order="C")
     position = 0
-    for dr, max_abs_dc in zip(
-        range(-radius_px, radius_px + 1), max_columns_by_row, strict=True
-    ):
+    for dr, max_abs_dc in zip(range(-radius_px, radius_px + 1), max_columns_by_row, strict=True):
         row_count = 2 * max_abs_dc + 1
         stop = position + row_count
         offsets[position:stop, 0] = dr
@@ -119,18 +116,14 @@ def _cached_median_background_active_offsets(radius_px: int) -> IntArray:
 
 def _median_background_active_offsets(radius_px: object) -> IntArray:
     """Return cached active digital-ellipse offsets for ``radius_px``."""
-    return _cached_median_background_active_offsets(
-        _validated_median_background_radius(radius_px)
-    )
+    return _cached_median_background_active_offsets(_validated_median_background_radius(radius_px))
 
 
 def _median_background_kernel_spec(radius_px: object) -> _MedianBackgroundKernelSpec:
     """Construct the immutable Gwyddion Median Background kernel specification."""
     radius = _validated_median_background_radius(radius_px)
     active_count = _cached_median_background_active_offsets(radius).shape[0]
-    backend: _GwyddionMedianBackgroundBackend = (
-        "direct" if active_count <= 25 else "radixtree"
-    )
+    backend: _GwyddionMedianBackgroundBackend = "direct" if active_count <= 25 else "radixtree"
 
     return _MedianBackgroundKernelSpec(
         radius_px=radius,

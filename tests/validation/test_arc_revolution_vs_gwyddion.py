@@ -12,12 +12,7 @@ from spmkit.core.analysis._gwyddion_arc_revolution import (
     _gwyddion_arc_corrected,
 )
 
-_FIXTURE_DIR = (
-    Path(__file__).resolve().parent
-    / "fixtures"
-    / "gwyddion"
-    / "arc_revolution"
-)
+_FIXTURE_DIR = Path(__file__).resolve().parent / "fixtures" / "gwyddion" / "arc_revolution"
 _METADATA_PATH = _FIXTURE_DIR / "gwyddion_2_71_directional.json"
 _METADATA = json.loads(_METADATA_PATH.read_text(encoding="utf-8"))
 _CASE_NAMES = tuple(_METADATA["cases"])
@@ -32,19 +27,14 @@ def _canonical_array_sha256(array: np.ndarray) -> str:
     digest = hashlib.sha256()
     digest.update(str(canonical.dtype).encode("ascii"))
     digest.update(b"\0")
-    digest.update(
-        ",".join(str(value) for value in canonical.shape).encode("ascii")
-    )
+    digest.update(",".join(str(value) for value in canonical.shape).encode("ascii"))
     digest.update(b"\0")
     digest.update(canonical.tobytes(order="C"))
     return digest.hexdigest()
 
 
 def _load_fixture() -> dict[str, np.ndarray]:
-    npz_path = (
-        _FIXTURE_DIR
-        / _METADATA["artifacts"]["npz_filename"]
-    )
+    npz_path = _FIXTURE_DIR / _METADATA["artifacts"]["npz_filename"]
 
     assert hashlib.sha256(npz_path.read_bytes()).hexdigest() == (
         _METADATA["artifacts"]["npz_sha256"]
@@ -59,9 +49,7 @@ def _load_fixture() -> dict[str, np.ndarray]:
             for name in fixture.files
         }
 
-    expected_hashes = _METADATA["artifacts"][
-        "array_canonical_sha256"
-    ]
+    expected_hashes = _METADATA["artifacts"]["array_canonical_sha256"]
 
     assert set(arrays) == set(expected_hashes)
 
@@ -107,11 +95,7 @@ def test_arc_background_matches_gwyddion_2_71(
 
 @pytest.mark.parametrize(
     "case_name",
-    [
-        name
-        for name, case in _METADATA["cases"].items()
-        if case["corrected_reference_valid"]
-    ],
+    [name for name, case in _METADATA["cases"].items() if case["corrected_reference_valid"]],
 )
 def test_arc_corrected_matches_valid_gwyddion_2_71_results(
     case_name: str,
@@ -153,21 +137,15 @@ def test_arc_corrected_matches_valid_gwyddion_2_71_results(
 
 def test_horizontal_inverted_reference_defect_is_preserved_and_repaired() -> None:
     fixture = _load_fixture()
-    defect = _METADATA["known_reference_defects"][
-        "horizontal_inverted_corrected_result"
-    ]
+    defect = _METADATA["known_reference_defects"]["horizontal_inverted_corrected_result"]
     acceptance = _METADATA["acceptance"]
 
     input_field = fixture["input"].copy()
-    reference_corrected = fixture[
-        "corrected_horizontal_inverted"
-    ]
+    reference_corrected = fixture["corrected_horizontal_inverted"]
 
     assert defect["classification"] == "KNOWN_REFERENCE_DEFECT"
     assert defect["reference_result_untouched"] is True
-    assert np.all(
-        reference_corrected == defect["sentinel"]
-    )
+    assert np.all(reference_corrected == defect["sentinel"])
 
     background = _gwyddion_arc_background(
         input_field,
@@ -253,16 +231,9 @@ def test_public_arc_result_matches_gwyddion_2_71(
             rtol=0.0,
         )
     else:
-        defect = _METADATA["known_reference_defects"][
-            "horizontal_inverted_corrected_result"
-        ]
-        assert np.all(
-            fixture[f"corrected_{case_name}"]
-            == defect["sentinel"]
-        )
-        assert not np.any(
-            result.corrected.data == defect["sentinel"]
-        )
+        defect = _METADATA["known_reference_defects"]["horizontal_inverted_corrected_result"]
+        assert np.all(fixture[f"corrected_{case_name}"] == defect["sentinel"])
+        assert not np.any(result.corrected.data == defect["sentinel"])
 
     np.testing.assert_allclose(
         result.corrected.data + result.background.data,

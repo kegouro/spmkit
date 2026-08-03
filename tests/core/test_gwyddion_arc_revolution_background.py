@@ -417,11 +417,7 @@ def test_invalid_radius_types_are_rejected(
 def test_invalid_direction_is_rejected(
     direction: object,
 ) -> None:
-    expected_exception = (
-        TypeError
-        if not isinstance(direction, str)
-        else ValueError
-    )
+    expected_exception = TypeError if not isinstance(direction, str) else ValueError
 
     with pytest.raises(expected_exception):
         estimate_gwyddion_arc_revolution_background(
@@ -459,11 +455,7 @@ def test_non_boolean_inversion_is_rejected(
 def test_invalid_channel_data_is_rejected(
     data: np.ndarray,
 ) -> None:
-    expected_exception = (
-        TypeError
-        if np.iscomplexobj(data)
-        else ValueError
-    )
+    expected_exception = TypeError if np.iscomplexobj(data) else ValueError
 
     with pytest.raises(expected_exception):
         estimate_gwyddion_arc_revolution_background(

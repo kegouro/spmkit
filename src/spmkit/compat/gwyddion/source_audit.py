@@ -337,8 +337,7 @@ def audit_gwyddion_source(
     )
     blockers: list[str] = []
     if any(
-        dependency.classification is SymbolClassification.GUI_GTK
-        for dependency in dependencies
+        dependency.classification is SymbolClassification.GUI_GTK for dependency in dependencies
     ):
         blockers.append("GUI/GTK dependency requires an explicit adapter and remains unsupported.")
     if selection:

@@ -146,9 +146,7 @@ def _gwyddion_sphere_background(
     )
     for row in range(sphere_resolution):
         for column in range(sphere_resolution):
-            sphere_scaled[row, column] = (
-                -q * float(sphere_z[row, column])
-            )
+            sphere_scaled[row, column] = -q * float(sphere_z[row, column])
 
     # 6. Direct local mean field
     if local_filter_size == 0:

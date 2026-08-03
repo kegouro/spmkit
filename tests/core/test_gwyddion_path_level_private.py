@@ -169,6 +169,7 @@ def test_signed_zero_and_repeated_execution_are_deterministic() -> None:
     first = _gwyddion_path_level_result(data, lines, xreal=2.0, yreal=2.0, thickness_px=2)
     second = _gwyddion_path_level_result(data, lines, xreal=2.0, yreal=2.0, thickness_px=2)
     _assert_bits("signed_zero_repeat", first.corrected, second.corrected)
-    assert hashlib.sha256(_bits(first.corrected).tobytes()).digest() == hashlib.sha256(
-        _bits(second.corrected).tobytes()
-    ).digest()
+    assert (
+        hashlib.sha256(_bits(first.corrected).tobytes()).digest()
+        == hashlib.sha256(_bits(second.corrected).tobytes()).digest()
+    )

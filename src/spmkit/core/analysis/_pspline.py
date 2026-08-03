@@ -255,7 +255,9 @@ def _check_penalty_null_space_identifiability(
                 * surface.reshape(
                     data_shape,
                     order="C",
-                ).ravel(order="C")[selected]
+                ).ravel(
+                    order="C"
+                )[selected]
             )
 
     null_design = np.column_stack(null_surfaces)

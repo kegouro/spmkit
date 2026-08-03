@@ -16,11 +16,7 @@ from spmkit.core.analysis._median_background import (
 )
 
 _FIXTURE_DIR = (
-    Path(__file__).parents[1]
-    / "validation"
-    / "fixtures"
-    / "gwyddion"
-    / "median_background"
+    Path(__file__).parents[1] / "validation" / "fixtures" / "gwyddion" / "median_background"
 )
 _FIXTURE_PATH = _FIXTURE_DIR / "median_background_reference.npz"
 _MANIFEST_PATH = _FIXTURE_DIR / "median_background_reference.json"

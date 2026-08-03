@@ -70,9 +70,7 @@ def _assert_bitwise_equal(
     row, column = np.argwhere(actual_bits != expected_bits)[0]
     actual_bits_value = int(actual_bits[row, column])
     expected_bits_value = int(expected_bits[row, column])
-    ulp_distance = abs(
-        _ordered_uint64(actual_bits_value) - _ordered_uint64(expected_bits_value)
-    )
+    ulp_distance = abs(_ordered_uint64(actual_bits_value) - _ordered_uint64(expected_bits_value))
     pytest.fail(
         f"case={case_id} operation={operation} coordinate=({row}, {column}) "
         f"expected={expected[row, column]!r} actual={actual[row, column]!r} "

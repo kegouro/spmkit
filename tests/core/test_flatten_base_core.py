@@ -63,7 +63,6 @@ def test_height_distribution_preserves_gwyddion_constant_field_convention() -> N
     assert np.sum(result.density) * result.bin_width == pytest.approx(1.0)
 
 
-
 def test_base_peak_window_matches_gwyddion_selection_rules() -> None:
     centers = np.arange(9, dtype=float) + 0.5
     density = np.array(
@@ -178,9 +177,7 @@ def test_base_peak_fit_matches_gwyddion_271_reference() -> None:
     """Cross-check a perturbed Gaussian against a direct Gwyddion 2.71 probe."""
     centers = -3.0 + 0.375 * np.arange(17, dtype=float)
     density = (
-        0.18
-        + 2.4 * np.exp(-np.square((centers - 0.35) / 1.1))
-        + 0.015 * np.sin(1.7 * centers)
+        0.18 + 2.4 * np.exp(-np.square((centers - 0.35) / 1.1)) + 0.015 * np.sin(1.7 * centers)
     )
     peak_index = int(np.argmax(density))
 
@@ -329,13 +326,8 @@ def test_gwyddion_facet_plane_recovers_exact_physical_tilt() -> None:
 
     expected_x_coefficient = expected_physical_x * pixel_size_x
     expected_y_coefficient = expected_physical_y * pixel_size_y
-    expected_scale_squared = (
-        expected_physical_x**2 + expected_physical_y**2
-    ) / 20.0
-    expected_intercept = -0.5 * (
-        expected_x_coefficient * columns
-        + expected_y_coefficient * rows
-    )
+    expected_scale_squared = (expected_physical_x**2 + expected_physical_y**2) / 20.0
+    expected_intercept = -0.5 * (expected_x_coefficient * columns + expected_y_coefficient * rows)
     expected_cells = (rows - 1) * (columns - 1)
 
     assert not result.degenerate
@@ -345,12 +337,8 @@ def test_gwyddion_facet_plane_recovers_exact_physical_tilt() -> None:
     assert result.x_coefficient == pytest.approx(expected_x_coefficient)
     assert result.y_coefficient == pytest.approx(expected_y_coefficient)
     assert result.intercept == pytest.approx(expected_intercept)
-    assert result.slope_scale_squared == pytest.approx(
-        expected_scale_squared
-    )
-    assert result.weight_sum == pytest.approx(
-        expected_cells * np.exp(-20.0)
-    )
+    assert result.slope_scale_squared == pytest.approx(expected_scale_squared)
+    assert result.weight_sum == pytest.approx(expected_cells * np.exp(-20.0))
 
     np.testing.assert_array_equal(data, original)
 
@@ -388,12 +376,7 @@ def test_gwyddion_facet_plane_matches_gwyddion_271_reference() -> None:
         for column in range(columns):
             x = column * pixel_size_x
             y = row * pixel_size_y
-            value = (
-                7.0
-                + 0.3 * x
-                - 0.2 * y
-                + 0.04 * np.sin(0.7 * column + 0.3 * row)
-            )
+            value = 7.0 + 0.3 * x - 0.2 * y + 0.04 * np.sin(0.7 * column + 0.3 * row)
 
             if row == 1 and column == 2:
                 value += 4.0
@@ -504,11 +487,7 @@ def test_flatten_base_facet_stage_runs_exactly_five_iterations(
     column_indices = np.arange(columns, dtype=float)
     row_indices = np.arange(rows, dtype=float)
     xx, yy = np.meshgrid(column_indices, row_indices)
-    single_plane = (
-        plane.intercept
-        + plane.x_coefficient * xx
-        + plane.y_coefficient * yy
-    )
+    single_plane = plane.intercept + plane.x_coefficient * xx + plane.y_coefficient * yy
 
     np.testing.assert_allclose(
         result.background,
@@ -675,11 +654,7 @@ def test_flatten_base_facet_stage_keeps_correction_before_peak_failure(
         np.arange(columns, dtype=float),
         np.arange(rows, dtype=float),
     )
-    expected_plane = (
-        plane.intercept
-        + plane.x_coefficient * xx
-        + plane.y_coefficient * yy
-    )
+    expected_plane = plane.intercept + plane.x_coefficient * xx + plane.y_coefficient * yy
 
     assert facet_calls == 1
     assert peak_results == []
@@ -705,11 +680,11 @@ def test_grow_mask_conn4_forms_inclusive_city_block_diamond() -> None:
 
     expected = np.array(
         [
-            [False, False, True,  False, False],
-            [False, True,  True,  True,  False],
-            [True,  True,  True,  True,  True ],
-            [False, True,  True,  True,  False],
-            [False, False, True,  False, False],
+            [False, False, True, False, False],
+            [False, True, True, True, False],
+            [True, True, True, True, True],
+            [False, True, True, True, False],
+            [False, False, True, False, False],
         ],
         dtype=bool,
     )
@@ -728,11 +703,11 @@ def test_grow_mask_conn4_matches_gwyddion_corner_handling() -> None:
 
     expected = np.array(
         [
-            [True, True,  True,  True,  True],
+            [True, True, True, True, True],
             [True, False, False, False, True],
             [True, False, False, False, True],
             [True, False, False, False, True],
-            [True, True,  True,  True,  True],
+            [True, True, True, True, True],
         ],
         dtype=bool,
     )
@@ -754,9 +729,9 @@ def test_grow_mask_conn4_matches_gwyddion_interior_merge_reference() -> None:
     expected = np.array(
         [
             [False, False, False, False, False],
-            [False, True,  False, True,  False],
-            [False, True,  True,  True,  False],
-            [False, True,  False, True,  False],
+            [False, True, False, True, False],
+            [False, True, True, True, False],
+            [False, True, False, True, False],
             [False, False, False, False, False],
         ],
         dtype=bool,
@@ -794,10 +769,10 @@ def test_grow_mask_conn4_matches_gwyddion_empty_mask_handling() -> None:
 
     expected = np.array(
         [
-            [True, True,  True,  True,  True],
+            [True, True, True, True, True],
             [True, False, False, False, True],
             [True, False, False, False, True],
-            [True, True,  True,  True,  True],
+            [True, True, True, True, True],
         ],
         dtype=bool,
     )
@@ -907,9 +882,7 @@ def test_flatten_base_mask_integrates_threshold_and_conn4_growth() -> None:
     expected_raw[3, 3] = True
 
     yy, xx = np.mgrid[0:7, 0:7]
-    expected_grown = (
-        np.abs(yy - 3) + np.abs(xx - 3)
-    ) <= 3
+    expected_grown = (np.abs(yy - 3) + np.abs(xx - 3)) <= 3
 
     assert result.threshold == 3.0
     assert result.growth_radius == 3
@@ -1086,12 +1059,7 @@ def test_flatten_base_polynomial_iteration_recovers_exact_surface(
     xx, yy = np.meshgrid(x, y)
 
     expected_background = (
-        0.10
-        + 0.05 * xx
-        - 0.04 * yy
-        + 0.03 * xx * yy
-        + 0.02 * xx**2
-        - 0.01 * yy**2
+        0.10 + 0.05 * xx - 0.04 * yy + 0.03 * xx * yy + 0.02 * xx**2 - 0.01 * yy**2
     )
 
     data = expected_background.copy()
@@ -1174,7 +1142,6 @@ def test_flatten_base_polynomial_iteration_recovers_exact_surface(
         atol=2e-13,
     )
     np.testing.assert_array_equal(data, original)
-
 
 
 def test_grow_mask_conn4_matches_gwyddion_271_right_edge_reference() -> None:
@@ -1361,9 +1328,7 @@ def test_flatten_base_polynomial_stage_runs_degrees_two_to_five(
 
     peaks = [Peak(f"peak-{index}") for index in range(5)]
     calls: list[tuple[np.ndarray, Peak, int]] = []
-    produced_iterations: list[
-        flatten_base_core.FlattenBasePolynomialIteration
-    ] = []
+    produced_iterations: list[flatten_base_core.FlattenBasePolynomialIteration] = []
 
     def fake_iteration(
         received: np.ndarray,
@@ -1406,19 +1371,17 @@ def test_flatten_base_polynomial_stage_runs_degrees_two_to_five(
             grown_count=0,
         )
 
-        iteration = (
-            flatten_base_core.FlattenBasePolynomialIteration(
-                degree=degree,
-                powers=((0, 0),),
-                mask=automatic_mask,
-                selected_count=data.size,
-                coefficients=coefficients,
-                rank=1,
-                singular_values=singular_values,
-                background=background,
-                corrected=corrected,
-                peak=peaks[expected_index + 1],
-            )
+        iteration = flatten_base_core.FlattenBasePolynomialIteration(
+            degree=degree,
+            powers=((0, 0),),
+            mask=automatic_mask,
+            selected_count=data.size,
+            coefficients=coefficients,
+            rank=1,
+            singular_values=singular_values,
+            background=background,
+            corrected=corrected,
+            peak=peaks[expected_index + 1],
         )
         produced_iterations.append(iteration)
         return iteration
@@ -1499,9 +1462,7 @@ def test_flatten_base_polynomial_stage_stops_after_peak_failure(
             assert peak is degree_two_peak
             next_peak = failed_peak
         else:
-            raise AssertionError(
-                f"unexpected polynomial degree after failure: {degree}"
-            )
+            raise AssertionError(f"unexpected polynomial degree after failure: {degree}")
 
         background = np.full_like(received, float(degree))
         corrected = received - background
@@ -1671,15 +1632,11 @@ def test_polynomial_iteration_skips_constant_field_and_reestimates_peak(
 
     def forbidden_mask(*args: object, **kwargs: object) -> None:
         del args, kwargs
-        raise AssertionError(
-            "constant-field iteration must not construct a mask"
-        )
+        raise AssertionError("constant-field iteration must not construct a mask")
 
     def forbidden_fit(*args: object, **kwargs: object) -> None:
         del args, kwargs
-        raise AssertionError(
-            "constant-field iteration must not fit a polynomial"
-        )
+        raise AssertionError("constant-field iteration must not fit a polynomial")
 
     def fake_peak(received: np.ndarray) -> UpdatedPeak:
         peak_calls.append(received.copy())
@@ -1758,20 +1715,18 @@ def test_polynomial_stage_records_unapplied_degree_before_peak_failure(
     coefficients.setflags(write=False)
     singular_values.setflags(write=False)
 
-    skipped_iteration = (
-        flatten_base_core.FlattenBasePolynomialIteration(
-            degree=2,
-            powers=(),
-            mask=None,
-            selected_count=0,
-            coefficients=coefficients,
-            rank=0,
-            singular_values=singular_values,
-            background=background,
-            corrected=corrected,
-            peak=failed_peak,
-            applied=False,
-        )
+    skipped_iteration = flatten_base_core.FlattenBasePolynomialIteration(
+        degree=2,
+        powers=(),
+        mask=None,
+        selected_count=0,
+        coefficients=coefficients,
+        rank=0,
+        singular_values=singular_values,
+        background=background,
+        corrected=corrected,
+        peak=failed_peak,
+        applied=False,
     )
 
     calls: list[int] = []
@@ -1916,15 +1871,9 @@ def test_flatten_base_composes_stages_and_final_offsets(
 
     after_mean_centering = polynomial_corrected - final_peak.mean
     expected_minimum_offset = float(np.min(after_mean_centering))
-    expected_corrected = (
-        after_mean_centering
-        - expected_minimum_offset
-    )
+    expected_corrected = after_mean_centering - expected_minimum_offset
     expected_background = (
-        facet_background
-        + polynomial_background
-        + final_peak.mean
-        + expected_minimum_offset
+        facet_background + polynomial_background + final_peak.mean + expected_minimum_offset
     )
 
     assert calls == {
@@ -2027,11 +1976,7 @@ def test_flatten_base_skips_mean_after_failed_final_peak() -> None:
 
     expected_minimum_offset = 5.0
     expected_corrected = polynomial_corrected - expected_minimum_offset
-    expected_background = (
-        facet_background
-        + polynomial_background
-        + expected_minimum_offset
-    )
+    expected_background = facet_background + polynomial_background + expected_minimum_offset
 
     assert result.final_peak is failed_peak
     assert not result.mean_centered
@@ -2094,10 +2039,7 @@ def test_flatten_base_preserves_nonpositive_minimum_after_mean_centering(
     )
 
     polynomial_background = np.full_like(data, 2.0)
-    polynomial_corrected = (
-        facet_corrected
-        - polynomial_background
-    )
+    polynomial_corrected = facet_corrected - polynomial_background
 
     class FinalIteration:
         degree = 5
@@ -2130,11 +2072,7 @@ def test_flatten_base_preserves_nonpositive_minimum_after_mean_centering(
     )
 
     expected_corrected = polynomial_corrected - final_peak.mean
-    expected_background = (
-        facet_background
-        + polynomial_background
-        + final_peak.mean
-    )
+    expected_background = facet_background + polynomial_background + final_peak.mean
 
     assert result.final_peak is final_peak
     assert result.mean_centered
@@ -2202,9 +2140,7 @@ def test_gwyddion_lm_reproduces_edge_peak_solution() -> None:
         initial_width=0.39368120701621939,
     )
 
-    result = flatten_base_core._fit_base_peak_gwyddion_lm(
-        window
-    )
+    result = flatten_base_core._fit_base_peak_gwyddion_lm(window)
 
     assert result.solver_success
     assert result.covariance_available
@@ -2263,11 +2199,7 @@ def test_gwyddion_packed_cholesky_matches_dense_reference() -> None:
     )
 
     packed = np.array(
-        [
-            matrix[row, column]
-            for row in range(matrix.shape[0])
-            for column in range(row + 1)
-        ],
+        [matrix[row, column] for row in range(matrix.shape[0]) for column in range(row + 1)],
         dtype=float,
     )
 

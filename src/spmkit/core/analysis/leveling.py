@@ -851,27 +851,14 @@ def _fit_polynomial_surface_data(
 
     selected_count = int(np.count_nonzero(selected_points))
     if selected_count < len(powers):
-        raise ValueError(
-            f"{operation} requires at least {len(powers)} selected points"
-        )
+        raise ValueError(f"{operation} requires at least {len(powers)} selected points")
 
     rows, columns = values.shape
-    x_coordinates = (
-        np.linspace(-1.0, 1.0, columns)
-        if columns > 1
-        else np.zeros(columns)
-    )
-    y_coordinates = (
-        np.linspace(-1.0, 1.0, rows)
-        if rows > 1
-        else np.zeros(rows)
-    )
+    x_coordinates = np.linspace(-1.0, 1.0, columns) if columns > 1 else np.zeros(columns)
+    y_coordinates = np.linspace(-1.0, 1.0, rows) if rows > 1 else np.zeros(rows)
     xx, yy = np.meshgrid(x_coordinates, y_coordinates)
 
-    terms = [
-        (xx**x_power) * (yy**y_power)
-        for x_power, y_power in powers
-    ]
+    terms = [(xx**x_power) * (yy**y_power) for x_power, y_power in powers]
     design = np.column_stack([term.ravel() for term in terms])
     selected = selected_points.ravel()
 
@@ -883,8 +870,7 @@ def _fit_polynomial_surface_data(
 
     if rank < len(powers):
         raise ValueError(
-            f"{operation} selected points do not define "
-            "a unique polynomial background"
+            f"{operation} selected points do not define " "a unique polynomial background"
         )
 
     background = (design @ coefficients).reshape(values.shape)
