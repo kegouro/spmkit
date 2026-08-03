@@ -1,0 +1,26 @@
+{
+  "artifacts": [
+    {
+      "bytes": 56415,
+      "path": "docs/user-guide.md",
+      "sha256": "dbbfa1fddffd5f25b3b880c80b33f6b8b1e37b0c15dd85af25c7aacef9f8fe08"
+    },
+    {
+      "bytes": 39873,
+      "path": "docs/user-guide.tex",
+      "sha256": "d11a27d1889510c6beaed2f1055216b54366e737cbfbfc4bbbaaa5e6617bd6db"
+    },
+    {
+      "bytes": 117821,
+      "path": "docs/user-guide.pdf",
+      "sha256": "1ec76b89c84151b2f75621bf3f37eb0b86c887430130835fc7bffd2d796b79e9"
+    }
+  ],
+  "policy": {
+    "encoding": "UTF-8",
+    "identity": "content-addressed-manual-artifacts",
+    "newline": "LF",
+    "updater": "scripts/update_manual_provenance.py"
+  },
+  "schema_version": 1
+}
