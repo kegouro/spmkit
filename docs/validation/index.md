@@ -69,9 +69,9 @@ Gwyddion source
 → scientific status
 ```
 
-The concrete records are `.reference/gwyddion-2.71/source/modules/process/median-bg.c`,
-`.reference/gwyddion-2.71/median-background-parity/median_background_behavior_probe.c`,
-`.reference/gwyddion-2.71/median-background-parity/run_median_background_probe_campaign.sh`,
+The concrete records are Gwyddion 2.71 source `modules/process/median-bg.c`,
+the frozen `median_background_behavior_probe.c`,
+and the frozen `run_median_background_probe_campaign.sh`,
 `docs/design/GWYDDION_MEDIAN_BACKGROUND_COMPATIBILITY.md`,
 `tests/validation/fixtures/gwyddion/median_background/median_background_reference.npz`,
 `tests/validation/fixtures/gwyddion/median_background/median_background_reference.json`,
@@ -115,8 +115,8 @@ Gwyddion source
 → CROSS_VALIDATED status
 ```
 
-The records are `.reference/gwyddion-2.71/source/libprocess/filters-minmax.c`,
-`/tmp/spmkit_flat_disc_probe_v3`, `/tmp/spmkit_flat_disc_reduction_trace_v1`,
+The records are Gwyddion 2.71 source `libprocess/filters-minmax.c`,
+the frozen `flat_disc_probe_v3` and `flat_disc_reduction_trace_v1`,
 `docs/design/GWYDDION_FLAT_DISC_MORPHOLOGY_COMPATIBILITY.md`,
 `tests/validation/fixtures/gwyddion/flat_disc_morphology/flat_disc_morphology_reference.npz`,
 `tests/validation/fixtures/gwyddion/flat_disc_morphology/flat_disc_morphology_reference.json`,
@@ -148,8 +148,8 @@ Gwyddion source
 → CROSS_VALIDATED status
 ```
 
-The records are `.reference/gwyddion-2.71/source/modules/tools/pathlevel.c`,
-`/tmp/spmkit_path_level_probe_v1`, `/tmp/spmkit_path_level_oracle_v1`,
+The records are Gwyddion 2.71 source `modules/tools/pathlevel.c`,
+the frozen `path_level_probe_v1` and independent `path_level_oracle_v1`,
 `docs/design/GWYDDION_PATH_LEVEL_COMPATIBILITY.md`,
 `tests/validation/fixtures/gwyddion/path_level/path_level_reference.npz`,
 `tests/validation/fixtures/gwyddion/path_level/path_level_reference.json`,
@@ -187,8 +187,8 @@ Gwyddion source
 → CROSS_VALIDATED status
 ```
 
-The records are `.reference/gwyddion-2.71/source/modules/process/linematch.c`,
-`/tmp/spmkit_align_rows_probe_v1`, `/tmp/spmkit_align_rows_oracle_stats_v2`,
+The records are Gwyddion 2.71 source `modules/process/linematch.c`,
+the frozen `align_rows_probe_v1` and independent `align_rows_oracle_stats_v2`,
 `tests/validation/fixtures/gwyddion/align_rows_statistics/align_rows_statistics_reference.npz`,
 `tests/validation/fixtures/gwyddion/align_rows_statistics/align_rows_statistics_reference.json`,
 `docs/design/GWYDDION_ALIGN_ROWS_STATISTICS_COMPATIBILITY.md`,

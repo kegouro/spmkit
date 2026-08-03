@@ -14,7 +14,7 @@ instrument variant.
 
 ```bash
 python -m pip install spmkit                    # PyPI 0.1.2
-python -m pip install "spmkit[gwy,hdf5,grains]" # selected optional features
+python -m pip install "spmkit[gwy,hdf5]"        # selected optional features
 ```
 
 The current source and GitHub-release options are listed in the

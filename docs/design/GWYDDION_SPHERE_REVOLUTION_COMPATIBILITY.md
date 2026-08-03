@@ -296,7 +296,7 @@ Evidence hierarchy:
 
 ## 14. Independent oracle evidence
 
-An independent Python oracle (`/tmp/spmkit_gwyddion_sphere_oracle.py`) evaluated 20 valid cases (10 original normal, 10 negated normal):
+An independent Python oracle (`sphere_revolution_oracle.py`, frozen by its recorded SHA-256) evaluated 20 valid cases (10 original normal, 10 negated normal):
 - Implemented in pure Python 3 and NumPy without SciPy or SPMKit imports.
 - Evaluated using direct 2D window loops.
 - Max $q$ absolute error: `0.0`.

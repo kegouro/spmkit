@@ -97,9 +97,9 @@ production.
 **Traceability:**
 
 ```text
-.reference/gwyddion-2.71/source/modules/process/median-bg.c
-  → .reference/gwyddion-2.71/median-background-parity/median_background_behavior_probe.c
-  → .reference/gwyddion-2.71/median-background-parity/run_median_background_probe_campaign.sh
+Gwyddion 2.71 source: modules/process/median-bg.c
+  → frozen external probe: median_background_behavior_probe.c
+  → frozen campaign runner: run_median_background_probe_campaign.sh
   → independent Python oracle recorded by docs/design/GWYDDION_MEDIAN_BACKGROUND_COMPATIBILITY.md
   → tests/validation/fixtures/gwyddion/median_background/median_background_reference.npz
   → tests/validation/fixtures/gwyddion/median_background/median_background_reference.json
@@ -117,7 +117,7 @@ Background, and 72 public Median Background tests; the preceding combined focal 
 442 tests. These are focal-campaign counts, not a project-wide total.
 
 **Non-claims:** no universal equivalence; no guarantee outside the 36 cases; no NaN or infinity
-coverage; no reproduction of Gwyddion's internal radixtree; no performance-equivalence claim;
+coverage and no reproduction of Gwyddion's internal radixtree; no performance-equivalence claim;
 no claim for future Gwyddion versions; no claim for every radius or matrix; and no validation of
 configurable border, shape, or rank parameters because the API exposes none.
 
@@ -145,10 +145,10 @@ evidence; the corrected zero-initialised probe is the valid external record.
 **Traceability:**
 
 ```text
-.reference/gwyddion-2.71/source/libprocess/filters-minmax.c
-  → /tmp/spmkit_flat_disc_probe_v3
-  → /tmp/spmkit_flat_disc_reduction_trace_v1
-  → /tmp/spmkit_flat_disc_reduction_trace_v1/oracle_v2/flat_disc_morphology_oracle.py
+Gwyddion 2.71 source: libprocess/filters-minmax.c
+  → frozen external probe: flat_disc_probe_v3
+  → frozen reduction trace: flat_disc_reduction_trace_v1
+  → independent oracle: flat_disc_morphology_oracle.py
   → tests/validation/fixtures/gwyddion/flat_disc_morphology/flat_disc_morphology_reference.npz
   → tests/validation/fixtures/gwyddion/flat_disc_morphology/flat_disc_morphology_reference.json
   → src/spmkit/core/analysis/_gwyddion_flat_disc_morphology.py
@@ -158,8 +158,9 @@ evidence; the corrected zero-initialised probe is the valid external record.
   → docs/scientific-status.md
 ```
 
-Evidence was frozen in `2ba366e`; the private kernel is `05c5ae4`. No public or documentation
-commit is claimed here. **Non-claims:** no universal equivalence; no NaN or infinity coverage;
+Evidence was frozen in `2ba366e`; the private kernel is `05c5ae4`; the public API and
+documentation are recorded in `1b2d081` and `c0de811`. **Non-claims:** no universal equivalence;
+no NaN or infinity coverage;
 no ROI, masks, ASF, tip morphology, physical rolling-ball equivalence, performance parity,
 other Gwyddion builds or versions, public erosion or dilation, or claim that source-level C
 tie semantics alone reproduce the audited binary.
@@ -167,7 +168,7 @@ tie semantics alone reproduce the audited binary.
 ### Gwyddion 2.71 Path Level
 
 **Claim:** `CROSS_VALIDATED` only within the frozen Path Level campaign against the audited
-Gwyddion 2.71 tool `/usr/lib/gwyddion/modules/tool/tools.so`
+Gwyddion 2.71 tool module `tools.so`
 (`4711c360dd42e3e16257bf0e86d8bd41852b43d1d34540bf097736a603146237`, Build ID
 `600b16d9857946609b567704b406abcc74aea698`). The campaign contains 18 finite, non-empty,
 full-field base families, thicknesses 1, 2, 3, and 128, 72 logical cases, 144 fresh external
@@ -186,10 +187,10 @@ GUI-publication parity.
 **Traceability:**
 
 ```text
-.reference/gwyddion-2.71/source/modules/tools/pathlevel.c
+Gwyddion 2.71 source: modules/tools/pathlevel.c
   → installed Gwyddion 2.71 Path Level tool execution
-  → /tmp/spmkit_path_level_probe_v1
-  → /tmp/spmkit_path_level_oracle_v1
+  → frozen external probe: path_level_probe_v1
+  → independent oracle: path_level_oracle_v1
   → tests/validation/fixtures/gwyddion/path_level/path_level_reference.npz
   → tests/validation/fixtures/gwyddion/path_level/path_level_reference.json
   → src/spmkit/core/analysis/_gwyddion_path_level.py
@@ -218,7 +219,7 @@ new context-preserving `SPMChannel` instances and do not claim Gwyddion GUI, pub
 or mutation behavior.
 
 The secondary `installed_gwyddion_2_71_fast_math_profile` is external executable evidence from
-`/usr/lib/gwyddion/modules/process/process.so`
+`process.so` (Gwyddion 2.71 installed module)
 (`c21d52375807ae096e34a3469c2f20c4c66ea3197479e13215a6d7b9d465b451`).  It is bitwise exact for
 `61/64` arrays and `3757/3888` elements.  The complete and bounded exception set is three
 signed-zero-only Median elements in `median__plateaus_signed_zero__10` plus 64 finite elements in
@@ -237,9 +238,9 @@ compatibility claim for, the existing generic `align_rows`.
 **Traceability:**
 
 ```text
-.reference/gwyddion-2.71/source/modules/process/linematch.c
-  → /tmp/spmkit_align_rows_probe_v1
-  → /tmp/spmkit_align_rows_oracle_stats_v2
+Gwyddion 2.71 source: modules/process/linematch.c
+  → frozen external probe: align_rows_probe_v1
+  → independent oracle: align_rows_oracle_stats_v2
   → tests/validation/fixtures/gwyddion/align_rows_statistics/
   → src/spmkit/core/analysis/_gwyddion_align_rows_statistics.py
   → src/spmkit/core/analysis/leveling.py

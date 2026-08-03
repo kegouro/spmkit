@@ -11,7 +11,7 @@ outside the frozen domain.
 ## 1. Reference identity
 
 **SOURCE_CONFIRMED** reference software is Gwyddion 2.71. The frozen module is
-`.reference/gwyddion-2.71/source/modules/process/median-bg.c`, SHA-256
+Gwyddion 2.71 source `modules/process/median-bg.c`, SHA-256
 `5021fff407531459ed47aff7a47e4f5b2ce2ea7df13d04ca4405f05581258729`.
 The manifest records the probe, runner, oracle, campaign, and fixture identities.
 
