@@ -9,11 +9,11 @@
 **Documented source:** `0.1.5.dev0` · **GitHub release:** `0.1.4` ·
 **PyPI distribution:** `0.1.2` · **Build date:** 2026-07-29
 
-**Source commit:**
-[`06da8895ef9d7dfb5978f97f8283695deb02f870`](https://github.com/kegouro/spmkit/commit/06da8895ef9d7dfb5978f97f8283695deb02f870)
-
-**PDF SHA-256:**
-`1ec76b89c84151b2f75621bf3f37eb0b86c887430130835fc7bffd2d796b79e9`
+**Artifact identity:** Exact byte identities for the published manual artifacts
+are recorded in the committed [content-addressed manifest](artifacts-manifest.json).
+CI verifies the current files against that manifest. Git commits and release
+tags identify repository revisions; the manifest proves exact artifact identity
+only, not semantic correctness or reproducible PDF generation.
 
 To compile the PDF from source:
 
