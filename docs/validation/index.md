@@ -40,6 +40,7 @@ references, tolerances, outputs, hashes, and limitations.
 | Gwyddion Revolve Sphere 2.71 v1 | Data-adaptive sphere-envelope background on 10 logical pairs (20 normal runs per build) and 15 failing inverted runs; direct normal external reference and derived inverted background within 5e-14; safe inverted corrected reconstruction | 20/20 valid external runs and 10/10 derived inverted backgrounds within 5e-14 | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> for the frozen campaign | Gwyddion 2.71 only; radius in samples; 15/15 inverted wrapper crashes documented as reference failures; not physical validation or universal equivalence |
 | Gwyddion Median Background 2.71 v1 | Local rank background on 36 frozen logical cases, 72 executions (36 normal, 36 ASan), radii 1/2/3/4/20/1024, and both direct/radixtree reference paths | Public background and corrected fields 36/36 bitwise exact; maximum absolute difference 0, maximum ULP 0, input mutation maximum 0, reconstruction maximum `4.4408920985006262e-16` | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen campaign | Gwyddion 2.71 only; finite inputs; no universal, performance, future-version, all-radii, or all-matrices claim; no public border/shape/rank configuration |
 | Gwyddion Filter flat-disc morphology 2.71 v1 | 12 frozen fields, six sizes 2/3/4/5/30/31, full-field mask-ignore Opening and Closing | Kernels 30/30; Opening 72/72 and Closing 72/72 bitwise exact; max absolute difference 0, max ULP 0, signed-zero mismatches 0, input mutation 0 | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen campaign | Gwyddion 2.71 executable only; finite full-field data; no universal, NaN/Inf, ROI, mask, ASF, tip, physical rolling-ball, performance, other-build, public erosion/dilation, or source-only tie claim |
+| Gwyddion Path Level 2.71 v1 | 18 frozen finite full-field families, ordered straight physical selections, thicknesses 1/2/3/128, 72 logical cases and 144 fresh external executions | Public arrays 72/72 bitwise exact, 4,652/4,652 elements exact; max absolute/ULP 0, signed-zero mismatches 0, 72/72 repeat pairs, normalized endpoints, and mutation/no-op classifications | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen campaign | Audited Gwyddion 2.71 Path Level executable only; no universal, NaN/Inf, ROI/mask, path/spline, profile, align-rows, volume, GUI, performance, other-build/version claim |
 | Nanoscope `.spm` pilot v0.1 | Six demonstrated files | 18/18 metric comparisons within tolerance | <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> limited parser claim | Partial support and `ACCIDENTAL_PRE_FREEZE_UNBLINDING` |
 
 See [Scientific status](../scientific-status.md) for the complete mapping and
@@ -129,6 +130,46 @@ equality behavior are distinguished; the rejected uninitialised-kernel probe is 
 the corrected zero-initialised probe is the valid external evidence. No claim is made for
 universal equivalence, non-finite data, ROI/masks, ASF, tip morphology, physical rolling-ball,
 performance, other Gwyddion builds, public erosion/dilation, or source-only tie semantics.
+
+### Gwyddion 2.71 Path Level
+
+The frozen trace is:
+
+```text
+Gwyddion source
+→ installed Path Level tool execution
+→ frozen 72-case external probe
+→ independent oracle V1
+→ frozen repository fixture
+→ private SPMKit kernel
+→ public SPMChannel API
+→ public bitwise tests
+→ CROSS_VALIDATED status
+```
+
+The records are `.reference/gwyddion-2.71/source/modules/tools/pathlevel.c`,
+`/tmp/spmkit_path_level_probe_v1`, `/tmp/spmkit_path_level_oracle_v1`,
+`docs/design/GWYDDION_PATH_LEVEL_COMPATIBILITY.md`,
+`tests/validation/fixtures/gwyddion/path_level/path_level_reference.npz`,
+`tests/validation/fixtures/gwyddion/path_level/path_level_reference.json`,
+`src/spmkit/core/analysis/_gwyddion_path_level.py`, `src/spmkit/core/analysis/leveling.py`,
+`tests/core/test_gwyddion_path_level_private.py`, and
+`tests/core/test_gwyddion_path_level.py`, and
+`tests/validation/test_path_level_fixture_integrity.py`.
+
+The evidence commit is `d3566ce`; the private-kernel commit is `4ead95b`. The claim is limited
+to 18 finite, non-empty, full-field families, ordered straight selections, thicknesses 1, 2, 3,
+and 128, 72 logical cases, 144 fresh executions, and 72/72 deterministic repeat pairs. Public
+arrays are bitwise exact in 72/72 cases and 4,652/4,652 elements, with maximum absolute
+difference 0, maximum ULP 0, signed-zero mismatches 0, normalized endpoints and mutation/no-op
+classification 72/72, and input mutation 0. The audited module is Gwyddion 2.71 `tools.so`
+with SHA-256 `4711c360dd42e3e16257bf0e86d8bd41852b43d1d34540bf097736a603146237` and Build ID
+`600b16d9857946609b567704b406abcc74aea698`.
+
+Gwyddion mutates its selected data field in place and publishes GUI undo/logging state; SPM-Kit
+returns a new `SPMChannel`. No claim is made for universal equivalence, NaN/Inf, masks/ROI,
+GwySelectionPath, splines/polylines, profiles, align-rows, volume line-leveling, GUI/undo/logging
+or selection-widget parity, performance, or other Gwyddion versions or builds.
 
 ## What remains open
 

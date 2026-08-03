@@ -307,6 +307,30 @@ This capability is `CROSS_VALIDATED` only within the frozen 12-field campaign an
 semantics, evidence identities, and non-claims are recorded in the
 [Gwyddion flat-disc morphology compatibility specification](design/GWYDDION_FLAT_DISC_MORPHOLOGY_COMPATIBILITY.md).
 
+## Gwyddion 2.71 Path Level
+
+SPM-Kit exposes the frozen Gwyddion Path Level operation as a non-mutating channel transform:
+
+```python
+from spmkit.core.analysis import gwyddion_path_level
+
+lines = [(0.0, 0.0, 4.0e-6, 3.0e-6)]
+levelled = gwyddion_path_level(channel, lines, thickness_px=1)
+```
+
+`gwyddion_path_level(channel, lines, *, thickness_px=1) -> SPMChannel` accepts an ordered
+collection of straight physical-coordinate selections `(x0, y0, x1, y1)`. Duplicates and order
+are meaningful. `thickness_px` is an integer in the inclusive range `1..128`, defaulting to
+`1`. The operation has fixed endpoint conversion, no interpolation, horizontal-line exclusion,
+and cumulative row-level correction semantics. It requires finite, non-empty 2D data and finite
+positive channel ranges.
+
+The result is a new `SPMChannel`: shape, Z/XY units, ranges, name, direction, group, and copied
+metadata are preserved, while the input remains unchanged. Masks, ROI, `GwySelectionPath`,
+splines, polylines, profiles, and GUI publication parameters are not part of this API. The scope,
+executable evidence, and non-claims are defined in the
+[Gwyddion Path Level compatibility specification](design/GWYDDION_PATH_LEVEL_COMPATIBILITY.md).
+
 ## KPFM statistics
 
 ```python
