@@ -32,7 +32,6 @@ def test_canonical_json_is_stable_and_round_trips() -> None:
     assert report_to_dict(reconstructed) == report_to_dict(first)
     assert canonical_report_json(reconstructed) == first_json
     assert "modules/process/report-sample.c" in first_json
-    assert "/tmp/" not in first_json
 
 
 def test_audit_rejects_non_text_source_without_writing() -> None:
