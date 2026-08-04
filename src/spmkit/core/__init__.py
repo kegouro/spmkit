@@ -11,6 +11,14 @@ Reúne las cuatro sub-capas del núcleo:
 from spmkit.core import analysis, batch, export, io, models, viz
 from spmkit.core.io import load
 from spmkit.core.models import SPMChannel, SPMData
+from spmkit.core.registry import (
+    CapabilitySpec,
+    ParameterSpec,
+    filter_operations,
+    get_operation,
+    list_operations,
+    resolve_callable,
+)
 from spmkit.core.verify import NidTrace, trace_nid
 
 __all__ = [
@@ -22,6 +30,12 @@ __all__ = [
     "batch",
     "load",
     "SPMData",
+    "CapabilitySpec",
+    "ParameterSpec",
+    "get_operation",
+    "list_operations",
+    "filter_operations",
+    "resolve_callable",
     "SPMChannel",
     "trace_nid",
     "NidTrace",

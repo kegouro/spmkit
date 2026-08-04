@@ -1,0 +1,895 @@
+{
+  "capabilities": [
+    {
+      "aliases": [],
+      "border_policy": "mirror",
+      "capability_id": "IMG.FILTER.GAUSSIAN",
+      "contract": "Separable Gaussian smoothing with sigma in pixels; kernel resolution 2*ceil(5*sigma)+1 capped at 3*min(xres,yres) and forced odd; mirror borders; horizontal-then-vertical passes; sequential-sum reciprocal normalization (not forced to exactly 1.0).",
+      "evidence": [
+        "tests/validation/fixtures/gwyddion/neighborhood_filters/neighborhood_filters_reference.json",
+        "tests/validation/fixtures/gwyddion/neighborhood_filters/neighborhood_filters_reference.npz",
+        "tests/validation/test_gwyddion_neighborhood_filters_production_parity.py",
+        "tests/core/test_gwyddion_neighborhood_filters.py"
+      ],
+      "family": "IMG.FILTER",
+      "known_deviations": [
+        "Gaussian constant-field preservation is not bitwise guaranteed; kernel-normalization rounding (~1e-15) is preserved."
+      ],
+      "mask_semantics": "none",
+      "maturity": "CROSS_VALIDATED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "img.filter.gaussian",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Finite two-dimensional input channel.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "channel",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        },
+        {
+          "bounds": [
+            0.01,
+            40.0
+          ],
+          "default": 5.0,
+          "description": "Gaussian standard deviation in pixels.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "sigma",
+          "required": false,
+          "type": "float",
+          "units": "pixel"
+        }
+      ],
+      "public_import": "spmkit.core.analysis:gwyddion_gaussian_filter",
+      "public_name": "gwyddion_gaussian_filter",
+      "reference": {
+        "name": "Gaussian Filter",
+        "profile": "COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION",
+        "software": "Gwydion",
+        "version": "2.71"
+      },
+      "result_type": "SPMChannel",
+      "roi_support": false,
+      "status": "stable",
+      "units": "preserved"
+    },
+    {
+      "aliases": [],
+      "border_policy": "extend",
+      "capability_id": "IMG.FILTER.MEDIAN",
+      "contract": "Disc median filter with footprint side `size` (2..31, even sizes valid); ellipse-inscribed footprint; upper median rank n//2; EXTEND nearest-constant borders.",
+      "evidence": [
+        "tests/validation/fixtures/gwyddion/neighborhood_filters/neighborhood_filters_reference.json",
+        "tests/validation/fixtures/gwyddion/neighborhood_filters/neighborhood_filters_reference.npz",
+        "tests/validation/test_gwyddion_neighborhood_filters_production_parity.py",
+        "tests/core/test_gwyddion_neighborhood_filters.py"
+      ],
+      "family": "IMG.FILTER",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "CROSS_VALIDATED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "img.filter.median",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Finite two-dimensional input channel.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "channel",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        },
+        {
+          "bounds": [
+            2,
+            31
+          ],
+          "default": 5,
+          "description": "Footprint side length (not a radius).",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "size",
+          "required": false,
+          "type": "int",
+          "units": "pixel"
+        }
+      ],
+      "public_import": "spmkit.core.analysis:gwyddion_median_filter",
+      "public_name": "gwyddion_median_filter",
+      "reference": {
+        "name": "disc Median Filter",
+        "profile": "COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION",
+        "software": "Gwydion",
+        "version": "2.71"
+      },
+      "result_type": "SPMChannel",
+      "roi_support": false,
+      "status": "stable",
+      "units": "preserved"
+    },
+    {
+      "aliases": [],
+      "border_policy": "extend",
+      "capability_id": "IMG.FILTER.RANK",
+      "contract": "Rank filter with pixel radius (1..1024); ellipse-inscribed footprint in a 2*radius+1 square; rank GWY_ROUND(percentile*(n-1)); k=0/k=n-1 minimum/maximum endpoint dispatch; EXTEND borders. Public v1 exposes the primary percentile result only.",
+      "evidence": [
+        "tests/validation/fixtures/gwyddion/neighborhood_filters/neighborhood_filters_reference.json",
+        "tests/validation/fixtures/gwyddion/neighborhood_filters/neighborhood_filters_reference.npz",
+        "tests/validation/test_gwyddion_neighborhood_filters_production_parity.py",
+        "tests/core/test_gwyddion_neighborhood_filters.py"
+      ],
+      "family": "IMG.FILTER",
+      "known_deviations": [
+        "Private secondary/both/difference Rank output modes are retained in diagnostics but not exposed publicly in v1."
+      ],
+      "mask_semantics": "none",
+      "maturity": "CROSS_VALIDATED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "img.filter.rank",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Finite two-dimensional input channel.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "channel",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        },
+        {
+          "bounds": [
+            1,
+            1024
+          ],
+          "default": 20,
+          "description": "Pixel radius of the footprint.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "radius",
+          "required": false,
+          "type": "int",
+          "units": "pixel"
+        },
+        {
+          "bounds": [
+            0.0,
+            1.0
+          ],
+          "default": 0.75,
+          "description": "Percentile selecting the rank.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "percentile",
+          "required": false,
+          "type": "float",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:gwyddion_rank_filter",
+      "public_name": "gwyddion_rank_filter",
+      "reference": {
+        "name": "Rank Filter",
+        "profile": "COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION",
+        "software": "Gwydion",
+        "version": "2.71"
+      },
+      "result_type": "SPMChannel",
+      "roi_support": false,
+      "status": "stable",
+      "units": "preserved"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "IMG.INTERPOLATION.LAPLACE_UNDER_MASK",
+      "contract": "Laplace-based interpolation of masked regions; the mask selects pixels to replace; finite two-dimensional input.",
+      "evidence": [
+        "tests/validation/fixtures/gwydion/scars_laplace/scars_laplace_reference.json",
+        "tests/validation/fixtures/gwydion/scars_laplace/scars_laplace_reference.npz",
+        "tests/validation/test_gwydion_laplace_production_parity.py"
+      ],
+      "family": "IMG.INTERPOLATION",
+      "known_deviations": [],
+      "mask_semantics": "mask_input",
+      "maturity": "CROSS_VALIDATED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "img.interpolation.laplace_under_mask",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Finite two-dimensional input channel.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "channel",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Mask array selecting pixels to interpolate.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "mask",
+          "required": true,
+          "type": "ndarray",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:gwydion_interpolate_data_under_mask",
+      "public_name": "gwydion_interpolate_data_under_mask",
+      "reference": {
+        "name": "Interpolate Data Under Mask (Laplace)",
+        "profile": "COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION",
+        "software": "Gwydion",
+        "version": "2.71"
+      },
+      "result_type": "SPMChannel",
+      "roi_support": false,
+      "status": "stable",
+      "units": "preserved"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "IMG.LEVEL.ALIGN_ROWS_MATCH",
+      "contract": "Align Rows Match: adjacent-row shape matching with Gaussian-weighted differences of row differences, cumulative zero-levelled shifts, zero-weight guard (pure vertical offsets may remain uncorrected).",
+      "evidence": [
+        "tests/validation/fixtures/gwyddion/align_rows_remaining/align_rows_remaining_reference.json",
+        "tests/validation/fixtures/gwyddion/align_rows_remaining/align_rows_remaining_reference.npz",
+        "tests/validation/test_gwydion_align_rows_remaining_production_parity.py"
+      ],
+      "family": "IMG.LEVEL",
+      "known_deviations": [],
+      "mask_semantics": "include_exclude_ignore",
+      "maturity": "CROSS_VALIDATED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "img.level.align_rows_match",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Finite two-dimensional input channel.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "channel",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Optional mask matching the channel shape.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "mask",
+          "required": false,
+          "type": "ndarray | None",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": "ignore",
+          "description": "Masking mode.",
+          "enum_values": [
+            "exclude",
+            "include",
+            "ignore"
+          ],
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "mask_mode",
+          "required": false,
+          "type": "Literal",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": "horizontal",
+          "description": "Row direction.",
+          "enum_values": [
+            "horizontal",
+            "vertical"
+          ],
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "direction",
+          "required": false,
+          "type": "Literal",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:gwyddion_align_rows_match",
+      "public_name": "gwyddion_align_rows_match",
+      "reference": {
+        "name": "Align Rows Match",
+        "profile": "COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION",
+        "software": "Gwydion",
+        "version": "2.71"
+      },
+      "result_type": "SPMChannel",
+      "roi_support": false,
+      "status": "stable",
+      "units": "preserved"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "IMG.LEVEL.ALIGN_ROWS_MODUS",
+      "contract": "Align Rows Modus: robust row-centre statistic (global masked-median fallback, upper median for fewer than nine retained samples, narrowest sqrt-count range window otherwise), zero-levelled shifts.",
+      "evidence": [
+        "tests/validation/fixtures/gwyddion/align_rows_remaining/align_rows_remaining_reference.json",
+        "tests/validation/fixtures/gwyddion/align_rows_remaining/align_rows_remaining_reference.npz",
+        "tests/validation/test_gwydion_align_rows_remaining_production_parity.py"
+      ],
+      "family": "IMG.LEVEL",
+      "known_deviations": [],
+      "mask_semantics": "include_exclude_ignore",
+      "maturity": "CROSS_VALIDATED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "img.level.align_rows_modus",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Finite two-dimensional input channel.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "channel",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Optional mask matching the channel shape.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "mask",
+          "required": false,
+          "type": "ndarray | None",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": "ignore",
+          "description": "Masking mode.",
+          "enum_values": [
+            "exclude",
+            "include",
+            "ignore"
+          ],
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "mask_mode",
+          "required": false,
+          "type": "Literal",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": "horizontal",
+          "description": "Row direction.",
+          "enum_values": [
+            "horizontal",
+            "vertical"
+          ],
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "direction",
+          "required": false,
+          "type": "Literal",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:gwyddion_align_rows_modus",
+      "public_name": "gwyddion_align_rows_modus",
+      "reference": {
+        "name": "Align Rows Modus",
+        "profile": "COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION",
+        "software": "Gwydion",
+        "version": "2.71"
+      },
+      "result_type": "SPMChannel",
+      "roi_support": false,
+      "status": "stable",
+      "units": "preserved"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "IMG.LEVEL.ALIGN_ROWS_POLYNOMIAL",
+      "contract": "Align Rows Polynomial: degree 0 uses the trim-fraction-zero row-shift path; degree >=1 fits each row independently on centred x with a packed Cholesky solve and full-field mean anchoring.",
+      "evidence": [
+        "tests/validation/fixtures/gwyddion/align_rows_remaining/align_rows_remaining_reference.json",
+        "tests/validation/fixtures/gwyddion/align_rows_remaining/align_rows_remaining_reference.npz",
+        "tests/validation/test_gwydion_align_rows_remaining_production_parity.py"
+      ],
+      "family": "IMG.LEVEL",
+      "known_deviations": [],
+      "mask_semantics": "include_exclude_ignore",
+      "maturity": "CROSS_VALIDATED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "img.level.align_rows_polynomial",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Finite two-dimensional input channel.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "channel",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        },
+        {
+          "bounds": [
+            0,
+            5
+          ],
+          "default": 1,
+          "description": "Polynomial degree.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "degree",
+          "required": false,
+          "type": "int",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Optional mask matching the channel shape.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "mask",
+          "required": false,
+          "type": "ndarray | None",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": "ignore",
+          "description": "Masking mode.",
+          "enum_values": [
+            "exclude",
+            "include",
+            "ignore"
+          ],
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "mask_mode",
+          "required": false,
+          "type": "Literal",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": "horizontal",
+          "description": "Row direction.",
+          "enum_values": [
+            "horizontal",
+            "vertical"
+          ],
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "direction",
+          "required": false,
+          "type": "Literal",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:gwyddion_align_rows_polynomial",
+      "public_name": "gwyddion_align_rows_polynomial",
+      "reference": {
+        "name": "Align Rows Polynomial",
+        "profile": "COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION",
+        "software": "Gwydion",
+        "version": "2.71"
+      },
+      "result_type": "SPMChannel",
+      "roi_support": false,
+      "status": "stable",
+      "units": "preserved"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "IMG.SCANLINE.MARK_SCARS",
+      "contract": "Detect and mark scan-line scars, returning a mask array; threshold and geometry parameters follow the frozen Gwydion contract.",
+      "evidence": [
+        "tests/validation/fixtures/gwydion/scars_laplace/scars_laplace_reference.json",
+        "tests/validation/fixtures/gwydion/scars_laplace/scars_laplace_reference.npz",
+        "tests/validation/test_gwydion_mark_scars_production_parity.py"
+      ],
+      "family": "IMG.SCANLINE",
+      "known_deviations": [],
+      "mask_semantics": "mask_output",
+      "maturity": "CROSS_VALIDATED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "img.scanline.mark_scars",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Finite two-dimensional input channel.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "channel",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 0.666,
+          "description": "High threshold.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "threshold_high",
+          "required": false,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 0.25,
+          "description": "Low threshold.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "threshold_low",
+          "required": false,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 16,
+          "description": "Minimum scar length.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "min_length",
+          "required": false,
+          "type": "int",
+          "units": "pixel"
+        },
+        {
+          "bounds": null,
+          "default": 4,
+          "description": "Maximum scar width.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "max_width",
+          "required": false,
+          "type": "int",
+          "units": "pixel"
+        },
+        {
+          "bounds": null,
+          "default": "both",
+          "description": "Scar polarity.",
+          "enum_values": [
+            "positive",
+            "negative",
+            "both"
+          ],
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "polarity",
+          "required": false,
+          "type": "Literal",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Optional existing mask.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "existing_mask",
+          "required": false,
+          "type": "ndarray | None",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": "replace",
+          "description": "Mask combination mode.",
+          "enum_values": [
+            "replace",
+            "union",
+            "intersection"
+          ],
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "combine",
+          "required": false,
+          "type": "Literal",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:gwydion_mark_scars",
+      "public_name": "gwydion_mark_scars",
+      "reference": {
+        "name": "Mark Scars",
+        "profile": "COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION",
+        "software": "Gwydion",
+        "version": "2.71"
+      },
+      "result_type": "ndarray",
+      "roi_support": false,
+      "status": "stable",
+      "units": "mask"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "IMG.SCANLINE.REMOVE_SCARS",
+      "contract": "Detect and remove scan-line scars, returning a corrected channel; threshold and geometry parameters follow the frozen Gwydion contract.",
+      "evidence": [
+        "tests/validation/fixtures/gwydion/scars_laplace/scars_laplace_reference.json",
+        "tests/validation/fixtures/gwydion/scars_laplace/scars_laplace_reference.npz",
+        "tests/validation/test_gwydion_remove_scars_production_parity.py"
+      ],
+      "family": "IMG.SCANLINE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "CROSS_VALIDATED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "img.scanline.remove_scars",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Finite two-dimensional input channel.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "channel",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 0.666,
+          "description": "High threshold.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "threshold_high",
+          "required": false,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 0.25,
+          "description": "Low threshold.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "threshold_low",
+          "required": false,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 16,
+          "description": "Minimum scar length.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "min_length",
+          "required": false,
+          "type": "int",
+          "units": "pixel"
+        },
+        {
+          "bounds": null,
+          "default": 4,
+          "description": "Maximum scar width.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "max_width",
+          "required": false,
+          "type": "int",
+          "units": "pixel"
+        },
+        {
+          "bounds": null,
+          "default": "both",
+          "description": "Scar polarity.",
+          "enum_values": [
+            "positive",
+            "negative",
+            "both"
+          ],
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "polarity",
+          "required": false,
+          "type": "Literal",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:gwydion_remove_scars",
+      "public_name": "gwydion_remove_scars",
+      "reference": {
+        "name": "Remove Scars",
+        "profile": "COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION",
+        "software": "Gwydion",
+        "version": "2.71"
+      },
+      "result_type": "SPMChannel",
+      "roi_support": false,
+      "status": "stable",
+      "units": "preserved"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "IMG.SCANLINE.STEP_BLOCK_CORRECTION",
+      "contract": "Correct step-block artefacts in scan lines; threshold and direction parameters follow the frozen Gwydion contract.",
+      "evidence": [
+        "tests/validation/fixtures/gwydion/step_block/step_block_reference.json",
+        "tests/validation/fixtures/gwydion/step_block/step_block_reference.npz",
+        "tests/validation/test_gwydion_step_block_production_parity.py"
+      ],
+      "family": "IMG.SCANLINE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "CROSS_VALIDATED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "img.scanline.step_block_correction",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Finite two-dimensional input channel.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "channel",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 2.0,
+          "description": "Step detection threshold.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "threshold",
+          "required": false,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": "left_to_right",
+          "description": "Scan direction.",
+          "enum_values": [
+            "left_to_right",
+            "right_to_left"
+          ],
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "direction",
+          "required": false,
+          "type": "Literal",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:gwydion_step_block_correction",
+      "public_name": "gwydion_step_block_correction",
+      "reference": {
+        "name": "Step Block Correction",
+        "profile": "COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION",
+        "software": "Gwydion",
+        "version": "2.71"
+      },
+      "result_type": "SPMChannel",
+      "roi_support": false,
+      "status": "stable",
+      "units": "preserved"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "IMG.SCANLINE.STEP_LINE_CORRECTION",
+      "contract": "Correct step-line artefacts in scan lines; no parameters beyond the input channel.",
+      "evidence": [
+        "tests/validation/fixtures/gwydion/linecorrect/linecorrect_reference.json",
+        "tests/validation/fixtures/gwydion/linecorrect/linecorrect_reference.npz",
+        "tests/validation/test_gwydion_linecorrect_production_parity.py"
+      ],
+      "family": "IMG.SCANLINE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "CROSS_VALIDATED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "img.scanline.step_line_correction",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Finite two-dimensional input channel.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "channel",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:gwydion_step_line_correction",
+      "public_name": "gwydion_step_line_correction",
+      "reference": {
+        "name": "Step Line Correction",
+        "profile": "COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION",
+        "software": "Gwydion",
+        "version": "2.71"
+      },
+      "result_type": "SPMChannel",
+      "roi_support": false,
+      "status": "stable",
+      "units": "preserved"
+    }
+  ],
+  "schema_version": 1
+}
