@@ -414,6 +414,52 @@ other-version/build equivalence; potentially destructive transformation; no clai
 preserving quantitative roughness, PSD or morphology. No experimental or physical
 validation is claimed.
 
+
+### Gwydion 2.71 Neighborhood Filters (Rank, disc Median, Gaussian)
+
+**Claim:** `CROSS_VALIDATED` only within the frozen compiled finite 59-case campaign with the
+exact evidence profile `COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION`
+(Gwydion 2.71 frozen orchestration and source identities pinned; numerical helpers partly
+supplied by installed Gwydion 2.71 libraries; probe boundary sanitizer-instrumented;
+dynamically linked helper internals not sanitizer-rebuilt; `/usr/bin/gwyd*dion` not invoked;
+GUI not executed; Filter Tool mask post-blending and rectangular selection excluded).  The
+three public operations are:
+
+- `gwyd*dion_rank_filter` (radius `1..1024`, percentile `0..1`; public v1 exposes the
+  primary percentile result only; the private diagnostics preserve the secondary, both and
+  difference source output modes);
+- `gwyd*dion_median_filter` (`size` is the footprint SIDE `2..31`, not a radius; even sizes
+  are valid; upper median rank `n//2`);
+- `gwyd*dion_gaussian_filter` (sigma in pixels `0.01..40.0`; sigma=0 is private
+  library-domain evidence and rejected publicly).
+
+Corrected outputs and diagnostics are bitwise exact for all 59 canonical private-kernel cases
+(55 public primary/tool-domain, 1 private Gaussian sigma-zero, 3 private Rank output-mode)
+and for all 55 public primary cases; the 11 relation-only cases and 1 determinism witness are
+verified relationally.  Inputs are finite two-dimensional channels; the input channel and
+data array are never mutated (these operations take no mask).  Borders follow the fixed
+source behavior: EXTEND (nearest constant) for Rank and Median, mirror extension for Gaussian.
+
+**Numerical semantics** follow the compiled evidence:
+
+- Rank Filter: ellipse-inscribed footprint in a `2*radius+1` square, active count `n`,
+  rank `GWY_ROUND(percentile*(n-1))`, k=0/k=n-1 minimum/maximum endpoint dispatch,
+  EXTEND borders, kth-rank value selection;
+- disc Median: ellipse-inscribed footprint in a `size x size` square, upper median rank
+  `n//2`, EXTEND borders;
+- Gaussian: separable kernel `res = 2*ceil(5*sigma)+1` capped at `3*min(xres,yres)` and
+  forced odd, coefficients `exp(-x^2/(2*sigma^2))`, sequential-sum normalization via
+  reciprocal multiply (not forced to exactly 1.0), mirror borders, horizontal-then-vertical
+  passes with the horizontal intermediate preserved.  Gaussian constant preservation is
+  **not** bitwise guaranteed: the observed kernel-normalization rounding (~1e-15) is
+  preserved rather than corrected.
+
+**Non-claims:** no mask support; no rectangular selection; no Mean operation; no public
+Minimum/Maximum operation; no morphology capability; no FFT/frequency filtering; no NaN/Inf
+compatibility; no GUI black-box execution; no universal Gwydion build equivalence; no
+physical validation; no proof that filtering improves scientific truth; no roughness, PSD,
+morphology or uncertainty preservation claim.
+
 ### Gwydion 2.71 Mark Inverted Rows
 
 **Claim:** `CROSS_VALIDATED` within the frozen 14-case finite campaign. The production kernel

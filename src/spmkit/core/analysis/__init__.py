@@ -50,6 +50,11 @@ from spmkit.core.analysis.background import (
     remove_sphere_revolution_background,
     remove_spline_background,
 )
+from spmkit.core.analysis.filters import (
+    gwyddion_gaussian_filter,
+    gwyddion_median_filter,
+    gwyddion_rank_filter,
+)
 from spmkit.core.analysis.forcecurve import ForceCurveFit
 from spmkit.core.analysis.forcevolume import VolumeResult, analyze_volume
 from spmkit.core.analysis.grains import GrainResult
@@ -126,6 +131,9 @@ __all__ = [
     "gwyddion_align_rows_trimmed_mean",
     "gwyddion_align_rows_trimmed_mean_of_differences",
     "gwyddion_path_level",
+    "gwyddion_rank_filter",
+    "gwyddion_median_filter",
+    "gwyddion_gaussian_filter",
     "GwyddionMaskCombineMode",
     "GwyddionScarPolarity",
     "gwydion_interpolate_data_under_mask",
