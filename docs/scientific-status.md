@@ -44,6 +44,7 @@ and tolerance. It never transfers automatically to an adjacent feature.
 | Gwyddion 2.71 Filter flat-disc morphology | `core.analysis.background`, `core.analysis._gwyddion_flat_disc_morphology` | Frozen executable reference campaign: 12 fields, six sizes 2/3/4/5/30/31, 72 Opening and 72 Closing cases; kernels 30/30, Opening 72/72 and Closing 72/72 bitwise exact; maximum absolute difference 0, maximum ULP 0, signed-zero mismatches 0, input mutation 0 | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen campaign | Audited Gwyddion 2.71 executable, corrected external probe V3, executable reduction trace, independent oracle V2, frozen NPZ/JSON fixture | Finite full-field data with masks ignored; no universal equivalence, NaN/Inf, ROI, masks, ASF, tip morphology, physical rolling-ball, performance, other builds/versions, public erosion/dilation, or source-only tie claim |
 | Gwyddion 2.71 Path Level | `core.analysis.leveling`, `core.analysis._gwyddion_path_level` | Audited executable campaign: 18 base families, thicknesses 1/2/3/128, 72 logical cases, 144 fresh external executions and 72 deterministic repeat pairs; private and public arrays 72/72 bitwise exact, 4,652/4,652 elements exact, max absolute/ULP 0, signed-zero mismatches 0, normalized endpoints and mutation/no-op classifications 72/72 | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen campaign | Audited Gwyddion 2.71 Path Level tool, external probe, independent oracle V1, frozen NPZ/JSON fixture | Finite non-empty full fields and ordered straight selections only; no universal equivalence, NaN/Inf, masks/ROI, paths/splines, profiles, align-rows, volume, GUI, performance, or other-build/version claim |
 | Gwyddion 2.71 Align Rows statistics | `core.analysis.leveling`, `core.analysis._gwyddion_align_rows_statistics` | Public 64-case finite campaign: portable source semantics 64/64 arrays and 3,888/3,888 elements bitwise exact; installed fast-math profile 61/64 arrays and 3,757/3,888 elements exact, with only three signed-zero and 128 independently explained reassociation differences | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen dual-profile campaign | Gwyddion 2.71 source, external executable probe, independent portable V2 oracle, frozen NPZ/JSON fixture, installed-build diagnosis | Four methods only; finite full fields, frozen masks/directions/trims; no universal, non-finite, performance, other-version/build, GUI, or generic-`align_rows` compatibility claim |
+| Gwyddion 2.71 Align Rows Facet-level tilt | `core.analysis.leveling`, `core.analysis._gwyddion_align_rows_facet_tilt` | Public 15-case finite campaign: 15/15 corrected arrays (377 elements) bitwise exact against independent oracle and compiled Gwyddion 2.71 source-inclusion probe; 3 background arrays verified elementwise; shifts confirmed all-zero with source-correct length (original rows horizontal, original columns vertical, 7-length VERTICAL shifts for the 5x7 case); mask EXCLUDE/INCLUDE/IGNORE predicates, HORIZONTAL/VERTICAL directions, and fractional mask boundary behavior verified | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen 15-case campaign | Gwyddion 2.71 source (compiled source-inclusion probe), independent Python oracle, frozen NPZ/JSON fixture | Facet-level tilt method only; finite inputs (NaN/inf rejected at entry); no trim-fraction, degree, or other method-family claim; no universal, performance, other-version/build, or GUI claim |
 | Hertz / conical contact and DMT paths | `core.analysis.forcecurve` | Unit and synthetic-recovery tests; Hertz/conical modulus recovery gates | <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> within synthetic test scope | Analytical construction | No certified cantilever/tip calibration or broad experimental campaign |
 | Adhesive JKR | `core.analysis.experimental` | Synthetic recovery of reduced modulus and work of adhesion; Hertz-limit test | <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> within synthetic scope | Analytical construction | Experimental module; no physical-reference campaign |
 | WLC and FJC chain models | `core.analysis.chain` | Analytical synthetic-recovery tests | <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> within synthetic scope | Analytical construction | No cross-software or experimental population campaign |
@@ -251,6 +252,66 @@ Gwyddion 2.71 source: modules/process/linematch.c
 **Non-claims:** no universal equivalence; no NaN/Inf, other Gwyddion version or build, untested
 matrix, performance, ROI/GUI, adapter, or other Align Rows method-family claim.  This finite
 campaign does not establish physical validation or general SPMKit parity.
+
+### Gwyddion 2.71 Align Rows Facet-level tilt
+
+**Claim:** `CROSS_VALIDATED` within the frozen 15-case public campaign covering zero constant,
+exactly linear, nearly linear, curved with outliers, curved with masks (INCLUDE, EXCLUDE, IGNORE),
+fractional mask boundaries, horizontal/vertical directions, and two-column rows (both
+orientations). The production contract is bitwise exact against both the independent Python
+oracle and the compiled Gwyddion 2.71 source-inclusion probe in 15/15 corrected
+arrays (377 elements). Background arrays for the three extract-background cases are verified
+elementwise (`input - corrected`). Shifts arrays are confirmed all-zero (matching
+`gwy_data_line_clear`) with the source-correct length: the operation resamples the shifts line
+to the working field's y-resolution (`gwy_data_line_resample` in `linematch.c` `execute()`),
+so horizontal processing yields original-row-length shifts while vertical processing yields
+original-column-length shifts (7 for the 5x7 VERTICAL case).
+
+The kernel implements the exact Gwyddion 2.71 `linematch_do_facet_tilt` algorithm: iterative
+robust reweighted slope estimation (C=1/200 weighting, exp(q) weights, 30-iteration cap,
+`|tilt/dx|<1e-6` convergence), pair-wise mask predicates (INCLUDE mask≥1.0, EXCLUDE mask≤0.0),
+2-column mincount guard, transpose/restore for VERTICAL direction, and centre-pivot untilting.
+
+Known source-confirmed behaviors: constant rows produce NaN (sigma²=0, IEEE 0/0 in exp); exactly
+linear rows NaN-propagate after the first correction iteration. Input NaN/inf is rejected at
+entry (deliberate defensive validation, diverging from Gwyddion's unchecked IEEE propagation).
+
+**Repair history:** an earlier closure stored five shifts for the 5x7 VERTICAL case in the kernel,
+oracle, and fixture generator while the external probe emitted seven; the generator truncated the
+external evidence to the assumed original y-resolution (circular-validation failure). The repair
+derived the shifts length from the source (working-field y-resolution), fixed the kernel, oracle,
+and generator (which now raises on truncation), added the `two_column_vertical` external case,
+re-ran the normal and ASan campaigns (15/15 cases exit 0, ASan clean, normal-vs-ASan stdout
+identical), and regenerated the fixtures from fresh probe output. All 14 pre-existing
+corrected/background arrays are bitwise identical before and after the repair, confirming the
+shifts-length correction did not alter the correction science.
+
+The kernel implements the exact Gwyddion 2.71 `linematch_do_facet_tilt` algorithm: iterative
+robust reweighted slope estimation (C=1/200 weighting, exp(q) weights, 30-iteration cap,
+`|tilt/dx|<1e-6` convergence), pair-wise mask predicates (INCLUDE mask≥1.0, EXCLUDE mask≤0.0),
+2-column mincount guard, transpose/restore for VERTICAL direction, and centre-pivot untilting.
+
+Known source-confirmed behaviors: constant rows produce NaN (sigma²=0, IEEE 0/0 in exp); exactly
+linear rows NaN-propagate after the first correction iteration. Input NaN/inf is rejected at
+entry (deliberate defensive validation, diverging from Gwyddion's unchecked IEEE propagation).
+
+**Traceability:**
+
+```text
+Gwyddion 2.71 source: modules/process/linematch.c (SHA-256 79b951a1...)
+  → source-inclusion probe: .reference/gwyddion-2.71/facet-tilt-parity/facet_tilt_behavior_probe.c
+  → independent oracle: tests/validation/fixtures/gwyddion/facet_tilt/oracle_facet_tilt.py
+  → frozen fixtures: tests/validation/fixtures/gwyddion/facet_tilt/facet_tilt_reference.{json,npz}
+  → private kernel: src/spmkit/core/analysis/_gwyddion_align_rows_facet_tilt.py
+  → public API: src/spmkit/core/analysis/leveling.py (gwyddion_align_rows_facet_tilt)
+  → tests: tests/core/test_gwyddion_align_rows_facet_tilt.py
+  → fixture integrity: tests/validation/test_gwyddion_align_rows_facet_tilt_fixture_integrity.py
+```
+
+**Non-claims:** no universal equivalence; no non-finite input propagation (rejected at entry); no
+other Align Rows method-family, performance, other Gwyddion version/build, GUI, adapter, or
+physical validation claim. The public function is an explicit alternative to, not a compatibility
+claim for, the existing generic `align_rows`.
 
 ## Test-count policy
 

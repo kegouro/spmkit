@@ -55,6 +55,7 @@ from spmkit.core.analysis.kpfm import CPDResult
 from spmkit.core.analysis.leveling import (
     GwyddionAlignRowsDirection,
     GwyddionAlignRowsMaskMode,
+    gwyddion_align_rows_facet_tilt,
     gwyddion_align_rows_median,
     gwyddion_align_rows_median_of_differences,
     gwyddion_align_rows_trimmed_mean,
@@ -99,6 +100,7 @@ __all__ = [
     "gwyddion_flat_disc_opening",
     "GwyddionAlignRowsDirection",
     "GwyddionAlignRowsMaskMode",
+    "gwyddion_align_rows_facet_tilt",
     "gwyddion_align_rows_median",
     "gwyddion_align_rows_median_of_differences",
     "gwyddion_align_rows_trimmed_mean",
