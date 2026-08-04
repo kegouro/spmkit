@@ -12,6 +12,7 @@ from spmkit.core.analysis import (
     profiles,
     resonance,
     roughness,
+    scanline,
     simulation,
     spectral,
 )
@@ -76,6 +77,10 @@ from spmkit.core.analysis.resonance import (
     ThermalSpectrum,
 )
 from spmkit.core.analysis.roughness import RoughnessResult
+from spmkit.core.analysis.scanline import (
+    gwydion_mark_inverted_rows,
+    gwydion_step_line_correction,
+)
 from spmkit.core.analysis.simulation import SimulatedCantilever
 from spmkit.core.analysis.spectral import FractalResult, RadialPSD
 
@@ -106,6 +111,8 @@ __all__ = [
     "gwyddion_align_rows_trimmed_mean",
     "gwyddion_align_rows_trimmed_mean_of_differences",
     "gwyddion_path_level",
+    "gwydion_mark_inverted_rows",
+    "gwydion_step_line_correction",
     "estimate_median_background",
     "estimate_polynomial_background",
     "estimate_rolling_ball_background",
@@ -122,6 +129,7 @@ __all__ = [
     "remove_spline_background",
     "calibration",
     "leveling",
+    "scanline",
     "roughness",
     "profiles",
     "kpfm",

@@ -45,6 +45,8 @@ and tolerance. It never transfers automatically to an adjacent feature.
 | Gwyddion 2.71 Path Level | `core.analysis.leveling`, `core.analysis._gwyddion_path_level` | Audited executable campaign: 18 base families, thicknesses 1/2/3/128, 72 logical cases, 144 fresh external executions and 72 deterministic repeat pairs; private and public arrays 72/72 bitwise exact, 4,652/4,652 elements exact, max absolute/ULP 0, signed-zero mismatches 0, normalized endpoints and mutation/no-op classifications 72/72 | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen campaign | Audited Gwyddion 2.71 Path Level tool, external probe, independent oracle V1, frozen NPZ/JSON fixture | Finite non-empty full fields and ordered straight selections only; no universal equivalence, NaN/Inf, masks/ROI, paths/splines, profiles, align-rows, volume, GUI, performance, or other-build/version claim |
 | Gwyddion 2.71 Align Rows statistics | `core.analysis.leveling`, `core.analysis._gwyddion_align_rows_statistics` | Public 64-case finite campaign: portable source semantics 64/64 arrays and 3,888/3,888 elements bitwise exact; installed fast-math profile 61/64 arrays and 3,757/3,888 elements exact, with only three signed-zero and 128 independently explained reassociation differences | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen dual-profile campaign | Gwyddion 2.71 source, external executable probe, independent portable V2 oracle, frozen NPZ/JSON fixture, installed-build diagnosis | Four methods only; finite full fields, frozen masks/directions/trims; no universal, non-finite, performance, other-version/build, GUI, or generic-`align_rows` compatibility claim |
 | Gwyddion 2.71 Align Rows Facet-level tilt | `core.analysis.leveling`, `core.analysis._gwyddion_align_rows_facet_tilt` | Public 15-case finite campaign: 15/15 corrected arrays (377 elements) bitwise exact against independent oracle and compiled Gwyddion 2.71 source-inclusion probe; 3 background arrays verified elementwise; shifts confirmed all-zero with source-correct length (original rows horizontal, original columns vertical, 7-length VERTICAL shifts for the 5x7 case); mask EXCLUDE/INCLUDE/IGNORE predicates, HORIZONTAL/VERTICAL directions, and fractional mask boundary behavior verified | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen 15-case campaign | Gwyddion 2.71 source (compiled source-inclusion probe), independent Python oracle, frozen NPZ/JSON fixture | Facet-level tilt method only; finite inputs (NaN/inf rejected at entry); no trim-fraction, degree, or other method-family claim; no universal, performance, other-version/build, or GUI claim |
+| Gwydion 2.71 Step Line Correction | `core.analysis.scanline`, `core.analysis._gwydion_step_line_correction` | Public 16-case finite campaign: production kernel 176/176 arrays and 5,046/5,046 elements bitwise exact against the compiled source-inclusion probe and independent oracle; max absolute difference 0, max ULP 0, signed-zero mismatches 0; two-pass distinguishing case and conservative-filter dimension behaviour verified | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen 16-case campaign | Compiled Gwydion 2.71 source-included kernels with source-pinned orchestration, independent Python oracle, frozen JSON/NPZ fixtures, normal and ASan+UBSan campaign | Horizontal row processing only; finite inputs only (NaN/Inf rejected at entry); no input mask; no parameterized threshold; no Block Line Correction; no GUI, undo or logging parity; no universal or other-version/build equivalence; potentially destructive transformation; no claim of preserving quantitative roughness, PSD or morphology |
+| Gwydion 2.71 Mark Inverted Rows | `core.analysis.scanline`, `core.analysis._gwydion_mark_inverted_rows` | Public 14-case finite campaign: production kernel 59/59 arrays and 596/596 elements bitwise exact against the compiled source-inclusion probe and independent oracle; exact binary masks, marked-row sets, guards, strict-first anchor tie, early-return and existing-mask overwrite classifications; data field non-mutation verified | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen 14-case campaign | Compiled Gwydion 2.71 source-included kernels with source-pinned orchestration, independent Python oracle, frozen JSON/NPZ fixtures, normal and ASan+UBSan campaign | Horizontal rows only; finite inputs only; no persistent Data Browser mask state (public API returns an independent mask, all-zero when Gwydion would create none); no interpolation or automatic correction; no claim that a marked row should be numerically sign-inverted; no other version/build or universal equivalence |
 | Hertz / conical contact and DMT paths | `core.analysis.forcecurve` | Unit and synthetic-recovery tests; Hertz/conical modulus recovery gates | <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> within synthetic test scope | Analytical construction | No certified cantilever/tip calibration or broad experimental campaign |
 | Adhesive JKR | `core.analysis.experimental` | Synthetic recovery of reduced modulus and work of adhesion; Hertz-limit test | <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> within synthetic scope | Analytical construction | Experimental module; no physical-reference campaign |
 | WLC and FJC chain models | `core.analysis.chain` | Analytical synthetic-recovery tests | <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> within synthetic scope | Analytical construction | No cross-software or experimental population campaign |
@@ -312,6 +314,61 @@ Gwyddion 2.71 source: modules/process/linematch.c (SHA-256 79b951a1...)
 other Align Rows method-family, performance, other Gwyddion version/build, GUI, adapter, or
 physical validation claim. The public function is an explicit alternative to, not a compatibility
 claim for, the existing generic `align_rows`.
+
+
+### Gwydion 2.71 Step Line Correction
+
+**Claim:** `CROSS_VALIDATED` within the frozen 16-case finite campaign. The production kernel
+(`_gwydion_step_line_correction`) is bitwise exact against the compiled Gwydion 2.71
+source-inclusion probe and the independent Python oracle: 176/176 arrays and 5,046/5,046
+elements bitwise exact, max absolute difference 0, max ULP 0, signed-zero mismatches 0.
+
+**Evidence:** compiled Gwydion 2.71 source-included kernels with source-pinned orchestration
+(`line_correct_step_iter`, `calculate_segment_correction` compiled verbatim from the frozen
+tree; orchestration annotated per source line); independent Python oracle; frozen JSON/NPZ
+fixtures; normal and ASan+UBSan 60-execution campaign (30/30 normal-versus-sanitized stdout
+identical); production parity metrics; the two-pass distinguishing case `s11_pass2_change`
+(pass 2 changes exactly the middle row, columns 5-10); conservative-filter dimension
+behaviour (size-5 filter is a numerical no-op below 5x5, source `filters.c:1174-1177`).
+
+**Numerical semantics** follow the frozen Gwydion 2.71 source and executable probe: row
+upper-median alignment with zero-leveled shifts, two detector passes (v =
+(middle-top)*(middle-bottom) > 3.0*w; segments of at least 4 equal-sign pixels; correction
+(3*segment_residual + local_residual)/4), size-5 conservative denoise, global-mean
+restoration. **User-facing interpretation** follows the Gwydion scan-line artefacts guide:
+Step Line Correction must be described as aggressive and potentially destructive.
+
+**Limitations and non-claims:** horizontal row processing only; finite inputs only (NaN/Inf
+rejected at entry, a deliberate SPMKit policy difference); no input mask; no parameterized
+threshold; no Block Line Correction; no GUI, undo or logging parity; no universal or
+other-version/build equivalence; potentially destructive transformation; no claim of
+preserving quantitative roughness, PSD or morphology. No experimental or physical
+validation is claimed.
+
+### Gwydion 2.71 Mark Inverted Rows
+
+**Claim:** `CROSS_VALIDATED` within the frozen 14-case finite campaign. The production kernel
+(`_gwydion_mark_inverted_rows`) is bitwise exact against the compiled Gwydion 2.71
+source-inclusion probe and the independent Python oracle: 59/59 arrays and 596/596 elements
+bitwise exact; exact binary masks; exact marked-row sets; exact guards, early-return
+classifications, strict-first anchor tie and existing-mask overwrite classifications; zero
+input mutation.
+
+**Evidence:** compiled Gwydion 2.71 source-included kernels with source-pinned orchestration;
+independent Python oracle; frozen JSON/NPZ fixtures; normal and ASan+UBSan campaign; exact
+binary masks (0.0/1.0); boundary and consecutive-row cases; strict-first anchor tie
+(`m09_tie_anchor`); no-negative early return; existing-mask overwrite semantics validated
+privately; data field non-mutation.
+
+**Public adaptation:** SPMKit has no persistent Data Browser mask state; the public API
+returns an independent C-contiguous mask array, all-zero when Gwydion would create no mask.
+The private kernel preserves an existing mask untouched on the no-negative early return and
+overwrites it bitwise after actual detection (modelling `linecorrect.c:255-260, 321-324`).
+
+**Limitations and non-claims:** horizontal rows only; finite inputs only; no persistent Data
+Browser mask state; no interpolation or automatic correction; no claim that a marked row
+should be numerically sign-inverted; no other version/build or universal equivalence. No
+experimental or physical validation is claimed.
 
 ## Test-count policy
 
