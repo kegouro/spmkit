@@ -320,6 +320,71 @@ physical validation claim. The public function is an explicit alternative to, no
 claim for, the existing generic `align_rows`.
 
 
+### Gwydion 2.71 Align Rows remaining methods (Polynomial, Modus, Match)
+
+**Claim:** `CROSS_VALIDATED` only within the frozen compiled finite 62-case campaign with the
+exact evidence profile `COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION`
+(Gwydion 2.71 `modules/process/linematch.c` source-included kernel with source-pinned
+orchestration; helper functions from the installed Gwydion 2.71 libraries).  The three public
+operations are:
+
+- `gwyddion_align_rows_polynomial` (degree `0..5`);
+- `gwyddion_align_rows_modus`;
+- `gwyddion_align_rows_match`.
+
+Corrected fields are bitwise exact for all 62 canonical numerical cases at the private-kernel
+level (10,056 elements, max absolute difference 0, max ULP 0) and for all 61 in-range cases
+through the public API; the frozen degree-8 probe case (outside the public `0..5` degree
+range) is verified only at the private-kernel level and the public API rejects it.  The
+private diagnostics are exact for corrected/background/delta/shifts profiles, per-row valid
+indices/counts/shifts/statuses, method and masking identity, branch selection, and signed-zero
+bits.  Six determinism witnesses are stored once in the fixture NPZ with exact paired equality
+relations.  Masking modes INCLUDE (`mask > 0`), EXCLUDE (`mask < 1`) and IGNORE are covered
+for all three methods; inputs are finite two-dimensional channels and the input channel, data
+array and mask are never mutated.  Horizontal row processing is externally `CROSS_VALIDATED`
+within this compiled profile; the vertical transpose-derived direction is source-semantic and
+is not claimed as externally cross-validated.
+
+**Numerical semantics** follow the compiled evidence:
+
+- Polynomial degree 0 uses the trim-fraction-zero **row-shift path** (per-row means,
+  `mincount = GWY_ROUND(log(xres) + 1)`, global masked-median fallback, zero-levelled shifts)
+  and deliberately does **not** call the degree >= 1 polynomial solver;
+- Polynomial degree >= 1 fits each row independently on `x = j - 0.5*(xres-1)` with
+  source-order moments, a packed lower-triangular Cholesky solve and full-field mean
+  anchoring; the installed helper-library binary used for the compiled campaign performs one
+  Cholesky nondiagonal step as reciprocal multiplication (`r * (1.0/s)`) where the frozen
+  source text expresses direct division (`r / s`) — production follows the compiled evidence
+  profile and no universal build equivalence is claimed;
+- Modus is a robust row-centre statistic (global masked-median fallback, upper median for
+  fewer than nine retained samples, otherwise the narrowest `sqrt(count)`-wide range window
+  over the sorted samples with the mean of its central third, zero-levelled);
+- Match compares adjacent rows with Gaussian-weighted differences of row differences,
+  includes endpoint samples exactly, reassigns the effective weight sum before the scalar
+  correction, accumulates across rows and zero-levels; under its zero-weight guard **pure
+  vertical row offsets with identical row shape may remain uncorrected** — this source
+  behaviour is preserved, not repaired.
+
+**Traceability:**
+
+```text
+Gwydion 2.71 source: modules/process/linematch.c
+  → compiled source-inclusion probe (normal + ASan/UBSan campaigns)
+  → independent source-semantic oracle and declarative oracle
+  → tests/validation/fixtures/gwyddion/align_rows_remaining/
+  → src/spmkit/core/analysis/_gwyddion_align_rows_remaining.py
+  → src/spmkit/core/analysis/leveling.py (public API)
+  → tests/core/test_gwydion_align_rows_remaining.py
+  → tests/validation/test_gwydion_align_rows_remaining_production_parity.py
+```
+
+**Non-claims:** no horizontal pixel displacement; no bidirectional channel-mismatch; no stripe
+suppression; no generic outlier-line detection; no NaN/Inf compatibility; no GUI black-box
+execution; no universal Gwydion version/build equivalence; no physical validation and no proof
+that removed row structure is an acquisition artefact; no roughness, PSD, morphology or
+uncertainty preservation claim.  This finite campaign does not establish a generic SPMKit
+`align_rows` compatibility claim.
+
 ### Gwydion 2.71 Step Line Correction
 
 **Claim:** `CROSS_VALIDATED` within the frozen 16-case finite campaign. The production kernel

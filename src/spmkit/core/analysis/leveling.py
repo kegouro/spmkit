@@ -14,6 +14,10 @@ import numpy as np
 from spmkit.core.analysis._gwyddion_align_rows_facet_tilt import (
     _gwyddion_align_rows_facet_tilt,
 )
+from spmkit.core.analysis._gwyddion_align_rows_remaining import (
+    _gwydion_align_rows_remaining_result,
+    _GwydionAlignRowsMethod,
+)
 from spmkit.core.analysis._gwyddion_align_rows_statistics import (
     _gwyddion_align_rows_statistics_result,
     _GwyddionAlignRowsDirection,
@@ -431,6 +435,131 @@ def gwyddion_align_rows_facet_tilt(
         mask=mask,
     )
     return channel.with_data(result.corrected)
+
+
+def _gwyddion_align_rows_remaining_channel(
+    channel: SPMChannel,
+    *,
+    method: _GwydionAlignRowsMethod,
+    degree: int,
+    mask: np.ndarray | None,
+    mask_mode: GwyddionAlignRowsMaskMode,
+    direction: GwyddionAlignRowsDirection,
+) -> SPMChannel:
+    """Apply one private remaining-method Align Rows kernel and preserve
+    channel context."""
+    if not isinstance(channel, SPMChannel):
+        raise TypeError("Gwydion Align Rows requires an SPMChannel")
+    if not isinstance(mask_mode, str) or mask_mode not in _GWYDDION_ALIGN_ROWS_MASK_MODES:
+        raise ValueError("Gwydion Align Rows mask_mode must be 'exclude', 'include', or 'ignore'")
+    if not isinstance(direction, str) or direction not in _GWYDDION_ALIGN_ROWS_DIRECTIONS:
+        raise ValueError("Gwydion Align Rows direction must be 'horizontal' or 'vertical'")
+    if not isinstance(degree, (int, np.integer)) or isinstance(degree, (bool, np.bool_)):
+        raise TypeError("Gwydion Align Rows degree must be an integer")
+    if not 0 <= int(degree) <= 5:
+        raise ValueError("Gwydion Align Rows degree must be in the inclusive range 0..5")
+
+    result = _gwydion_align_rows_remaining_result(
+        channel.data,
+        method=method,
+        masking_mode=_GWYDDION_ALIGN_ROWS_MASK_MODES[mask_mode],
+        direction=_GWYDDION_ALIGN_ROWS_DIRECTIONS[direction],
+        degree=int(degree),
+        mask=mask,
+    )
+    return channel.with_data(result.corrected)
+
+
+def gwyddion_align_rows_polynomial(
+    channel: SPMChannel,
+    *,
+    degree: int = 1,
+    mask: np.ndarray | None = None,
+    mask_mode: GwyddionAlignRowsMaskMode = "ignore",
+    direction: GwyddionAlignRowsDirection = "horizontal",
+) -> SPMChannel:
+    """Apply Gwydion 2.71 Align Rows Polynomial correction.
+
+    ``degree`` selects the source polynomial degree in the inclusive range
+    ``0..5``.  Degree zero dispatches to the trim-fraction-zero row-shift
+    path (per-row means with a global masked-median fallback and zero-
+    levelled shifts); degree one or higher fits each row independently on
+    the centred basis ``x = j - 0.5*(xres-1)`` with a packed Cholesky
+    solve and full-field mean anchoring.
+
+    ``mask`` is an optional finite numeric array matching the channel
+    shape.  ``mask_mode`` is ``"exclude"``, ``"include"``, or ``"ignore"``;
+    an absent mask always selects all values.  ``direction`` selects
+    horizontal rows or source-equivalent vertical transpose/restore
+    processing.  The result is a new ``SPMChannel`` with the input context
+    preserved; the input channel, data and mask are never mutated.
+    """
+    return _gwyddion_align_rows_remaining_channel(
+        channel,
+        method=_GwydionAlignRowsMethod.POLYNOMIAL,
+        degree=degree,
+        mask=mask,
+        mask_mode=mask_mode,
+        direction=direction,
+    )
+
+
+def gwyddion_align_rows_modus(
+    channel: SPMChannel,
+    *,
+    mask: np.ndarray | None = None,
+    mask_mode: GwyddionAlignRowsMaskMode = "ignore",
+    direction: GwyddionAlignRowsDirection = "horizontal",
+) -> SPMChannel:
+    """Apply Gwydion 2.71 Align Rows Modus correction.
+
+    The Modus estimator is a robust row-centre statistic: rows with fewer
+    than nine retained samples use the upper median, rows with more use
+    the narrowest ``sqrt(count)``-wide range window over the sorted
+    retained samples and take the mean of its central third; rows with no
+    retained samples fall back to the global masked median.  Shifts are
+    zero-levelled before subtraction.
+
+    ``mask``, ``mask_mode`` and ``direction`` follow the shared Align Rows
+    public contract.  The result is a new context-preserving ``SPMChannel``.
+    """
+    return _gwyddion_align_rows_remaining_channel(
+        channel,
+        method=_GwydionAlignRowsMethod.MODUS,
+        degree=0,
+        mask=mask,
+        mask_mode=mask_mode,
+        direction=direction,
+    )
+
+
+def gwyddion_align_rows_match(
+    channel: SPMChannel,
+    *,
+    mask: np.ndarray | None = None,
+    mask_mode: GwyddionAlignRowsMaskMode = "ignore",
+    direction: GwyddionAlignRowsDirection = "horizontal",
+) -> SPMChannel:
+    """Apply Gwydion 2.71 Align Rows Match correction.
+
+    Adjacent rows are compared through Gaussian-weighted differences of
+    row differences; the scalar correction is accumulated across rows and
+    zero-levelled.  When the effective weight sum is zero (for example
+    pure vertical row offsets with identical row shape), no correction is
+    applied to that row pair; the source behaviour is preserved rather
+    than repaired.
+
+    ``mask``, ``mask_mode`` and ``direction`` follow the shared Align Rows
+    public contract.  The result is a new context-preserving ``SPMChannel``.
+    """
+    return _gwyddion_align_rows_remaining_channel(
+        channel,
+        method=_GwydionAlignRowsMethod.MATCH,
+        degree=0,
+        mask=mask,
+        mask_mode=mask_mode,
+        direction=direction,
+    )
 
 
 def shift_vertical(channel: SPMChannel, *, offset: float) -> SPMChannel:
