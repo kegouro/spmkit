@@ -24,6 +24,9 @@ from spmkit.core.analysis._gwydion_mark_scars import (
 from spmkit.core.analysis._gwydion_remove_scars import (
     _gwydion_remove_scars_result,
 )
+from spmkit.core.analysis._gwydion_step_block import (
+    _gwydion_step_block_result,
+)
 from spmkit.core.analysis._gwydion_step_line_correction import (
     _gwydion_step_line_correction_result,
 )
@@ -234,4 +237,45 @@ def gwydion_remove_scars(
         max_width=max_width,
         polarity=polarity,
     )
+    return channel.with_data(result.corrected_field)
+
+
+def gwydion_step_block_correction(
+    channel: SPMChannel,
+    *,
+    threshold: float = 2.0,
+    direction: Literal["left_to_right", "right_to_left"] = "left_to_right",
+) -> SPMChannel:
+    """Correct vertical steps in scan lines by block (frozen Gwydion 2.71).
+
+    The operation detects per-pixel vertical jumps whose absolute
+    difference exceeds an effective threshold, scores each row boundary and
+    horizontal split position (first strict maximum), constructs row
+    blocks, estimates each block's shift with a 25% trimmed mean over the
+    boundary shift samples, and applies a cumulative piecewise-constant
+    correction anchored at the first block.  Left-to-right and
+    right-to-left scan directions are supported; no mask is consumed.
+
+    ``channel`` data must be non-empty, two-dimensional, real and finite.
+    ``threshold`` must be within [0.1, 10.0] (source-supported public
+    range); ``direction`` must be ``"left_to_right"`` or
+    ``"right_to_left"``.  Fields with xres < 2 are rejected with a typed
+    ValueError: the frozen Gwydion source performs an out-of-bounds read
+    for xres=1 (documented SOURCE_DEFECT) and SPMKit never exposes
+    undefined behaviour.
+
+    The input channel is never mutated; a new ``SPMChannel`` preserving the
+    input context (shape, ranges, units, direction, copied metadata) is
+    returned.  No claim is made that a detected step is an acquisition
+    artefact rather than a real topographic discontinuity, and no
+    preservation of roughness, PSD, morphology or uncertainty is claimed.
+    """
+    data = _validated_channel_data(channel, operation="Step Block Correction")
+    if not math.isfinite(threshold) or not 0.1 <= threshold <= 10.0:
+        raise ValueError("threshold must be finite and within [0.1, 10.0]")
+    if direction not in ("left_to_right", "right_to_left"):
+        raise ValueError("direction must be left_to_right or right_to_left")
+    dy = channel.y_range / data.shape[0]
+    result = _gwydion_step_block_result(data, threshold=threshold,
+                                        direction=direction, dy=dy)
     return channel.with_data(result.corrected_field)

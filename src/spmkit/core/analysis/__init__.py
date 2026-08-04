@@ -87,6 +87,7 @@ from spmkit.core.analysis.scanline import (
     gwydion_mark_inverted_rows,
     gwydion_mark_scars,
     gwydion_remove_scars,
+    gwydion_step_block_correction,
     gwydion_step_line_correction,
 )
 from spmkit.core.analysis.simulation import SimulatedCantilever
@@ -125,6 +126,7 @@ __all__ = [
     "gwydion_mark_inverted_rows",
     "gwydion_mark_scars",
     "gwydion_remove_scars",
+    "gwydion_step_block_correction",
     "gwydion_step_line_correction",
     "estimate_median_background",
     "estimate_polynomial_background",
