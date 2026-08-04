@@ -29,10 +29,16 @@ def readers() -> tuple[Reader, ...]:
 
 
 def reader_for(path: str | Path) -> Reader | None:
-    """El lector que maneja la extensión de ``path`` (o ``None``)."""
+    """El lector que maneja ``path`` por extensión y predicado opcional."""
     _ensure_discovered()
     ext = Path(path).suffix.lower()
-    return next((r for r in _READERS if ext in r.extensions), None)
+    for reader in _READERS:
+        if ext not in reader.extensions:
+            continue
+        matches_path = getattr(reader, "matches_path", None)
+        if matches_path is None or matches_path(path):
+            return reader
+    return None
 
 
 def supported_extensions() -> tuple[str, ...]:

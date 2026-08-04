@@ -112,6 +112,32 @@ class BrukerSpmReader(_ImageReader):
         return load_bruker_spm
 
 
+class IgorIbwReader(_ImageReader):
+    """Limited native Igor Binary Wave v5 image reader.
+
+    A header predicate deliberately lets unsupported ``.ibw`` variants reach the
+    optional ``afmformats`` reader when that extra is installed.
+    """
+
+    extensions: tuple[str, ...] = (".ibw",)
+    format = "igor-ibw-v5-native-limited"
+
+    def matches_path(self, path: str | Path) -> bool:
+        from spmkit.core.io.igor_ibw import looks_like_limited_igor_ibw
+
+        return looks_like_limited_igor_ibw(path)
+
+    def inspect(self, path: str | Path) -> Any:
+        from spmkit.core.io.igor_ibw import inspect_igor_ibw
+
+        return inspect_igor_ibw(path)
+
+    def _loader(self) -> Any:
+        from spmkit.core.io.igor_ibw import load_igor_ibw
+
+        return load_igor_ibw
+
+
 class JpkForceReader:
     """JPK/Bruker ``.jpk-force`` — curva de fuerza (envuelta en un volumen 1×1)."""
 
@@ -132,5 +158,6 @@ BUILTIN_READERS: tuple[Reader, ...] = (
     NhfReader(),
     GwyReader(),
     BrukerSpmReader(),
+    IgorIbwReader(),
     JpkForceReader(),
 )
