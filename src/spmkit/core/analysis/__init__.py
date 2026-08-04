@@ -6,6 +6,7 @@ from spmkit.core.analysis import (
     forcecurve,
     forcevolume,
     grains,
+    interpolation,
     kpfm,
     leveling,
     mechanics,
@@ -52,6 +53,9 @@ from spmkit.core.analysis.background import (
 from spmkit.core.analysis.forcecurve import ForceCurveFit
 from spmkit.core.analysis.forcevolume import VolumeResult, analyze_volume
 from spmkit.core.analysis.grains import GrainResult
+from spmkit.core.analysis.interpolation import (
+    gwydion_interpolate_data_under_mask,
+)
 from spmkit.core.analysis.kpfm import CPDResult
 from spmkit.core.analysis.leveling import (
     GwyddionAlignRowsDirection,
@@ -78,7 +82,11 @@ from spmkit.core.analysis.resonance import (
 )
 from spmkit.core.analysis.roughness import RoughnessResult
 from spmkit.core.analysis.scanline import (
+    GwyddionMaskCombineMode,
+    GwyddionScarPolarity,
     gwydion_mark_inverted_rows,
+    gwydion_mark_scars,
+    gwydion_remove_scars,
     gwydion_step_line_correction,
 )
 from spmkit.core.analysis.simulation import SimulatedCantilever
@@ -111,7 +119,12 @@ __all__ = [
     "gwyddion_align_rows_trimmed_mean",
     "gwyddion_align_rows_trimmed_mean_of_differences",
     "gwyddion_path_level",
+    "GwyddionMaskCombineMode",
+    "GwyddionScarPolarity",
+    "gwydion_interpolate_data_under_mask",
     "gwydion_mark_inverted_rows",
+    "gwydion_mark_scars",
+    "gwydion_remove_scars",
     "gwydion_step_line_correction",
     "estimate_median_background",
     "estimate_polynomial_background",
@@ -128,6 +141,7 @@ __all__ = [
     "remove_sphere_revolution_background",
     "remove_spline_background",
     "calibration",
+    "interpolation",
     "leveling",
     "scanline",
     "roughness",

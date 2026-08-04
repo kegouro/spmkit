@@ -47,6 +47,9 @@ and tolerance. It never transfers automatically to an adjacent feature.
 | Gwyddion 2.71 Align Rows Facet-level tilt | `core.analysis.leveling`, `core.analysis._gwyddion_align_rows_facet_tilt` | Public 15-case finite campaign: 15/15 corrected arrays (377 elements) bitwise exact against independent oracle and compiled Gwyddion 2.71 source-inclusion probe; 3 background arrays verified elementwise; shifts confirmed all-zero with source-correct length (original rows horizontal, original columns vertical, 7-length VERTICAL shifts for the 5x7 case); mask EXCLUDE/INCLUDE/IGNORE predicates, HORIZONTAL/VERTICAL directions, and fractional mask boundary behavior verified | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen 15-case campaign | Gwyddion 2.71 source (compiled source-inclusion probe), independent Python oracle, frozen NPZ/JSON fixture | Facet-level tilt method only; finite inputs (NaN/inf rejected at entry); no trim-fraction, degree, or other method-family claim; no universal, performance, other-version/build, or GUI claim |
 | Gwydion 2.71 Step Line Correction | `core.analysis.scanline`, `core.analysis._gwydion_step_line_correction` | Public 16-case finite campaign: production kernel 176/176 arrays and 5,046/5,046 elements bitwise exact against the compiled source-inclusion probe and independent oracle; max absolute difference 0, max ULP 0, signed-zero mismatches 0; two-pass distinguishing case and conservative-filter dimension behaviour verified | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen 16-case campaign | Compiled Gwydion 2.71 source-included kernels with source-pinned orchestration, independent Python oracle, frozen JSON/NPZ fixtures, normal and ASan+UBSan campaign | Horizontal row processing only; finite inputs only (NaN/Inf rejected at entry); no input mask; no parameterized threshold; no Block Line Correction; no GUI, undo or logging parity; no universal or other-version/build equivalence; potentially destructive transformation; no claim of preserving quantitative roughness, PSD or morphology |
 | Gwydion 2.71 Mark Inverted Rows | `core.analysis.scanline`, `core.analysis._gwydion_mark_inverted_rows` | Public 14-case finite campaign: production kernel 59/59 arrays and 596/596 elements bitwise exact against the compiled source-inclusion probe and independent oracle; exact binary masks, marked-row sets, guards, strict-first anchor tie, early-return and existing-mask overwrite classifications; data field non-mutation verified | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen 14-case campaign | Compiled Gwydion 2.71 source-included kernels with source-pinned orchestration, independent Python oracle, frozen JSON/NPZ fixtures, normal and ASan+UBSan campaign | Horizontal rows only; finite inputs only; no persistent Data Browser mask state (public API returns an independent mask, all-zero when Gwydion would create none); no interpolation or automatic correction; no claim that a marked row should be numerically sign-inverted; no other version/build or universal equivalence |
+| Gwydion 2.71 Mark Scars | `core.analysis.scanline`, `core.analysis._gwydion_mark_scars` | Production 22-case finite campaign: 20 public-API cases and two private-kernel semantic cases; production masks 22/22 arrays and 1,726/1,726 elements bitwise exact against the compiled probe and independent oracle; max absolute difference 0, max ULP 0, signed-zero mismatches 0; exact parameter and combine semantics (replace/union/intersection), effective-threshold sanitization, hard/soft seeding, width/length boundaries, outer-row exclusion and no-detection classifications verified | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen 22-case campaign | Compiled-against Gwydion 2.71 libprocess 2.71 (pinned shared-library hash, frozen source identity), independent Python oracle, frozen JSON/NPZ fixtures, normal and ASan+UBSan probe campaign | Detector, not proof of physical corruption; horizontal scan-line scars only (no vertical orientation); finite fields only (NaN/Inf rejected at entry); thresholds within [0,2], min_length [1,1024], max_width [1,16]; no Data Browser mask persistence; no roughness or morphology preservation claim; no other version/build or universal equivalence |
+| Gwydion 2.71 Interpolate Data Under Mask (Laplace) | `core.analysis.interpolation`, `core.analysis._gwydion_laplace` | Production 18-case finite campaign with explicitly mixed comparison classes: exact policies (empty mask unchanged, whole-field mask zeros, strict mask>0 predicate, calibration independence, unmasked pixels bitwise unchanged) and source-compatible special paths bitwise; campaign maximum 2 ULP and 1.7763568394002505e-15 absolute difference against the linked 2.71 library on the retained iterative paths; zero exact-zero/nonzero transitions in the retained Laplace cases; independent Decimal mathematical reference; production residual guard (implementation numerical-quality guard, not compiled-residual parity); L05/L06 one-ULP tridiagonal rounding classified; L17 signed-zero build-specific classification (production matches the compiled -0.0) | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen 18-case campaign, with explicitly mixed comparison classes | Compiled-against Gwydion 2.71 libprocess 2.71 (pinned shared-library hash, frozen source identity), independent Decimal mathematical oracle, frozen JSON/NPZ fixtures, normal and ASan+UBSan probe campaign | Finite values only; mask >0 semantics; no qprec API (process operation grain_id=-1, qprec=1.0); implementation solves the same discrete problem but does not claim algorithmic identity with Gwydion's multilevel/CG/Jacobi solver; no uncertainty; no preservation claim for roughness, PSD, autocorrelation or morphology; no physical validation; no universal tolerance or other-build equivalence; linked library internals were not sanitizer-instrumented |
+| Gwydion 2.71 Remove Scars | `core.analysis.scanline`, `core.analysis._gwydion_remove_scars` | Production 6-case finite composition campaign: production temporary mask 6/6 bitwise identical to the frozen compiled mask; production result equals the explicit production Mark-plus-Laplace composition; compiled mask and composition identities frozen 6/6 bitwise; corrected-field compatibility uses mixed comparison classes: the no-detection case is bitwise unchanged, and 128 exact-zero versus tiny-nonzero transitions (compiled values exact zero, production magnitudes at most ~1.739e-15, independent mathematical reference exact zero) satisfy the frozen absolute-difference bound, not the finite-nonzero ULP bound | <span class="spm-level spm-level--3" data-level="3">CROSS_VALIDATED</span> within the frozen 6-case composition campaign | Compiled-against Gwydion 2.71 libprocess 2.71 (pinned shared-library hash, frozen source identity), independent oracle composition, frozen JSON/NPZ fixtures, normal and ASan+UBSan probe campaign | Inherits all Mark and Laplace limitations; temporary mask is private; no existing-mask or combine parameter; no claim that detected/interpolated data are physically recovered; no other version/build or universal equivalence |
 | Hertz / conical contact and DMT paths | `core.analysis.forcecurve` | Unit and synthetic-recovery tests; Hertz/conical modulus recovery gates | <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> within synthetic test scope | Analytical construction | No certified cantilever/tip calibration or broad experimental campaign |
 | Adhesive JKR | `core.analysis.experimental` | Synthetic recovery of reduced modulus and work of adhesion; Hertz-limit test | <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> within synthetic scope | Analytical construction | Experimental module; no physical-reference campaign |
 | WLC and FJC chain models | `core.analysis.chain` | Analytical synthetic-recovery tests | <span class="spm-level spm-level--2" data-level="2">NUMERICALLY_VERIFIED</span> within synthetic scope | Analytical construction | No cross-software or experimental population campaign |
@@ -369,6 +372,97 @@ overwrites it bitwise after actual detection (modelling `linecorrect.c:255-260, 
 Browser mask state; no interpolation or automatic correction; no claim that a marked row
 should be numerically sign-inverted; no other version/build or universal equivalence. No
 experimental or physical validation is claimed.
+
+### Gwydion 2.71 Mark Scars
+
+The detector computes one global vertical-difference RMS
+(`sqrt(sum((d[i,j]-d[i+1,j])**2)/(xres*yres))`), searches per column for bands of up to
+`max_width` rows whose values lie at least `threshold_low` RMS away from their boundary
+rows, keeps pixels with weight at least `threshold_high` RMS as hard seeds, attaches
+adjacent soft pixels through chained horizontal expansion and retains only per-row runs of
+at least `min_length` pixels. Positive scars are bands elevated above their neighbours;
+negative scars are depressed bands; `"both"` runs the two detectors and unions the binary
+masks. The detector is exact: the production kernel is bitwise equal to the compiled probe
+and the independent oracle for all 22 cases (1,726/1,726 mask elements, zero maximum
+absolute/ULP difference and zero signed-zero mismatches). Coverage is split: 20 cases
+exercise the public API, while C05_soft_only_no_seed and C07_detached_soft_run are
+private-kernel semantic cases. Both require `threshold_high=3.0` (a uniform single-row
+band has weight sqrt(5) ~ 2.236, so a soft-only configuration needs a hard threshold
+above sqrt(5)), which lies outside the public Gwyddion-compatible parameter domain
+[0, 2]; they remain valid kernel-semantic tests, and the public domain is not broadened
+merely to express test phantoms. Combine semantics (replace ignores the existing mask,
+union is source-compatible fmax, intersection is source-compatible fmin) and the
+module-level no-detection mask-presence classification are verified; combined masks may
+retain finite non-binary values from an existing mask.
+
+**Limitations and non-claims:** detector, not proof of physical corruption; horizontal
+scan-line scars only; no vertical orientation; finite fields only; parameter domains match
+the Gwyddion process module; SPMKit does not simulate Data Browser mask removal or
+persistence; no claim of roughness or morphology preservation; no other version/build or
+universal equivalence. No experimental or physical validation is claimed.
+
+### Gwydion 2.71 Interpolate Data Under Mask (Laplace)
+
+The public operation solves the discrete Laplace boundary-value problem for pixels with
+`mask > 0`: each masked pixel equals the mean of its masked neighbours and its fixed
+(unmasked) neighbours, with missing neighbours at image borders implementing Neumann
+conditions. The empty mask leaves the field bitwise unchanged; a whole-field positive mask
+returns the source-defined all-zero field; physical calibration does not enter the solve.
+Comparison classes are explicitly mixed: exact policies and source-compatible special
+paths (isolated pixels, thin tridiagonal corridors, three-pixel L components) are bitwise
+against the compiled probe, while the retained generic iterative paths stay within the
+frozen campaign maximum of 2 ULP and 1.7763568394002505e-15 absolute difference against
+the linked 2.71 library, with zero exact-zero/nonzero transitions in the retained Laplace
+cases. An independent Decimal (80-digit) mathematical reference is frozen in the
+fixtures; the production residual limit (1e-13) is a production convergence and
+numerical-quality guard for the frozen campaign, not compiled-residual parity. The
+compiled probe residuals were measured during the campaign but are not stored in the
+current persistent JSON/NPZ fixtures, and the production residual is not claimed to be
+no worse than the compiled probe (L11 is approximately twice the compiled residual at the
+float64 floor; L10 is equal, L12 is half). Exact compiled-residual parity is not claimed;
+the persistent contract enforces output-distance metrics and the independent mathematical
+residual guard. L05/L06 carry the measured one-ULP tridiagonal rounding classification;
+L17 is a signed-zero build-specific classification (production reproduces the compiled
+-0.0; the frozen source arithmetic seeded with 0.0 yields +0.0).
+
+**Limitations and non-claims:** finite values only; `mask > 0` semantics; no qprec API (the
+process operation uses grain_id=-1 and qprec=1.0); the implementation solves the same
+discrete problem but does not claim algorithmic identity with Gwydion's multilevel
+anisotropic sparse CG + damped-Jacobi + hierarchical reconstruction solver; no uncertainty;
+no preservation claim for roughness, PSD, autocorrelation or morphology; no physical
+validation; no universal tolerance or other-build equivalence; the linked library internals
+were not sanitizer-instrumented (ASan/UBSan covered the probe executables and the call
+boundary only). No experimental or physical validation is claimed.
+
+### Gwydion 2.71 Remove Scars
+
+The public operation is exactly the composition of the Mark Scars detector (with the same
+parameter semantics) and the Laplace interpolation, with a private temporary mask that is
+never exposed, mutated or stored, and no extra hidden correction. The compiled campaign
+froze the composition identities bitwise (temporary mask equal to the standalone Mark
+Scars mask; corrected equal to the standalone Laplace result; 6/6 cases). Production
+reproduces the temporary-mask identity bitwise. Corrected-field compatibility against the
+compiled Remove output uses the same mixed comparison classes as the Laplace operation:
+the no-detection case is bitwise unchanged, while the retained scar cases carry 128
+exact-zero versus tiny-nonzero transitions (compiled values are exact zero; production
+values have magnitude at most approximately 1.739e-15; the independent mathematical
+reference is exactly zero) that satisfy the frozen absolute-difference bound
+(1.7763568394002505e-15), not the finite-nonzero ULP bound. Full Remove corrected-field
+bitwise equivalence is not claimed.
+
+**Limitations and non-claims:** inherits all Mark and Laplace limitations; temporary mask
+is private; no existing-mask or combine parameter; no claim that detected/interpolated
+data are physically recovered; no other version/build or universal equivalence. No
+experimental or physical validation is claimed.
+
+## Evidence profile (scars/Laplace campaign)
+
+The compiled campaign evidence was produced by custom probe executables that linked the
+installed Gwydion 2.71 shared library (`libgwyprocess2`, version 2.71, SHA-256
+`5f5b53cb544068638d1a3be8d6703345e49d5626d3fa4791106ce11bc051d3d7`); `/usr/bin/gwydion`
+was not invoked; the frozen 2.71 source identity was retained for semantic reconciliation;
+ASan/UBSan covered the probe executables and the call boundary, not the shared-library
+internals.
 
 ## Test-count policy
 
