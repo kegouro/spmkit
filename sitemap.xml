@@ -2,266 +2,266 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://kegouro.github.io/spmkit/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/ACKNOWLEDGEMENTS/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/ARCHITECTURE/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/BRAND/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/CITATION/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/CONTRIBUTING/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/FILE_FORMATS/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/KNOWN_LIMITATIONS/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/ROADMAP/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/SCIENTIFIC_STATUS/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/TRACEABILITY/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/UI_DESIGN/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/VALIDATION/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/api/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/cli/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/extending/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/force-spectroscopy/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/getting-started/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/scientific-status/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/user-guide/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/assets/brand/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/assets/ecosystem/ASSETS/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/assets/vendor/fonts/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/design/COMPETITION_ROADMAP/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/design/FORCE_SPECTROSCOPY/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/design/GWYCOMPAT_SOURCE_AUDIT_FOUNDATION/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/design/GWYDDION_ALIGN_ROWS_STATISTICS_COMPATIBILITY/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/design/GWYDDION_ARC_REVOLUTION_COMPATIBILITY/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/design/GWYDDION_FLAT_DISC_MORPHOLOGY_COMPATIBILITY/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/design/GWYDDION_MEDIAN_BACKGROUND_COMPATIBILITY/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/design/GWYDDION_PATH_LEVEL_COMPATIBILITY/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/design/GWYDDION_SPHERE_REVOLUTION_COMPATIBILITY/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/design/ROADMAP/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/design/UI_REDESIGN/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/design/visual-system-fixture/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/ecosystem/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/ecosystem/brand/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/ecosystem/choose/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/ecosystem/contracts/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/ecosystem/data-hunter/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/ecosystem/fathom/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/ecosystem/install/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/ecosystem/phantoms/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/ecosystem/pharos/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/ecosystem/spmkit/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/ecosystem/validation/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/ecosystem/workflows/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/getting-started/fathom-quick-start/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/getting-started/first-analysis/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/getting-started/installation/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/manual/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/manual/downloads/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/manual/reader/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/theory/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/theory/afm-principles/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/theory/contact-mechanics/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/theory/force-distance/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/theory/glossary/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/theory/kpfm/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/theory/operating-modes/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/theory/references/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/theory/resonance/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/theory/roughness/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/theory/spectral-analysis/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/theory/spmkit-workflows/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://kegouro.github.io/spmkit/validation/</loc>
-         <lastmod>2026-08-03</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
 </urlset>
