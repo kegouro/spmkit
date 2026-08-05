@@ -3,7 +3,7 @@
 Stable scientific capabilities registered by the Operation Registry v1.
 
 - schema_version: 1
-- operations: 30
+- operations: 43
 
 Source of truth: `src/spmkit/core/capabilities.json` (generated view; do not edit by hand).
 
@@ -287,6 +287,333 @@ Source of truth: `src/spmkit/core/capabilities.json` (generated view; do not edi
   - `tests/validation/test_force_foundation_validation.py`
   - `tests/core/test_force_foundation.py`
 
+## FORCE.FIT_WINDOW.SELECT
+
+- operation_id: `force.fit_window.select`
+- public_name: `select_contact_fit_window`
+- public_import: `spmkit.core.analysis:select_contact_fit_window`
+- family: FORCE
+- maturity: SOFTWARE_VERIFIED
+- status: stable
+- reference: SPMKit native (Contact fit window selection)
+- evidence profile: `NATIVE_SPMKIT_DESIGNED_HEURISTIC`
+
+- contract: Contiguous contact fit window from the contact index, optionally trimmed by min/max indentation and min/max force; fewer than min_points raises EMPTY_FIT_WINDOW / INSUFFICIENT_FIT_POINTS; included mask consistent with n_points; non-mutating.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: not_applicable
+
+- parameters:
+  - `prepared` (positional, required) — Prepared curve.
+  - `indentation` (positional, required) — IndentationResult.
+  - `min_indentation` (keyword_only, None) — Lower indentation bound (m).
+  - `max_indentation` (keyword_only, None) — Upper indentation bound (m).
+  - `min_force` (keyword_only, None) — Lower force bound (N).
+  - `max_force` (keyword_only, None) — Upper force bound (N).
+  - `min_points` (keyword_only, 20) — Minimum window size.
+
+- evidence:
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.json`
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz`
+  - `tests/validation/test_force_mechanics_validation.py`
+  - `tests/core/test_force_mechanics.py`
+
+## FORCE.INDENTATION.COMPUTE
+
+- operation_id: `force.indentation.compute`
+- public_name: `compute_indentation`
+- public_import: `spmkit.core.analysis:compute_indentation`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Indentation from separation and contact)
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Indentation = approach separation minus the FS-F1 contact coordinate; zero at the contact and positive into the sample; pre-contact samples excluded by the valid mask; requires a fit-eligible prepared curve (CURVE_NOT_FIT_ELIGIBLE typed failure); NONFINITE_INPUT typed failure; units m; non-mutating.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: m
+
+- parameters:
+  - `prepared` (positional, required) — FS-F1 prepared curve.
+
+- evidence:
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.json`
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz`
+  - `tests/validation/test_force_mechanics_validation.py`
+  - `tests/core/test_force_mechanics.py`
+
+## FORCE.MODEL.COMPARE
+
+- operation_id: `force.model.compare`
+- public_name: `compare_contact_models`
+- public_import: `spmkit.core.analysis:compare_contact_models`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (AICc model comparison)
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Model-relative comparison over the identical data subset; AICc weights normalized to 1; recommended model is the AICc minimum unless the runner-up retains considerable support (Delta AICc < 4 -> ambiguous, no recommendation); no physical-truth claim; misspecified fits detected (cone data -> sneddon weight > 0.9); unknown model raises ValueError.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: not_applicable
+
+- parameters:
+  - `prepared` (positional, required) — Prepared curve.
+  - `indentation` (positional, required) — IndentationResult.
+  - `window` (positional, required) — FitWindowResult.
+  - `models` (keyword_only, ['hertz_sphere', 'sneddon_cone', 'flat_punch', 'dmt']) — Candidate models.
+  - `tip_radius` (keyword_only, required) — Tip radius (m).
+  - `half_angle` (keyword_only, 0.3490658503988659) — Cone half-angle (rad).
+  - `punch_radius` (keyword_only, None) — Punch radius (m).
+  - `poisson` (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.
+
+- evidence:
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.json`
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz`
+  - `tests/validation/test_force_mechanics_validation.py`
+  - `tests/core/test_force_mechanics.py`
+
+## FORCE.MODEL.FIT_DMT
+
+- operation_id: `force.model.fit_dmt`
+- public_name: `fit_dmt`
+- public_import: `spmkit.core.analysis:fit_dmt`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (DMT fit)
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Two-parameter fit of E and F_adh over the window trimmed past the snap-in region; on snap-in phantoms E within 30% and F_adh within 1.5e-9 N (FS-F1 contact ensemble is unstable on snap-in curves, up to ~10 samples off); typed failures INVALID_RADIUS, INVALID_POISSON_RATIO, INVALID_ADHESION_PARAMETER, OPTIMIZATION_FAILED.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: Pa
+
+- parameters:
+  - `prepared` (positional, required) — Prepared curve.
+  - `indentation` (positional, required) — IndentationResult.
+  - `window` (positional, required) — FitWindowResult.
+  - `tip_radius` (keyword_only, required) — Tip radius (m).
+  - `poisson` (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.
+  - `E_initial` (keyword_only, 1000000000.0) — Optimizer start (Pa).
+  - `F_adh_initial` (keyword_only, 1e-09) — Adhesion start (N).
+
+- evidence:
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.json`
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz`
+  - `tests/validation/test_force_mechanics_validation.py`
+  - `tests/core/test_force_mechanics.py`
+
+- known deviations:
+  - snap-in curves: FS-F1 contact ensemble unstable (up to ~10 samples off); dedicated snap-in contact detection is future work
+
+## FORCE.MODEL.FIT_FLAT_PUNCH
+
+- operation_id: `force.model.fit_flat_punch`
+- public_name: `fit_flat_punch`
+- public_import: `spmkit.core.analysis:fit_flat_punch`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Flat punch fit)
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Linear-modulus least-squares fit of E with punch radius and poisson ratio fixed; E within 5% on clean phantoms; typed failures INVALID_RADIUS, INVALID_POISSON_RATIO, OPTIMIZATION_FAILED, NONFINITE_INPUT; same result contract as fit_hertz_sphere.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: Pa
+
+- parameters:
+  - `prepared` (positional, required) — Prepared curve.
+  - `indentation` (positional, required) — IndentationResult.
+  - `window` (positional, required) — FitWindowResult.
+  - `punch_radius` (keyword_only, required) — Punch radius (m).
+  - `poisson` (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.
+  - `E_initial` (keyword_only, 1000000000.0) — Optimizer start (Pa).
+
+- evidence:
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.json`
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz`
+  - `tests/validation/test_force_mechanics_validation.py`
+  - `tests/core/test_force_mechanics.py`
+
+## FORCE.MODEL.FIT_HERTZ
+
+- operation_id: `force.model.fit_hertz`
+- public_name: `fit_hertz_sphere`
+- public_import: `spmkit.core.analysis:fit_hertz_sphere`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Hertz sphere fit)
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Nonlinear least-squares fit of E over the fit window with tip radius and poisson ratio fixed; E within 5% on clean phantoms (contact-precision limited); typed failures INVALID_RADIUS, INVALID_POISSON_RATIO, OPTIMIZATION_FAILED, NONFINITE_INPUT; result carries parameters, covariance, residuals, AIC/AICc/BIC, rmse and window provenance.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: Pa
+
+- parameters:
+  - `prepared` (positional, required) — Prepared curve.
+  - `indentation` (positional, required) — IndentationResult.
+  - `window` (positional, required) — FitWindowResult.
+  - `tip_radius` (keyword_only, required) — Tip radius (m).
+  - `poisson` (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.
+  - `E_initial` (keyword_only, 1000000000.0) — Optimizer start (Pa).
+
+- evidence:
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.json`
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz`
+  - `tests/validation/test_force_mechanics_validation.py`
+  - `tests/core/test_force_mechanics.py`
+
+## FORCE.MODEL.FIT_JKR
+
+- operation_id: `force.model.fit_jkr`
+- public_name: `fit_jkr`
+- public_import: `spmkit.core.analysis:fit_jkr`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (JKR fit)
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Two-parameter fit of E and w over the window trimmed past the snap-in region; loading curve parametrized by the contact radius (monotone for a >= a0, range derived from data); w=0 reduces to hertz; on snap-in phantoms E within 20% and w within 30%; typed failures INVALID_RADIUS, INVALID_POISSON_RATIO, INVALID_ADHESION_PARAMETER, OPTIMIZATION_FAILED.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: Pa
+
+- parameters:
+  - `prepared` (positional, required) — Prepared curve.
+  - `indentation` (positional, required) — IndentationResult.
+  - `window` (positional, required) — FitWindowResult.
+  - `tip_radius` (keyword_only, required) — Tip radius (m).
+  - `poisson` (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.
+  - `E_initial` (keyword_only, 1000000000.0) — Optimizer start (Pa).
+  - `w_initial` (keyword_only, 0.001) — Work-of-adhesion start (J/m^2).
+
+- evidence:
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.json`
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz`
+  - `tests/validation/test_force_mechanics_validation.py`
+  - `tests/core/test_force_mechanics.py`
+
+- known deviations:
+  - snap-in curves: same contact-ensemble limitation as fit_dmt
+
+## FORCE.MODEL.FIT_SNEDDON
+
+- operation_id: `force.model.fit_sneddon`
+- public_name: `fit_sneddon_cone`
+- public_import: `spmkit.core.analysis:fit_sneddon_cone`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Sneddon cone fit)
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Nonlinear least-squares fit of E with cone half-angle and poisson ratio fixed; E within 5% on clean phantoms; typed failures INVALID_ANGLE, INVALID_POISSON_RATIO, OPTIMIZATION_FAILED, NONFINITE_INPUT; same result contract as fit_hertz_sphere.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: Pa
+
+- parameters:
+  - `prepared` (positional, required) — Prepared curve.
+  - `indentation` (positional, required) — IndentationResult.
+  - `window` (positional, required) — FitWindowResult.
+  - `half_angle` (keyword_only, required) — Cone half-angle (rad).
+  - `poisson` (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.
+  - `E_initial` (keyword_only, 1000000000.0) — Optimizer start (Pa).
+
+- evidence:
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.json`
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz`
+  - `tests/validation/test_force_mechanics_validation.py`
+  - `tests/core/test_force_mechanics.py`
+
+## FORCE.MODEL.FORWARD
+
+- operation_id: `force.model.forward`
+- public_name: `forward_model`
+- public_import: `spmkit.core.analysis:forward_model`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Contact-model forward equations)
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Frozen closed-form loading equations with reduced modulus E* = E/(1-nu^2): hertz F = (4/3) E* sqrt(R) d^1.5; sneddon F = (2 tan(alpha)/pi) E* d^2; flat punch F = 2 E* R d; dmt F = hertz - F_adh; jkr parametric contact-radius loading curve (monotone, derived range, w=0 reduces to hertz); SI units N; unknown model raises ValueError.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: N
+
+- parameters:
+  - `model` (positional, required) — Model name.
+  - `delta` (positional, required) — Indentation array (m).
+  - `params` (positional, required) — Model parameters.
+
+- evidence:
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.json`
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz`
+  - `tests/validation/test_force_mechanics_validation.py`
+  - `tests/core/test_force_mechanics.py`
+
 ## FORCE.PREPARE
 
 - operation_id: `force.prepare`
@@ -365,6 +692,114 @@ Source of truth: `src/spmkit/core/capabilities.json` (generated view; do not edi
 - known deviations:
   - the aggregate summary score is a designed heuristic; it is not an externally validated scientific quality probability
 
+## FORCE.RELIABILITY.BOOTSTRAP
+
+- operation_id: `force.reliability.bootstrap`
+- public_name: `bootstrap_force_fit`
+- public_import: `spmkit.core.analysis:bootstrap_force_fit`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Residual bootstrap)
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Deterministic residual (or block-residual) bootstrap of the hertz fit; percentile intervals and bias estimate over E; replicate failures counted, never masked; success fraction below min_success_fraction (or outside [0,1]) raises BOOTSTRAP_INSUFFICIENT_SUCCESS; same seed reproduces identical samples.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: not_applicable
+
+- parameters:
+  - `spec` (positional, required) — (prepared, indentation, window, model) tuple.
+  - `samples` (keyword_only, 500) — Replicate count.
+  - `seed` (keyword_only, 0) — RNG seed.
+  - `strategy` (keyword_only, 'residual' values=['residual', 'block_residual']) — Resampling strategy.
+  - `tip_radius` (keyword_only, 1e-08) — Tip radius (m).
+  - `poisson` (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.
+  - `min_success_fraction` (keyword_only, 0.5) — Minimum success fraction.
+
+- evidence:
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.json`
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz`
+  - `tests/validation/test_force_mechanics_validation.py`
+  - `tests/core/test_force_mechanics.py`
+
+## FORCE.RELIABILITY.DIAGNOSE
+
+- operation_id: `force.reliability.diagnose`
+- public_name: `diagnose_force_fit`
+- public_import: `spmkit.core.analysis:diagnose_force_fit`
+- family: FORCE
+- maturity: SOFTWARE_VERIFIED
+- status: stable
+- reference: SPMKit native (Fit diagnostics policy)
+- evidence profile: `NATIVE_SPMKIT_DESIGNED_HEURISTIC`
+
+- contract: Explicit diagnostics: residual RMS, autocorrelation and curvature proxies, covariance condition number and max parameter correlation, one-at-a-time contact/window sensitivity, bootstrap success fraction, model-ambiguity flag; the summary status is a policy (ok/review), never a probability; failure reasons listed explicitly.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: not_applicable
+
+- parameters:
+  - `fit` (positional, required) — Fit result.
+  - `sensitivity` (keyword_only, None) — Sensitivity result.
+  - `bootstrap` (keyword_only, None) — Bootstrap result.
+
+- evidence:
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.json`
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz`
+  - `tests/validation/test_force_mechanics_validation.py`
+  - `tests/core/test_force_mechanics.py`
+
+## FORCE.RELIABILITY.SENSITIVITY
+
+- operation_id: `force.reliability.sensitivity`
+- public_name: `analyze_force_fit_sensitivity`
+- public_import: `spmkit.core.analysis:analyze_force_fit_sensitivity`
+- family: FORCE
+- maturity: SOFTWARE_VERIFIED
+- status: stable
+- reference: SPMKit native (Contact/window sensitivity multiverse)
+- evidence profile: `NATIVE_SPMKIT_DESIGNED_HEURISTIC`
+
+- contract: Deterministic multiverse over contact offsets and fit-window lower-bound fractions (bounded at max_configurations=512); one-at-a-time contact and window sensitivity indices relative to the baseline configuration; E stability ranges and robust medians; dominant sensitivity classified as contact, window or none (relative index > 20%); failed configurations recorded, never dropped; CONTACT_SENSITIVITY_HIGH when no configuration succeeds.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: not_applicable
+
+- parameters:
+  - `prepared` (positional, required) — Prepared curve.
+  - `contact_offsets` (keyword_only, [-3, -1, 0, 1, 3]) — Contact offsets (samples).
+  - `fit_window_variants` (keyword_only, [0.0, 0.05]) — Window lower-bound fractions.
+  - `baseline_variants` (keyword_only, ['linear']) — Baseline models.
+  - `models` (keyword_only, ['hertz_sphere']) — Models.
+  - `max_configurations` (keyword_only, 512) — Multiverse bound.
+  - `tip_radius` (keyword_only, 1e-08) — Tip radius (m).
+  - `poisson` (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.
+
+- evidence:
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.json`
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz`
+  - `tests/validation/test_force_mechanics_validation.py`
+  - `tests/core/test_force_mechanics.py`
+
 ## FORCE.SEGMENT.IDENTIFY
 
 - operation_id: `force.segment.identify`
@@ -435,6 +870,42 @@ Source of truth: `src/spmkit/core/capabilities.json` (generated view; do not edi
 
 - known deviations:
   - bitwise external identity not claimed; convention validated numerically on the frozen nanite profile
+
+## FORCE.VOLUME.MECHANICS
+
+- operation_id: `force.volume.mechanics`
+- public_name: `fit_force_volume_mechanics`
+- public_import: `spmkit.core.analysis:fit_force_volume_mechanics`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Per-curve mechanics mapping)
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Applies prepare -> indentation -> window -> model comparison to every curve of a ForceVolume; modulus/adhesion maps, chosen model map, quality map; failed curves explicitly masked (failed_mask + provenance reasons), never silently dropped; deterministic replay; units Pa / N.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: Pa
+
+- parameters:
+  - `volume` (positional, required) — Force volume.
+  - `tip_radius` (keyword_only, 1e-08) — Tip radius (m).
+  - `poisson` (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.
+  - `half_angle` (keyword_only, 0.3490658503988659) — Cone half-angle (rad).
+  - `models` (keyword_only, ['hertz_sphere', 'dmt']) — Candidate models.
+  - `min_points` (keyword_only, 20) — Minimum window size per curve.
+
+- evidence:
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.json`
+  - `tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz`
+  - `tests/validation/test_force_mechanics_validation.py`
+  - `tests/core/test_force_mechanics.py`
 
 ## FORCE.WORK.INTEGRATE
 

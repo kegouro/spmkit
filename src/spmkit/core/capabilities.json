@@ -570,6 +570,942 @@
     {
       "aliases": [],
       "border_policy": "not_applicable",
+      "capability_id": "FORCE.FIT_WINDOW.SELECT",
+      "contract": "Contiguous contact fit window from the contact index, optionally trimmed by min/max indentation and min/max force; fewer than min_points raises EMPTY_FIT_WINDOW / INSUFFICIENT_FIT_POINTS; included mask consistent with n_points; non-mutating.",
+      "evidence": [
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.json",
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz",
+        "tests/validation/test_force_mechanics_validation.py",
+        "tests/core/test_force_mechanics.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "SOFTWARE_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.fit_window.select",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Prepared curve.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "prepared",
+          "required": true,
+          "type": "ForcePreparationResult",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "IndentationResult.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "indentation",
+          "required": true,
+          "type": "IndentationResult",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Lower indentation bound (m).",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "min_indentation",
+          "required": false,
+          "type": "float | None",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Upper indentation bound (m).",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "max_indentation",
+          "required": false,
+          "type": "float | None",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Lower force bound (N).",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "min_force",
+          "required": false,
+          "type": "float | None",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Upper force bound (N).",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "max_force",
+          "required": false,
+          "type": "float | None",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 20,
+          "description": "Minimum window size.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "min_points",
+          "required": false,
+          "type": "int",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:select_contact_fit_window",
+      "public_name": "select_contact_fit_window",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Contact fit window selection",
+        "profile": "NATIVE_SPMKIT_DESIGNED_HEURISTIC"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "not_applicable"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.INDENTATION.COMPUTE",
+      "contract": "Indentation = approach separation minus the FS-F1 contact coordinate; zero at the contact and positive into the sample; pre-contact samples excluded by the valid mask; requires a fit-eligible prepared curve (CURVE_NOT_FIT_ELIGIBLE typed failure); NONFINITE_INPUT typed failure; units m; non-mutating.",
+      "evidence": [
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.json",
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz",
+        "tests/validation/test_force_mechanics_validation.py",
+        "tests/core/test_force_mechanics.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.indentation.compute",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "FS-F1 prepared curve.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "prepared",
+          "required": true,
+          "type": "ForcePreparationResult",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:compute_indentation",
+      "public_name": "compute_indentation",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Indentation from separation and contact",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "m"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.MODEL.COMPARE",
+      "contract": "Model-relative comparison over the identical data subset; AICc weights normalized to 1; recommended model is the AICc minimum unless the runner-up retains considerable support (Delta AICc < 4 -> ambiguous, no recommendation); no physical-truth claim; misspecified fits detected (cone data -> sneddon weight > 0.9); unknown model raises ValueError.",
+      "evidence": [
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.json",
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz",
+        "tests/validation/test_force_mechanics_validation.py",
+        "tests/core/test_force_mechanics.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.model.compare",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Prepared curve.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "prepared",
+          "required": true,
+          "type": "ForcePreparationResult",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "IndentationResult.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "indentation",
+          "required": true,
+          "type": "IndentationResult",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "FitWindowResult.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "window",
+          "required": true,
+          "type": "FitWindowResult",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": [
+            "hertz_sphere",
+            "sneddon_cone",
+            "flat_punch",
+            "dmt"
+          ],
+          "description": "Candidate models.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "models",
+          "required": false,
+          "type": "tuple[str, ...]",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Tip radius (m).",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "keyword_only",
+          "name": "tip_radius",
+          "required": true,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 0.3490658503988659,
+          "description": "Cone half-angle (rad).",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "half_angle",
+          "required": false,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Punch radius (m).",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "punch_radius",
+          "required": false,
+          "type": "float | None",
+          "units": null
+        },
+        {
+          "bounds": [
+            0.0,
+            0.5
+          ],
+          "default": 0.3,
+          "description": "Poisson ratio.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "poisson",
+          "required": false,
+          "type": "float",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:compare_contact_models",
+      "public_name": "compare_contact_models",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "AICc model comparison",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "not_applicable"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.MODEL.FIT_DMT",
+      "contract": "Two-parameter fit of E and F_adh over the window trimmed past the snap-in region; on snap-in phantoms E within 30% and F_adh within 1.5e-9 N (FS-F1 contact ensemble is unstable on snap-in curves, up to ~10 samples off); typed failures INVALID_RADIUS, INVALID_POISSON_RATIO, INVALID_ADHESION_PARAMETER, OPTIMIZATION_FAILED.",
+      "evidence": [
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.json",
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz",
+        "tests/validation/test_force_mechanics_validation.py",
+        "tests/core/test_force_mechanics.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [
+        "snap-in curves: FS-F1 contact ensemble unstable (up to ~10 samples off); dedicated snap-in contact detection is future work"
+      ],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.model.fit_dmt",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Prepared curve.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "prepared",
+          "required": true,
+          "type": "ForcePreparationResult",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "IndentationResult.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "indentation",
+          "required": true,
+          "type": "IndentationResult",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "FitWindowResult.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "window",
+          "required": true,
+          "type": "FitWindowResult",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Tip radius (m).",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "keyword_only",
+          "name": "tip_radius",
+          "required": true,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": [
+            0.0,
+            0.5
+          ],
+          "default": 0.3,
+          "description": "Poisson ratio.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "poisson",
+          "required": false,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 1000000000.0,
+          "description": "Optimizer start (Pa).",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "E_initial",
+          "required": false,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 1e-09,
+          "description": "Adhesion start (N).",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "F_adh_initial",
+          "required": false,
+          "type": "float",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:fit_dmt",
+      "public_name": "fit_dmt",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "DMT fit",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "Pa"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.MODEL.FIT_FLAT_PUNCH",
+      "contract": "Linear-modulus least-squares fit of E with punch radius and poisson ratio fixed; E within 5% on clean phantoms; typed failures INVALID_RADIUS, INVALID_POISSON_RATIO, OPTIMIZATION_FAILED, NONFINITE_INPUT; same result contract as fit_hertz_sphere.",
+      "evidence": [
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.json",
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz",
+        "tests/validation/test_force_mechanics_validation.py",
+        "tests/core/test_force_mechanics.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.model.fit_flat_punch",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Prepared curve.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "prepared",
+          "required": true,
+          "type": "ForcePreparationResult",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "IndentationResult.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "indentation",
+          "required": true,
+          "type": "IndentationResult",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "FitWindowResult.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "window",
+          "required": true,
+          "type": "FitWindowResult",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Punch radius (m).",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "keyword_only",
+          "name": "punch_radius",
+          "required": true,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": [
+            0.0,
+            0.5
+          ],
+          "default": 0.3,
+          "description": "Poisson ratio.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "poisson",
+          "required": false,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 1000000000.0,
+          "description": "Optimizer start (Pa).",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "E_initial",
+          "required": false,
+          "type": "float",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:fit_flat_punch",
+      "public_name": "fit_flat_punch",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Flat punch fit",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "Pa"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.MODEL.FIT_HERTZ",
+      "contract": "Nonlinear least-squares fit of E over the fit window with tip radius and poisson ratio fixed; E within 5% on clean phantoms (contact-precision limited); typed failures INVALID_RADIUS, INVALID_POISSON_RATIO, OPTIMIZATION_FAILED, NONFINITE_INPUT; result carries parameters, covariance, residuals, AIC/AICc/BIC, rmse and window provenance.",
+      "evidence": [
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.json",
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz",
+        "tests/validation/test_force_mechanics_validation.py",
+        "tests/core/test_force_mechanics.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.model.fit_hertz",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Prepared curve.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "prepared",
+          "required": true,
+          "type": "ForcePreparationResult",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "IndentationResult.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "indentation",
+          "required": true,
+          "type": "IndentationResult",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "FitWindowResult.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "window",
+          "required": true,
+          "type": "FitWindowResult",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Tip radius (m).",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "keyword_only",
+          "name": "tip_radius",
+          "required": true,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": [
+            0.0,
+            0.5
+          ],
+          "default": 0.3,
+          "description": "Poisson ratio.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "poisson",
+          "required": false,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 1000000000.0,
+          "description": "Optimizer start (Pa).",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "E_initial",
+          "required": false,
+          "type": "float",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:fit_hertz_sphere",
+      "public_name": "fit_hertz_sphere",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Hertz sphere fit",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "Pa"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.MODEL.FIT_JKR",
+      "contract": "Two-parameter fit of E and w over the window trimmed past the snap-in region; loading curve parametrized by the contact radius (monotone for a >= a0, range derived from data); w=0 reduces to hertz; on snap-in phantoms E within 20% and w within 30%; typed failures INVALID_RADIUS, INVALID_POISSON_RATIO, INVALID_ADHESION_PARAMETER, OPTIMIZATION_FAILED.",
+      "evidence": [
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.json",
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz",
+        "tests/validation/test_force_mechanics_validation.py",
+        "tests/core/test_force_mechanics.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [
+        "snap-in curves: same contact-ensemble limitation as fit_dmt"
+      ],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.model.fit_jkr",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Prepared curve.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "prepared",
+          "required": true,
+          "type": "ForcePreparationResult",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "IndentationResult.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "indentation",
+          "required": true,
+          "type": "IndentationResult",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "FitWindowResult.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "window",
+          "required": true,
+          "type": "FitWindowResult",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Tip radius (m).",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "keyword_only",
+          "name": "tip_radius",
+          "required": true,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": [
+            0.0,
+            0.5
+          ],
+          "default": 0.3,
+          "description": "Poisson ratio.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "poisson",
+          "required": false,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 1000000000.0,
+          "description": "Optimizer start (Pa).",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "E_initial",
+          "required": false,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 0.001,
+          "description": "Work-of-adhesion start (J/m^2).",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "w_initial",
+          "required": false,
+          "type": "float",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:fit_jkr",
+      "public_name": "fit_jkr",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "JKR fit",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "Pa"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.MODEL.FIT_SNEDDON",
+      "contract": "Nonlinear least-squares fit of E with cone half-angle and poisson ratio fixed; E within 5% on clean phantoms; typed failures INVALID_ANGLE, INVALID_POISSON_RATIO, OPTIMIZATION_FAILED, NONFINITE_INPUT; same result contract as fit_hertz_sphere.",
+      "evidence": [
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.json",
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz",
+        "tests/validation/test_force_mechanics_validation.py",
+        "tests/core/test_force_mechanics.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.model.fit_sneddon",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Prepared curve.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "prepared",
+          "required": true,
+          "type": "ForcePreparationResult",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "IndentationResult.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "indentation",
+          "required": true,
+          "type": "IndentationResult",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "FitWindowResult.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "window",
+          "required": true,
+          "type": "FitWindowResult",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Cone half-angle (rad).",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "keyword_only",
+          "name": "half_angle",
+          "required": true,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": [
+            0.0,
+            0.5
+          ],
+          "default": 0.3,
+          "description": "Poisson ratio.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "poisson",
+          "required": false,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 1000000000.0,
+          "description": "Optimizer start (Pa).",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "E_initial",
+          "required": false,
+          "type": "float",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:fit_sneddon_cone",
+      "public_name": "fit_sneddon_cone",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Sneddon cone fit",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "Pa"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.MODEL.FORWARD",
+      "contract": "Frozen closed-form loading equations with reduced modulus E* = E/(1-nu^2): hertz F = (4/3) E* sqrt(R) d^1.5; sneddon F = (2 tan(alpha)/pi) E* d^2; flat punch F = 2 E* R d; dmt F = hertz - F_adh; jkr parametric contact-radius loading curve (monotone, derived range, w=0 reduces to hertz); SI units N; unknown model raises ValueError.",
+      "evidence": [
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.json",
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz",
+        "tests/validation/test_force_mechanics_validation.py",
+        "tests/core/test_force_mechanics.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.model.forward",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Model name.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "model",
+          "required": true,
+          "type": "str",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Indentation array (m).",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "delta",
+          "required": true,
+          "type": "np.ndarray",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Model parameters.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "params",
+          "required": true,
+          "type": "dict[str, float]",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:forward_model",
+      "public_name": "forward_model",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Contact-model forward equations",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "N"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
       "capability_id": "FORCE.PREPARE",
       "contract": "Explicit orchestration over the 12 public primitives: segments -> calibration -> tip-sample separation -> baseline fit/correction -> contact ensemble -> events -> work -> quality; provenance names every decision; contact detection runs on the calibrated curve.",
       "evidence": [
@@ -768,6 +1704,343 @@
     {
       "aliases": [],
       "border_policy": "not_applicable",
+      "capability_id": "FORCE.RELIABILITY.BOOTSTRAP",
+      "contract": "Deterministic residual (or block-residual) bootstrap of the hertz fit; percentile intervals and bias estimate over E; replicate failures counted, never masked; success fraction below min_success_fraction (or outside [0,1]) raises BOOTSTRAP_INSUFFICIENT_SUCCESS; same seed reproduces identical samples.",
+      "evidence": [
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.json",
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz",
+        "tests/validation/test_force_mechanics_validation.py",
+        "tests/core/test_force_mechanics.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.reliability.bootstrap",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "(prepared, indentation, window, model) tuple.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "spec",
+          "required": true,
+          "type": "tuple",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 500,
+          "description": "Replicate count.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "samples",
+          "required": false,
+          "type": "int",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 0,
+          "description": "RNG seed.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "seed",
+          "required": false,
+          "type": "int",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": "residual",
+          "description": "Resampling strategy.",
+          "enum_values": [
+            "residual",
+            "block_residual"
+          ],
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "strategy",
+          "required": false,
+          "type": "str",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 1e-08,
+          "description": "Tip radius (m).",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "tip_radius",
+          "required": false,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": [
+            0.0,
+            0.5
+          ],
+          "default": 0.3,
+          "description": "Poisson ratio.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "poisson",
+          "required": false,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 0.5,
+          "description": "Minimum success fraction.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "min_success_fraction",
+          "required": false,
+          "type": "float",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:bootstrap_force_fit",
+      "public_name": "bootstrap_force_fit",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Residual bootstrap",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "not_applicable"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.RELIABILITY.DIAGNOSE",
+      "contract": "Explicit diagnostics: residual RMS, autocorrelation and curvature proxies, covariance condition number and max parameter correlation, one-at-a-time contact/window sensitivity, bootstrap success fraction, model-ambiguity flag; the summary status is a policy (ok/review), never a probability; failure reasons listed explicitly.",
+      "evidence": [
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.json",
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz",
+        "tests/validation/test_force_mechanics_validation.py",
+        "tests/core/test_force_mechanics.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "SOFTWARE_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.reliability.diagnose",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Fit result.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "fit",
+          "required": true,
+          "type": "ContactMechanicsFitResult",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Sensitivity result.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "sensitivity",
+          "required": false,
+          "type": "ForceFitSensitivityResult | None",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Bootstrap result.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "bootstrap",
+          "required": false,
+          "type": "BootstrapForceFitResult | None",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:diagnose_force_fit",
+      "public_name": "diagnose_force_fit",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Fit diagnostics policy",
+        "profile": "NATIVE_SPMKIT_DESIGNED_HEURISTIC"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "not_applicable"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.RELIABILITY.SENSITIVITY",
+      "contract": "Deterministic multiverse over contact offsets and fit-window lower-bound fractions (bounded at max_configurations=512); one-at-a-time contact and window sensitivity indices relative to the baseline configuration; E stability ranges and robust medians; dominant sensitivity classified as contact, window or none (relative index > 20%); failed configurations recorded, never dropped; CONTACT_SENSITIVITY_HIGH when no configuration succeeds.",
+      "evidence": [
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.json",
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz",
+        "tests/validation/test_force_mechanics_validation.py",
+        "tests/core/test_force_mechanics.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "SOFTWARE_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.reliability.sensitivity",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Prepared curve.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "prepared",
+          "required": true,
+          "type": "ForcePreparationResult",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": [
+            -3,
+            -1,
+            0,
+            1,
+            3
+          ],
+          "description": "Contact offsets (samples).",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "contact_offsets",
+          "required": false,
+          "type": "tuple[int, ...]",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": [
+            0.0,
+            0.05
+          ],
+          "description": "Window lower-bound fractions.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "fit_window_variants",
+          "required": false,
+          "type": "tuple[float, ...]",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": [
+            "linear"
+          ],
+          "description": "Baseline models.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "baseline_variants",
+          "required": false,
+          "type": "tuple[str, ...]",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": [
+            "hertz_sphere"
+          ],
+          "description": "Models.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "models",
+          "required": false,
+          "type": "tuple[str, ...]",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 512,
+          "description": "Multiverse bound.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "max_configurations",
+          "required": false,
+          "type": "int",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 1e-08,
+          "description": "Tip radius (m).",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "tip_radius",
+          "required": false,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": [
+            0.0,
+            0.5
+          ],
+          "default": 0.3,
+          "description": "Poisson ratio.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "poisson",
+          "required": false,
+          "type": "float",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:analyze_force_fit_sensitivity",
+      "public_name": "analyze_force_fit_sensitivity",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Contact/window sensitivity multiverse",
+        "profile": "NATIVE_SPMKIT_DESIGNED_HEURISTIC"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "not_applicable"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
       "capability_id": "FORCE.SEGMENT.IDENTIFY",
       "contract": "Identify approach/retract sample indices of a ForceCurve; instrument labels trusted when both segments exist, else turning point = height extremum; no sample reordering.",
       "evidence": [
@@ -861,6 +2134,117 @@
       "roi_support": false,
       "status": "stable",
       "units": "m"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.VOLUME.MECHANICS",
+      "contract": "Applies prepare -> indentation -> window -> model comparison to every curve of a ForceVolume; modulus/adhesion maps, chosen model map, quality map; failed curves explicitly masked (failed_mask + provenance reasons), never silently dropped; deterministic replay; units Pa / N.",
+      "evidence": [
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.json",
+        "tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz",
+        "tests/validation/test_force_mechanics_validation.py",
+        "tests/core/test_force_mechanics.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.volume.mechanics",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Force volume.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "volume",
+          "required": true,
+          "type": "ForceVolume",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 1e-08,
+          "description": "Tip radius (m).",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "tip_radius",
+          "required": false,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": [
+            0.0,
+            0.5
+          ],
+          "default": 0.3,
+          "description": "Poisson ratio.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "poisson",
+          "required": false,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 0.3490658503988659,
+          "description": "Cone half-angle (rad).",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "half_angle",
+          "required": false,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": [
+            "hertz_sphere",
+            "dmt"
+          ],
+          "description": "Candidate models.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "models",
+          "required": false,
+          "type": "tuple[str, ...]",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 20,
+          "description": "Minimum window size per curve.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "min_points",
+          "required": false,
+          "type": "int",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:fit_force_volume_mechanics",
+      "public_name": "fit_force_volume_mechanics",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Per-curve mechanics mapping",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "Pa"
     },
     {
       "aliases": [],

@@ -47,6 +47,20 @@ EXPECTED = {
     "img.scanline.remove_scars": "gwyd" + "ion_remove_scars",
     "img.scanline.step_block_correction": "gwyd" + "ion_step_block_correction",
     "img.scanline.step_line_correction": "gwyd" + "ion_step_line_correction",
+    # FS-F2 force-mechanics family
+    "force.indentation.compute": "compute_indentation",
+    "force.fit_window.select": "select_contact_fit_window",
+    "force.model.forward": "forward_model",
+    "force.model.fit_hertz": "fit_hertz_sphere",
+    "force.model.fit_sneddon": "fit_sneddon_cone",
+    "force.model.fit_flat_punch": "fit_flat_punch",
+    "force.model.fit_dmt": "fit_dmt",
+    "force.model.fit_jkr": "fit_jkr",
+    "force.model.compare": "compare_contact_models",
+    "force.reliability.sensitivity": "analyze_force_fit_sensitivity",
+    "force.reliability.bootstrap": "bootstrap_force_fit",
+    "force.reliability.diagnose": "diagnose_force_fit",
+    "force.volume.mechanics": "fit_force_volume_mechanics",
 }
 
 
@@ -64,7 +78,7 @@ def test_reject_unknown_operation() -> None:
 
 def test_deterministic_listing() -> None:
     ops = list_operations()
-    assert len(ops) == 30
+    assert len(ops) == 43
     ids = [o.operation_id for o in ops]
     assert ids == sorted(ids)
     # calling twice yields identical tuples
@@ -189,8 +203,14 @@ def test_signature_consistency_all_operations() -> None:
                 if p.kind == "positional" else inspect.Parameter.KEYWORD_ONLY
             assert sp.kind == want_kind, (op_id, name)
             if p.has_default:
-                assert sp.default == p.default or (
-                    sp.default is None and p.default is None), (op_id, name)
+                # JSON cannot encode tuples: normalize sequence defaults
+                # (tuple in the signature vs list in the registry)
+                if isinstance(sp.default, (list, tuple)) and isinstance(
+                        p.default, (list, tuple)):
+                    assert list(sp.default) == list(p.default), (op_id, name)
+                else:
+                    assert sp.default == p.default or (
+                        sp.default is None and p.default is None), (op_id, name)
             else:
                 assert sp.default is inspect.Parameter.empty, (op_id, name)
 
