@@ -750,6 +750,102 @@ from method spread alone; no model validity inference; no cell/material
 property truth claim; no experimental reproducibility claim; no complete
 force-map parity; no SMFS or viscoelastic parity from this batch.
 
+## Force-spectroscopy mechanics (FS-F2)
+
+The FS-F2 batch builds the indentation and contact-mechanics layer on the
+FS-F1 preparation: indentation, fit windows, five frozen contact models
+(hertz sphere, sneddon cone, flat punch, DMT, JKR), AICc model comparison,
+sensitivity multiverse, residual bootstrap, diagnostics and force-volume
+mapping.  13 public capabilities (compute_indentation,
+select_contact_fit_window, forward_model, fit_hertz_sphere,
+fit_sneddon_cone, fit_flat_punch, fit_dmt, fit_jkr, compare_contact_models,
+analyze_force_fit_sensitivity, bootstrap_force_fit, diagnose_force_fit,
+fit_force_volume_mechanics) with typed errors, immutable results and
+explicit provenance.
+
+- indentation convention: indentation = separation - contact_coordinate on
+  the approach branch; the contact coordinate is the height at the contact
+  index (deflection is zero there), so indentation equals the piezo motion
+  past the contact minus the cantilever deflection; zero at the contact,
+  positive into the sample in the indentation regime; pre-contact samples
+  are excluded by the valid mask (never fabricated);
+- phantom geometry: the separation is the increasing trace axis (FS-F1
+  convention); height = separation + force/k stays strictly monotone
+  because the deflection grows slower than the piezo motion in the
+  indentation regime; clean phantoms carry zero pre-contact force, which is
+  the exact frozen model behavior (the models have no long-range branch;
+  the adhesion jump at the contact is preserved) and prevents the FS-F1
+  baseline correction from subtracting model signal; the profile is a
+  contact-branch-only representation of the frozen models and makes no
+  claim about complete adhesive force curves with long-range interaction;
+- frozen equations (reduced modulus E* = E/(1-nu^2)): hertz
+  F = (4/3) E* sqrt(R) d^1.5; sneddon F = (2 tan(alpha)/pi) E* d^2; flat
+  punch F = 2 E* R d; dmt F = hertz - F_adh; jkr loading branch via the
+  parametric contact radius (monotone for a >= a0, range derived from the
+  data, w = 0 reduces to hertz);
+- fits: nonlinear least squares of E (and F_adh / w) over the contact fit
+  window with geometry parameters fixed; results carry parameters,
+  covariance, residuals, rmse and AIC/AICc/BIC;
+- comparison: AICc weights over the identical data subset; the recommended
+  model is the AICc minimum unless the runner-up retains considerable
+  support (Delta AICc < 4 -> ambiguous); the comparison is model-relative
+  and never a physical-truth claim;
+- reliability: deterministic sensitivity multiverse over contact offsets
+  and fit-window lower-bound fractions (<= 512 configurations) with
+  one-at-a-time contact and window sensitivity indices relative to the
+  baseline configuration and a dominant-sensitivity classification
+  (contact / window / none, relative index > 20%); deterministic
+  residual/block-residual bootstrap with percentile intervals; the
+  diagnostic summary status is a policy (ok/review), never a probability.
+
+Recovery bounds (clean phantoms, FS-F1 ensemble contact):
+
+- hertz family (hertz sphere, sneddon cone, flat punch): E within 5%
+  (residual bias is the contact precision, ~1 sample = 1.5e-8 m); with
+  noise (sigma = 2e-12 N) within 10%; small force offset + residual slope
+  within 5%;
+- adhesive models (DMT, JKR) with windows trimmed past the snap-in region:
+  DMT E within 30% and F_adh within 1.5e-9 N; JKR E within 20% and w within
+  30%; the FS-F1 contact ensemble is unstable on snap-in curves (up to ~10
+  samples off); dedicated snap-in contact detection is future work.
+
+Maturity per capability (reconciled at independent audit):
+
+- NUMERICALLY_VERIFIED (defined numerical truth on deterministic phantoms,
+  independent analytical oracle and the frozen nanite contact campaign):
+  compute_indentation, forward_model, fit_hertz_sphere, fit_sneddon_cone,
+  fit_flat_punch, fit_dmt, fit_jkr, compare_contact_models (arithmetic),
+  bootstrap_force_fit (resampling arithmetic), fit_force_volume_mechanics;
+- SOFTWARE_VERIFIED (designed heuristics and policies without unique
+  numerical truth): select_contact_fit_window (window policy),
+  analyze_force_fit_sensitivity (multiverse interpretation),
+  diagnose_force_fit (summary policy), and the model-recommendation
+  policy inside compare_contact_models (Delta AICc < 4 threshold);
+- external overlap: the FS-F1 contact ensemble lies inside the nanite
+  4-method contact bracket on all 16 prepared P-cases of the frozen
+  black-box campaign (NANITE_EXTERNAL_REFERENCE evidence; canonical for no
+  native fit contract);
+- no PHYSICALLY_VALIDATED claim.
+
+Failure witnesses (typed, never silent):
+
+- M11 saturated curve: SATURATED_SIGNAL flagged by the FS-F1 quality gate;
+  the fitted modulus leaves the clean recovery band (bias reported);
+- M15 cone data under a hertz hypothesis: the model comparison prefers
+  sneddon_cone with weight > 0.9;
+- M17 shallow noisy indentation and M18 flat curve: preparation raises the
+  typed CONTACT_NOT_FOUND failure;
+- real-data witness (redistributable spectroscopy.nid): every curve either
+  completes the FS-F2 stack or raises a typed failure; a successful fit is
+  required to be finite; no silent NaN-filled success is allowed.
+
+Non-claims: no external mechanical-fit parity (nanite contact campaign is
+contact-only); no snap-in contact detection; no free contact-offset fit
+parameter; no uncertainty-calibrated intervals (bootstrap percentiles are
+point-estimate spread, not coverage-guaranteed); no tip-radius
+identifiability (R is fixed, never fitted); no adhesion-hysteresis or
+pull-off model; no rate/viscoelastic dependence; no physical validation; no
+experimental reproducibility claim.
 
 ## Test-count policy
 
