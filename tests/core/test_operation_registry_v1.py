@@ -33,6 +33,12 @@ EXPECTED = {
     "img.filter.rank": "gwyd" + "dion_rank_filter",
     "img.filter.median": "gwyd" + "dion_median_filter",
     "img.filter.gaussian": "gwyd" + "dion_gaussian_filter",
+    "img.filter.gradient_direction": "gradient_direction",
+    "img.filter.gradient_magnitude": "gwyd" + "dion_gradient_magnitude",
+    "img.filter.prewitt_x": "gwyd" + "dion_prewitt_x",
+    "img.filter.prewitt_y": "gwyd" + "dion_prewitt_y",
+    "img.filter.sobel_x": "gwyd" + "dion_sobel_x",
+    "img.filter.sobel_y": "gwyd" + "dion_sobel_y",
     "img.interpolation.laplace_under_mask": "gwyd" + "ion_interpolate_data_under_mask",
     "img.level.align_rows_polynomial": "gwyd" + "dion_align_rows_polynomial",
     "img.level.align_rows_modus": "gwyd" + "dion_align_rows_modus",
@@ -58,7 +64,7 @@ def test_reject_unknown_operation() -> None:
 
 def test_deterministic_listing() -> None:
     ops = list_operations()
-    assert len(ops) == 11
+    assert len(ops) == 17
     ids = [o.operation_id for o in ops]
     assert ids == sorted(ids)
     # calling twice yields identical tuples
@@ -68,7 +74,15 @@ def test_deterministic_listing() -> None:
 def test_family_filtering() -> None:
     filters = filter_operations(family="IMG.FILTER")
     assert [f.operation_id for f in filters] == [
-        "img.filter.gaussian", "img.filter.median", "img.filter.rank"]
+        "img.filter.gaussian",
+        "img.filter.gradient_direction",
+        "img.filter.gradient_magnitude",
+        "img.filter.median",
+        "img.filter.prewitt_x",
+        "img.filter.prewitt_y",
+        "img.filter.rank",
+        "img.filter.sobel_x",
+        "img.filter.sobel_y"]
     scanline = filter_operations(family="IMG.SCANLINE")
     assert {o.operation_id for o in scanline} == {
         "img.scanline.step_line_correction",
@@ -79,7 +93,7 @@ def test_family_filtering() -> None:
 
 def test_maturity_filtering() -> None:
     cv = filter_operations(maturity="CROSS_VALIDATED")
-    assert len(cv) == 11
+    assert len(cv) == 16
     cv2 = filter_operations(maturity=Maturity.CROSS_VALIDATED)
     assert cv == cv2
 
@@ -115,6 +129,32 @@ def test_lazy_imports() -> None:
     assert "import spmkit.core.analysis" not in src
 
 
+def test_derivative_records_maturity_split() -> None:
+    for op_id in ("img.filter.sobel_x", "img.filter.sobel_y",
+                  "img.filter.prewitt_x", "img.filter.prewitt_y"):
+        spec = get_operation(op_id)
+        assert spec.maturity == Maturity.CROSS_VALIDATED
+        assert spec.reference.software == "Gwydion"
+        assert spec.reference.version == "2.71"
+        assert spec.border_policy == "clipped"
+        assert spec.units == "preserved"
+        assert [p.name for p in spec.parameters] == ["channel"]
+    magnitude = get_operation("img.filter.gradient_magnitude")
+    assert magnitude.maturity == Maturity.CROSS_VALIDATED
+    assert [p.name for p in magnitude.parameters] == ["gx", "gy"]
+    assert all(p.required for p in magnitude.parameters)
+    platform_note = " ".join(magnitude.known_deviations)
+    assert "x86-64" in platform_note and "glibc" in platform_note
+    assert "hypot@GLIBC_2.35" in platform_note
+    assert "no cross-libc" in platform_note
+    direction = get_operation("img.filter.gradient_direction")
+    assert direction.maturity == Maturity.NUMERICALLY_VERIFIED
+    assert direction.reference.software == "SPMKit"
+    assert direction.reference.profile == "NATIVE_SPMKIT_ANALYTICAL_COMPOSITE"
+    assert direction.units == "rad"
+    assert [p.name for p in direction.parameters] == ["gx", "gy"]
+
+
 def test_immutable_records() -> None:
     spec = get_operation("img.filter.rank")
     with pytest.raises(AttributeError):
@@ -132,7 +172,7 @@ def test_record_types() -> None:
     assert spec.nan_policy.value == "reject"
 
 
-def test_signature_consistency_all_11() -> None:
+def test_signature_consistency_all_operations() -> None:
     for op_id in EXPECTED:
         spec = get_operation(op_id)
         fn = resolve_callable(op_id)

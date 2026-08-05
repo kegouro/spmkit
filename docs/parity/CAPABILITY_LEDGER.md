@@ -3,7 +3,7 @@
 Stable scientific capabilities registered by the Operation Registry v1.
 
 - schema_version: 1
-- operations: 11
+- operations: 17
 
 Source of truth: `src/spmkit/core/capabilities.json` (generated view; do not edit by hand).
 
@@ -42,6 +42,77 @@ Source of truth: `src/spmkit/core/capabilities.json` (generated view; do not edi
 - known deviations:
   - Gaussian constant-field preservation is not bitwise guaranteed; kernel-normalization rounding (~1e-15) is preserved.
 
+## IMG.FILTER.GRADIENT_DIRECTION
+
+- operation_id: `img.filter.gradient_direction`
+- public_name: `gradient_direction`
+- public_import: `spmkit.core.analysis:gradient_direction`
+- family: IMG.FILTER
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Gradient Direction (native analytical composite))
+- evidence profile: `NATIVE_SPMKIT_ANALYTICAL_COMPOSITE`
+
+- contract: Native gradient direction atan2(gy, gx) over explicit required component fields; radians; range (-pi, pi]; C99 signed-zero axes; zero vector -> +0.0; output unit rad; native analytical composite, not a Gwydion parity target; components never mutated.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: clipped
+  - mutation: returns_new
+  - result: SPMChannel
+  - units: rad
+
+- parameters:
+  - `gx` (positional, required) — Horizontal derivative component field (finite 2D SPMChannel).
+  - `gy` (positional, required) — Vertical derivative component field (finite 2D SPMChannel).
+
+- evidence:
+  - `tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.json`
+  - `tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.npz`
+  - `tests/validation/fixtures/gwyddion/derivative_filters/oracle_gradient_direction_native.py`
+  - `tests/validation/test_gwyddion_derivative_filters_production_parity.py`
+  - `tests/core/test_gwyddion_derivative_filters.py`
+
+- known deviations:
+  - numpy.arctan2 may differ from the compiled C atan2 profile by up to ~1 ULP on some inputs; characterized by parity tests, not bitwise parity.
+
+## IMG.FILTER.GRADIENT_MAGNITUDE
+
+- operation_id: `img.filter.gradient_magnitude`
+- public_name: `gwyddion_gradient_magnitude`
+- public_import: `spmkit.core.analysis:gwyddion_gradient_magnitude`
+- family: IMG.FILTER
+- maturity: CROSS_VALIDATED
+- status: stable
+- reference: Gwydion 2.71 (Gradient Magnitude (hypot of component fields))
+- evidence profile: `COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_DERIVATIVE_KERNEL_PROFILE`
+
+- contract: Gradient magnitude hypot(gx, gy) over explicit required component fields; reproduces the frozen hypot-of-fields orchestration; overflow/underflow-safe; +0.0 for all signed-zero component combinations; component unit retained; components never mutated.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: clipped
+  - mutation: returns_new
+  - result: SPMChannel
+  - units: preserved
+
+- parameters:
+  - `gx` (positional, required) — Horizontal derivative component field (finite 2D SPMChannel).
+  - `gy` (positional, required) — Vertical derivative component field (finite 2D SPMChannel).
+
+- evidence:
+  - `tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.json`
+  - `tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.npz`
+  - `tests/validation/test_gwyddion_derivative_filters_production_parity.py`
+  - `tests/core/test_gwyddion_derivative_filters.py`
+
+- known deviations:
+  - Bitwise parity is bounded to the frozen platform profile x86-64 / glibc / hypot@GLIBC_2.35; no cross-libc or cross-architecture bitwise guarantee; non-negativity and component-swap symmetry hold relationally on every platform.
+
 ## IMG.FILTER.MEDIAN
 
 - operation_id: `img.filter.median`
@@ -73,6 +144,70 @@ Source of truth: `src/spmkit/core/capabilities.json` (generated view; do not edi
   - `tests/validation/fixtures/gwyddion/neighborhood_filters/neighborhood_filters_reference.npz`
   - `tests/validation/test_gwyddion_neighborhood_filters_production_parity.py`
   - `tests/core/test_gwyddion_neighborhood_filters.py`
+
+## IMG.FILTER.PREWITT_X
+
+- operation_id: `img.filter.prewitt_x`
+- public_name: `gwyddion_prewitt_x`
+- public_import: `spmkit.core.analysis:gwyddion_prewitt_x`
+- family: IMG.FILTER
+- maturity: CROSS_VALIDATED
+- status: stable
+- reference: Gwydion 2.71 (Prewitt X Filter)
+- evidence profile: `COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_DERIVATIVE_KERNEL_PROFILE`
+
+- contract: Prewitt X (horizontal) pixel-space derivative with the frozen 1/3 coefficients {1/3, 0, -1/3; 1/3, 0, -1/3; 1/3, 0, -1/3}; CLIPPED borders; frozen source sign and orientation; z-unit preserved; finite 2D inputs only; no masks or ROI.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: clipped
+  - mutation: returns_new
+  - result: SPMChannel
+  - units: preserved
+
+- parameters:
+  - `channel` (positional, required) — Finite two-dimensional input channel.
+
+- evidence:
+  - `tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.json`
+  - `tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.npz`
+  - `tests/validation/fixtures/gwyddion/derivative_filters/oracle_derivative_filters_source.py`
+  - `tests/validation/test_gwyddion_derivative_filters_production_parity.py`
+  - `tests/core/test_gwyddion_derivative_filters.py`
+
+## IMG.FILTER.PREWITT_Y
+
+- operation_id: `img.filter.prewitt_y`
+- public_name: `gwyddion_prewitt_y`
+- public_import: `spmkit.core.analysis:gwyddion_prewitt_y`
+- family: IMG.FILTER
+- maturity: CROSS_VALIDATED
+- status: stable
+- reference: Gwydion 2.71 (Prewitt Y Filter)
+- evidence profile: `COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_DERIVATIVE_KERNEL_PROFILE`
+
+- contract: Prewitt Y (vertical) pixel-space derivative with the frozen 1/3 coefficients {1/3, 1/3, 1/3; 0, 0, 0; -1/3, -1/3, -1/3}; CLIPPED borders; frozen source sign and orientation; z-unit preserved; finite 2D inputs only; no masks or ROI.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: clipped
+  - mutation: returns_new
+  - result: SPMChannel
+  - units: preserved
+
+- parameters:
+  - `channel` (positional, required) — Finite two-dimensional input channel.
+
+- evidence:
+  - `tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.json`
+  - `tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.npz`
+  - `tests/validation/fixtures/gwyddion/derivative_filters/oracle_derivative_filters_source.py`
+  - `tests/validation/test_gwyddion_derivative_filters_production_parity.py`
+  - `tests/core/test_gwyddion_derivative_filters.py`
 
 ## IMG.FILTER.RANK
 
@@ -109,6 +244,70 @@ Source of truth: `src/spmkit/core/capabilities.json` (generated view; do not edi
 
 - known deviations:
   - Private secondary/both/difference Rank output modes are retained in diagnostics but not exposed publicly in v1.
+
+## IMG.FILTER.SOBEL_X
+
+- operation_id: `img.filter.sobel_x`
+- public_name: `gwyddion_sobel_x`
+- public_import: `spmkit.core.analysis:gwyddion_sobel_x`
+- family: IMG.FILTER
+- maturity: CROSS_VALIDATED
+- status: stable
+- reference: Gwydion 2.71 (Sobel X Filter)
+- evidence profile: `COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_DERIVATIVE_KERNEL_PROFILE`
+
+- contract: Sobel X (horizontal) pixel-space derivative: kernel {0.25, 0, -0.25; 0.5, 0, -0.5; 0.25, 0, -0.25}; CLIPPED borders; frozen source sign (increasing-right X ramp gives negative response), orientation and accumulation order; z-unit preserved; finite 2D inputs only; no masks or ROI.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: clipped
+  - mutation: returns_new
+  - result: SPMChannel
+  - units: preserved
+
+- parameters:
+  - `channel` (positional, required) — Finite two-dimensional input channel.
+
+- evidence:
+  - `tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.json`
+  - `tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.npz`
+  - `tests/validation/fixtures/gwyddion/derivative_filters/oracle_derivative_filters_source.py`
+  - `tests/validation/test_gwyddion_derivative_filters_production_parity.py`
+  - `tests/core/test_gwyddion_derivative_filters.py`
+
+## IMG.FILTER.SOBEL_Y
+
+- operation_id: `img.filter.sobel_y`
+- public_name: `gwyddion_sobel_y`
+- public_import: `spmkit.core.analysis:gwyddion_sobel_y`
+- family: IMG.FILTER
+- maturity: CROSS_VALIDATED
+- status: stable
+- reference: Gwydion 2.71 (Sobel Y Filter)
+- evidence profile: `COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_DERIVATIVE_KERNEL_PROFILE`
+
+- contract: Sobel Y (vertical) pixel-space derivative: kernel {0.25, 0.5, 0.25; 0, 0, 0; -0.25, -0.5, -0.25}; CLIPPED borders; frozen source sign (increasing-down Y ramp gives negative response), orientation and accumulation order; z-unit preserved; finite 2D inputs only; no masks or ROI.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: clipped
+  - mutation: returns_new
+  - result: SPMChannel
+  - units: preserved
+
+- parameters:
+  - `channel` (positional, required) — Finite two-dimensional input channel.
+
+- evidence:
+  - `tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.json`
+  - `tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.npz`
+  - `tests/validation/fixtures/gwyddion/derivative_filters/oracle_derivative_filters_source.py`
+  - `tests/validation/test_gwyddion_derivative_filters_production_parity.py`
+  - `tests/core/test_gwyddion_derivative_filters.py`
 
 ## IMG.INTERPOLATION.LAPLACE_UNDER_MASK
 

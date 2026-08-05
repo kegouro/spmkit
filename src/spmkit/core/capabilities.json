@@ -64,6 +64,125 @@
     },
     {
       "aliases": [],
+      "border_policy": "clipped",
+      "capability_id": "IMG.FILTER.GRADIENT_DIRECTION",
+      "contract": "Native gradient direction atan2(gy, gx) over explicit required component fields; radians; range (-pi, pi]; C99 signed-zero axes; zero vector -> +0.0; output unit rad; native analytical composite, not a Gwydion parity target; components never mutated.",
+      "evidence": [
+        "tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.json",
+        "tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.npz",
+        "tests/validation/fixtures/gwyddion/derivative_filters/oracle_gradient_direction_native.py",
+        "tests/validation/test_gwyddion_derivative_filters_production_parity.py",
+        "tests/core/test_gwyddion_derivative_filters.py"
+      ],
+      "family": "IMG.FILTER",
+      "known_deviations": [
+        "numpy.arctan2 may differ from the compiled C atan2 profile by up to ~1 ULP on some inputs; characterized by parity tests, not bitwise parity."
+      ],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "img.filter.gradient_direction",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Horizontal derivative component field (finite 2D SPMChannel).",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "gx",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Vertical derivative component field (finite 2D SPMChannel).",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "gy",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:gradient_direction",
+      "public_name": "gradient_direction",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Gradient Direction (native analytical composite)",
+        "profile": "NATIVE_SPMKIT_ANALYTICAL_COMPOSITE"
+      },
+      "result_type": "SPMChannel",
+      "roi_support": false,
+      "status": "stable",
+      "units": "rad"
+    },
+    {
+      "aliases": [],
+      "border_policy": "clipped",
+      "capability_id": "IMG.FILTER.GRADIENT_MAGNITUDE",
+      "contract": "Gradient magnitude hypot(gx, gy) over explicit required component fields; reproduces the frozen hypot-of-fields orchestration; overflow/underflow-safe; +0.0 for all signed-zero component combinations; component unit retained; components never mutated.",
+      "evidence": [
+        "tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.json",
+        "tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.npz",
+        "tests/validation/test_gwyddion_derivative_filters_production_parity.py",
+        "tests/core/test_gwyddion_derivative_filters.py"
+      ],
+      "family": "IMG.FILTER",
+      "known_deviations": [
+        "Bitwise parity is bounded to the frozen platform profile x86-64 / glibc / hypot@GLIBC_2.35; no cross-libc or cross-architecture bitwise guarantee; non-negativity and component-swap symmetry hold relationally on every platform."
+      ],
+      "mask_semantics": "none",
+      "maturity": "CROSS_VALIDATED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "img.filter.gradient_magnitude",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Horizontal derivative component field (finite 2D SPMChannel).",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "gx",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Vertical derivative component field (finite 2D SPMChannel).",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "gy",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:gwyddion_gradient_magnitude",
+      "public_name": "gwyddion_gradient_magnitude",
+      "reference": {
+        "software": "Gwydion",
+        "version": "2.71",
+        "name": "Gradient Magnitude (hypot of component fields)",
+        "profile": "COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_DERIVATIVE_KERNEL_PROFILE"
+      },
+      "result_type": "SPMChannel",
+      "roi_support": false,
+      "status": "stable",
+      "units": "preserved"
+    },
+    {
+      "aliases": [],
       "border_policy": "extend",
       "capability_id": "IMG.FILTER.MEDIAN",
       "contract": "Disc median filter with footprint side `size` (2..31, even sizes valid); ellipse-inscribed footprint; upper median rank n//2; EXTEND nearest-constant borders.",
@@ -116,6 +235,98 @@
         "profile": "COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION",
         "software": "Gwydion",
         "version": "2.71"
+      },
+      "result_type": "SPMChannel",
+      "roi_support": false,
+      "status": "stable",
+      "units": "preserved"
+    },
+    {
+      "aliases": [],
+      "border_policy": "clipped",
+      "capability_id": "IMG.FILTER.PREWITT_X",
+      "contract": "Prewitt X (horizontal) pixel-space derivative with the frozen 1/3 coefficients {1/3, 0, -1/3; 1/3, 0, -1/3; 1/3, 0, -1/3}; CLIPPED borders; frozen source sign and orientation; z-unit preserved; finite 2D inputs only; no masks or ROI.",
+      "evidence": [
+        "tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.json",
+        "tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.npz",
+        "tests/validation/fixtures/gwyddion/derivative_filters/oracle_derivative_filters_source.py",
+        "tests/validation/test_gwyddion_derivative_filters_production_parity.py",
+        "tests/core/test_gwyddion_derivative_filters.py"
+      ],
+      "family": "IMG.FILTER",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "CROSS_VALIDATED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "img.filter.prewitt_x",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Finite two-dimensional input channel.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "channel",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:gwyddion_prewitt_x",
+      "public_name": "gwyddion_prewitt_x",
+      "reference": {
+        "software": "Gwydion",
+        "version": "2.71",
+        "name": "Prewitt X Filter",
+        "profile": "COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_DERIVATIVE_KERNEL_PROFILE"
+      },
+      "result_type": "SPMChannel",
+      "roi_support": false,
+      "status": "stable",
+      "units": "preserved"
+    },
+    {
+      "aliases": [],
+      "border_policy": "clipped",
+      "capability_id": "IMG.FILTER.PREWITT_Y",
+      "contract": "Prewitt Y (vertical) pixel-space derivative with the frozen 1/3 coefficients {1/3, 1/3, 1/3; 0, 0, 0; -1/3, -1/3, -1/3}; CLIPPED borders; frozen source sign and orientation; z-unit preserved; finite 2D inputs only; no masks or ROI.",
+      "evidence": [
+        "tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.json",
+        "tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.npz",
+        "tests/validation/fixtures/gwyddion/derivative_filters/oracle_derivative_filters_source.py",
+        "tests/validation/test_gwyddion_derivative_filters_production_parity.py",
+        "tests/core/test_gwyddion_derivative_filters.py"
+      ],
+      "family": "IMG.FILTER",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "CROSS_VALIDATED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "img.filter.prewitt_y",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Finite two-dimensional input channel.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "channel",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:gwyddion_prewitt_y",
+      "public_name": "gwyddion_prewitt_y",
+      "reference": {
+        "software": "Gwydion",
+        "version": "2.71",
+        "name": "Prewitt Y Filter",
+        "profile": "COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_DERIVATIVE_KERNEL_PROFILE"
       },
       "result_type": "SPMChannel",
       "roi_support": false,
@@ -193,6 +404,98 @@
         "profile": "COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION",
         "software": "Gwydion",
         "version": "2.71"
+      },
+      "result_type": "SPMChannel",
+      "roi_support": false,
+      "status": "stable",
+      "units": "preserved"
+    },
+    {
+      "aliases": [],
+      "border_policy": "clipped",
+      "capability_id": "IMG.FILTER.SOBEL_X",
+      "contract": "Sobel X (horizontal) pixel-space derivative: kernel {0.25, 0, -0.25; 0.5, 0, -0.5; 0.25, 0, -0.25}; CLIPPED borders; frozen source sign (increasing-right X ramp gives negative response), orientation and accumulation order; z-unit preserved; finite 2D inputs only; no masks or ROI.",
+      "evidence": [
+        "tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.json",
+        "tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.npz",
+        "tests/validation/fixtures/gwyddion/derivative_filters/oracle_derivative_filters_source.py",
+        "tests/validation/test_gwyddion_derivative_filters_production_parity.py",
+        "tests/core/test_gwyddion_derivative_filters.py"
+      ],
+      "family": "IMG.FILTER",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "CROSS_VALIDATED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "img.filter.sobel_x",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Finite two-dimensional input channel.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "channel",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:gwyddion_sobel_x",
+      "public_name": "gwyddion_sobel_x",
+      "reference": {
+        "software": "Gwydion",
+        "version": "2.71",
+        "name": "Sobel X Filter",
+        "profile": "COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_DERIVATIVE_KERNEL_PROFILE"
+      },
+      "result_type": "SPMChannel",
+      "roi_support": false,
+      "status": "stable",
+      "units": "preserved"
+    },
+    {
+      "aliases": [],
+      "border_policy": "clipped",
+      "capability_id": "IMG.FILTER.SOBEL_Y",
+      "contract": "Sobel Y (vertical) pixel-space derivative: kernel {0.25, 0.5, 0.25; 0, 0, 0; -0.25, -0.5, -0.25}; CLIPPED borders; frozen source sign (increasing-down Y ramp gives negative response), orientation and accumulation order; z-unit preserved; finite 2D inputs only; no masks or ROI.",
+      "evidence": [
+        "tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.json",
+        "tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.npz",
+        "tests/validation/fixtures/gwyddion/derivative_filters/oracle_derivative_filters_source.py",
+        "tests/validation/test_gwyddion_derivative_filters_production_parity.py",
+        "tests/core/test_gwyddion_derivative_filters.py"
+      ],
+      "family": "IMG.FILTER",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "CROSS_VALIDATED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "img.filter.sobel_y",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Finite two-dimensional input channel.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "channel",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:gwyddion_sobel_y",
+      "public_name": "gwyddion_sobel_y",
+      "reference": {
+        "software": "Gwydion",
+        "version": "2.71",
+        "name": "Sobel Y Filter",
+        "profile": "COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_DERIVATIVE_KERNEL_PROFILE"
       },
       "result_type": "SPMChannel",
       "roi_support": false,
