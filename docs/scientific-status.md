@@ -847,6 +847,112 @@ identifiability (R is fixed, never fitted); no adhesion-hysteresis or
 pull-off model; no rate/viscoelastic dependence; no physical validation; no
 experimental reproducibility claim.
 
+## Force-spectroscopy viscoelasticity (FS-F3)
+
+The FS-F3 batch adds a validated time-domain viscoelastic layer on the
+FS-F1/FS-F2 stack: temporal protocol identification, indentation rates,
+stress-relaxation and creep extraction, five lumped response models
+(Kelvin-Voigt, Maxwell, standard linear solid, generalized Maxwell/Prony,
+power law), the spherical hereditary-integral models (Lee-Radok loading and
+Ting loading/unloading with contact-time memory), AICc model comparison,
+sensitivity multiverse, force-volume mapping.  14 public capabilities with
+typed errors, immutable results and explicit provenance.
+
+- temporal contract: time in seconds, strictly increasing per segment,
+  duplicates raise DUPLICATE_TIMESTAMPS, nonuniform sampling allowed
+  (never resampled), no assumed acquisition rate; a missing time axis
+  raises MISSING_TIME (a reconstructed clock requires an explicit
+  assume_uniform_rate); the instrument clock is segment.time;
+- reader limitation (explicit): the JPK and NID readers do NOT populate
+  ForceSegment.time, so no automatic general JPK/NID time-domain
+  viscoelastic analysis is claimed; FS-F3 is usable when an explicit valid
+  time axis is present or reconstructed by an explicitly requested
+  known-rate policy (assume_uniform_rate); reader timing extraction is a
+  separate future batch;
+- protocol classes: LOADING_RAMP, UNLOADING_RAMP, DISPLACEMENT_HOLD,
+  FORCE_HOLD, CREEP, STRESS_RELAXATION, TRIANGULAR_LOADING,
+  INSUFFICIENT_PROTOCOL, AMBIGUOUS_PROTOCOL; identification is rate-region
+  based (median-of-nonzero-rate thresholds); trusted instrument labels in
+  curve.metadata take precedence; a displacement hold with a decaying force
+  is STRESS_RELAXATION, a force hold with a drifting displacement is CREEP;
+- phantoms: the force traces derive from the independent oracles; the
+  piezo position is the clean position while noise lives on the force
+  channel only (the derived separation then jitters inside the FS-F1
+  work-integral tolerance); the response models are exact in the hold
+  region; ramp segments are elastic-following placeholders (documented);
+- frozen lumped equations: KV creep J(t) = (1/E)(1 - exp(-t/tau)),
+  tau = eta/E; Maxwell E(t) = E exp(-t/tau); SLS
+  E(t) = E_inf + (E0 - E_inf) exp(-t/tau_relax) with the creep form
+  J(t) = J_inf - (J_inf - J0) exp(-t/tau_retard) and the conversions
+  J0 = 1/E0, J_inf = 1/E_inf, tau_retard = tau_relax * E0/E_inf; Prony
+  E(t) = E_inf + sum E_i exp(-t/tau_i) with E_i >= 0, tau_i > 0, strictly
+  increasing tau (duplicates rejected typed) and no uniqueness claim;
+  power law E(t) = E_ref (t/t_ref)^(-alpha), 0 < alpha < 1, t = 0 excluded;
+- frozen hereditary integrals (sphere, reduced modulus):
+  Lee-Radok F(t) = c int_0^t E(t - t') d/dt' delta(t')^1.5 dt' with the
+  monotonic-contact-radius condition (LEE_RADOK_NONMONOTONIC typed);
+  Ting adds the unloading branch F(t) = c int_0^{t1(t)} ... with
+  delta(t1(t)) = delta(t) on the loading branch (contact-time memory;
+  TING_HISTORY_UNAVAILABLE typed when the history cannot be
+  reconstructed); the production quadrature is the first-order
+  Riemann-sum-in-increments rule with right-edge modulus evaluation;
+  the independent oracle uses a 16-substep midpoint rule (agreement
+  0.5-0.7%);
+- fits: shared deterministic least-squares engine with an explicit
+  multi-start (flat-valley protection) and a normalized objective;
+  SLS-constrained parameterizations (a = (E0 - E_inf)/E0, creep
+  increments) keep the model domains valid; Lee-Radok and Ting fit the
+  SLS relaxation modulus through the integral (recovery within ~40%
+  E0/E_inf and ~50% tau on clean phantoms; the loading curve carries less
+  information than a hold); the creep absolute compliance level is
+  contact-coordinate limited (~20% of the J0 scale) so the creep recovery
+  is reported on the compliance INCREMENT (dJ, tau_retard) plus the
+  absolute level with a wide honest bound;
+- comparison: AICc over identical observations with the finite-sample
+  correction, Delta AICc < 4 ambiguity, model-relative weights only;
+- sensitivity: deterministic multiverse over contact offsets, hold-boundary
+  offsets and equilibrium-tail fractions with one-at-a-time indices
+  (contact/boundary/window) and a dominant classification (contact /
+  boundary / window / none at the 20% threshold); raw configurations and
+  failures exposed;
+- volume: per-curve identify -> prepare -> extract -> SLS mapping with
+  modulus/viscosity/relaxation-time maps, model/ambiguity/sensitivity
+  maps and an explicit failed mask (nothing silently dropped).
+
+Maturity per capability (reconciled at independent audit):
+
+- NUMERICALLY_VERIFIED (defined numerical truth on deterministic phantoms
+  and the independent analytical/hereditary oracles): indentation rate,
+  relaxation/creep extraction, the five lumped forward models and fits,
+  Lee-Radok (within the accurately demonstrated scope: forward parity
+  0.7%, inverse bounds documented), Ting (independent history validation),
+  force-volume mapping;
+- SOFTWARE_VERIFIED (designed policies inseparable from the public
+  results): protocol identification (the rate-region arithmetic is
+  numerically verified but the protocol-type decision and the ambiguity
+  policy are designed), the model comparison (the AICc arithmetic is
+  numerically verified but the recommendation policy is part of the
+  result), the sensitivity analysis (the arithmetic is numerically
+  verified but the dominant-source interpretation is policy);
+- external: pyvisco 2.1.3 (BSD-3) is a frozen COMPATIBILITY WITNESS only:
+  the fixed-tau-grid NNLS reconstruction and the production free-tau fit
+  both reproduce the same synthetic normalized modulus within 0.10 on the
+  shared grid; no parameter equality and no CROSS_VALIDATED record;
+- no PHYSICALLY_VALIDATED claim.
+
+FS-F1 compatibility repair (proven defect, bounded): the piecewise contact
+method's polyfit crashed with an untyped LinAlgError on constant-coordinate
+windows (e.g. a flat hold); the candidate is now rejected (returns inf)
+with a rank-deficiency guard, never an untyped crash.
+
+Non-claims: no universal linear-viscoelastic validity; no physical
+validation; no unique Prony spectrum and no universal number of relaxation
+modes; no guaranteed equilibrium from a finite dwell; no automatic correct
+model; no complete systematic uncertainty; no frequency-domain
+microrheology; no active oscillatory rheology; no SMFS/unfolding support;
+no certified viscosity or modulus; no experimental cell/material truth;
+synthetic map recovery is not experimental map validation.
+
 ## Test-count policy
 
 The collection total is measured with:

@@ -13,6 +13,7 @@ All estimators return typed candidates; failures are never hidden.
 
 from __future__ import annotations
 
+import warnings
 from dataclasses import dataclass, field
 
 import numpy as np
@@ -186,8 +187,22 @@ def _piecewise_residual(
     xc = z[split:] - float(z[split])
     b_deg = min(baseline_order, split - 1)
     c_deg = min(contact_order, n - split - 1)
-    cb = np.polyfit(xb, force[:split], b_deg)
-    cc = np.polyfit(xc, force[split:], c_deg)
+    if float(np.ptp(xb)) <= 0.0 or float(np.ptp(xc)) <= 0.0:
+        # constant-coordinate window (e.g. a flat hold): the polynomial
+        # design is rank deficient; the candidate is invalid
+        return float("inf")
+    try:
+        with warnings.catch_warnings():
+            # nearly-constant windows are rank deficient: numpy emits a
+            # RankWarning before the SVD fails; treat exactly that
+            # conditioning signal as an invalid candidate, never a leak
+            warnings.filterwarnings("error", message="Polyfit may be poorly conditioned")
+            cb = np.polyfit(xb, force[:split], b_deg)
+            cc = np.polyfit(xc, force[split:], c_deg)
+    except (np.linalg.LinAlgError, np.exceptions.RankWarning):
+        # degenerate design (e.g. an exponential/flat contact branch):
+        # the candidate is invalid, never an untyped crash
+        return float("inf")
     # continuity: value of baseline at split == value of contact at split
     vb = float(np.polyval(cb, 0.0))
     vc = float(np.polyval(cc, 0.0))
