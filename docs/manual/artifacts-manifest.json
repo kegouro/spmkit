@@ -1,9 +1,9 @@
 {
   "artifacts": [
     {
-      "bytes": 56482,
+      "bytes": 56542,
       "path": "docs/user-guide.md",
-      "sha256": "2af676b1a962202ec7c5424a95d7477a6b99621c88ad433720cff46b2e117a43"
+      "sha256": "ecc0da824cd3886aa59ec6322f3b27ad15168bd5203fe4b191ce108e8fa2fb3e"
     },
     {
       "bytes": 39958,
