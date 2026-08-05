@@ -25,9 +25,7 @@ def test_corrupt_gwy_via_open_action_keeps_gui_alive(
     qtbot.wait(0)
 
     try:
-        open_action = next(
-            action for action in ws._persp_bar.actions() if "Abrir" in action.text()
-        )
+        open_action = next(action for action in ws._persp_bar.actions() if "Abrir" in action.text())
         open_action.trigger()
         qtbot.wait(0)
 
@@ -61,9 +59,7 @@ def test_real_gwy_gui_image_journey(
     qtbot.wait(0)
 
     try:
-        open_action = next(
-            action for action in ws._persp_bar.actions() if "Abrir" in action.text()
-        )
+        open_action = next(action for action in ws._persp_bar.actions() if "Abrir" in action.text())
         open_action.trigger()
         qtbot.wait(0)
 
@@ -129,9 +125,7 @@ def test_real_gwy_gui_image_journey(
             rows = list(reader)
         assert reader.fieldnames == ["distance[m]", "height[m]"]
         assert len(rows) == len(profile)
-        np.testing.assert_allclose(
-            [float(row["distance[m]"]) for row in rows], profile.distance
-        )
+        np.testing.assert_allclose([float(row["distance[m]"]) for row in rows], profile.distance)
         np.testing.assert_allclose([float(row["height[m]"]) for row in rows], profile.height)
 
         selector.setCurrentIndex(2)

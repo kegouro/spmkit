@@ -51,9 +51,7 @@ class ProjectState:
         return {
             "version": self.version,
             "perspective": self.perspective,
-            "files": [
-                {"path": f.path, "kind": f.kind, "sha256": f.sha256} for f in self.files
-            ],
+            "files": [{"path": f.path, "kind": f.kind, "sha256": f.sha256} for f in self.files],
             "params": self.params,
         }
 
