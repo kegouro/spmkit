@@ -3,7 +3,7 @@
 Stable scientific capabilities registered by the Operation Registry v1.
 
 - schema_version: 1
-- operations: 43
+- operations: 57
 
 Source of truth: `src/spmkit/core/capabilities.json` (generated view; do not edit by hand).
 
@@ -870,6 +870,503 @@ Source of truth: `src/spmkit/core/capabilities.json` (generated view; do not edi
 
 - known deviations:
   - bitwise external identity not claimed; convention validated numerically on the frozen nanite profile
+
+## FORCE.VISCO.CONTACT.LEE_RADOK
+
+- operation_id: `force.visco.contact.lee_radok`
+- public_name: `fit_lee_radok_sphere`
+- public_import: `spmkit.core.analysis:fit_lee_radok_sphere`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Fits the SLS relaxation modulus through the Lee-Radok spheri)
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Fits the SLS relaxation modulus through the Lee-Radok spherical hereditary integral on the monotonic loading region: F(t) = c int_0^t E(t - t') d/dt' delta(t')^1.5 dt'; the contact radius must not decrease (LEE_RADOK_NONMONOTONIC typed); loading-only validity; the loading history is trimmed to the contact (indentation >= 0, documented); recovery within ~40% E0/E_inf and ~50% tau on clean phantoms (the loading curve carries less information than a hold).
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: Pa
+
+- parameters:
+  - `prepared` (positional, required) — FS-F1 prepared curve.
+  - `protocol` (positional, required) — Protocol result.
+  - `tip_radius` (keyword_only, required) — Tip radius (m).
+  - `poisson` (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.
+  - `E0_initial` (keyword_only, 1000000.0) — Modulus start (Pa).
+  - `E_inf_initial` (keyword_only, 500000.0) — Equilibrium modulus start (Pa).
+  - `tau_initial` (keyword_only, 1.0) — Relaxation time start (s).
+
+- evidence:
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json`
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz`
+  - `tests/validation/test_force_viscoelasticity_validation.py`
+  - `tests/core/test_force_viscoelasticity.py`
+
+## FORCE.VISCO.CONTACT.TING
+
+- operation_id: `force.visco.contact.ting`
+- public_name: `fit_ting_sphere`
+- public_import: `spmkit.core.analysis:fit_ting_sphere`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Fits the SLS relaxation modulus through the Ting spherical i)
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Fits the SLS relaxation modulus through the Ting spherical integral with contact-time memory: loading = Lee-Radok; unloading F(t) = c int_0^{t1(t)} E(t - t') d/dt' delta(t')^1.5 dt' with delta(t1(t)) = delta(t) on the monotone loading portion; the loading history is trimmed to the contact and the unloading history truncated at the contact (documented); TING_HISTORY_UNAVAILABLE typed when the history cannot be reconstructed; the production quadrature is the first-order increment rule (parity with the substep oracle 0.5%).
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: Pa
+
+- parameters:
+  - `prepared` (positional, required) — FS-F1 prepared curve.
+  - `protocol` (positional, required) — Protocol result.
+  - `tip_radius` (keyword_only, required) — Tip radius (m).
+  - `poisson` (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.
+  - `E0_initial` (keyword_only, 1000000.0) — Modulus start (Pa).
+  - `E_inf_initial` (keyword_only, 500000.0) — Equilibrium modulus start (Pa).
+  - `tau_initial` (keyword_only, 1.0) — Relaxation time start (s).
+
+- evidence:
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json`
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz`
+  - `tests/validation/test_force_viscoelasticity_validation.py`
+  - `tests/core/test_force_viscoelasticity.py`
+
+## FORCE.VISCO.CREEP.EXTRACT
+
+- operation_id: `force.visco.creep.extract`
+- public_name: `extract_creep_compliance`
+- public_import: `spmkit.core.analysis:extract_creep_compliance`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Extracts the creep compliance increment of a force hold: (in)
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Extracts the creep compliance increment of a force hold: (indentation(t) - indentation(0))/F_hold on the relative hold time; the increment is robust to the contact-coordinate precision (the absolute level is carried in indentation_at_hold_start); missing hold raises EMPTY_REGION; zero held force raises INVALID_RESPONSE.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: s / N / m
+
+- parameters:
+  - `prepared` (positional, required) — FS-F1 prepared curve.
+  - `protocol` (positional, required) — Protocol result.
+  - `segment` (keyword_only, 'extend') — Segment name.
+  - `hold_kind` (keyword_only, 'hold_force') — Hold region kind.
+  - `hold_force_median` (keyword_only, True) — Median (vs mean) held force.
+
+- evidence:
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json`
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz`
+  - `tests/validation/test_force_viscoelasticity_validation.py`
+  - `tests/core/test_force_viscoelasticity.py`
+
+## FORCE.VISCO.MODEL.COMPARE
+
+- operation_id: `force.visco.model.compare`
+- public_name: `compare_viscoelastic_models`
+- public_import: `spmkit.core.analysis:compare_viscoelastic_models`
+- family: FORCE
+- maturity: SOFTWARE_VERIFIED
+- status: stable
+- reference: SPMKit native (Model-relative AICc comparison over identical observations w)
+- evidence profile: `NATIVE_SPMKIT_DESIGNED_HEURISTIC`
+
+- contract: Model-relative AICc comparison over identical observations with the finite-sample correction; Delta AICc < 4 ambiguity; failed candidates retained as warnings; weights are relative support, never a probability of physical correctness; the recommendation policy is SOFTWARE_VERIFIED.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: not_applicable
+
+- parameters:
+  - `response` (positional, required) — Relaxation or creep response.
+  - `models` (keyword_only, None) — Candidate models.
+  - `tip_radius` (keyword_only, None) — Tip radius (m).
+  - `poisson` (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.
+  - `n_terms` (keyword_only, 2) — Prony terms for the generalized Maxwell.
+  - `t_ref` (keyword_only, None) — Reference time for the power law.
+
+- evidence:
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json`
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz`
+  - `tests/validation/test_force_viscoelasticity_validation.py`
+  - `tests/core/test_force_viscoelasticity.py`
+
+## FORCE.VISCO.MODEL.GENERALIZED_MAXWELL
+
+- operation_id: `force.visco.model.generalized_maxwell`
+- public_name: `fit_generalized_maxwell`
+- public_import: `spmkit.core.analysis:fit_generalized_maxwell`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Prony normalized relaxation fit n(t) = 1 - sum(alpha) + sum()
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Prony normalized relaxation fit n(t) = 1 - sum(alpha) + sum(alpha_i exp(-t/tau_i)) with alpha_i >= 0, sum(alpha) <= 1, tau_i > 0, deterministic ordering by ascending tau; duplicate relaxation times are rejected typed (PRONY_DUPLICATE_TAU); no claim that the recovered spectrum is unique; nearly equal time constants carry a bounded-identifiability warning.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: s
+
+- parameters:
+  - `response` (positional, required) — Relaxation response.
+  - `n_terms` (keyword_only, 2 bounds=[1, 8]) — Number of Prony terms.
+  - `tip_radius` (keyword_only, None) — Tip radius (m).
+  - `poisson` (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.
+
+- evidence:
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json`
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz`
+  - `tests/validation/test_force_viscoelasticity_validation.py`
+  - `tests/core/test_force_viscoelasticity.py`
+
+## FORCE.VISCO.MODEL.KELVIN_VOIGT
+
+- operation_id: `force.visco.model.kelvin_voigt`
+- public_name: `fit_kelvin_voigt`
+- public_import: `spmkit.core.analysis:fit_kelvin_voigt`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Kelvin-Voigt creep fit J(t) = (1/E)(1 - exp(-t/tau)), tau = )
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Kelvin-Voigt creep fit J(t) = (1/E)(1 - exp(-t/tau)), tau = eta/E (retardation time); requires a CreepResponseResult (PROTOCOL_MODEL_MISMATCH typed otherwise); deterministic multi-start least squares; E within 10% and tau within 10% on clean phantoms; the model cannot represent instantaneous stress relaxation (documented).
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: Pa
+
+- parameters:
+  - `response` (positional, required) — Creep response.
+  - `E_initial` (keyword_only, None) — Modulus start (Pa).
+  - `tau_initial` (keyword_only, None) — Retardation time start (s).
+
+- evidence:
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json`
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz`
+  - `tests/validation/test_force_viscoelasticity_validation.py`
+  - `tests/core/test_force_viscoelasticity.py`
+
+## FORCE.VISCO.MODEL.MAXWELL
+
+- operation_id: `force.visco.model.maxwell`
+- public_name: `fit_maxwell`
+- public_import: `spmkit.core.analysis:fit_maxwell`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Maxwell relaxation fit n(t) = exp(-t/tau), tau = eta/E; the )
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Maxwell relaxation fit n(t) = exp(-t/tau), tau = eta/E; the modulus E is recovered only when the tip radius is provided (spherical contact proportionality, documented); tau recovered within 2% on clean phantoms; the model cannot represent bounded solid creep (documented).
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: s / Pa
+
+- parameters:
+  - `response` (positional, required) — Relaxation response.
+  - `tip_radius` (keyword_only, None) — Tip radius (m); enables E.
+  - `poisson` (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.
+
+- evidence:
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json`
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz`
+  - `tests/validation/test_force_viscoelasticity_validation.py`
+  - `tests/core/test_force_viscoelasticity.py`
+
+## FORCE.VISCO.MODEL.POWER_LAW
+
+- operation_id: `force.visco.model.power_law`
+- public_name: `fit_power_law_relaxation`
+- public_import: `spmkit.core.analysis:fit_power_law_relaxation`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Power-law relaxation fit n(t) = (t/t_ref)^(-alpha) with 0 < )
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Power-law relaxation fit n(t) = (t/t_ref)^(-alpha) with 0 < alpha < 1 and an optional equilibrium offset; t = 0 excluded (singularity); t_ref defaults to the first positive hold time and the fit uses t >= t_ref when t_ref is given.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: s
+
+- parameters:
+  - `response` (positional, required) — Relaxation response.
+  - `t_ref` (keyword_only, None) — Reference time (s).
+  - `with_equilibrium` (keyword_only, False) — Add the equilibrium offset.
+  - `tip_radius` (keyword_only, None) — Tip radius (m).
+  - `poisson` (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.
+
+- evidence:
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json`
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz`
+  - `tests/validation/test_force_viscoelasticity_validation.py`
+  - `tests/core/test_force_viscoelasticity.py`
+
+## FORCE.VISCO.MODEL.SLS
+
+- operation_id: `force.visco.model.sls`
+- public_name: `fit_standard_linear_solid`
+- public_import: `spmkit.core.analysis:fit_standard_linear_solid`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Standard linear solid fit on a relaxation response n(t) = 1 )
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Standard linear solid fit on a relaxation response n(t) = 1 - a(1 - exp(-t/tau_relax)) or a creep response increment (dJ)(1 - exp(-t/tau_retard)); both representations are reported with the conversions J0 = 1/E0, J_inf = 1/E_inf, tau_retard = tau_relax * E0/E_inf; absolute moduli need the tip radius for the relaxation form; the creep absolute level is contact-coordinate limited (recovery reported on the increment).
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: Pa / m/N / s
+
+- parameters:
+  - `response` (positional, required) — Relaxation or creep response.
+  - `tip_radius` (keyword_only, None) — Tip radius (m).
+  - `poisson` (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.
+  - `tau_initial` (keyword_only, None) — Time-constant start (s).
+
+- evidence:
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json`
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz`
+  - `tests/validation/test_force_viscoelasticity_validation.py`
+  - `tests/core/test_force_viscoelasticity.py`
+
+## FORCE.VISCO.PROTOCOL.IDENTIFY
+
+- operation_id: `force.visco.protocol.identify`
+- public_name: `identify_viscoelastic_protocol`
+- public_import: `spmkit.core.analysis:identify_viscoelastic_protocol`
+- family: FORCE
+- maturity: SOFTWARE_VERIFIED
+- status: stable
+- reference: SPMKit native (Identifies the viscoelastic protocol of a force curve: rate-)
+- evidence profile: `NATIVE_SPMKIT_DESIGNED_HEURISTIC`
+
+- contract: Identifies the viscoelastic protocol of a force curve: rate-region classification (median-of-nonzero-rate thresholds) into LOADING_RAMP, UNLOADING_RAMP, DISPLACEMENT_HOLD, FORCE_HOLD, CREEP, STRESS_RELAXATION, TRIANGULAR_LOADING, INSUFFICIENT_PROTOCOL, AMBIGUOUS_PROTOCOL; trusted instrument labels in curve.metadata take precedence; a displacement hold with a decaying force is STRESS_RELAXATION, a force hold with a drifting displacement is CREEP; missing time raises MISSING_TIME (reconstructed clock only via assume_uniform_rate); duplicate time samples raise DUPLICATE_TIMESTAMPS; the JPK/NID readers do not populate segment time, so time-domain analysis requires an explicit time axis or an explicitly requested known-rate reconstruction (no automatic general reader time-domain analysis is claimed).
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: not_applicable
+
+- parameters:
+  - `curve` (positional, required) — Force curve.
+  - `contact_index` (keyword_only, None) — Contact index (height axis).
+  - `contact_coordinate` (keyword_only, None) — Contact coordinate (m).
+  - `rate_threshold` (keyword_only, 0.05) — Relative rate threshold.
+  - `min_hold_points` (keyword_only, 5) — Minimum hold run length.
+  - `min_hold_fraction` (keyword_only, 0.05) — Minimum hold fraction.
+  - `assume_uniform_rate` (keyword_only, None) — Reconstructed clock (s/sample).
+  - `force_threshold_fraction` (keyword_only, 0.1) — Relaxation decay threshold.
+
+- evidence:
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json`
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz`
+  - `tests/validation/test_force_viscoelasticity_validation.py`
+  - `tests/core/test_force_viscoelasticity.py`
+
+- known deviations:
+  - the protocol recommendation and ambiguity policy is SOFTWARE_VERIFIED
+
+## FORCE.VISCO.RATE.INDENTATION
+
+- operation_id: `force.visco.rate.indentation`
+- public_name: `compute_indentation_rate`
+- public_import: `spmkit.core.analysis:compute_indentation_rate`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Robust indentation and force rate of one protocol region: me)
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Robust indentation and force rate of one protocol region: median of the local finite-difference rates with the 25-75 percentile spread; region located via the protocol result; missing region raises EMPTY_REGION; requires a valid time axis (the JPK/NID readers do not populate segment time; provide one or use an explicitly requested known-rate reconstruction); units m/s and N/s.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: m/s
+
+- parameters:
+  - `prepared` (positional, required) — FS-F1 prepared curve.
+  - `protocol` (positional, required) — Protocol result.
+  - `region` (keyword_only, 'loading') — Region kind.
+  - `segment` (keyword_only, 'extend') — Segment name.
+
+- evidence:
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json`
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz`
+  - `tests/validation/test_force_viscoelasticity_validation.py`
+  - `tests/core/test_force_viscoelasticity.py`
+
+## FORCE.VISCO.RELAXATION.EXTRACT
+
+- operation_id: `force.visco.relaxation.extract`
+- public_name: `extract_stress_relaxation`
+- public_import: `spmkit.core.analysis:extract_stress_relaxation`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Extracts the normalized stress-relaxation response of a disp)
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Extracts the normalized stress-relaxation response of a displacement hold: F(t)/F(t0) on the relative hold time with the hold indentation and force histories; equilibrium-force estimate = mean of the last tail fraction (documented estimate, not a guaranteed equilibrium); missing hold raises EMPTY_REGION; zero hold-start force raises INVALID_RESPONSE.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: s / m / N
+
+- parameters:
+  - `prepared` (positional, required) — FS-F1 prepared curve.
+  - `protocol` (positional, required) — Protocol result.
+  - `segment` (keyword_only, 'extend') — Segment name.
+  - `hold_kind` (keyword_only, 'hold_displacement') — Hold region kind.
+  - `equilibrium_tail_fraction` (keyword_only, 0.1) — Equilibrium tail fraction.
+
+- evidence:
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json`
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz`
+  - `tests/validation/test_force_viscoelasticity_validation.py`
+  - `tests/core/test_force_viscoelasticity.py`
+
+## FORCE.VISCO.SENSITIVITY
+
+- operation_id: `force.visco.sensitivity`
+- public_name: `analyze_viscoelastic_sensitivity`
+- public_import: `spmkit.core.analysis:analyze_viscoelastic_sensitivity`
+- family: FORCE
+- maturity: SOFTWARE_VERIFIED
+- status: stable
+- reference: SPMKit native (Deterministic multiverse over contact offsets, hold-boundary)
+- evidence profile: `NATIVE_SPMKIT_DESIGNED_HEURISTIC`
+
+- contract: Deterministic multiverse over contact offsets, hold-boundary offsets and equilibrium-tail fractions (bounded at max_configurations) for the SLS fit on the extracted response; one-at-a-time contact/boundary/window indices relative to the baseline configuration and a dominant-source classification (contact / boundary / window / none at the 20% threshold); raw configurations and failures exposed; the interpretation is SOFTWARE_VERIFIED.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: not_applicable
+
+- parameters:
+  - `curve` (positional, required) — Force curve.
+  - `prepared` (positional, required) — FS-F1 prepared curve.
+  - `protocol` (keyword_only, None) — Protocol result.
+  - `contact_offsets` (keyword_only, [-2, 0, 2]) — Contact offsets (samples).
+  - `boundary_offsets` (keyword_only, [-3, 0, 3]) — Hold-boundary offsets.
+  - `equilibrium_tail_fractions` (keyword_only, [0.05, 0.1, 0.2]) — Equilibrium tail fractions.
+  - `max_configurations` (keyword_only, 96) — Multiverse bound.
+  - `tip_radius` (keyword_only, None) — Tip radius (m).
+  - `poisson` (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.
+
+- evidence:
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json`
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz`
+  - `tests/validation/test_force_viscoelasticity_validation.py`
+  - `tests/core/test_force_viscoelasticity.py`
+
+## FORCE.VISCO.VOLUME
+
+- operation_id: `force.visco.volume`
+- public_name: `fit_force_volume_viscoelasticity`
+- public_import: `spmkit.core.analysis:fit_force_volume_viscoelasticity`
+- family: FORCE
+- maturity: SOFTWARE_VERIFIED
+- status: stable
+- reference: SPMKit native (Per-curve identify -> prepare -> extract -> SLS mapping over)
+- evidence profile: `NATIVE_SPMKIT_DESIGNED_HEURISTIC`
+
+- contract: Per-curve identify -> prepare -> extract -> SLS mapping over a ForceVolume: modulus_0/modulus_inf/viscosity/relaxation-time maps, model/ambiguity/sensitivity/protocol maps and an explicit failed mask with per-index reasons (nothing silently dropped); deterministic replay; viscosity = E0 * a * tau_relax (SLS dashpot estimate, documented model quantity).
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: Pa / Pa*s / s
+
+- parameters:
+  - `volume` (positional, required) — Force volume.
+  - `tip_radius` (keyword_only, None) — Tip radius (m).
+  - `poisson` (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.
+  - `min_hold_points` (keyword_only, 5) — Minimum hold run length.
+
+- evidence:
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json`
+  - `tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz`
+  - `tests/validation/test_force_viscoelasticity_validation.py`
+  - `tests/core/test_force_viscoelasticity.py`
 
 ## FORCE.VOLUME.MECHANICS
 

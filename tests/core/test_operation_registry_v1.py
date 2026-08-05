@@ -61,6 +61,21 @@ EXPECTED = {
     "force.reliability.bootstrap": "bootstrap_force_fit",
     "force.reliability.diagnose": "diagnose_force_fit",
     "force.volume.mechanics": "fit_force_volume_mechanics",
+    # FS-F3 time-domain viscoelasticity family
+    "force.visco.protocol.identify": "identify_viscoelastic_protocol",
+    "force.visco.rate.indentation": "compute_indentation_rate",
+    "force.visco.relaxation.extract": "extract_stress_relaxation",
+    "force.visco.creep.extract": "extract_creep_compliance",
+    "force.visco.model.kelvin_voigt": "fit_kelvin_voigt",
+    "force.visco.model.maxwell": "fit_maxwell",
+    "force.visco.model.sls": "fit_standard_linear_solid",
+    "force.visco.model.generalized_maxwell": "fit_generalized_maxwell",
+    "force.visco.model.power_law": "fit_power_law_relaxation",
+    "force.visco.contact.lee_radok": "fit_lee_radok_sphere",
+    "force.visco.contact.ting": "fit_ting_sphere",
+    "force.visco.model.compare": "compare_viscoelastic_models",
+    "force.visco.sensitivity": "analyze_viscoelastic_sensitivity",
+    "force.visco.volume": "fit_force_volume_viscoelasticity",
 }
 
 
@@ -78,7 +93,7 @@ def test_reject_unknown_operation() -> None:
 
 def test_deterministic_listing() -> None:
     ops = list_operations()
-    assert len(ops) == 43
+    assert len(ops) == 57
     ids = [o.operation_id for o in ops]
     assert ids == sorted(ids)
     # calling twice yields identical tuples

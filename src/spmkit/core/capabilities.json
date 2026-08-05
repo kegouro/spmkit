@@ -2138,6 +2138,1400 @@
     {
       "aliases": [],
       "border_policy": "not_applicable",
+      "capability_id": "FORCE.VISCO.CONTACT.LEE_RADOK",
+      "contract": "Fits the SLS relaxation modulus through the Lee-Radok spherical hereditary integral on the monotonic loading region: F(t) = c int_0^t E(t - t') d/dt' delta(t')^1.5 dt'; the contact radius must not decrease (LEE_RADOK_NONMONOTONIC typed); loading-only validity; the loading history is trimmed to the contact (indentation >= 0, documented); recovery within ~40% E0/E_inf and ~50% tau on clean phantoms (the loading curve carries less information than a hold).",
+      "evidence": [
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json",
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz",
+        "tests/validation/test_force_viscoelasticity_validation.py",
+        "tests/core/test_force_viscoelasticity.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.visco.contact.lee_radok",
+      "parameters": [
+        {
+          "name": "prepared",
+          "kind": "positional",
+          "required": true,
+          "has_default": false,
+          "default": null,
+          "type": "ForcePreparationResult",
+          "description": "FS-F1 prepared curve.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "protocol",
+          "kind": "positional",
+          "required": true,
+          "has_default": false,
+          "default": null,
+          "type": "ViscoelasticProtocolResult",
+          "description": "Protocol result.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "tip_radius",
+          "kind": "keyword_only",
+          "required": true,
+          "has_default": false,
+          "default": null,
+          "type": "float",
+          "description": "Tip radius (m).",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "poisson",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": 0.3,
+          "type": "float",
+          "description": "Poisson ratio.",
+          "units": null,
+          "bounds": [
+            0.0,
+            0.5
+          ],
+          "enum_values": null
+        },
+        {
+          "name": "E0_initial",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": 1000000.0,
+          "type": "float",
+          "description": "Modulus start (Pa).",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "E_inf_initial",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": 500000.0,
+          "type": "float",
+          "description": "Equilibrium modulus start (Pa).",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "tau_initial",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": 1.0,
+          "type": "float",
+          "description": "Relaxation time start (s).",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:fit_lee_radok_sphere",
+      "public_name": "fit_lee_radok_sphere",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Fits the SLS relaxation modulus through the Lee-Radok spheri",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "Pa"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.VISCO.CONTACT.TING",
+      "contract": "Fits the SLS relaxation modulus through the Ting spherical integral with contact-time memory: loading = Lee-Radok; unloading F(t) = c int_0^{t1(t)} E(t - t') d/dt' delta(t')^1.5 dt' with delta(t1(t)) = delta(t) on the monotone loading portion; the loading history is trimmed to the contact and the unloading history truncated at the contact (documented); TING_HISTORY_UNAVAILABLE typed when the history cannot be reconstructed; the production quadrature is the first-order increment rule (parity with the substep oracle 0.5%).",
+      "evidence": [
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json",
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz",
+        "tests/validation/test_force_viscoelasticity_validation.py",
+        "tests/core/test_force_viscoelasticity.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.visco.contact.ting",
+      "parameters": [
+        {
+          "name": "prepared",
+          "kind": "positional",
+          "required": true,
+          "has_default": false,
+          "default": null,
+          "type": "ForcePreparationResult",
+          "description": "FS-F1 prepared curve.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "protocol",
+          "kind": "positional",
+          "required": true,
+          "has_default": false,
+          "default": null,
+          "type": "ViscoelasticProtocolResult",
+          "description": "Protocol result.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "tip_radius",
+          "kind": "keyword_only",
+          "required": true,
+          "has_default": false,
+          "default": null,
+          "type": "float",
+          "description": "Tip radius (m).",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "poisson",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": 0.3,
+          "type": "float",
+          "description": "Poisson ratio.",
+          "units": null,
+          "bounds": [
+            0.0,
+            0.5
+          ],
+          "enum_values": null
+        },
+        {
+          "name": "E0_initial",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": 1000000.0,
+          "type": "float",
+          "description": "Modulus start (Pa).",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "E_inf_initial",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": 500000.0,
+          "type": "float",
+          "description": "Equilibrium modulus start (Pa).",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "tau_initial",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": 1.0,
+          "type": "float",
+          "description": "Relaxation time start (s).",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:fit_ting_sphere",
+      "public_name": "fit_ting_sphere",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Fits the SLS relaxation modulus through the Ting spherical i",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "Pa"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.VISCO.CREEP.EXTRACT",
+      "contract": "Extracts the creep compliance increment of a force hold: (indentation(t) - indentation(0))/F_hold on the relative hold time; the increment is robust to the contact-coordinate precision (the absolute level is carried in indentation_at_hold_start); missing hold raises EMPTY_REGION; zero held force raises INVALID_RESPONSE.",
+      "evidence": [
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json",
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz",
+        "tests/validation/test_force_viscoelasticity_validation.py",
+        "tests/core/test_force_viscoelasticity.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.visco.creep.extract",
+      "parameters": [
+        {
+          "name": "prepared",
+          "kind": "positional",
+          "required": true,
+          "has_default": false,
+          "default": null,
+          "type": "ForcePreparationResult",
+          "description": "FS-F1 prepared curve.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "protocol",
+          "kind": "positional",
+          "required": true,
+          "has_default": false,
+          "default": null,
+          "type": "ViscoelasticProtocolResult",
+          "description": "Protocol result.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "segment",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": "extend",
+          "type": "str",
+          "description": "Segment name.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "hold_kind",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": "hold_force",
+          "type": "str",
+          "description": "Hold region kind.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "hold_force_median",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": true,
+          "type": "bool",
+          "description": "Median (vs mean) held force.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:extract_creep_compliance",
+      "public_name": "extract_creep_compliance",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Extracts the creep compliance increment of a force hold: (in",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "s / N / m"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.VISCO.MODEL.COMPARE",
+      "contract": "Model-relative AICc comparison over identical observations with the finite-sample correction; Delta AICc < 4 ambiguity; failed candidates retained as warnings; weights are relative support, never a probability of physical correctness; the recommendation policy is SOFTWARE_VERIFIED.",
+      "evidence": [
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json",
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz",
+        "tests/validation/test_force_viscoelasticity_validation.py",
+        "tests/core/test_force_viscoelasticity.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "SOFTWARE_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.visco.model.compare",
+      "parameters": [
+        {
+          "name": "response",
+          "kind": "positional",
+          "required": true,
+          "has_default": false,
+          "default": null,
+          "type": "RelaxationResponseResult | CreepResponseResult",
+          "description": "Relaxation or creep response.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "models",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": null,
+          "type": "tuple[str, ...] | None",
+          "description": "Candidate models.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "tip_radius",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": null,
+          "type": "float | None",
+          "description": "Tip radius (m).",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "poisson",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": 0.3,
+          "type": "float",
+          "description": "Poisson ratio.",
+          "units": null,
+          "bounds": [
+            0.0,
+            0.5
+          ],
+          "enum_values": null
+        },
+        {
+          "name": "n_terms",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": 2,
+          "type": "int",
+          "description": "Prony terms for the generalized Maxwell.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "t_ref",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": null,
+          "type": "float | None",
+          "description": "Reference time for the power law.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:compare_viscoelastic_models",
+      "public_name": "compare_viscoelastic_models",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Model-relative AICc comparison over identical observations w",
+        "profile": "NATIVE_SPMKIT_DESIGNED_HEURISTIC"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "not_applicable"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.VISCO.MODEL.GENERALIZED_MAXWELL",
+      "contract": "Prony normalized relaxation fit n(t) = 1 - sum(alpha) + sum(alpha_i exp(-t/tau_i)) with alpha_i >= 0, sum(alpha) <= 1, tau_i > 0, deterministic ordering by ascending tau; duplicate relaxation times are rejected typed (PRONY_DUPLICATE_TAU); no claim that the recovered spectrum is unique; nearly equal time constants carry a bounded-identifiability warning.",
+      "evidence": [
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json",
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz",
+        "tests/validation/test_force_viscoelasticity_validation.py",
+        "tests/core/test_force_viscoelasticity.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.visco.model.generalized_maxwell",
+      "parameters": [
+        {
+          "name": "response",
+          "kind": "positional",
+          "required": true,
+          "has_default": false,
+          "default": null,
+          "type": "RelaxationResponseResult",
+          "description": "Relaxation response.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "n_terms",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": 2,
+          "type": "int",
+          "description": "Number of Prony terms.",
+          "units": null,
+          "bounds": [
+            1,
+            8
+          ],
+          "enum_values": null
+        },
+        {
+          "name": "tip_radius",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": null,
+          "type": "float | None",
+          "description": "Tip radius (m).",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "poisson",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": 0.3,
+          "type": "float",
+          "description": "Poisson ratio.",
+          "units": null,
+          "bounds": [
+            0.0,
+            0.5
+          ],
+          "enum_values": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:fit_generalized_maxwell",
+      "public_name": "fit_generalized_maxwell",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Prony normalized relaxation fit n(t) = 1 - sum(alpha) + sum(",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "s"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.VISCO.MODEL.KELVIN_VOIGT",
+      "contract": "Kelvin-Voigt creep fit J(t) = (1/E)(1 - exp(-t/tau)), tau = eta/E (retardation time); requires a CreepResponseResult (PROTOCOL_MODEL_MISMATCH typed otherwise); deterministic multi-start least squares; E within 10% and tau within 10% on clean phantoms; the model cannot represent instantaneous stress relaxation (documented).",
+      "evidence": [
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json",
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz",
+        "tests/validation/test_force_viscoelasticity_validation.py",
+        "tests/core/test_force_viscoelasticity.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.visco.model.kelvin_voigt",
+      "parameters": [
+        {
+          "name": "response",
+          "kind": "positional",
+          "required": true,
+          "has_default": false,
+          "default": null,
+          "type": "CreepResponseResult",
+          "description": "Creep response.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "E_initial",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": null,
+          "type": "float | None",
+          "description": "Modulus start (Pa).",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "tau_initial",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": null,
+          "type": "float | None",
+          "description": "Retardation time start (s).",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:fit_kelvin_voigt",
+      "public_name": "fit_kelvin_voigt",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Kelvin-Voigt creep fit J(t) = (1/E)(1 - exp(-t/tau)), tau = ",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "Pa"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.VISCO.MODEL.MAXWELL",
+      "contract": "Maxwell relaxation fit n(t) = exp(-t/tau), tau = eta/E; the modulus E is recovered only when the tip radius is provided (spherical contact proportionality, documented); tau recovered within 2% on clean phantoms; the model cannot represent bounded solid creep (documented).",
+      "evidence": [
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json",
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz",
+        "tests/validation/test_force_viscoelasticity_validation.py",
+        "tests/core/test_force_viscoelasticity.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.visco.model.maxwell",
+      "parameters": [
+        {
+          "name": "response",
+          "kind": "positional",
+          "required": true,
+          "has_default": false,
+          "default": null,
+          "type": "RelaxationResponseResult",
+          "description": "Relaxation response.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "tip_radius",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": null,
+          "type": "float | None",
+          "description": "Tip radius (m); enables E.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "poisson",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": 0.3,
+          "type": "float",
+          "description": "Poisson ratio.",
+          "units": null,
+          "bounds": [
+            0.0,
+            0.5
+          ],
+          "enum_values": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:fit_maxwell",
+      "public_name": "fit_maxwell",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Maxwell relaxation fit n(t) = exp(-t/tau), tau = eta/E; the ",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "s / Pa"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.VISCO.MODEL.POWER_LAW",
+      "contract": "Power-law relaxation fit n(t) = (t/t_ref)^(-alpha) with 0 < alpha < 1 and an optional equilibrium offset; t = 0 excluded (singularity); t_ref defaults to the first positive hold time and the fit uses t >= t_ref when t_ref is given.",
+      "evidence": [
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json",
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz",
+        "tests/validation/test_force_viscoelasticity_validation.py",
+        "tests/core/test_force_viscoelasticity.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.visco.model.power_law",
+      "parameters": [
+        {
+          "name": "response",
+          "kind": "positional",
+          "required": true,
+          "has_default": false,
+          "default": null,
+          "type": "RelaxationResponseResult",
+          "description": "Relaxation response.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "t_ref",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": null,
+          "type": "float | None",
+          "description": "Reference time (s).",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "with_equilibrium",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": false,
+          "type": "bool",
+          "description": "Add the equilibrium offset.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "tip_radius",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": null,
+          "type": "float | None",
+          "description": "Tip radius (m).",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "poisson",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": 0.3,
+          "type": "float",
+          "description": "Poisson ratio.",
+          "units": null,
+          "bounds": [
+            0.0,
+            0.5
+          ],
+          "enum_values": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:fit_power_law_relaxation",
+      "public_name": "fit_power_law_relaxation",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Power-law relaxation fit n(t) = (t/t_ref)^(-alpha) with 0 < ",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "s"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.VISCO.MODEL.SLS",
+      "contract": "Standard linear solid fit on a relaxation response n(t) = 1 - a(1 - exp(-t/tau_relax)) or a creep response increment (dJ)(1 - exp(-t/tau_retard)); both representations are reported with the conversions J0 = 1/E0, J_inf = 1/E_inf, tau_retard = tau_relax * E0/E_inf; absolute moduli need the tip radius for the relaxation form; the creep absolute level is contact-coordinate limited (recovery reported on the increment).",
+      "evidence": [
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json",
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz",
+        "tests/validation/test_force_viscoelasticity_validation.py",
+        "tests/core/test_force_viscoelasticity.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.visco.model.sls",
+      "parameters": [
+        {
+          "name": "response",
+          "kind": "positional",
+          "required": true,
+          "has_default": false,
+          "default": null,
+          "type": "RelaxationResponseResult | CreepResponseResult",
+          "description": "Relaxation or creep response.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "tip_radius",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": null,
+          "type": "float | None",
+          "description": "Tip radius (m).",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "poisson",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": 0.3,
+          "type": "float",
+          "description": "Poisson ratio.",
+          "units": null,
+          "bounds": [
+            0.0,
+            0.5
+          ],
+          "enum_values": null
+        },
+        {
+          "name": "tau_initial",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": null,
+          "type": "float | None",
+          "description": "Time-constant start (s).",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:fit_standard_linear_solid",
+      "public_name": "fit_standard_linear_solid",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Standard linear solid fit on a relaxation response n(t) = 1 ",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "Pa / m/N / s"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.VISCO.PROTOCOL.IDENTIFY",
+      "contract": "Identifies the viscoelastic protocol of a force curve: rate-region classification (median-of-nonzero-rate thresholds) into LOADING_RAMP, UNLOADING_RAMP, DISPLACEMENT_HOLD, FORCE_HOLD, CREEP, STRESS_RELAXATION, TRIANGULAR_LOADING, INSUFFICIENT_PROTOCOL, AMBIGUOUS_PROTOCOL; trusted instrument labels in curve.metadata take precedence; a displacement hold with a decaying force is STRESS_RELAXATION, a force hold with a drifting displacement is CREEP; missing time raises MISSING_TIME (reconstructed clock only via assume_uniform_rate); duplicate time samples raise DUPLICATE_TIMESTAMPS; the JPK/NID readers do not populate segment time, so time-domain analysis requires an explicit time axis or an explicitly requested known-rate reconstruction (no automatic general reader time-domain analysis is claimed).",
+      "evidence": [
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json",
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz",
+        "tests/validation/test_force_viscoelasticity_validation.py",
+        "tests/core/test_force_viscoelasticity.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [
+        "the protocol recommendation and ambiguity policy is SOFTWARE_VERIFIED"
+      ],
+      "mask_semantics": "none",
+      "maturity": "SOFTWARE_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.visco.protocol.identify",
+      "parameters": [
+        {
+          "name": "curve",
+          "kind": "positional",
+          "required": true,
+          "has_default": false,
+          "default": null,
+          "type": "ForceCurve",
+          "description": "Force curve.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "contact_index",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": null,
+          "type": "int | None",
+          "description": "Contact index (height axis).",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "contact_coordinate",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": null,
+          "type": "float | None",
+          "description": "Contact coordinate (m).",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "rate_threshold",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": 0.05,
+          "type": "float",
+          "description": "Relative rate threshold.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "min_hold_points",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": 5,
+          "type": "int",
+          "description": "Minimum hold run length.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "min_hold_fraction",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": 0.05,
+          "type": "float",
+          "description": "Minimum hold fraction.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "assume_uniform_rate",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": null,
+          "type": "float | None",
+          "description": "Reconstructed clock (s/sample).",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "force_threshold_fraction",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": 0.1,
+          "type": "float",
+          "description": "Relaxation decay threshold.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:identify_viscoelastic_protocol",
+      "public_name": "identify_viscoelastic_protocol",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Identifies the viscoelastic protocol of a force curve: rate-",
+        "profile": "NATIVE_SPMKIT_DESIGNED_HEURISTIC"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "not_applicable"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.VISCO.RATE.INDENTATION",
+      "contract": "Robust indentation and force rate of one protocol region: median of the local finite-difference rates with the 25-75 percentile spread; region located via the protocol result; missing region raises EMPTY_REGION; requires a valid time axis (the JPK/NID readers do not populate segment time; provide one or use an explicitly requested known-rate reconstruction); units m/s and N/s.",
+      "evidence": [
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json",
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz",
+        "tests/validation/test_force_viscoelasticity_validation.py",
+        "tests/core/test_force_viscoelasticity.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.visco.rate.indentation",
+      "parameters": [
+        {
+          "name": "prepared",
+          "kind": "positional",
+          "required": true,
+          "has_default": false,
+          "default": null,
+          "type": "ForcePreparationResult",
+          "description": "FS-F1 prepared curve.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "protocol",
+          "kind": "positional",
+          "required": true,
+          "has_default": false,
+          "default": null,
+          "type": "ViscoelasticProtocolResult",
+          "description": "Protocol result.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "region",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": "loading",
+          "type": "str",
+          "description": "Region kind.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "segment",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": "extend",
+          "type": "str | None",
+          "description": "Segment name.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:compute_indentation_rate",
+      "public_name": "compute_indentation_rate",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Robust indentation and force rate of one protocol region: me",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "m/s"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.VISCO.RELAXATION.EXTRACT",
+      "contract": "Extracts the normalized stress-relaxation response of a displacement hold: F(t)/F(t0) on the relative hold time with the hold indentation and force histories; equilibrium-force estimate = mean of the last tail fraction (documented estimate, not a guaranteed equilibrium); missing hold raises EMPTY_REGION; zero hold-start force raises INVALID_RESPONSE.",
+      "evidence": [
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json",
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz",
+        "tests/validation/test_force_viscoelasticity_validation.py",
+        "tests/core/test_force_viscoelasticity.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.visco.relaxation.extract",
+      "parameters": [
+        {
+          "name": "prepared",
+          "kind": "positional",
+          "required": true,
+          "has_default": false,
+          "default": null,
+          "type": "ForcePreparationResult",
+          "description": "FS-F1 prepared curve.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "protocol",
+          "kind": "positional",
+          "required": true,
+          "has_default": false,
+          "default": null,
+          "type": "ViscoelasticProtocolResult",
+          "description": "Protocol result.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "segment",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": "extend",
+          "type": "str",
+          "description": "Segment name.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "hold_kind",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": "hold_displacement",
+          "type": "str",
+          "description": "Hold region kind.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "equilibrium_tail_fraction",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": 0.1,
+          "type": "float",
+          "description": "Equilibrium tail fraction.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:extract_stress_relaxation",
+      "public_name": "extract_stress_relaxation",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Extracts the normalized stress-relaxation response of a disp",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "s / m / N"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.VISCO.SENSITIVITY",
+      "contract": "Deterministic multiverse over contact offsets, hold-boundary offsets and equilibrium-tail fractions (bounded at max_configurations) for the SLS fit on the extracted response; one-at-a-time contact/boundary/window indices relative to the baseline configuration and a dominant-source classification (contact / boundary / window / none at the 20% threshold); raw configurations and failures exposed; the interpretation is SOFTWARE_VERIFIED.",
+      "evidence": [
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json",
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz",
+        "tests/validation/test_force_viscoelasticity_validation.py",
+        "tests/core/test_force_viscoelasticity.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "SOFTWARE_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.visco.sensitivity",
+      "parameters": [
+        {
+          "name": "curve",
+          "kind": "positional",
+          "required": true,
+          "has_default": false,
+          "default": null,
+          "type": "ForceCurve",
+          "description": "Force curve.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "prepared",
+          "kind": "positional",
+          "required": true,
+          "has_default": false,
+          "default": null,
+          "type": "ForcePreparationResult",
+          "description": "FS-F1 prepared curve.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "protocol",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": null,
+          "type": "ViscoelasticProtocolResult | None",
+          "description": "Protocol result.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "contact_offsets",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": [
+            -2,
+            0,
+            2
+          ],
+          "type": "tuple[int, ...]",
+          "description": "Contact offsets (samples).",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "boundary_offsets",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": [
+            -3,
+            0,
+            3
+          ],
+          "type": "tuple[int, ...]",
+          "description": "Hold-boundary offsets.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "equilibrium_tail_fractions",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": [
+            0.05,
+            0.1,
+            0.2
+          ],
+          "type": "tuple[float, ...]",
+          "description": "Equilibrium tail fractions.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "max_configurations",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": 96,
+          "type": "int",
+          "description": "Multiverse bound.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "tip_radius",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": null,
+          "type": "float | None",
+          "description": "Tip radius (m).",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "poisson",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": 0.3,
+          "type": "float",
+          "description": "Poisson ratio.",
+          "units": null,
+          "bounds": [
+            0.0,
+            0.5
+          ],
+          "enum_values": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:analyze_viscoelastic_sensitivity",
+      "public_name": "analyze_viscoelastic_sensitivity",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Deterministic multiverse over contact offsets, hold-boundary",
+        "profile": "NATIVE_SPMKIT_DESIGNED_HEURISTIC"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "not_applicable"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.VISCO.VOLUME",
+      "contract": "Per-curve identify -> prepare -> extract -> SLS mapping over a ForceVolume: modulus_0/modulus_inf/viscosity/relaxation-time maps, model/ambiguity/sensitivity/protocol maps and an explicit failed mask with per-index reasons (nothing silently dropped); deterministic replay; viscosity = E0 * a * tau_relax (SLS dashpot estimate, documented model quantity).",
+      "evidence": [
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json",
+        "tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz",
+        "tests/validation/test_force_viscoelasticity_validation.py",
+        "tests/core/test_force_viscoelasticity.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "SOFTWARE_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.visco.volume",
+      "parameters": [
+        {
+          "name": "volume",
+          "kind": "positional",
+          "required": true,
+          "has_default": false,
+          "default": null,
+          "type": "ForceVolume",
+          "description": "Force volume.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "tip_radius",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": null,
+          "type": "float | None",
+          "description": "Tip radius (m).",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        },
+        {
+          "name": "poisson",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": 0.3,
+          "type": "float",
+          "description": "Poisson ratio.",
+          "units": null,
+          "bounds": [
+            0.0,
+            0.5
+          ],
+          "enum_values": null
+        },
+        {
+          "name": "min_hold_points",
+          "kind": "keyword_only",
+          "required": false,
+          "has_default": true,
+          "default": 5,
+          "type": "int",
+          "description": "Minimum hold run length.",
+          "units": null,
+          "bounds": null,
+          "enum_values": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:fit_force_volume_viscoelasticity",
+      "public_name": "fit_force_volume_viscoelasticity",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Per-curve identify -> prepare -> extract -> SLS mapping over",
+        "profile": "NATIVE_SPMKIT_DESIGNED_HEURISTIC"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "Pa / Pa*s / s"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
       "capability_id": "FORCE.VOLUME.MECHANICS",
       "contract": "Applies prepare -> indentation -> window -> model comparison to every curve of a ForceVolume; modulus/adhesion maps, chosen model map, quality map; failed curves explicitly masked (failed_mask + provenance reasons), never silently dropped; deterministic replay; units Pa / N.",
       "evidence": [
