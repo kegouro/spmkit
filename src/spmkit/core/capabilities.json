@@ -2,6 +2,943 @@
   "capabilities": [
     {
       "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.BASELINE.CORRECT",
+      "contract": "Subtract the fitted baseline (offset + slope over height) with scope all/baseline/approach; slope correction changes the data (documented).",
+      "evidence": [
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.json",
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.npz",
+        "tests/validation/fixtures/force_foundation/force_foundation_reference.json",
+        "tests/validation/test_force_foundation_validation.py",
+        "tests/core/test_force_foundation.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.baseline.correct",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Force curve.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "curve",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Fitted baseline.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "baseline",
+          "required": true,
+          "type": "ForceBaselineResult",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": "all",
+          "description": "Correction scope.",
+          "enum_values": [
+            "all",
+            "baseline",
+            "approach"
+          ],
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "scope",
+          "required": false,
+          "type": "str",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:correct_force_baseline",
+      "public_name": "correct_force_baseline",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Force baseline correction",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "N"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.BASELINE.FIT",
+      "contract": "Fit the pre-contact baseline (first 10% of approach): linear offset + slope via polyfit; optional deterministic Huber-IRLS robust fit; residual RMS and robust scale; BASELINE_TOO_SHORT for too few points.",
+      "evidence": [
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.json",
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.npz",
+        "tests/validation/fixtures/force_foundation/force_foundation_reference.json",
+        "tests/validation/test_force_foundation_validation.py",
+        "tests/core/test_force_foundation.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.baseline.fit",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Force curve.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "curve",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": "pre_contact",
+          "description": "Baseline region.",
+          "enum_values": [
+            "pre_contact"
+          ],
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "region",
+          "required": false,
+          "type": "str",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": "linear",
+          "description": "Baseline model.",
+          "enum_values": [
+            "linear"
+          ],
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "model",
+          "required": false,
+          "type": "str",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": false,
+          "description": "Robust IRLS fit.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "robust",
+          "required": false,
+          "type": "bool",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:fit_force_baseline",
+      "public_name": "fit_force_baseline",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Force baseline fit",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "N"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.CALIBRATION.APPLY",
+      "contract": "raw deflection voltage (V) -> deflection (m) via InVOLS (m/V) -> force (N) via spring constant (N/m); already-calibrated pass-through; double calibration rejected (INVALID_CALIBRATION); missing calibration raises MISSING_CALIBRATION.",
+      "evidence": [
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.json",
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.npz",
+        "tests/validation/fixtures/force_foundation/force_foundation_reference.json",
+        "tests/validation/test_force_foundation_validation.py",
+        "tests/core/test_force_foundation.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.calibration.apply",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Force curve to calibrate.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "curve",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Explicit calibration.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "keyword_only",
+          "name": "calibration",
+          "required": false,
+          "type": "Calibration | None",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:calibrate_force_curve",
+      "public_name": "calibrate_force_curve",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Force calibration application",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "N"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.CONTACT.ENSEMBLE",
+      "contract": "Combine threshold/ROV/piecewise; robust location = median of valid candidate indices; explicit disagreement and spread; deterministic bootstrap only when requested; CONTACT_METHOD_DISAGREEMENT when fewer than two methods agree.",
+      "evidence": [
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.json",
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.npz",
+        "tests/validation/fixtures/force_foundation/force_foundation_reference.json",
+        "tests/validation/test_force_foundation_validation.py",
+        "tests/core/test_force_foundation.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [
+        "method spread does not constitute an uncertainty guarantee",
+        "maturity downgraded at independent audit: NUMERICALLY_VERIFIED -> SOFTWARE_VERIFIED"
+      ],
+      "mask_semantics": "none",
+      "maturity": "SOFTWARE_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.contact.ensemble",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Force curve.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "curve",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": [
+            "threshold",
+            "ratio_of_variances",
+            "piecewise"
+          ],
+          "description": "Contact methods.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "methods",
+          "required": false,
+          "type": "tuple[str, ...]",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 0,
+          "description": "Bootstrap samples.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "bootstrap_samples",
+          "required": false,
+          "type": "int",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:contact_point_ensemble",
+      "public_name": "contact_point_ensemble",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Contact point (ensemble)",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "m"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.CONTACT.PIECEWISE",
+      "contract": "Value-continuous piecewise baseline/contact polynomial fit over the search grid; requires a genuine residual improvement over a single whole-curve polynomial (flat curves fail).",
+      "evidence": [
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.json",
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.npz",
+        "tests/validation/fixtures/force_foundation/force_foundation_reference.json",
+        "tests/validation/test_force_foundation_validation.py",
+        "tests/core/test_force_foundation.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.contact.piecewise",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Force curve.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "curve",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 1,
+          "description": "Baseline order.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "baseline_order",
+          "required": false,
+          "type": "int",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 2,
+          "description": "Contact order.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "contact_order",
+          "required": false,
+          "type": "int",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:contact_point_piecewise",
+      "public_name": "contact_point_piecewise",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Contact point (piecewise)",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "m"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.CONTACT.RATIO_OF_VARIANCES",
+      "contract": "Gavara 2016 ratio-of-variances contact: argmax of variance-after / variance-before over the window grid; requires a genuine variance jump (ratio >= 2) and sufficient length.",
+      "evidence": [
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.json",
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.npz",
+        "tests/validation/fixtures/force_foundation/force_foundation_reference.json",
+        "tests/validation/test_force_foundation_validation.py",
+        "tests/core/test_force_foundation.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.contact.ratio_of_variances",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Force curve.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "curve",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 20,
+          "description": "Variance window.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "window",
+          "required": false,
+          "type": "int",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:contact_point_ratio_of_variances",
+      "public_name": "contact_point_ratio_of_variances",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Contact point (ratio of variances)",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "m"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.CONTACT.THRESHOLD",
+      "contract": "Baseline-relative threshold contact: first crossing of mean + k*sigma with persistence 3; validated against the frozen nanite 4.2.3 deviation_from_baseline contact index on the shared noiseless cases.",
+      "evidence": [
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.json",
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.npz",
+        "tests/validation/fixtures/force_foundation/force_foundation_reference.json",
+        "tests/validation/test_force_foundation_validation.py",
+        "tests/core/test_force_foundation.py",
+        "tests/validation/fixtures/force_foundation/force_foundation_external.npz"
+      ],
+      "family": "FORCE",
+      "known_deviations": [
+        "production threshold agrees with nanite deviation_from_baseline on clean flat-baseline cases (0..2 samples) but diverges on sloped/noisy baselines (up to 13 samples across the 17-case persisted matrix); NOT cross-validated as equivalent",
+        "sloped noiseless baselines degrade threshold recovery (characterized)"
+      ],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.contact.threshold",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Force curve.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "curve",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 5.0,
+          "description": "Threshold in sigma.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "threshold_sigma",
+          "required": false,
+          "type": "float",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:contact_point_threshold",
+      "public_name": "contact_point_threshold",
+      "reference": {
+        "software": "nanite",
+        "version": "4.2.3",
+        "name": "Contact point (nanite deviation_from_baseline profile)",
+        "profile": "COMPILED_NANITE_4_2_3_EXTERNAL_REFERENCE_FROZEN_PROFILE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "m"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.EVENTS.EXTRACT",
+      "contract": "Snap-in = minimum force before contact on approach (baseline-relative below mean - 3*sigma); pull-off = minimum force after contact on retract; physical windows; no event when the relevant segment is absent (EVENT_NOT_FOUND).",
+      "evidence": [
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.json",
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.npz",
+        "tests/validation/fixtures/force_foundation/force_foundation_reference.json",
+        "tests/validation/test_force_foundation_validation.py",
+        "tests/core/test_force_foundation.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.events.extract",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Force curve.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "curve",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Contact point result.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "contact",
+          "required": true,
+          "type": "ContactPointResult | ContactPointCandidate",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Snap-in window (coordinate).",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "snap_in_window",
+          "required": false,
+          "type": "tuple[float, float] | None",
+          "units": "m"
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Pull-off window (coordinate).",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "pull_off_window",
+          "required": false,
+          "type": "tuple[float, float] | None",
+          "units": "m"
+        }
+      ],
+      "public_import": "spmkit.core.analysis:extract_force_events",
+      "public_name": "extract_force_events",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Force events (snap-in / pull-off)",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "N"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.PREPARE",
+      "contract": "Explicit orchestration over the 12 public primitives: segments -> calibration -> tip-sample separation -> baseline fit/correction -> contact ensemble -> events -> work -> quality; provenance names every decision; contact detection runs on the calibrated curve.",
+      "evidence": [
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.json",
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.npz",
+        "tests/validation/fixtures/force_foundation/force_foundation_reference.json",
+        "tests/validation/test_force_foundation_validation.py",
+        "tests/core/test_force_foundation.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [
+        "orchestration maturity is bounded by its weakest material component (contact ensemble and quality score are SOFTWARE_VERIFIED heuristics)"
+      ],
+      "mask_semantics": "none",
+      "maturity": "SOFTWARE_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.prepare",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Force curve.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "curve",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Explicit calibration.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "calibration",
+          "required": false,
+          "type": "Calibration | None",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": "linear",
+          "description": "Baseline model.",
+          "enum_values": [
+            "linear"
+          ],
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "baseline_model",
+          "required": false,
+          "type": "str",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": [
+            "threshold",
+            "ratio_of_variances",
+            "piecewise"
+          ],
+          "description": "Contact methods.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "contact_methods",
+          "required": false,
+          "type": "tuple[str, ...]",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": 0,
+          "description": "Bootstrap samples.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "bootstrap_samples",
+          "required": false,
+          "type": "int",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:prepare_force_curve",
+      "public_name": "prepare_force_curve",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Force curve preparation pipeline",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "not_applicable"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.QUALITY.SCORE",
+      "contract": "Typed failure reasons (14 codes) beside a summary score; component diagnostics always explicit; eligibility for contact-model fitting.",
+      "evidence": [
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.json",
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.npz",
+        "tests/validation/fixtures/force_foundation/force_foundation_reference.json",
+        "tests/validation/test_force_foundation_validation.py",
+        "tests/core/test_force_foundation.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [
+        "the aggregate summary score is a designed heuristic; it is not an externally validated scientific quality probability"
+      ],
+      "mask_semantics": "none",
+      "maturity": "SOFTWARE_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.quality.score",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Force curve.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "curve",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Segmentation result.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "segmentation",
+          "required": false,
+          "type": "ForceSegmentationResult | None",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Baseline result.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "baseline",
+          "required": false,
+          "type": "ForceBaselineResult | None",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Contact result.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "contact",
+          "required": false,
+          "type": "ContactPointResult | None",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Events result.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "events",
+          "required": false,
+          "type": "ForceEventResult | None",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:score_force_curve_quality",
+      "public_name": "score_force_curve_quality",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Force curve quality scoring",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "not_applicable"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.SEGMENT.IDENTIFY",
+      "contract": "Identify approach/retract sample indices of a ForceCurve; instrument labels trusted when both segments exist, else turning point = height extremum; no sample reordering.",
+      "evidence": [
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.json",
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.npz",
+        "tests/validation/fixtures/force_foundation/force_foundation_reference.json",
+        "tests/validation/test_force_foundation_validation.py",
+        "tests/core/test_force_foundation.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [
+        "single-segment inference may misplace the turning point on flat turning points"
+      ],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.segment.identify",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Force curve to segment.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "curve",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:identify_force_segments",
+      "public_name": "identify_force_segments",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Force segment identification",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "not_applicable"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.SEPARATION.TIP_SAMPLE",
+      "contract": "Tip-sample separation = height - deflection per segment; no contact offset applied; validated against the frozen nanite 4.2.3 tip-position convention (tip = height + force/k + offset).",
+      "evidence": [
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.json",
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.npz",
+        "tests/validation/fixtures/force_foundation/force_foundation_reference.json",
+        "tests/validation/test_force_foundation_validation.py",
+        "tests/core/test_force_foundation.py",
+        "tests/validation/fixtures/force_foundation/force_foundation_external.npz"
+      ],
+      "family": "FORCE",
+      "known_deviations": [
+        "bitwise external identity not claimed; convention validated numerically on the frozen nanite profile"
+      ],
+      "mask_semantics": "none",
+      "maturity": "CROSS_VALIDATED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.separation.tip_sample",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Force curve.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "curve",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:compute_tip_sample_separation",
+      "public_name": "compute_tip_sample_separation",
+      "reference": {
+        "software": "nanite",
+        "version": "4.2.3",
+        "name": "Tip-sample separation (nanite tip-position profile)",
+        "profile": "COMPILED_NANITE_4_2_3_EXTERNAL_REFERENCE_FROZEN_PROFILE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "m"
+    },
+    {
+      "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.WORK.INTEGRATE",
+      "contract": "Force integrated over tip-sample separation on the common overlap domain (contact to min of maxima); monotone interpolation; trapezoidal arithmetic; work of adhesion = retract integral; hysteresis = approach - retract; units J; INSUFFICIENT_OVERLAP and NONMONOTONIC_COORDINATE typed failures.",
+      "evidence": [
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.json",
+        "tests/validation/fixtures/force_foundation/force_phantoms_reference.npz",
+        "tests/validation/fixtures/force_foundation/force_foundation_reference.json",
+        "tests/validation/test_force_foundation_validation.py",
+        "tests/core/test_force_foundation.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [
+        "real tip-sample separation is often non-monotone; the operation raises NONMONOTONIC_COORDINATE instead of fabricating a value"
+      ],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.work.integrate",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Force curve.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "curve",
+          "required": true,
+          "type": "SPMChannel",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Contact point result.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "contact",
+          "required": true,
+          "type": "ContactPointResult | ContactPointCandidate",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": "tip_position",
+          "description": "Integration domain.",
+          "enum_values": [
+            "tip_position",
+            "height"
+          ],
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "domain",
+          "required": false,
+          "type": "str",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:integrate_force_work",
+      "public_name": "integrate_force_work",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Force work integration",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "J"
+    },
+    {
+      "aliases": [],
       "border_policy": "mirror",
       "capability_id": "IMG.FILTER.GAUSSIAN",
       "contract": "Separable Gaussian smoothing with sigma in pixels; kernel resolution 2*ceil(5*sigma)+1 capped at 3*min(xres,yres) and forced odd; mirror borders; horizontal-then-vertical passes; sequential-sum reciprocal normalization (not forced to exactly 1.0).",

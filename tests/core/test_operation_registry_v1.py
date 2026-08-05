@@ -64,7 +64,7 @@ def test_reject_unknown_operation() -> None:
 
 def test_deterministic_listing() -> None:
     ops = list_operations()
-    assert len(ops) == 17
+    assert len(ops) == 30
     ids = [o.operation_id for o in ops]
     assert ids == sorted(ids)
     # calling twice yields identical tuples
@@ -93,7 +93,7 @@ def test_family_filtering() -> None:
 
 def test_maturity_filtering() -> None:
     cv = filter_operations(maturity="CROSS_VALIDATED")
-    assert len(cv) == 16
+    assert len(cv) == 17
     cv2 = filter_operations(maturity=Maturity.CROSS_VALIDATED)
     assert cv == cv2
 

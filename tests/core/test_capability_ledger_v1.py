@@ -40,7 +40,7 @@ def _load():
 def test_schema_version_and_count() -> None:
     data = _load()
     assert data["schema_version"] == 1
-    assert len(data["capabilities"]) == 17
+    assert len(data["capabilities"]) == 30
 
 
 def test_deterministic_ordering() -> None:
@@ -54,9 +54,9 @@ def test_unique_ids_and_imports() -> None:
     caps = [c["capability_id"] for c in data["capabilities"]]
     ops = [c["operation_id"] for c in data["capabilities"]]
     imps = [c["public_import"] for c in data["capabilities"]]
-    assert len(set(caps)) == 17
-    assert len(set(ops)) == 17
-    assert len(set(imps)) == 17
+    assert len(set(caps)) == 30
+    assert len(set(ops)) == 30
+    assert len(set(imps)) == 30
 
 
 def test_exact_derivative_registration_set() -> None:
@@ -70,7 +70,7 @@ def test_exact_derivative_registration_set() -> None:
             "img.filter.prewitt_y", "img.filter.gradient_magnitude",
             "img.filter.gradient_direction"} <= ops
     # exactly six new capability records joined the original eleven
-    assert len(caps) == 17 and len(ops) == 17
+    assert len(caps) == 30 and len(ops) == 30
 
 
 def test_required_fields_present() -> None:
@@ -134,7 +134,7 @@ def test_packaged_resource_accessible() -> None:
     resource = importlib.resources.files("spmkit.core").joinpath("capabilities.json")
     data = json.loads(resource.read_text(encoding="utf-8"))
     assert data["schema_version"] == 1
-    assert len(data["capabilities"]) == 17
+    assert len(data["capabilities"]) == 30
 
 
 def test_markdown_regeneration_byte_identical() -> None:

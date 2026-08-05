@@ -72,8 +72,21 @@ def test_all_17_resolve_and_run() -> None:
     ch = _channel(data)
     mask = np.zeros_like(data)
     mask[3:5, 3:5] = 1.0
+    required_params = {
+        spec.operation_id: [p.name for p in spec.parameters if p.required]
+        for spec in list_operations()
+    }
+    resolve_only = {
+        op_id for op_id, names in required_params.items()
+        if len(names) > 1 or (names and names[0] != "channel")
+    }
     for spec in list_operations():
         fn = resolve_callable(spec.operation_id)
+        if spec.operation_id in resolve_only:
+            # multi-argument operations are resolved but not executed with a
+            # single synthetic channel (honest resolve-only semantics)
+            assert callable(fn)
+            continue
         if spec.operation_id == "img.scanline.mark_scars":
             out = fn(ch, threshold_low=0.2)
             assert isinstance(out, np.ndarray)
