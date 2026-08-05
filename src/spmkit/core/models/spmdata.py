@@ -112,6 +112,32 @@ class SPMData:
                 return ch
         raise KeyError(f"Canal no encontrado: {name!r}. Disponibles: {self.names}")
 
+    def select(
+        self,
+        name: str,
+        *,
+        direction: str | None = None,
+        group: str | None = None,
+    ) -> SPMChannel:
+        """Selecciona un único canal por los campos suministrados."""
+        matches = [
+            channel
+            for channel in self.channels
+            if channel.name == name
+            and (direction is None or channel.direction == direction)
+            and (group is None or channel.group == group)
+        ]
+        selection = f"name={name!r}, direction={direction!r}, group={group!r}"
+        identities = ", ".join(
+            f"(name={channel.name!r}, direction={channel.direction!r}, group={channel.group!r})"
+            for channel in (matches or self.channels)
+        )
+        if not matches:
+            raise KeyError(f"Canal no encontrado para {selection}. Disponibles: {identities}")
+        if len(matches) > 1:
+            raise ValueError(f"Selección ambigua para {selection}. Disponibles: {identities}")
+        return matches[0]
+
     def __getitem__(self, name: str) -> SPMChannel:
         return self.get(name)
 

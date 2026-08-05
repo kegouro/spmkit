@@ -25,6 +25,16 @@ def test_flat_surface_zero_roughness() -> None:
     assert r.Ssk == 0.0  # guardia contra división por cero
 
 
+def test_sa_sq_exact_values() -> None:
+    data = np.array([[1.0, 2.0], [3.0, 4.0]])
+    ch = SPMChannel(name="Z", data=data, unit="m", x_range=1e-6, y_range=1e-6)
+    r = roughness.statistics(ch)
+    assert r.Sa == pytest.approx(1.0)
+    assert r.Sq == pytest.approx(np.sqrt(1.25))
+    assert r.unit == "m"
+    assert r.n_points == 4
+
+
 def test_sz_is_peak_to_valley() -> None:
     data = np.zeros((8, 8))
     data[0, 0] = 10.0

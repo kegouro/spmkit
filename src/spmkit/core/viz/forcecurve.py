@@ -21,7 +21,7 @@ _NN = 1e9
 
 def _modulus_label(ctx: dict[str, Any]) -> str:
     e = ctx.get("young_modulus")
-    if not isinstance(e, (int, float)) or not np.isfinite(e):
+    if not isinstance(e, int | float) or not np.isfinite(e):
         return ""
     es = ctx.get("young_modulus_std", 0.0) or 0.0
     scale, unit = 1.0, "Pa"
@@ -30,7 +30,7 @@ def _modulus_label(ctx: dict[str, Any]) -> str:
             scale, unit = s, u
             break
     r2 = ctx.get("r_squared")
-    r2_txt = f"\nR² = {r2:.4f}" if isinstance(r2, (int, float)) and np.isfinite(r2) else ""
+    r2_txt = f"\nR² = {r2:.4f}" if isinstance(r2, int | float) and np.isfinite(r2) else ""
     return f"E = {e / scale:.3g} ± {es / scale:.2g} {unit}{r2_txt}"
 
 
@@ -55,7 +55,7 @@ def render_force_curve(
 
     ctx = ctx or {}
     contact = ctx.get("contact_point")
-    offset = float(contact) if (indentation and isinstance(contact, (int, float))) else 0.0
+    offset = float(contact) if (indentation and isinstance(contact, int | float)) else 0.0
 
     def axis_of(seg: Any) -> np.ndarray:
         return (display_axis(seg.separation, seg.raw_height) - offset) * _NM
@@ -82,7 +82,7 @@ def render_force_curve(
                 lw=2.2,
                 label="ajuste",
             )
-        if isinstance(contact, (int, float)) and ctx.get("contact_detected", True):
+        if isinstance(contact, int | float) and ctx.get("contact_detected", True):
             # Punto de contacto en oro (coherente con la app y el logo Fathom).
             ax.axvline((float(contact) - offset) * _NM, color="#B26A1E", ls="--", lw=0.9)
 

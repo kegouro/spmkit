@@ -243,7 +243,7 @@ def main() -> int:
         )
 
     commands = cli_commands()
-    checks.require(len(commands) == 19, "source declares 19 CLI commands")
+    checks.require(len(commands) == 20, "source declares 20 CLI commands")
     markdown_manual = text(DOCS / "user-guide.md")
     checks.require(
         all(f"`{command}`" in markdown_manual for command in commands),

@@ -58,10 +58,23 @@ def line(
         Un :class:`Profile` con distancia física acumulada y altura.
     """
     z = np.asarray(channel.data, dtype=np.float64)
+    if z.ndim != 2 or not channel.is_spatial:
+        raise ValueError("El perfil requiere un canal de imagen espacial 2D")
     (x0, y0), (x1, y1) = p0, p1
+    rows_count, cols_count = z.shape
+    endpoints = (x0, y0, x1, y1)
+    if not all(np.isfinite(value) for value in endpoints) or not (
+        0 <= x0 <= cols_count - 1
+        and 0 <= x1 <= cols_count - 1
+        and 0 <= y0 <= rows_count - 1
+        and 0 <= y1 <= rows_count - 1
+    ):
+        raise ValueError("Punto fuera de los límites de la imagen")
     seg_px = float(np.hypot(x1 - x0, y1 - y0))
     if n is None:
         n = max(2, int(round(seg_px)) + 1)
+    elif n < 1:
+        raise ValueError("n debe ser >= 1")
 
     cols = np.linspace(x0, x1, n)
     rows = np.linspace(y0, y1, n)

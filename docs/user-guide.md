@@ -1488,6 +1488,7 @@ spmkit gui --legacy
 |---------|----------|-------|
 | `info` | Inspection | `.nid`, `.nhf` |
 | `roughness` | Image analysis | `.nid`, `.nhf`, `.gwy` |
+| `profile` | Profile extraction | `.nid`, `.nhf`, `.gwy` |
 | `psd` | Spectral | `.nid`, `.nhf`, `.gwy` |
 | `analyze` | Pipeline | `.nid`, `.nhf`, `.gwy` |
 | `nanomech` | Force | `.nid` (spectroscopy) |

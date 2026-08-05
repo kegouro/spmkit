@@ -216,7 +216,7 @@ class ForceCanvasPanel(Panel):
         """Re-render con la curva calibrada + overlay de ajuste + residuos."""
         self._last_ctx = ctx
         cp = ctx.get("contact_point")
-        self._contact = float(cp) if isinstance(cp, (int, float)) else None
+        self._contact = float(cp) if isinstance(cp, int | float) else None
         self._refresh_offset()
         curve = self._vm.result_curve()
         if curve is not None:
