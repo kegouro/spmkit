@@ -651,6 +651,106 @@ Non-claims for the derivative batch:
 - no physical validation;
 - no scientific-truth or uncertainty-preservation claim.
 
+## Force-spectroscopy foundation (FS-F1)
+
+The FS-F1 foundation provides a validated curve-preparation layer over the
+segment-based ForceCurve model: 13 public capabilities
+(identify_force_segments, calibrate_force_curve,
+compute_tip_sample_separation, fit_force_baseline, correct_force_baseline,
+contact_point_threshold, contact_point_ratio_of_variances,
+contact_point_piecewise, contact_point_ensemble, extract_force_events,
+integrate_force_work, score_force_curve_quality, prepare_force_curve) with
+immutable results, typed failures and explicit provenance.
+
+- pipeline order: segments -> calibration -> tip-sample separation ->
+  baseline fit/correction -> contact ensemble -> events -> work -> quality;
+- units: height/deflection/separation in m, force in N, InVOLS in m/V,
+  spring constant in N/m, work in J, direction in rad;
+- sign conventions: separation = height - deflection; positive deflection =
+  cantilever bending toward the sample; increasing-right/up data follows the
+  frozen contact conventions;
+- calibration: raw_v -> deflection_m (x InVOLS) -> force_n (x k); double
+  calibration rejected; missing calibration raises MISSING_CALIBRATION;
+- contact: threshold (k*sigma with persistence 3), ratio of variances
+  (Gavara 2016), piecewise (value-continuous baseline/contact), ensemble
+  (median of valid candidates, explicit disagreement, optional deterministic
+  bootstrap);
+- work: force integrated over tip-sample separation on the common overlap
+  domain, monotone interpolation, trapezoidal arithmetic;
+- QC: typed failure reasons beside a summary score (MISSING_CALIBRATION,
+  INVALID_CALIBRATION, MISSING_APPROACH, MISSING_RETRACT, NONFINITE_DATA,
+  NONMONOTONIC_COORDINATE, BASELINE_TOO_SHORT, BASELINE_UNSTABLE,
+  CONTACT_NOT_FOUND, CONTACT_METHOD_DISAGREEMENT, SATURATED_SIGNAL,
+  EVENT_NOT_FOUND, INSUFFICIENT_OVERLAP, FIT_NOT_ELIGIBLE).
+
+External reference profile:
+
+- nanite 4.2.3 (GPL-3; subprocess boundary only, never imported by SPMKit),
+  afmformats 0.18.7 (MIT), Python 3.12.13, x86-64/glibc;
+- frozen pipeline: compute_tip_position -> correct_split_approach_retract ->
+  correct_tip_offset -> correct_force_offset -> correct_force_slope;
+- frozen contact methods: deviation_from_baseline, fit_constant_line,
+  fit_line_polynomial, fit_constant_polynomial;
+- external outputs are NANITE_EXTERNAL_REFERENCE evidence only; they are
+  canonical for no native ROV/ensemble/event/work/QC contract.
+
+Maturity per capability (reconciled at independent audit):
+
+- CROSS_VALIDATED (frozen nanite 4.2.3 profile only):
+  compute_tip_sample_separation (tip-position convention verified on all 17
+  retained cases, rtol 1e-9);
+- NUMERICALLY_VERIFIED (defined numerical truth on deterministic phantoms
+  and analytical oracles):
+  identify_force_segments, calibrate_force_curve, fit_force_baseline,
+  correct_force_baseline, contact_point_threshold,
+  contact_point_ratio_of_variances, contact_point_piecewise,
+  extract_force_events, integrate_force_work (integrator level only);
+  the threshold method agrees with nanite deviation_from_baseline on clean
+  flat-baseline cases (0..2 samples) but diverges on sloped/noisy baselines
+  (up to 13 samples on the persisted 17-case matrix) and is NOT
+  cross-validated as equivalent;
+- SOFTWARE_VERIFIED (designed heuristics without unique numerical truth):
+  contact_point_ensemble (median of valid candidates), the aggregate
+  score_force_curve_quality summary score, prepare_force_curve
+  (orchestration bounded by its weakest material component);
+- no PHYSICALLY_VALIDATED claim.
+
+Work integration is reported at three separated levels:
+
+A. numerical integrator: exact-force/exact-coordinate/exact-domain recovery
+   against closed-form truth at floating-point precision;
+B. contact-conditioned work: the propagated contact-index error is reported
+   separately from the integrator error;
+C. full prepared pipeline: total end-to-end error reported as such, never
+   attributed to the integrator.
+
+The redistributable spectroscopy.nid case is a REAL_DATA_FAILURE_HANDLING_
+WITNESS only: all 100 curves either complete or raise typed failures (99
+NONMONOTONIC_COORDINATE, 1 INSUFFICIENT_OVERLAP, 0 silent).  It is not a
+successful real-data end-to-end scientific proof and not physical validation.
+
+The aggregate QC summary score is a designed heuristic (0..1 pass fraction);
+it is not an externally validated scientific quality probability.
+
+Known limitations:
+
+- contact methods disagree on real data; the ensemble reports the
+  disagreement rather than choosing silently;
+- saturation detection requires an exact clipping plateau (baseline
+  correction destroys it; score on the calibrated curve);
+- real JPK/NID tip-sample separation is often non-monotone (snap-in/pull-off
+  motion); work over tip position then raises the typed
+  NONMONOTONIC_COORDINATE failure instead of fabricating a value.
+
+Non-claims: no certified cantilever calibration; no universal JPK/ANA
+numerical parity; no physical validation; no universal contact point; no
+claim that baseline slope correction is always scientifically valid; no
+automatic choice of the "correct" contact method; no uncertainty guarantee
+from method spread alone; no model validity inference; no cell/material
+property truth claim; no experimental reproducibility claim; no complete
+force-map parity; no SMFS or viscoelastic parity from this batch.
+
+
 ## Test-count policy
 
 The collection total is measured with:
