@@ -601,6 +601,56 @@ that a detected step is an acquisition artefact rather than a real topographic
 discontinuity, and no preservation of roughness, PSD, morphology or uncertainty
 is claimed.
 
+## A2 derivative filters (Sobel X/Y, Prewitt X/Y, gradient magnitude, gradient direction)
+
+The first A2 derivative-filter batch provides four exact component filters
+(`gwyd*dion_sobel_x`, `gwyd*dion_sobel_y`, `gwyd*dion_prewitt_x`,
+`gwyd*dion_prewitt_y`), a gradient magnitude composition
+(`gwyd*dion_gradient_magnitude(gx, gy)` = `hypot(gx, gy)`) and a native
+gradient direction composite (`gradient_direction(gx, gy)` = `atan2(gy, gx)`).
+
+Sobel X/Y and Prewitt X/Y:
+
+- CROSS_VALIDATED within:
+  COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_DERIVATIVE_KERNEL_PROFILE;
+- exact frozen kernels (Sobel 0.25/0.5 and Prewitt 1/3 coefficients);
+- CLIPPED border semantics (corners, edges, 1x1, 1xN, Nx1, non-square);
+- frozen source sign and orientation (increasing-right X ramp -> negative
+  Sobel X; increasing-down Y ramp -> negative Sobel Y);
+- finite two-dimensional inputs only; input channels never mutated;
+- all 228 canonical source-profile outputs bitwise exact (max absolute
+  difference 0, max ULP 0).
+
+Gradient magnitude:
+
+- source-compatible `hypot` composition over explicit component fields
+  (matches the frozen hypot-of-fields orchestration);
+- bitwise claim bounded to the frozen x86-64 / glibc / hypot@GLIBC_2.35
+  platform profile;
+- no cross-libc or cross-architecture bitwise guarantee; non-negativity and
+  component-swap symmetry hold relationally on every platform.
+
+Gradient direction:
+
+- native SPMKit analytical composite;
+- `atan2(gy, gx)`, radians, range (-pi, pi], C99 signed-zero axes;
+- NUMERICALLY_VERIFIED maturity;
+- NOT direct Gwydion parity; the production implementation (numpy.arctan2)
+  is characterized within ~1 ULP of the compiled C atan2 profile on the
+  frozen platform.
+
+Non-claims for the derivative batch:
+
+- no process-menu normalized-image parity;
+- no universal installed-Gwydion-build bitwise equivalence;
+- no physical-coordinate derivative;
+- no physical slope or surface-angle claim;
+- no mask or ROI support;
+- no NaN/Inf compatibility;
+- no edge-detection or segmentation claim;
+- no physical validation;
+- no scientific-truth or uncertainty-preservation claim.
+
 ## Test-count policy
 
 The collection total is measured with:

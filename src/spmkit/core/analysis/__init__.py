@@ -3,6 +3,7 @@
 from spmkit.core.analysis import (
     background,
     calibration,
+    derivatives,
     forcecurve,
     forcevolume,
     grains,
@@ -49,6 +50,14 @@ from spmkit.core.analysis.background import (
     remove_rolling_ball_background,
     remove_sphere_revolution_background,
     remove_spline_background,
+)
+from spmkit.core.analysis.derivatives import (
+    gradient_direction,
+    gwyddion_gradient_magnitude,
+    gwyddion_prewitt_x,
+    gwyddion_prewitt_y,
+    gwyddion_sobel_x,
+    gwyddion_sobel_y,
 )
 from spmkit.core.analysis.filters import (
     gwyddion_gaussian_filter,
@@ -103,6 +112,7 @@ from spmkit.core.analysis.spectral import FractalResult, RadialPSD
 
 __all__ = [
     "background",
+    "derivatives",
     "BackgroundResult",
     "GwyddionArcDirection",
     "analyze_arc_revolution_background",
@@ -134,6 +144,12 @@ __all__ = [
     "gwyddion_rank_filter",
     "gwyddion_median_filter",
     "gwyddion_gaussian_filter",
+    "gwyddion_sobel_x",
+    "gwyddion_sobel_y",
+    "gwyddion_prewitt_x",
+    "gwyddion_prewitt_y",
+    "gwyddion_gradient_magnitude",
+    "gradient_direction",
     "GwyddionMaskCombineMode",
     "GwyddionScarPolarity",
     "gwydion_interpolate_data_under_mask",

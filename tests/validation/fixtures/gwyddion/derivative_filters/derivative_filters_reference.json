@@ -1,0 +1,2476 @@
+{
+  "acceptance_tolerance_ulps": 0,
+  "border_policy": "CLIPPED_3X3",
+  "capability": "gwyddion_derivative_filters",
+  "cases": {
+    "C01": {
+      "arrays": [
+        "input_C01",
+        "sobel_x_C01",
+        "sobel_y_C01",
+        "prewitt_x_C01",
+        "prewitt_y_C01",
+        "mag_sobel_C01",
+        "mag_prewitt_C01",
+        "dir_sobel_C01",
+        "dir_prewitt_C01"
+      ],
+      "class": "COMMON",
+      "purpose": "constant_nonzero_positive",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "C02": {
+      "arrays": [
+        "input_C02",
+        "sobel_x_C02",
+        "sobel_y_C02",
+        "prewitt_x_C02",
+        "prewitt_y_C02",
+        "mag_sobel_C02",
+        "mag_prewitt_C02",
+        "dir_sobel_C02",
+        "dir_prewitt_C02"
+      ],
+      "class": "COMMON",
+      "purpose": "constant_nonzero_negative",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "C03": {
+      "arrays": [
+        "input_C03",
+        "sobel_x_C03",
+        "sobel_y_C03",
+        "prewitt_x_C03",
+        "prewitt_y_C03",
+        "mag_sobel_C03",
+        "mag_prewitt_C03",
+        "dir_sobel_C03",
+        "dir_prewitt_C03"
+      ],
+      "class": "COMMON",
+      "purpose": "x_ramp",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "C04": {
+      "arrays": [
+        "input_C04",
+        "sobel_x_C04",
+        "sobel_y_C04",
+        "prewitt_x_C04",
+        "prewitt_y_C04",
+        "mag_sobel_C04",
+        "mag_prewitt_C04",
+        "dir_sobel_C04",
+        "dir_prewitt_C04"
+      ],
+      "class": "COMMON",
+      "purpose": "y_ramp",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "C05": {
+      "arrays": [
+        "input_C05",
+        "sobel_x_C05",
+        "sobel_y_C05",
+        "prewitt_x_C05",
+        "prewitt_y_C05",
+        "mag_sobel_C05",
+        "mag_prewitt_C05",
+        "dir_sobel_C05",
+        "dir_prewitt_C05"
+      ],
+      "class": "COMMON",
+      "purpose": "diagonal_ramp",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "C06": {
+      "arrays": [
+        "input_C06",
+        "sobel_x_C06",
+        "sobel_y_C06",
+        "prewitt_x_C06",
+        "prewitt_y_C06",
+        "mag_sobel_C06",
+        "mag_prewitt_C06",
+        "dir_sobel_C06",
+        "dir_prewitt_C06"
+      ],
+      "class": "COMMON",
+      "purpose": "impulse_interior",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "C07": {
+      "arrays": [
+        "input_C07",
+        "sobel_x_C07",
+        "sobel_y_C07",
+        "prewitt_x_C07",
+        "prewitt_y_C07",
+        "mag_sobel_C07",
+        "mag_prewitt_C07",
+        "dir_sobel_C07",
+        "dir_prewitt_C07"
+      ],
+      "class": "COMMON",
+      "purpose": "impulse_corner_top_left",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "C08": {
+      "arrays": [
+        "input_C08",
+        "sobel_x_C08",
+        "sobel_y_C08",
+        "prewitt_x_C08",
+        "prewitt_y_C08",
+        "mag_sobel_C08",
+        "mag_prewitt_C08",
+        "dir_sobel_C08",
+        "dir_prewitt_C08"
+      ],
+      "class": "COMMON",
+      "purpose": "impulse_edge_top_center",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "C09": {
+      "arrays": [
+        "input_C09",
+        "sobel_x_C09",
+        "sobel_y_C09",
+        "prewitt_x_C09",
+        "prewitt_y_C09",
+        "mag_sobel_C09",
+        "mag_prewitt_C09",
+        "dir_sobel_C09",
+        "dir_prewitt_C09"
+      ],
+      "class": "COMMON",
+      "purpose": "checkerboard",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "C10": {
+      "arrays": [
+        "input_C10",
+        "sobel_x_C10",
+        "sobel_y_C10",
+        "prewitt_x_C10",
+        "prewitt_y_C10",
+        "mag_sobel_C10",
+        "mag_prewitt_C10",
+        "dir_sobel_C10",
+        "dir_prewitt_C10"
+      ],
+      "class": "COMMON",
+      "purpose": "signed_zero_field",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "C11": {
+      "arrays": [
+        "input_C11",
+        "sobel_x_C11",
+        "sobel_y_C11",
+        "prewitt_x_C11",
+        "prewitt_y_C11",
+        "mag_sobel_C11",
+        "mag_prewitt_C11",
+        "dir_sobel_C11",
+        "dir_prewitt_C11"
+      ],
+      "class": "COMMON",
+      "purpose": "mixed_positive_negative",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "C12": {
+      "arrays": [
+        "input_C12",
+        "sobel_x_C12",
+        "sobel_y_C12",
+        "prewitt_x_C12",
+        "prewitt_y_C12",
+        "mag_sobel_C12",
+        "mag_prewitt_C12",
+        "dir_sobel_C12",
+        "dir_prewitt_C12"
+      ],
+      "class": "COMMON",
+      "purpose": "large_dynamic_range",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "C13": {
+      "arrays": [
+        "input_C13",
+        "sobel_x_C13",
+        "sobel_y_C13",
+        "prewitt_x_C13",
+        "prewitt_y_C13",
+        "mag_sobel_C13",
+        "mag_prewitt_C13",
+        "dir_sobel_C13",
+        "dir_prewitt_C13"
+      ],
+      "class": "COMMON",
+      "purpose": "nonsquare_wide_7x3",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 7,
+      "xres": 7,
+      "yreal": 3,
+      "yres": 3
+    },
+    "C14": {
+      "arrays": [
+        "input_C14",
+        "sobel_x_C14",
+        "sobel_y_C14",
+        "prewitt_x_C14",
+        "prewitt_y_C14",
+        "mag_sobel_C14",
+        "mag_prewitt_C14",
+        "dir_sobel_C14",
+        "dir_prewitt_C14"
+      ],
+      "class": "COMMON",
+      "purpose": "nonsquare_tall_3x7",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 3,
+      "xres": 3,
+      "yreal": 7,
+      "yres": 7
+    },
+    "C15": {
+      "arrays": [
+        "input_C15",
+        "sobel_x_C15",
+        "sobel_y_C15",
+        "prewitt_x_C15",
+        "prewitt_y_C15",
+        "mag_sobel_C15",
+        "mag_prewitt_C15",
+        "dir_sobel_C15",
+        "dir_prewitt_C15"
+      ],
+      "class": "COMMON",
+      "purpose": "size_1x1",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 1,
+      "xres": 1,
+      "yreal": 1,
+      "yres": 1
+    },
+    "C16": {
+      "arrays": [
+        "input_C16",
+        "sobel_x_C16",
+        "sobel_y_C16",
+        "prewitt_x_C16",
+        "prewitt_y_C16",
+        "mag_sobel_C16",
+        "mag_prewitt_C16",
+        "dir_sobel_C16",
+        "dir_prewitt_C16"
+      ],
+      "class": "COMMON",
+      "purpose": "size_1xN_col_ramp",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 1,
+      "xres": 1,
+      "yreal": 5,
+      "yres": 5
+    },
+    "C17": {
+      "arrays": [
+        "input_C17",
+        "sobel_x_C17",
+        "sobel_y_C17",
+        "prewitt_x_C17",
+        "prewitt_y_C17",
+        "mag_sobel_C17",
+        "mag_prewitt_C17",
+        "dir_sobel_C17",
+        "dir_prewitt_C17"
+      ],
+      "class": "COMMON",
+      "purpose": "size_Nx1_row_ramp",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 1,
+      "yres": 1
+    },
+    "C18": {
+      "arrays": [
+        "input_C18",
+        "sobel_x_C18",
+        "sobel_y_C18",
+        "prewitt_x_C18",
+        "prewitt_y_C18",
+        "mag_sobel_C18",
+        "mag_prewitt_C18",
+        "dir_sobel_C18",
+        "dir_prewitt_C18"
+      ],
+      "class": "COMMON",
+      "purpose": "input_nonmutation_witness",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 4,
+      "xres": 4,
+      "yreal": 6,
+      "yres": 6
+    },
+    "C19": {
+      "arrays": [
+        "input_C19",
+        "sobel_x_C19",
+        "sobel_y_C19",
+        "prewitt_x_C19",
+        "prewitt_y_C19",
+        "mag_sobel_C19",
+        "mag_prewitt_C19",
+        "dir_sobel_C19",
+        "dir_prewitt_C19"
+      ],
+      "class": "COMMON",
+      "purpose": "deterministic_replay_witness",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE",
+        "DETERMINISM_WITNESS"
+      ],
+      "xreal": 6,
+      "xres": 6,
+      "yreal": 6,
+      "yres": 6
+    },
+    "D01": {
+      "arrays": [
+        "input_D01",
+        "sobel_x_D01",
+        "sobel_y_D01",
+        "prewitt_x_D01",
+        "prewitt_y_D01",
+        "mag_sobel_D01",
+        "mag_prewitt_D01",
+        "dir_sobel_D01",
+        "dir_prewitt_D01"
+      ],
+      "class": "DIRECTION",
+      "purpose": "dir_positive_x_axis",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "D02": {
+      "arrays": [
+        "input_D02",
+        "sobel_x_D02",
+        "sobel_y_D02",
+        "prewitt_x_D02",
+        "prewitt_y_D02",
+        "mag_sobel_D02",
+        "mag_prewitt_D02",
+        "dir_sobel_D02",
+        "dir_prewitt_D02"
+      ],
+      "class": "DIRECTION",
+      "purpose": "dir_positive_y_axis",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "D03": {
+      "arrays": [
+        "input_D03",
+        "sobel_x_D03",
+        "sobel_y_D03",
+        "prewitt_x_D03",
+        "prewitt_y_D03",
+        "mag_sobel_D03",
+        "mag_prewitt_D03",
+        "dir_sobel_D03",
+        "dir_prewitt_D03"
+      ],
+      "class": "DIRECTION",
+      "purpose": "dir_negative_x_axis",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "D04": {
+      "arrays": [
+        "input_D04",
+        "sobel_x_D04",
+        "sobel_y_D04",
+        "prewitt_x_D04",
+        "prewitt_y_D04",
+        "mag_sobel_D04",
+        "mag_prewitt_D04",
+        "dir_sobel_D04",
+        "dir_prewitt_D04"
+      ],
+      "class": "DIRECTION",
+      "purpose": "dir_negative_y_axis",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "D05": {
+      "arrays": [
+        "input_D05",
+        "sobel_x_D05",
+        "sobel_y_D05",
+        "prewitt_x_D05",
+        "prewitt_y_D05",
+        "mag_sobel_D05",
+        "mag_prewitt_D05",
+        "dir_sobel_D05",
+        "dir_prewitt_D05"
+      ],
+      "class": "DIRECTION",
+      "purpose": "dir_quadrant_plus_plus",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "D06": {
+      "arrays": [
+        "input_D06",
+        "sobel_x_D06",
+        "sobel_y_D06",
+        "prewitt_x_D06",
+        "prewitt_y_D06",
+        "mag_sobel_D06",
+        "mag_prewitt_D06",
+        "dir_sobel_D06",
+        "dir_prewitt_D06"
+      ],
+      "class": "DIRECTION",
+      "purpose": "dir_quadrant_minus_plus",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "D07": {
+      "arrays": [
+        "input_D07",
+        "sobel_x_D07",
+        "sobel_y_D07",
+        "prewitt_x_D07",
+        "prewitt_y_D07",
+        "mag_sobel_D07",
+        "mag_prewitt_D07",
+        "dir_sobel_D07",
+        "dir_prewitt_D07"
+      ],
+      "class": "DIRECTION",
+      "purpose": "dir_quadrant_minus_minus",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "D08": {
+      "arrays": [
+        "input_D08",
+        "sobel_x_D08",
+        "sobel_y_D08",
+        "prewitt_x_D08",
+        "prewitt_y_D08",
+        "mag_sobel_D08",
+        "mag_prewitt_D08",
+        "dir_sobel_D08",
+        "dir_prewitt_D08"
+      ],
+      "class": "DIRECTION",
+      "purpose": "dir_quadrant_plus_minus",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "D09": {
+      "arrays": [
+        "input_D09",
+        "sobel_x_D09",
+        "sobel_y_D09",
+        "prewitt_x_D09",
+        "prewitt_y_D09",
+        "mag_sobel_D09",
+        "mag_prewitt_D09",
+        "dir_sobel_D09",
+        "dir_prewitt_D09"
+      ],
+      "class": "DIRECTION",
+      "purpose": "dir_zero_vector_and_signed_zero_axes",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "D10": {
+      "arrays": [
+        "input_D10",
+        "sobel_x_D10",
+        "sobel_y_D10",
+        "prewitt_x_D10",
+        "prewitt_y_D10",
+        "mag_sobel_D10",
+        "mag_prewitt_D10",
+        "dir_sobel_D10",
+        "dir_prewitt_D10"
+      ],
+      "class": "DIRECTION",
+      "purpose": "dir_diagonal_ramp",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "M01": {
+      "arrays": [
+        "input_M01",
+        "sobel_x_M01",
+        "sobel_y_M01",
+        "prewitt_x_M01",
+        "prewitt_y_M01",
+        "mag_sobel_M01",
+        "mag_prewitt_M01",
+        "dir_sobel_M01",
+        "dir_prewitt_M01"
+      ],
+      "class": "MAGNITUDE",
+      "purpose": "mag_3_4_relation",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "M02": {
+      "arrays": [
+        "input_M02",
+        "sobel_x_M02",
+        "sobel_y_M02",
+        "prewitt_x_M02",
+        "prewitt_y_M02",
+        "mag_sobel_M02",
+        "mag_prewitt_M02",
+        "dir_sobel_M02",
+        "dir_prewitt_M02"
+      ],
+      "class": "MAGNITUDE",
+      "purpose": "mag_zero_components",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "M03": {
+      "arrays": [
+        "input_M03",
+        "sobel_x_M03",
+        "sobel_y_M03",
+        "prewitt_x_M03",
+        "prewitt_y_M03",
+        "mag_sobel_M03",
+        "mag_prewitt_M03",
+        "dir_sobel_M03",
+        "dir_prewitt_M03"
+      ],
+      "class": "MAGNITUDE",
+      "purpose": "mag_one_component_zero",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "M04": {
+      "arrays": [
+        "input_M04",
+        "sobel_x_M04",
+        "sobel_y_M04",
+        "prewitt_x_M04",
+        "prewitt_y_M04",
+        "mag_sobel_M04",
+        "mag_prewitt_M04",
+        "dir_sobel_M04",
+        "dir_prewitt_M04"
+      ],
+      "class": "MAGNITUDE",
+      "purpose": "mag_signed_zero_components",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "M05": {
+      "arrays": [
+        "input_M05",
+        "sobel_x_M05",
+        "sobel_y_M05",
+        "prewitt_x_M05",
+        "prewitt_y_M05",
+        "mag_sobel_M05",
+        "mag_prewitt_M05",
+        "dir_sobel_M05",
+        "dir_prewitt_M05"
+      ],
+      "class": "MAGNITUDE",
+      "purpose": "mag_large_finite_overflow_safe",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "M06": {
+      "arrays": [
+        "input_M06",
+        "sobel_x_M06",
+        "sobel_y_M06",
+        "prewitt_x_M06",
+        "prewitt_y_M06",
+        "mag_sobel_M06",
+        "mag_prewitt_M06",
+        "dir_sobel_M06",
+        "dir_prewitt_M06"
+      ],
+      "class": "MAGNITUDE",
+      "purpose": "mag_sobel_components_frozen_path",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "M07": {
+      "arrays": [
+        "input_M07",
+        "sobel_x_M07",
+        "sobel_y_M07",
+        "prewitt_x_M07",
+        "prewitt_y_M07",
+        "mag_sobel_M07",
+        "mag_prewitt_M07",
+        "dir_sobel_M07",
+        "dir_prewitt_M07"
+      ],
+      "class": "MAGNITUDE",
+      "purpose": "mag_prewitt_components_frozen_path",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "P01": {
+      "arrays": [
+        "input_P01",
+        "sobel_x_P01",
+        "sobel_y_P01",
+        "prewitt_x_P01",
+        "prewitt_y_P01",
+        "mag_sobel_P01",
+        "mag_prewitt_P01",
+        "dir_sobel_P01",
+        "dir_prewitt_P01"
+      ],
+      "class": "PREWITT",
+      "purpose": "prewitt_x_ramp_sign",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "P02": {
+      "arrays": [
+        "input_P02",
+        "sobel_x_P02",
+        "sobel_y_P02",
+        "prewitt_x_P02",
+        "prewitt_y_P02",
+        "mag_sobel_P02",
+        "mag_prewitt_P02",
+        "dir_sobel_P02",
+        "dir_prewitt_P02"
+      ],
+      "class": "PREWITT",
+      "purpose": "prewitt_y_ramp_sign",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "P03": {
+      "arrays": [
+        "input_P03",
+        "sobel_x_P03",
+        "sobel_y_P03",
+        "prewitt_x_P03",
+        "prewitt_y_P03",
+        "mag_sobel_P03",
+        "mag_prewitt_P03",
+        "dir_sobel_P03",
+        "dir_prewitt_P03"
+      ],
+      "class": "PREWITT",
+      "purpose": "prewitt_impulse_interior_coeff_1_3",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "P04": {
+      "arrays": [
+        "input_P04",
+        "sobel_x_P04",
+        "sobel_y_P04",
+        "prewitt_x_P04",
+        "prewitt_y_P04",
+        "mag_sobel_P04",
+        "mag_prewitt_P04",
+        "dir_sobel_P04",
+        "dir_prewitt_P04"
+      ],
+      "class": "PREWITT",
+      "purpose": "prewitt_impulse_corner_clipped",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "P05": {
+      "arrays": [
+        "input_P05",
+        "sobel_x_P05",
+        "sobel_y_P05",
+        "prewitt_x_P05",
+        "prewitt_y_P05",
+        "mag_sobel_P05",
+        "mag_prewitt_P05",
+        "dir_sobel_P05",
+        "dir_prewitt_P05"
+      ],
+      "class": "PREWITT",
+      "purpose": "prewitt_impulse_edge_clipped",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "S01": {
+      "arrays": [
+        "input_S01",
+        "sobel_x_S01",
+        "sobel_y_S01",
+        "prewitt_x_S01",
+        "prewitt_y_S01",
+        "mag_sobel_S01",
+        "mag_prewitt_S01",
+        "dir_sobel_S01",
+        "dir_prewitt_S01"
+      ],
+      "class": "SOBEL",
+      "purpose": "sobel_x_ramp_sign",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "S02": {
+      "arrays": [
+        "input_S02",
+        "sobel_x_S02",
+        "sobel_y_S02",
+        "prewitt_x_S02",
+        "prewitt_y_S02",
+        "mag_sobel_S02",
+        "mag_prewitt_S02",
+        "dir_sobel_S02",
+        "dir_prewitt_S02"
+      ],
+      "class": "SOBEL",
+      "purpose": "sobel_y_ramp_sign",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "S03": {
+      "arrays": [
+        "input_S03",
+        "sobel_x_S03",
+        "sobel_y_S03",
+        "prewitt_x_S03",
+        "prewitt_y_S03",
+        "mag_sobel_S03",
+        "mag_prewitt_S03",
+        "dir_sobel_S03",
+        "dir_prewitt_S03"
+      ],
+      "class": "SOBEL",
+      "purpose": "sobel_opposite_ramp_sign_reversal",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "S04": {
+      "arrays": [
+        "input_S04",
+        "sobel_x_S04",
+        "sobel_y_S04",
+        "prewitt_x_S04",
+        "prewitt_y_S04",
+        "mag_sobel_S04",
+        "mag_prewitt_S04",
+        "dir_sobel_S04",
+        "dir_prewitt_S04"
+      ],
+      "class": "SOBEL",
+      "purpose": "sobel_impulse_interior_kernel_reconstruct",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "S05": {
+      "arrays": [
+        "input_S05",
+        "sobel_x_S05",
+        "sobel_y_S05",
+        "prewitt_x_S05",
+        "prewitt_y_S05",
+        "mag_sobel_S05",
+        "mag_prewitt_S05",
+        "dir_sobel_S05",
+        "dir_prewitt_S05"
+      ],
+      "class": "SOBEL",
+      "purpose": "sobel_impulse_corner_clipped",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "S06": {
+      "arrays": [
+        "input_S06",
+        "sobel_x_S06",
+        "sobel_y_S06",
+        "prewitt_x_S06",
+        "prewitt_y_S06",
+        "mag_sobel_S06",
+        "mag_prewitt_S06",
+        "dir_sobel_S06",
+        "dir_prewitt_S06"
+      ],
+      "class": "SOBEL",
+      "purpose": "sobel_impulse_top_edge_clipped",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "S07": {
+      "arrays": [
+        "input_S07",
+        "sobel_x_S07",
+        "sobel_y_S07",
+        "prewitt_x_S07",
+        "prewitt_y_S07",
+        "mag_sobel_S07",
+        "mag_prewitt_S07",
+        "dir_sobel_S07",
+        "dir_prewitt_S07"
+      ],
+      "class": "SOBEL",
+      "purpose": "sobel_impulse_left_edge_clipped",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "S08": {
+      "arrays": [
+        "input_S08",
+        "sobel_x_S08",
+        "sobel_y_S08",
+        "prewitt_x_S08",
+        "prewitt_y_S08",
+        "mag_sobel_S08",
+        "mag_prewitt_S08",
+        "dir_sobel_S08",
+        "dir_prewitt_S08"
+      ],
+      "class": "SOBEL",
+      "purpose": "sobel_impulse_right_edge_clipped",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "X01": {
+      "arrays": [
+        "input_X01",
+        "sobel_x_X01",
+        "sobel_y_X01",
+        "prewitt_x_X01",
+        "prewitt_y_X01",
+        "mag_sobel_X01",
+        "mag_prewitt_X01",
+        "dir_sobel_X01",
+        "dir_prewitt_X01"
+      ],
+      "class": "CROSS_OPERATION",
+      "purpose": "cross_const_preserved_sobel_prewitt",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE",
+        "RELATION_ONLY"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "X02": {
+      "arrays": [
+        "input_X02",
+        "sobel_x_X02",
+        "sobel_y_X02",
+        "prewitt_x_X02",
+        "prewitt_y_X02",
+        "mag_sobel_X02",
+        "mag_prewitt_X02",
+        "dir_sobel_X02",
+        "dir_prewitt_X02"
+      ],
+      "class": "CROSS_OPERATION",
+      "purpose": "cross_transpose_relation",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE",
+        "RELATION_ONLY"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "X03": {
+      "arrays": [
+        "input_X03",
+        "sobel_x_X03",
+        "sobel_y_X03",
+        "prewitt_x_X03",
+        "prewitt_y_X03",
+        "mag_sobel_X03",
+        "mag_prewitt_X03",
+        "dir_sobel_X03",
+        "dir_prewitt_X03"
+      ],
+      "class": "CROSS_OPERATION",
+      "purpose": "cross_negation_relation",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE",
+        "RELATION_ONLY"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "X04": {
+      "arrays": [
+        "input_X04",
+        "sobel_x_X04",
+        "sobel_y_X04",
+        "prewitt_x_X04",
+        "prewitt_y_X04",
+        "mag_sobel_X04",
+        "mag_prewitt_X04",
+        "dir_sobel_X04",
+        "dir_prewitt_X04"
+      ],
+      "class": "CROSS_OPERATION",
+      "purpose": "cross_magnitude_nonnegative",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE",
+        "RELATION_ONLY"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "X05": {
+      "arrays": [
+        "input_X05",
+        "sobel_x_X05",
+        "sobel_y_X05",
+        "prewitt_x_X05",
+        "prewitt_y_X05",
+        "mag_sobel_X05",
+        "mag_prewitt_X05",
+        "dir_sobel_X05",
+        "dir_prewitt_X05"
+      ],
+      "class": "CROSS_OPERATION",
+      "purpose": "cross_magnitude_symmetric_under_swap",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE",
+        "RELATION_ONLY"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "X06": {
+      "arrays": [
+        "input_X06",
+        "sobel_x_X06",
+        "sobel_y_X06",
+        "prewitt_x_X06",
+        "prewitt_y_X06",
+        "mag_sobel_X06",
+        "mag_prewitt_X06",
+        "dir_sobel_X06",
+        "dir_prewitt_X06"
+      ],
+      "class": "CROSS_OPERATION",
+      "purpose": "cross_direction_negation_relation",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE",
+        "RELATION_ONLY"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "X07": {
+      "arrays": [
+        "input_X07",
+        "sobel_x_X07",
+        "sobel_y_X07",
+        "prewitt_x_X07",
+        "prewitt_y_X07",
+        "mag_sobel_X07",
+        "mag_prewitt_X07",
+        "dir_sobel_X07",
+        "dir_prewitt_X07"
+      ],
+      "class": "CROSS_OPERATION",
+      "purpose": "cross_raw_vs_presentation_normalized",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE",
+        "RELATION_ONLY"
+      ],
+      "xreal": 5,
+      "xres": 5,
+      "yreal": 5,
+      "yres": 5
+    },
+    "X08": {
+      "arrays": [
+        "input_X08",
+        "sobel_x_X08",
+        "sobel_y_X08",
+        "prewitt_x_X08",
+        "prewitt_y_X08",
+        "mag_sobel_X08",
+        "mag_prewitt_X08",
+        "dir_sobel_X08",
+        "dir_prewitt_X08"
+      ],
+      "class": "CROSS_OPERATION",
+      "purpose": "cross_deterministic_replay",
+      "roles": [
+        "EXACT_SOURCE_TARGET",
+        "PLATFORM_PROFILE_TARGET",
+        "NATIVE_ANALYTICAL_COMPOSITE",
+        "DETERMINISM_WITNESS",
+        "RELATION_ONLY"
+      ],
+      "xreal": 6,
+      "xres": 6,
+      "yreal": 6,
+      "yres": 6
+    }
+  },
+  "comparison": {
+    "bitwise_arrays": 601,
+    "bitwise_elements": 17872,
+    "compared_arrays": 855,
+    "compared_elements": 20553,
+    "differing_arrays": 254,
+    "finite_rounding_differences": 1816,
+    "genuine_structural_mismatches": 0,
+    "nonfinite_differences": 0,
+    "sign_differences": 155,
+    "signed_zero_differences": 10,
+    "structurally_labelled_elements": 24,
+    "zero_to_nonzero_differences": 676
+  },
+  "contracts": {
+    "direction_formula": "atan2(gy, gx), radians, range (-pi, pi]",
+    "direction_parity_claim": "none - NATIVE_SPMKIT_ANALYTICAL_COMPOSITE",
+    "hypot_path": "gwy_data_field_hypot_of_fields -> r[i] = hypot(p[i], q[i]) platform C hypot",
+    "prewitt_sign": "identical ramp response to Sobel on planar ramps; 1/3 coefficients on impulses",
+    "sobel_sign": "increasing-right X ramp -> negative sobel_x; increasing-down Y ramp -> negative sobel_y"
+  },
+  "declarative_oracle_metrics": {
+    "arrays_bitwise_equal": 197,
+    "arrays_compared": 228,
+    "arrays_discrete_state_equal": 197,
+    "cases": 57,
+    "finite_rounding_differences": 104,
+    "max_absolute_difference": 1.8170968107390172e+134,
+    "max_output_relative_ulp": 4503599627370496.0,
+    "signed_zero_differences": 0
+  },
+  "deterministic_regeneration": {
+    "installed_normal_sanitized_identical": true,
+    "installed_run1_run2_identical": true,
+    "source_normal_sanitized_identical": true,
+    "source_run1_run2_identical": true
+  },
+  "direction_classification": "NATIVE_SPMKIT_ANALYTICAL_COMPOSITE",
+  "direction_oracle_metrics": {
+    "arrays_bitwise": 57,
+    "arrays_compared": 57,
+    "backend": "glibc atan2 via ctypes (libm.so.6 atan2@GLIBC_2.2.5, x86_64, glibc)",
+    "cases": 57,
+    "maturity_ceiling": "NUMERICALLY_VERIFIED"
+  },
+  "evidence_profile": "COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_DERIVATIVE_KERNEL_PROFILE",
+  "family": "gwyddion_derivative_filters",
+  "fixture": {
+    "array_count": 669,
+    "array_hashes": {
+      "dir_prewitt_C01": "8af3432872adcdad07cd3d1cf58db1efc758f3994dfde5b336149cd97e218bdd",
+      "dir_prewitt_C02": "cf890d171604132f80c34472948cfd7c388e0b4d53fca1afb6945f6eed9b0cd6",
+      "dir_prewitt_C03": "34fd0010fa51b28f42d08d2b027608a87068f350e3d92ad1105e670338fb6f4b",
+      "dir_prewitt_C04": "cf890d171604132f80c34472948cfd7c388e0b4d53fca1afb6945f6eed9b0cd6",
+      "dir_prewitt_C05": "3fe4ef8c7828c4ed4e6afcf45882446e1a1d0c5eb0337651b90b4909ce963674",
+      "dir_prewitt_C06": "62a578b1445f78b91d29ac7b9ab10000010c182d096a59e02fb517b9e2f09950",
+      "dir_prewitt_C07": "84ea574334aff35574b02d565292fcd31b6f6727769ae308c396edce543c70b6",
+      "dir_prewitt_C08": "b66035b5a0765c26dd34feb61d7c158b96cce0c3d37a8302be920a3f80c62e2f",
+      "dir_prewitt_C09": "ef262fc0955c898d2d5f9f1596aa9527c4df814a3b941eb5c2c36d1f1008b3cd",
+      "dir_prewitt_C10": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "dir_prewitt_C11": "dc2c2c012912989f892d8f759cb10737c60353268e8f2cf7ca9989648384775f",
+      "dir_prewitt_C12": "a4acbfcd8976faed30e14de90c92e452042b0c0ad5a6a57a1fce39bb67a7f39e",
+      "dir_prewitt_C13": "74fc75ea653d28d6aca2bc58cbabee9a2b7a6be875f3bbbe5955237e45a34b63",
+      "dir_prewitt_C14": "247df7163533d4e60ae9a6680eebc5096b41c296ef1f8ee337765497eee0cd1e",
+      "dir_prewitt_C15": "576f6d222baee01d0cf78d9eac70f8b0006f14799572a753252d1b7fa6a9872e",
+      "dir_prewitt_C16": "fb7361357d27ae13b4f445d9c06c4570bce73f21cda578a777c2cc1503946ea6",
+      "dir_prewitt_C17": "90e4d44362051331ee55ac75709239de9241ec26d0dbd6fd19ed6f198f47fd20",
+      "dir_prewitt_C18": "3e47458931f0c4d251a3e0ec202f5db4ebe23d69f1e986996b86f6723794f942",
+      "dir_prewitt_C19": "53e3b60fbe9c9a5cc13dc5a1acac3bd8ad97b332259b12f28b4589f8dd35032f",
+      "dir_prewitt_D01": "54583a4a15ecc553a99f04e7829d12dd436c4817b3bbd6f155d59cfa982f1a7a",
+      "dir_prewitt_D02": "8af3432872adcdad07cd3d1cf58db1efc758f3994dfde5b336149cd97e218bdd",
+      "dir_prewitt_D03": "34fd0010fa51b28f42d08d2b027608a87068f350e3d92ad1105e670338fb6f4b",
+      "dir_prewitt_D04": "cf890d171604132f80c34472948cfd7c388e0b4d53fca1afb6945f6eed9b0cd6",
+      "dir_prewitt_D05": "0964adfd595a36af3e10f1bda8f9bad9215db7bf7cca3a9c4eb1d6c128d8c143",
+      "dir_prewitt_D06": "ef78b03d070a36cabd8fb3352b3526f86aff960fa9c856ef2fe28631217531f8",
+      "dir_prewitt_D07": "845e4cf0881a0db981b35edfe7c9ebf4eda55fca3f86a78e526e1995d82c278e",
+      "dir_prewitt_D08": "63d78aafa0b97c8c2fc1af7519bbad2ba7d519c89d0b22855dfa6b31ff08198f",
+      "dir_prewitt_D09": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "dir_prewitt_D10": "3fe4ef8c7828c4ed4e6afcf45882446e1a1d0c5eb0337651b90b4909ce963674",
+      "dir_prewitt_M01": "9901d4426cd6cd5e3059495453cb14fc60422bf55493484936ac8a3b71d42cba",
+      "dir_prewitt_M02": "8af3432872adcdad07cd3d1cf58db1efc758f3994dfde5b336149cd97e218bdd",
+      "dir_prewitt_M03": "34fd0010fa51b28f42d08d2b027608a87068f350e3d92ad1105e670338fb6f4b",
+      "dir_prewitt_M04": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "dir_prewitt_M05": "a4acbfcd8976faed30e14de90c92e452042b0c0ad5a6a57a1fce39bb67a7f39e",
+      "dir_prewitt_M06": "9901d4426cd6cd5e3059495453cb14fc60422bf55493484936ac8a3b71d42cba",
+      "dir_prewitt_M07": "9901d4426cd6cd5e3059495453cb14fc60422bf55493484936ac8a3b71d42cba",
+      "dir_prewitt_P01": "34fd0010fa51b28f42d08d2b027608a87068f350e3d92ad1105e670338fb6f4b",
+      "dir_prewitt_P02": "cf890d171604132f80c34472948cfd7c388e0b4d53fca1afb6945f6eed9b0cd6",
+      "dir_prewitt_P03": "62a578b1445f78b91d29ac7b9ab10000010c182d096a59e02fb517b9e2f09950",
+      "dir_prewitt_P04": "84ea574334aff35574b02d565292fcd31b6f6727769ae308c396edce543c70b6",
+      "dir_prewitt_P05": "b66035b5a0765c26dd34feb61d7c158b96cce0c3d37a8302be920a3f80c62e2f",
+      "dir_prewitt_S01": "34fd0010fa51b28f42d08d2b027608a87068f350e3d92ad1105e670338fb6f4b",
+      "dir_prewitt_S02": "cf890d171604132f80c34472948cfd7c388e0b4d53fca1afb6945f6eed9b0cd6",
+      "dir_prewitt_S03": "54583a4a15ecc553a99f04e7829d12dd436c4817b3bbd6f155d59cfa982f1a7a",
+      "dir_prewitt_S04": "62a578b1445f78b91d29ac7b9ab10000010c182d096a59e02fb517b9e2f09950",
+      "dir_prewitt_S05": "84ea574334aff35574b02d565292fcd31b6f6727769ae308c396edce543c70b6",
+      "dir_prewitt_S06": "b66035b5a0765c26dd34feb61d7c158b96cce0c3d37a8302be920a3f80c62e2f",
+      "dir_prewitt_S07": "90af1a83383eacd79ac8735728e8a617a925ea96a0432ca34fa6048a60125a9d",
+      "dir_prewitt_S08": "3cd88d13f8e064e4e77362848ef40c1e4b307ed0315f54cacc4d820e6b1de3c8",
+      "dir_prewitt_X01": "8af3432872adcdad07cd3d1cf58db1efc758f3994dfde5b336149cd97e218bdd",
+      "dir_prewitt_X02": "34fd0010fa51b28f42d08d2b027608a87068f350e3d92ad1105e670338fb6f4b",
+      "dir_prewitt_X03": "dc2c2c012912989f892d8f759cb10737c60353268e8f2cf7ca9989648384775f",
+      "dir_prewitt_X04": "9901d4426cd6cd5e3059495453cb14fc60422bf55493484936ac8a3b71d42cba",
+      "dir_prewitt_X05": "9901d4426cd6cd5e3059495453cb14fc60422bf55493484936ac8a3b71d42cba",
+      "dir_prewitt_X06": "9901d4426cd6cd5e3059495453cb14fc60422bf55493484936ac8a3b71d42cba",
+      "dir_prewitt_X07": "dc2c2c012912989f892d8f759cb10737c60353268e8f2cf7ca9989648384775f",
+      "dir_prewitt_X08": "53e3b60fbe9c9a5cc13dc5a1acac3bd8ad97b332259b12f28b4589f8dd35032f",
+      "dir_sobel_C01": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "dir_sobel_C02": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "dir_sobel_C03": "34fd0010fa51b28f42d08d2b027608a87068f350e3d92ad1105e670338fb6f4b",
+      "dir_sobel_C04": "cf890d171604132f80c34472948cfd7c388e0b4d53fca1afb6945f6eed9b0cd6",
+      "dir_sobel_C05": "516617c49ce39698c1a4f028f78a35164f7b705495ea69c250304d6e08fa2c7d",
+      "dir_sobel_C06": "62a578b1445f78b91d29ac7b9ab10000010c182d096a59e02fb517b9e2f09950",
+      "dir_sobel_C07": "b987a926cdbdf5b1beea2d515e02a8a15328caddc780d07c411c3fc91f3d370c",
+      "dir_sobel_C08": "5ca3f8c2dee2bd0522f2537efe0352d673e073d48f72608439d4f5a58027ad03",
+      "dir_sobel_C09": "1c6c30561d90ea9828ce29fea8d101bb7dc976571c5e30ac61ac70e32be0b15b",
+      "dir_sobel_C10": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "dir_sobel_C11": "59dd9afdd95ecc6b66992b4df24d49cae20d465229198c900f02773ad154dfae",
+      "dir_sobel_C12": "c4dda5a8716d52551516e16fe48a3e0be96d091ec37457c0554b2e0649b0863c",
+      "dir_sobel_C13": "ad623c8eba1dbf722844f6a681ce04e98e101073c34aa73b280a1074cd829030",
+      "dir_sobel_C14": "97bbdb615df1fff62981fcc78404e58bfbd656e7342d44f57fe3ab4101b6c0c5",
+      "dir_sobel_C15": "576f6d222baee01d0cf78d9eac70f8b0006f14799572a753252d1b7fa6a9872e",
+      "dir_sobel_C16": "fb7361357d27ae13b4f445d9c06c4570bce73f21cda578a777c2cc1503946ea6",
+      "dir_sobel_C17": "90e4d44362051331ee55ac75709239de9241ec26d0dbd6fd19ed6f198f47fd20",
+      "dir_sobel_C18": "4bde97fe82f1b69475846058bcbd7e17046e8bbb81a4aa8b0e0f0d2f3f4f385c",
+      "dir_sobel_C19": "ad1bb660383b70571998880bf5aa3e59c4d46fd40dfe81cc96a09045a11b8840",
+      "dir_sobel_D01": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "dir_sobel_D02": "8af3432872adcdad07cd3d1cf58db1efc758f3994dfde5b336149cd97e218bdd",
+      "dir_sobel_D03": "34fd0010fa51b28f42d08d2b027608a87068f350e3d92ad1105e670338fb6f4b",
+      "dir_sobel_D04": "cf890d171604132f80c34472948cfd7c388e0b4d53fca1afb6945f6eed9b0cd6",
+      "dir_sobel_D05": "5b5be4d00ef30cddf7b291e52e4a57abf39a73a929a52730255dde7339722b53",
+      "dir_sobel_D06": "ef78b03d070a36cabd8fb3352b3526f86aff960fa9c856ef2fe28631217531f8",
+      "dir_sobel_D07": "b62cd1c071aafb715b3b6a7a83567ba30ccdc0a175a9552b7c79098a51f086f4",
+      "dir_sobel_D08": "373e7f034306afcf94d465aa79c8e03dcec13262877ec9a326d5cd7ef6422bb7",
+      "dir_sobel_D09": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "dir_sobel_D10": "516617c49ce39698c1a4f028f78a35164f7b705495ea69c250304d6e08fa2c7d",
+      "dir_sobel_M01": "b31915c8c8690a64e3209f2b8397874c06bc53cd9095e24357f96b66766a613f",
+      "dir_sobel_M02": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "dir_sobel_M03": "34fd0010fa51b28f42d08d2b027608a87068f350e3d92ad1105e670338fb6f4b",
+      "dir_sobel_M04": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "dir_sobel_M05": "c4dda5a8716d52551516e16fe48a3e0be96d091ec37457c0554b2e0649b0863c",
+      "dir_sobel_M06": "b31915c8c8690a64e3209f2b8397874c06bc53cd9095e24357f96b66766a613f",
+      "dir_sobel_M07": "b31915c8c8690a64e3209f2b8397874c06bc53cd9095e24357f96b66766a613f",
+      "dir_sobel_P01": "34fd0010fa51b28f42d08d2b027608a87068f350e3d92ad1105e670338fb6f4b",
+      "dir_sobel_P02": "cf890d171604132f80c34472948cfd7c388e0b4d53fca1afb6945f6eed9b0cd6",
+      "dir_sobel_P03": "62a578b1445f78b91d29ac7b9ab10000010c182d096a59e02fb517b9e2f09950",
+      "dir_sobel_P04": "b987a926cdbdf5b1beea2d515e02a8a15328caddc780d07c411c3fc91f3d370c",
+      "dir_sobel_P05": "5ca3f8c2dee2bd0522f2537efe0352d673e073d48f72608439d4f5a58027ad03",
+      "dir_sobel_S01": "34fd0010fa51b28f42d08d2b027608a87068f350e3d92ad1105e670338fb6f4b",
+      "dir_sobel_S02": "cf890d171604132f80c34472948cfd7c388e0b4d53fca1afb6945f6eed9b0cd6",
+      "dir_sobel_S03": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "dir_sobel_S04": "62a578b1445f78b91d29ac7b9ab10000010c182d096a59e02fb517b9e2f09950",
+      "dir_sobel_S05": "b987a926cdbdf5b1beea2d515e02a8a15328caddc780d07c411c3fc91f3d370c",
+      "dir_sobel_S06": "5ca3f8c2dee2bd0522f2537efe0352d673e073d48f72608439d4f5a58027ad03",
+      "dir_sobel_S07": "44a201c907192ce6c690ddc3b6fa2eb49f8d2e9953e3b54393aa8f0b4185d3dc",
+      "dir_sobel_S08": "2f7c3565654cafa525e2c29aa16152ab31c8b75f587ec8b5b0a23513d2d2a892",
+      "dir_sobel_X01": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "dir_sobel_X02": "34fd0010fa51b28f42d08d2b027608a87068f350e3d92ad1105e670338fb6f4b",
+      "dir_sobel_X03": "59dd9afdd95ecc6b66992b4df24d49cae20d465229198c900f02773ad154dfae",
+      "dir_sobel_X04": "b31915c8c8690a64e3209f2b8397874c06bc53cd9095e24357f96b66766a613f",
+      "dir_sobel_X05": "b31915c8c8690a64e3209f2b8397874c06bc53cd9095e24357f96b66766a613f",
+      "dir_sobel_X06": "b31915c8c8690a64e3209f2b8397874c06bc53cd9095e24357f96b66766a613f",
+      "dir_sobel_X07": "59dd9afdd95ecc6b66992b4df24d49cae20d465229198c900f02773ad154dfae",
+      "dir_sobel_X08": "ad1bb660383b70571998880bf5aa3e59c4d46fd40dfe81cc96a09045a11b8840",
+      "input_C01": "b67996db28d7e6e1477cc3cac2e86bc9397cc304357d643e69bbe8609cb076c8",
+      "input_C02": "197fd6e1e47b9e59c2f64e246a1e7e7d1defc1dc47f01fdabc8e169b92b0f579",
+      "input_C03": "3dd8a78f7198f57650504eb82d1faeea12f94ac9daaa8f37cfe622023dd7861a",
+      "input_C04": "8f0a9df038101974f9c60fd50c6fa3689f2398858fcf0568d9c7843750446d4e",
+      "input_C05": "caeb7705194dd34c03b8e1b7f18ef1b518212d4a8d628cf4fd37e8a9a89bdc06",
+      "input_C06": "f173a6701219cfc236fc5af66f9e99826b297c80e825bf5b88fe23730de7ad10",
+      "input_C07": "94fa22fe1aa1974e5951174d905b9e292b1a8c00807ffa82313d3053ff9bc9dd",
+      "input_C08": "d0db0b3022ff105744760ca9b951cb6163fa1a29527103b1dfdbec39efcdd0e1",
+      "input_C09": "361dca452fbbbc06416000d8dbbc7e49ba94cc77c8482e69b3d7326ba725d365",
+      "input_C10": "f8b4397d070670cc183654228e9dc5c17921c17ffbb4cc5506363c979169a4a0",
+      "input_C11": "4b0f8e662bc5861912386c40285aa14c2fe999cea56a74cdaad1aeba7b08e050",
+      "input_C12": "39020f2a35fd3ea049a266f08ceeb471b4e755a4cceb83930669e61f80c7eba6",
+      "input_C13": "6cfe034bec3ea4cfc84fdaf665872bf36a374e7f6269c6ba936ae72e7f8e463f",
+      "input_C14": "05347fb690170b0f2c70c79932941430cc2cd8c1ef10a0e3ae91911bdff9d66e",
+      "input_C15": "2ac5d032671bfedf5f4aedcf558dc03af5d7b4ca0f1d818628d81fd14c1f4765",
+      "input_C16": "98652372120c6779b6203f45b69f77bdc6451b88c7665df1c331b8cac60e01e8",
+      "input_C17": "98652372120c6779b6203f45b69f77bdc6451b88c7665df1c331b8cac60e01e8",
+      "input_C18": "2f6b46b56552c0e8224637043ab9f4a3d775c044fde8978d132f09b7814d8f1a",
+      "input_C19": "8f061700b756be5f1fd43158127afdd943652d00c2d920df9e20c5b81f71abeb",
+      "input_D01": "cefd0ead652a4de3a489fc727f4a55a2edc2ce71f07ea9983e383bedcea18429",
+      "input_D02": "dc6f0d3a670afdaa11711c33bebcf4005907baa69082395cd4a4db64d6323631",
+      "input_D03": "3dd8a78f7198f57650504eb82d1faeea12f94ac9daaa8f37cfe622023dd7861a",
+      "input_D04": "8f0a9df038101974f9c60fd50c6fa3689f2398858fcf0568d9c7843750446d4e",
+      "input_D05": "41061852907ec336eb36d63c1423096a8c8fb2c49713ee8ebce84f578618a7f0",
+      "input_D06": "1f1908547008c42e21e399df55bfc68ff203fef769fd26ce8f5b0c64015efdec",
+      "input_D07": "06a90f20cda61112483f04fec11938c12724f55ce0952bd6325e42e54462e3a6",
+      "input_D08": "3eb397ef7e29b7306e186d19700194bf299b61a752e5ddde58747f824b8b3e6a",
+      "input_D09": "f8b4397d070670cc183654228e9dc5c17921c17ffbb4cc5506363c979169a4a0",
+      "input_D10": "caeb7705194dd34c03b8e1b7f18ef1b518212d4a8d628cf4fd37e8a9a89bdc06",
+      "input_M01": "509c62820dcc424006d883f3f182bf521ff19dc6acaa3b1cc09a3b85f28397a7",
+      "input_M02": "5364be807c7707d1ea5f79a62855f7d96f783c9f462085420e8ae5d8b980be6c",
+      "input_M03": "3dd8a78f7198f57650504eb82d1faeea12f94ac9daaa8f37cfe622023dd7861a",
+      "input_M04": "f8b4397d070670cc183654228e9dc5c17921c17ffbb4cc5506363c979169a4a0",
+      "input_M05": "39020f2a35fd3ea049a266f08ceeb471b4e755a4cceb83930669e61f80c7eba6",
+      "input_M06": "509c62820dcc424006d883f3f182bf521ff19dc6acaa3b1cc09a3b85f28397a7",
+      "input_M07": "509c62820dcc424006d883f3f182bf521ff19dc6acaa3b1cc09a3b85f28397a7",
+      "input_P01": "3dd8a78f7198f57650504eb82d1faeea12f94ac9daaa8f37cfe622023dd7861a",
+      "input_P02": "8f0a9df038101974f9c60fd50c6fa3689f2398858fcf0568d9c7843750446d4e",
+      "input_P03": "f173a6701219cfc236fc5af66f9e99826b297c80e825bf5b88fe23730de7ad10",
+      "input_P04": "94fa22fe1aa1974e5951174d905b9e292b1a8c00807ffa82313d3053ff9bc9dd",
+      "input_P05": "d0db0b3022ff105744760ca9b951cb6163fa1a29527103b1dfdbec39efcdd0e1",
+      "input_S01": "3dd8a78f7198f57650504eb82d1faeea12f94ac9daaa8f37cfe622023dd7861a",
+      "input_S02": "8f0a9df038101974f9c60fd50c6fa3689f2398858fcf0568d9c7843750446d4e",
+      "input_S03": "cefd0ead652a4de3a489fc727f4a55a2edc2ce71f07ea9983e383bedcea18429",
+      "input_S04": "f173a6701219cfc236fc5af66f9e99826b297c80e825bf5b88fe23730de7ad10",
+      "input_S05": "94fa22fe1aa1974e5951174d905b9e292b1a8c00807ffa82313d3053ff9bc9dd",
+      "input_S06": "d0db0b3022ff105744760ca9b951cb6163fa1a29527103b1dfdbec39efcdd0e1",
+      "input_S07": "6f71572a282261b037a79ea236c3bb9522cbb568a184a50b0e936f81c2bebef5",
+      "input_S08": "034c9070837f25e29ceb091c965a871a898fc9b42047c41048b5ddded965f4ba",
+      "input_X01": "b67996db28d7e6e1477cc3cac2e86bc9397cc304357d643e69bbe8609cb076c8",
+      "input_X02": "3dd8a78f7198f57650504eb82d1faeea12f94ac9daaa8f37cfe622023dd7861a",
+      "input_X03": "4b0f8e662bc5861912386c40285aa14c2fe999cea56a74cdaad1aeba7b08e050",
+      "input_X04": "509c62820dcc424006d883f3f182bf521ff19dc6acaa3b1cc09a3b85f28397a7",
+      "input_X05": "509c62820dcc424006d883f3f182bf521ff19dc6acaa3b1cc09a3b85f28397a7",
+      "input_X06": "509c62820dcc424006d883f3f182bf521ff19dc6acaa3b1cc09a3b85f28397a7",
+      "input_X07": "4b0f8e662bc5861912386c40285aa14c2fe999cea56a74cdaad1aeba7b08e050",
+      "input_X08": "8f061700b756be5f1fd43158127afdd943652d00c2d920df9e20c5b81f71abeb",
+      "installed_dir_prewitt_C01": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "installed_dir_prewitt_C02": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "installed_dir_prewitt_C03": "33165b558ae0c546920894b14a065a3ed81b2317aca43fc6c7ab6d49f3af7d31",
+      "installed_dir_prewitt_C05": "6729ba3c1772687e60076336ae6b491323ed9d85e5fb2eba85b8f90339bc5f46",
+      "installed_dir_prewitt_C11": "54a1ed8631a543e843f03182eeb35ad6e7dee304dbad0c21eaa7a0e9a9bff043",
+      "installed_dir_prewitt_C12": "4db5193e432ff56a4b36f60da102f4f585bf857a5075a9fbcf98244bc35eb7a7",
+      "installed_dir_prewitt_C13": "38f93a9fdcceef71f4d862de03a8135bbe7a6db8c7c289d170c20ae104e64ad2",
+      "installed_dir_prewitt_C14": "4147b0d5f6ad8c67a684f441d4d8d02cf0938d57d90da70ee46c0d4bfe322ff6",
+      "installed_dir_prewitt_C17": "4d4f7ab72713342355c1aa6e5d3b9c12c31b6f7af24d313d83fc2bdae7b16648",
+      "installed_dir_prewitt_C18": "46f663b0335d571522e2a700ac3133d818b7094b931f3c5b4dc415e09fa80c7f",
+      "installed_dir_prewitt_C19": "9b92354a9fa4a7d9793b88f7de51e6a24e0cc26fca0608afee671656ee79bf8c",
+      "installed_dir_prewitt_D01": "7a63aaf39e46e9b03b6725060d7afde88fabf6a2b305806a0438ef50766b2aae",
+      "installed_dir_prewitt_D03": "33165b558ae0c546920894b14a065a3ed81b2317aca43fc6c7ab6d49f3af7d31",
+      "installed_dir_prewitt_D05": "61703a03f5244d13611bdf5b96c8755ebf95ab17ee6191a66db8e3adfbe92c42",
+      "installed_dir_prewitt_D07": "9ce33e3abc3d3176a4b734f69a5678cc4c409f1f581b794269f1ff87625c7751",
+      "installed_dir_prewitt_D08": "beea7580e59b53087089d2e836482615505a9d8ddadd7292c28867cfce96df25",
+      "installed_dir_prewitt_D10": "6729ba3c1772687e60076336ae6b491323ed9d85e5fb2eba85b8f90339bc5f46",
+      "installed_dir_prewitt_M01": "ca08a22b20447c8d3e58b1075e2b5f583e496af0e52bb30f781cfc968f4362b7",
+      "installed_dir_prewitt_M02": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "installed_dir_prewitt_M03": "33165b558ae0c546920894b14a065a3ed81b2317aca43fc6c7ab6d49f3af7d31",
+      "installed_dir_prewitt_M05": "4db5193e432ff56a4b36f60da102f4f585bf857a5075a9fbcf98244bc35eb7a7",
+      "installed_dir_prewitt_M06": "ca08a22b20447c8d3e58b1075e2b5f583e496af0e52bb30f781cfc968f4362b7",
+      "installed_dir_prewitt_M07": "ca08a22b20447c8d3e58b1075e2b5f583e496af0e52bb30f781cfc968f4362b7",
+      "installed_dir_prewitt_P01": "33165b558ae0c546920894b14a065a3ed81b2317aca43fc6c7ab6d49f3af7d31",
+      "installed_dir_prewitt_S01": "33165b558ae0c546920894b14a065a3ed81b2317aca43fc6c7ab6d49f3af7d31",
+      "installed_dir_prewitt_S03": "7a63aaf39e46e9b03b6725060d7afde88fabf6a2b305806a0438ef50766b2aae",
+      "installed_dir_prewitt_X01": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "installed_dir_prewitt_X02": "33165b558ae0c546920894b14a065a3ed81b2317aca43fc6c7ab6d49f3af7d31",
+      "installed_dir_prewitt_X03": "54a1ed8631a543e843f03182eeb35ad6e7dee304dbad0c21eaa7a0e9a9bff043",
+      "installed_dir_prewitt_X04": "ca08a22b20447c8d3e58b1075e2b5f583e496af0e52bb30f781cfc968f4362b7",
+      "installed_dir_prewitt_X05": "ca08a22b20447c8d3e58b1075e2b5f583e496af0e52bb30f781cfc968f4362b7",
+      "installed_dir_prewitt_X06": "ca08a22b20447c8d3e58b1075e2b5f583e496af0e52bb30f781cfc968f4362b7",
+      "installed_dir_prewitt_X07": "54a1ed8631a543e843f03182eeb35ad6e7dee304dbad0c21eaa7a0e9a9bff043",
+      "installed_dir_prewitt_X08": "9b92354a9fa4a7d9793b88f7de51e6a24e0cc26fca0608afee671656ee79bf8c",
+      "installed_dir_sobel_C12": "c7f8ca592c2495920d3a7e79b6ddc62e345a59c124dc67f37be06d8561e4036d",
+      "installed_dir_sobel_C19": "a3d0eda0cf4ced84a14bf60f516c50c3487deae2430acf466784abc931f72cf7",
+      "installed_dir_sobel_M05": "c7f8ca592c2495920d3a7e79b6ddc62e345a59c124dc67f37be06d8561e4036d",
+      "installed_dir_sobel_X08": "a3d0eda0cf4ced84a14bf60f516c50c3487deae2430acf466784abc931f72cf7",
+      "installed_mag_prewitt_C01": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "installed_mag_prewitt_C02": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "installed_mag_prewitt_C03": "6f6aafc24004b1699b0243766a4712cf43fd4256f3287c743b4b73ff389ea452",
+      "installed_mag_prewitt_C04": "07fb2e4eb58d4d98d7c0e26141b95b3d079bb30b2ec57fc0e39cfd5865ea9058",
+      "installed_mag_prewitt_C05": "d9418eec6544af3d60e620c6b9340db39399d5b5aee24bc5618fdd7e1225ac3b",
+      "installed_mag_prewitt_C09": "ae84998ee4cf7626f59051482c9f756de69fb16327f77e9639677c1b86421bf6",
+      "installed_mag_prewitt_C11": "44cceab15520310e6a9393cd35fdcfd566c589a292e44a7d2f8c39805e208de5",
+      "installed_mag_prewitt_C13": "460e759b06624ac254a551e5201d442e0e0a7fefae5b52d47bfc7c511b231683",
+      "installed_mag_prewitt_C14": "fa7564f84c082de2ae0b31abb74603b454b3b89c133c26d1effc47cf3a8e9c90",
+      "installed_mag_prewitt_C17": "8b5d8decfba33da3f69cd7be6f70afb49d147f29b2f3af0f4dadc6b476384f2b",
+      "installed_mag_prewitt_C18": "a44212ef401160161fd5a11e1ad04443a98d04698d644f6816603098a8657024",
+      "installed_mag_prewitt_C19": "4ca86cee65ff1711eca07caaf4a338b939d22393445a5599d010d1ae4bf672e5",
+      "installed_mag_prewitt_D01": "6f6aafc24004b1699b0243766a4712cf43fd4256f3287c743b4b73ff389ea452",
+      "installed_mag_prewitt_D02": "07fb2e4eb58d4d98d7c0e26141b95b3d079bb30b2ec57fc0e39cfd5865ea9058",
+      "installed_mag_prewitt_D03": "6f6aafc24004b1699b0243766a4712cf43fd4256f3287c743b4b73ff389ea452",
+      "installed_mag_prewitt_D04": "07fb2e4eb58d4d98d7c0e26141b95b3d079bb30b2ec57fc0e39cfd5865ea9058",
+      "installed_mag_prewitt_D05": "1aa33e780e39deeabe7a23a792f5fbc9f791a4545240cffc8f19f1d7265fc48b",
+      "installed_mag_prewitt_D06": "3f051ca843ee944c8b489ba513528a7fb761e0354b1fe00e03abe9c176528f83",
+      "installed_mag_prewitt_D07": "1aa33e780e39deeabe7a23a792f5fbc9f791a4545240cffc8f19f1d7265fc48b",
+      "installed_mag_prewitt_D08": "3f051ca843ee944c8b489ba513528a7fb761e0354b1fe00e03abe9c176528f83",
+      "installed_mag_prewitt_D10": "d9418eec6544af3d60e620c6b9340db39399d5b5aee24bc5618fdd7e1225ac3b",
+      "installed_mag_prewitt_M01": "ba3f0bf99c550842f18f66a2884d9858e98a83bef74f0cf8b199c6eadc29dc93",
+      "installed_mag_prewitt_M02": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "installed_mag_prewitt_M03": "6f6aafc24004b1699b0243766a4712cf43fd4256f3287c743b4b73ff389ea452",
+      "installed_mag_prewitt_M06": "ba3f0bf99c550842f18f66a2884d9858e98a83bef74f0cf8b199c6eadc29dc93",
+      "installed_mag_prewitt_M07": "ba3f0bf99c550842f18f66a2884d9858e98a83bef74f0cf8b199c6eadc29dc93",
+      "installed_mag_prewitt_P01": "6f6aafc24004b1699b0243766a4712cf43fd4256f3287c743b4b73ff389ea452",
+      "installed_mag_prewitt_P02": "07fb2e4eb58d4d98d7c0e26141b95b3d079bb30b2ec57fc0e39cfd5865ea9058",
+      "installed_mag_prewitt_S01": "6f6aafc24004b1699b0243766a4712cf43fd4256f3287c743b4b73ff389ea452",
+      "installed_mag_prewitt_S02": "07fb2e4eb58d4d98d7c0e26141b95b3d079bb30b2ec57fc0e39cfd5865ea9058",
+      "installed_mag_prewitt_S03": "6f6aafc24004b1699b0243766a4712cf43fd4256f3287c743b4b73ff389ea452",
+      "installed_mag_prewitt_X01": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "installed_mag_prewitt_X02": "6f6aafc24004b1699b0243766a4712cf43fd4256f3287c743b4b73ff389ea452",
+      "installed_mag_prewitt_X03": "44cceab15520310e6a9393cd35fdcfd566c589a292e44a7d2f8c39805e208de5",
+      "installed_mag_prewitt_X04": "ba3f0bf99c550842f18f66a2884d9858e98a83bef74f0cf8b199c6eadc29dc93",
+      "installed_mag_prewitt_X05": "ba3f0bf99c550842f18f66a2884d9858e98a83bef74f0cf8b199c6eadc29dc93",
+      "installed_mag_prewitt_X06": "ba3f0bf99c550842f18f66a2884d9858e98a83bef74f0cf8b199c6eadc29dc93",
+      "installed_mag_prewitt_X07": "44cceab15520310e6a9393cd35fdcfd566c589a292e44a7d2f8c39805e208de5",
+      "installed_mag_prewitt_X08": "4ca86cee65ff1711eca07caaf4a338b939d22393445a5599d010d1ae4bf672e5",
+      "installed_mag_sobel_C19": "a47d6b2d38333ebe87bf4d22f84207fa74309e1f40421647dd509fef08a34799",
+      "installed_mag_sobel_X08": "a47d6b2d38333ebe87bf4d22f84207fa74309e1f40421647dd509fef08a34799",
+      "installed_prewitt_x_C03": "7d70fccf26a31bdd59200159d7a377ba47eadf272b394ca6219b2b15ee5115f7",
+      "installed_prewitt_x_C05": "dc1cb7f48c4cf77c69332c21ae570a676cec6000fe38ee252edd5acda73b72f7",
+      "installed_prewitt_x_C09": "9ac6f3459681ae2eea1da9c3327e7c7680e0d05533b6c9f0bbfb819321413149",
+      "installed_prewitt_x_C11": "f121f7c07dbd7418631963694018de37f3238e3c80b4f3df6f413a9d4607df6b",
+      "installed_prewitt_x_C13": "11a9493c5d1ffbaa39c16baa83c5c009c8d768f750c1bda6d65ad705897a93c8",
+      "installed_prewitt_x_C14": "f7ddd45fb4c400fe71c125bf944fff061f5e9c0325f991c8485ca9fde1b81907",
+      "installed_prewitt_x_C17": "19bbd6daeb7097b0713544a05373f9b8397322bf1a7fd62643b5ed2162c91c64",
+      "installed_prewitt_x_C18": "e956fe57ce128f9c754c6ca360360ea177370f9d169b3064ffcbd9240622bd65",
+      "installed_prewitt_x_C19": "fc9525f70510fac3087e7fc2a724924206976aaff859326d82f112180ba2227f",
+      "installed_prewitt_x_D01": "6f6aafc24004b1699b0243766a4712cf43fd4256f3287c743b4b73ff389ea452",
+      "installed_prewitt_x_D03": "7d70fccf26a31bdd59200159d7a377ba47eadf272b394ca6219b2b15ee5115f7",
+      "installed_prewitt_x_D05": "8d211cb36b42151aed2102c8e45836643b7b71073792641b6f85308efffc3f08",
+      "installed_prewitt_x_D06": "a5c05333a248b449a497adbf51ed0dd2bc92e15390494bda920f6d2e94e12157",
+      "installed_prewitt_x_D07": "60ae38fa8e3d8d27cdbee8d78a9de458b8a35ffc76802bae01a2f7c047fdda29",
+      "installed_prewitt_x_D08": "c7b4c95d610e099db34c452cf0dc96dd8b1d8bf54ee6745eae1835c1d9b0a4de",
+      "installed_prewitt_x_D10": "dc1cb7f48c4cf77c69332c21ae570a676cec6000fe38ee252edd5acda73b72f7",
+      "installed_prewitt_x_M01": "acaec00f8e930d75e68263b5c0939d11bd7e27f51197a6485491e31a342d34c6",
+      "installed_prewitt_x_M03": "7d70fccf26a31bdd59200159d7a377ba47eadf272b394ca6219b2b15ee5115f7",
+      "installed_prewitt_x_M06": "acaec00f8e930d75e68263b5c0939d11bd7e27f51197a6485491e31a342d34c6",
+      "installed_prewitt_x_M07": "acaec00f8e930d75e68263b5c0939d11bd7e27f51197a6485491e31a342d34c6",
+      "installed_prewitt_x_P01": "7d70fccf26a31bdd59200159d7a377ba47eadf272b394ca6219b2b15ee5115f7",
+      "installed_prewitt_x_S01": "7d70fccf26a31bdd59200159d7a377ba47eadf272b394ca6219b2b15ee5115f7",
+      "installed_prewitt_x_S03": "6f6aafc24004b1699b0243766a4712cf43fd4256f3287c743b4b73ff389ea452",
+      "installed_prewitt_x_X02": "7d70fccf26a31bdd59200159d7a377ba47eadf272b394ca6219b2b15ee5115f7",
+      "installed_prewitt_x_X03": "f121f7c07dbd7418631963694018de37f3238e3c80b4f3df6f413a9d4607df6b",
+      "installed_prewitt_x_X04": "acaec00f8e930d75e68263b5c0939d11bd7e27f51197a6485491e31a342d34c6",
+      "installed_prewitt_x_X05": "acaec00f8e930d75e68263b5c0939d11bd7e27f51197a6485491e31a342d34c6",
+      "installed_prewitt_x_X06": "acaec00f8e930d75e68263b5c0939d11bd7e27f51197a6485491e31a342d34c6",
+      "installed_prewitt_x_X07": "f121f7c07dbd7418631963694018de37f3238e3c80b4f3df6f413a9d4607df6b",
+      "installed_prewitt_x_X08": "fc9525f70510fac3087e7fc2a724924206976aaff859326d82f112180ba2227f",
+      "installed_prewitt_y_C01": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "installed_prewitt_y_C02": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "installed_prewitt_y_C03": "e2675f823271a9cdaf14f04d85d601d0b54c73770f798afaca872946e6fd19a8",
+      "installed_prewitt_y_C04": "065e21934eb533882f458b0ce5650c3167ffee23ce7b683027768ee41317d60c",
+      "installed_prewitt_y_C05": "0095bfc26f4770452a413026bd1d5ed1d5df70d520891f01ef1f8110ffded0d4",
+      "installed_prewitt_y_C09": "e34f23b0eb9b0de0dbac9467f1814261d32eed9811793e61391b2e7059529dc1",
+      "installed_prewitt_y_C11": "2fcf7c9096d08bb8a23d22f39ee7163816ab6b3f1317f03870f94426e5955e03",
+      "installed_prewitt_y_C12": "7e894f4b6c65414242c2c0f9c948a16b484617a612e8dd506bea10589b899a01",
+      "installed_prewitt_y_C13": "8215fb1378801deaf42158e58d2f64dfc81de70172cfa9bcc7cb80d46ce5113f",
+      "installed_prewitt_y_C14": "0263fea2b803d8ec75c47a41bd1c5363c96c35a2378f173d53279eca93da0efe",
+      "installed_prewitt_y_C17": "3d39068b3f17154140dcfcd0528ba7c9fee3c5d066b4dd511f638ca34d167705",
+      "installed_prewitt_y_C18": "d78dca6e60b3903d90e3cb6a63d66f17c4b83a7a2d09e85d3e1777746061aab3",
+      "installed_prewitt_y_C19": "6d268a0dbdc120a13a83ad70419d3fcc7373464eabc906afbab7c69e4245ce70",
+      "installed_prewitt_y_D01": "ef3e63c9e69e0724d4abb6eadf99abf319f22f0d9b0dae25ccaffb570fc93a5c",
+      "installed_prewitt_y_D02": "07fb2e4eb58d4d98d7c0e26141b95b3d079bb30b2ec57fc0e39cfd5865ea9058",
+      "installed_prewitt_y_D03": "e2675f823271a9cdaf14f04d85d601d0b54c73770f798afaca872946e6fd19a8",
+      "installed_prewitt_y_D04": "065e21934eb533882f458b0ce5650c3167ffee23ce7b683027768ee41317d60c",
+      "installed_prewitt_y_D05": "a1321e1b7da779019b49a59f127288dc6c90c626a9f8a9ac6bd609bcc67adfad",
+      "installed_prewitt_y_D06": "54a7cd33accdf822b9462835cd880c9eb41bc93e8cebe2875b047ea21afdbf11",
+      "installed_prewitt_y_D07": "8d317634fd54a59826dc24546dd8e6979142eb65468b3f80a288b85ffa26282f",
+      "installed_prewitt_y_D08": "e2fcb0650e5a0bdad24aefc14e36689e261f6747b18e2dcda13f9f410882bc90",
+      "installed_prewitt_y_D10": "0095bfc26f4770452a413026bd1d5ed1d5df70d520891f01ef1f8110ffded0d4",
+      "installed_prewitt_y_M01": "f743f7bbc0ea239d04b07f5a9246c7272a2f915df6bb3ba8b225884065e16524",
+      "installed_prewitt_y_M02": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "installed_prewitt_y_M03": "e2675f823271a9cdaf14f04d85d601d0b54c73770f798afaca872946e6fd19a8",
+      "installed_prewitt_y_M05": "7e894f4b6c65414242c2c0f9c948a16b484617a612e8dd506bea10589b899a01",
+      "installed_prewitt_y_M06": "f743f7bbc0ea239d04b07f5a9246c7272a2f915df6bb3ba8b225884065e16524",
+      "installed_prewitt_y_M07": "f743f7bbc0ea239d04b07f5a9246c7272a2f915df6bb3ba8b225884065e16524",
+      "installed_prewitt_y_P01": "e2675f823271a9cdaf14f04d85d601d0b54c73770f798afaca872946e6fd19a8",
+      "installed_prewitt_y_P02": "065e21934eb533882f458b0ce5650c3167ffee23ce7b683027768ee41317d60c",
+      "installed_prewitt_y_S01": "e2675f823271a9cdaf14f04d85d601d0b54c73770f798afaca872946e6fd19a8",
+      "installed_prewitt_y_S02": "065e21934eb533882f458b0ce5650c3167ffee23ce7b683027768ee41317d60c",
+      "installed_prewitt_y_S03": "ef3e63c9e69e0724d4abb6eadf99abf319f22f0d9b0dae25ccaffb570fc93a5c",
+      "installed_prewitt_y_X01": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "installed_prewitt_y_X02": "e2675f823271a9cdaf14f04d85d601d0b54c73770f798afaca872946e6fd19a8",
+      "installed_prewitt_y_X03": "2fcf7c9096d08bb8a23d22f39ee7163816ab6b3f1317f03870f94426e5955e03",
+      "installed_prewitt_y_X04": "f743f7bbc0ea239d04b07f5a9246c7272a2f915df6bb3ba8b225884065e16524",
+      "installed_prewitt_y_X05": "f743f7bbc0ea239d04b07f5a9246c7272a2f915df6bb3ba8b225884065e16524",
+      "installed_prewitt_y_X06": "f743f7bbc0ea239d04b07f5a9246c7272a2f915df6bb3ba8b225884065e16524",
+      "installed_prewitt_y_X07": "2fcf7c9096d08bb8a23d22f39ee7163816ab6b3f1317f03870f94426e5955e03",
+      "installed_prewitt_y_X08": "6d268a0dbdc120a13a83ad70419d3fcc7373464eabc906afbab7c69e4245ce70",
+      "installed_sobel_x_C19": "85629802ac9cb63991d1c23e794093a7e03cb7c6cfecf2e28aa1417805cf4551",
+      "installed_sobel_x_X08": "85629802ac9cb63991d1c23e794093a7e03cb7c6cfecf2e28aa1417805cf4551",
+      "installed_sobel_y_C12": "0710bc10a78d83f4bc5516ff8da7cd01e519cc2baa58c1520129aee1cbb66b4e",
+      "installed_sobel_y_C19": "c3f7bf6ca1bf0d276ea5e9fcb8d66ac44a5ab96c8cb21b0094c1e923fa901294",
+      "installed_sobel_y_M05": "0710bc10a78d83f4bc5516ff8da7cd01e519cc2baa58c1520129aee1cbb66b4e",
+      "installed_sobel_y_X08": "c3f7bf6ca1bf0d276ea5e9fcb8d66ac44a5ab96c8cb21b0094c1e923fa901294",
+      "mag_prewitt_C01": "0b702b8df566ec914c9325914c35a6665f686333bd4f9ee4ebd5e78f55ae7195",
+      "mag_prewitt_C02": "6a90c90553e214bfc6fdd41391b93064fc986e6660da41739e425429e01ad1dc",
+      "mag_prewitt_C03": "096f435c411e657386d229e000de50b2cb5384b6985e24d8e8f08a482a92a6bf",
+      "mag_prewitt_C04": "81547f3418570ad0819f4061e84f8a91c929219e7b829a21c862f79de69bf0b6",
+      "mag_prewitt_C05": "3b758cb032e4bad42fd537aa6df74dd11f32ff719c06207561df4eae5fccdb48",
+      "mag_prewitt_C06": "c806633d43d05dcdd8195f9bfbd9ef16e089799985023c03dc1b51b01feb49fa",
+      "mag_prewitt_C07": "4f12c919547d9d49bdb03e1317a89257303c4204806f87dda8408af0b4a82429",
+      "mag_prewitt_C08": "6dcf75d66cfc4eee1f671114c04548546e849e0e005986c3470aab8d4b9ee034",
+      "mag_prewitt_C09": "b9d11e18754416333e73e7867f44bb2fef7a84849ea3fc274f05e3b772058527",
+      "mag_prewitt_C10": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "mag_prewitt_C11": "49f164552fd1f8e855f9c483e9c746da975528e52b199eab5e4ebccddd366c33",
+      "mag_prewitt_C12": "4dead1ec850fb457411d8c1bc31914a0faf31138e5823c7653258e004b586b01",
+      "mag_prewitt_C13": "636c6403853c1259199f684c510a80d4839c5bedb1ec42c5a34ac3f066bab7d6",
+      "mag_prewitt_C14": "d8736b9ab6ee797ee5a6b9cd1f6161ce0f3a6897a3d97454c03f6522ce283a17",
+      "mag_prewitt_C15": "576f6d222baee01d0cf78d9eac70f8b0006f14799572a753252d1b7fa6a9872e",
+      "mag_prewitt_C16": "8b5d8decfba33da3f69cd7be6f70afb49d147f29b2f3af0f4dadc6b476384f2b",
+      "mag_prewitt_C17": "a17053e4dfb8f9fe04ee72f6c38a233d27cd661c29682db802d2c9d3b2eda517",
+      "mag_prewitt_C18": "6756d1d874c1a3e1f424d39ca54b6b5b02c80e900c63dc0fd8ed54c8031364e0",
+      "mag_prewitt_C19": "93fa54bb370ec60eb2ba175b4f73fcc37460157bd6b9b882b843043e90278ed8",
+      "mag_prewitt_D01": "096f435c411e657386d229e000de50b2cb5384b6985e24d8e8f08a482a92a6bf",
+      "mag_prewitt_D02": "81547f3418570ad0819f4061e84f8a91c929219e7b829a21c862f79de69bf0b6",
+      "mag_prewitt_D03": "096f435c411e657386d229e000de50b2cb5384b6985e24d8e8f08a482a92a6bf",
+      "mag_prewitt_D04": "81547f3418570ad0819f4061e84f8a91c929219e7b829a21c862f79de69bf0b6",
+      "mag_prewitt_D05": "b752a54d88e9207352636850b26e243856da85f804c983bcd8a58e9e2144609e",
+      "mag_prewitt_D06": "e5d9d70c02e5b4beac00d81a94080fd8f2c81b8d37dca4d661e029cef67debcb",
+      "mag_prewitt_D07": "b752a54d88e9207352636850b26e243856da85f804c983bcd8a58e9e2144609e",
+      "mag_prewitt_D08": "e5d9d70c02e5b4beac00d81a94080fd8f2c81b8d37dca4d661e029cef67debcb",
+      "mag_prewitt_D09": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "mag_prewitt_D10": "3b758cb032e4bad42fd537aa6df74dd11f32ff719c06207561df4eae5fccdb48",
+      "mag_prewitt_M01": "402e524ba8607c5cd0ef39b05087a240452c5459e1b629fd403c28f06bd04995",
+      "mag_prewitt_M02": "642779006d82bf4c3abc6330919532d9e6abd168ccbdd8b560f44eb443c9d5aa",
+      "mag_prewitt_M03": "096f435c411e657386d229e000de50b2cb5384b6985e24d8e8f08a482a92a6bf",
+      "mag_prewitt_M04": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "mag_prewitt_M05": "4dead1ec850fb457411d8c1bc31914a0faf31138e5823c7653258e004b586b01",
+      "mag_prewitt_M06": "402e524ba8607c5cd0ef39b05087a240452c5459e1b629fd403c28f06bd04995",
+      "mag_prewitt_M07": "402e524ba8607c5cd0ef39b05087a240452c5459e1b629fd403c28f06bd04995",
+      "mag_prewitt_P01": "096f435c411e657386d229e000de50b2cb5384b6985e24d8e8f08a482a92a6bf",
+      "mag_prewitt_P02": "81547f3418570ad0819f4061e84f8a91c929219e7b829a21c862f79de69bf0b6",
+      "mag_prewitt_P03": "c806633d43d05dcdd8195f9bfbd9ef16e089799985023c03dc1b51b01feb49fa",
+      "mag_prewitt_P04": "4f12c919547d9d49bdb03e1317a89257303c4204806f87dda8408af0b4a82429",
+      "mag_prewitt_P05": "6dcf75d66cfc4eee1f671114c04548546e849e0e005986c3470aab8d4b9ee034",
+      "mag_prewitt_S01": "096f435c411e657386d229e000de50b2cb5384b6985e24d8e8f08a482a92a6bf",
+      "mag_prewitt_S02": "81547f3418570ad0819f4061e84f8a91c929219e7b829a21c862f79de69bf0b6",
+      "mag_prewitt_S03": "096f435c411e657386d229e000de50b2cb5384b6985e24d8e8f08a482a92a6bf",
+      "mag_prewitt_S04": "c806633d43d05dcdd8195f9bfbd9ef16e089799985023c03dc1b51b01feb49fa",
+      "mag_prewitt_S05": "4f12c919547d9d49bdb03e1317a89257303c4204806f87dda8408af0b4a82429",
+      "mag_prewitt_S06": "6dcf75d66cfc4eee1f671114c04548546e849e0e005986c3470aab8d4b9ee034",
+      "mag_prewitt_S07": "80233f08d402d1441dc951404e7bddbbf8cedb0e68a5f3608a6c100f975461ea",
+      "mag_prewitt_S08": "3c7cd8fda90a0c076417c0e87981c16cf1e72d3731d09fa98462ad62d8b9d6fd",
+      "mag_prewitt_X01": "0b702b8df566ec914c9325914c35a6665f686333bd4f9ee4ebd5e78f55ae7195",
+      "mag_prewitt_X02": "096f435c411e657386d229e000de50b2cb5384b6985e24d8e8f08a482a92a6bf",
+      "mag_prewitt_X03": "49f164552fd1f8e855f9c483e9c746da975528e52b199eab5e4ebccddd366c33",
+      "mag_prewitt_X04": "402e524ba8607c5cd0ef39b05087a240452c5459e1b629fd403c28f06bd04995",
+      "mag_prewitt_X05": "402e524ba8607c5cd0ef39b05087a240452c5459e1b629fd403c28f06bd04995",
+      "mag_prewitt_X06": "402e524ba8607c5cd0ef39b05087a240452c5459e1b629fd403c28f06bd04995",
+      "mag_prewitt_X07": "49f164552fd1f8e855f9c483e9c746da975528e52b199eab5e4ebccddd366c33",
+      "mag_prewitt_X08": "93fa54bb370ec60eb2ba175b4f73fcc37460157bd6b9b882b843043e90278ed8",
+      "mag_sobel_C01": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "mag_sobel_C02": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "mag_sobel_C03": "6f6aafc24004b1699b0243766a4712cf43fd4256f3287c743b4b73ff389ea452",
+      "mag_sobel_C04": "4f5d0da2478c2eb8cda85a259f0936a2ff164c5bd62d00ad282d5cf099b60bba",
+      "mag_sobel_C05": "ab6b8ccce188ec58626aa6d0515b9d43a914ccff5056121eec70401d5b49853b",
+      "mag_sobel_C06": "27ac6a8aae7b9034876739133f705073e24b637190932e000afeb243ba00b38d",
+      "mag_sobel_C07": "3c404e22a9ad553bea8aa6b85fc0788c5fe51f63be07f8a844a3a4879b2bcc8b",
+      "mag_sobel_C08": "3b38e8d612b5216d8f9a823d304af0e9b85a9ebed72cc1667aa384348510a4c8",
+      "mag_sobel_C09": "796d31e8f61bf45f43dabdca1d366cadfe02457ff1c687cda864ca1afc9135f9",
+      "mag_sobel_C10": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "mag_sobel_C11": "68aa5b98696084fc487f0f6f77997da6d74feb247bf31304a581907d63c18cca",
+      "mag_sobel_C12": "4dead1ec850fb457411d8c1bc31914a0faf31138e5823c7653258e004b586b01",
+      "mag_sobel_C13": "10defc7bcda99542b34d9376a3f60015e6e4b9285d5e46a9d908d7c5390c2a63",
+      "mag_sobel_C14": "6a5ce83832cb2a24db766db50ee658143393c26782733aa11190660af952e9c9",
+      "mag_sobel_C15": "576f6d222baee01d0cf78d9eac70f8b0006f14799572a753252d1b7fa6a9872e",
+      "mag_sobel_C16": "8b5d8decfba33da3f69cd7be6f70afb49d147f29b2f3af0f4dadc6b476384f2b",
+      "mag_sobel_C17": "8b5d8decfba33da3f69cd7be6f70afb49d147f29b2f3af0f4dadc6b476384f2b",
+      "mag_sobel_C18": "e84fe4dd2bd9dbcba06085cbbc8de1ce6ad1dd19dfdaa27ab8c3a7bd8bd5a826",
+      "mag_sobel_C19": "93dcfdea65cb564651f00ff1e92b7cda53660372107adace5a2c7f6645607e65",
+      "mag_sobel_D01": "6f6aafc24004b1699b0243766a4712cf43fd4256f3287c743b4b73ff389ea452",
+      "mag_sobel_D02": "4f5d0da2478c2eb8cda85a259f0936a2ff164c5bd62d00ad282d5cf099b60bba",
+      "mag_sobel_D03": "6f6aafc24004b1699b0243766a4712cf43fd4256f3287c743b4b73ff389ea452",
+      "mag_sobel_D04": "4f5d0da2478c2eb8cda85a259f0936a2ff164c5bd62d00ad282d5cf099b60bba",
+      "mag_sobel_D05": "49017e8f439f1856d7fdeb3ef88afbc9f12b6c178100c2a9d93ff373a61c7f1a",
+      "mag_sobel_D06": "49017e8f439f1856d7fdeb3ef88afbc9f12b6c178100c2a9d93ff373a61c7f1a",
+      "mag_sobel_D07": "49017e8f439f1856d7fdeb3ef88afbc9f12b6c178100c2a9d93ff373a61c7f1a",
+      "mag_sobel_D08": "49017e8f439f1856d7fdeb3ef88afbc9f12b6c178100c2a9d93ff373a61c7f1a",
+      "mag_sobel_D09": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "mag_sobel_D10": "ab6b8ccce188ec58626aa6d0515b9d43a914ccff5056121eec70401d5b49853b",
+      "mag_sobel_M01": "1a521ffbcd97f0e8d598db12773eb642a1404ff055ae0ca0fe129a95755baf03",
+      "mag_sobel_M02": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "mag_sobel_M03": "6f6aafc24004b1699b0243766a4712cf43fd4256f3287c743b4b73ff389ea452",
+      "mag_sobel_M04": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "mag_sobel_M05": "4dead1ec850fb457411d8c1bc31914a0faf31138e5823c7653258e004b586b01",
+      "mag_sobel_M06": "1a521ffbcd97f0e8d598db12773eb642a1404ff055ae0ca0fe129a95755baf03",
+      "mag_sobel_M07": "1a521ffbcd97f0e8d598db12773eb642a1404ff055ae0ca0fe129a95755baf03",
+      "mag_sobel_P01": "6f6aafc24004b1699b0243766a4712cf43fd4256f3287c743b4b73ff389ea452",
+      "mag_sobel_P02": "4f5d0da2478c2eb8cda85a259f0936a2ff164c5bd62d00ad282d5cf099b60bba",
+      "mag_sobel_P03": "27ac6a8aae7b9034876739133f705073e24b637190932e000afeb243ba00b38d",
+      "mag_sobel_P04": "3c404e22a9ad553bea8aa6b85fc0788c5fe51f63be07f8a844a3a4879b2bcc8b",
+      "mag_sobel_P05": "3b38e8d612b5216d8f9a823d304af0e9b85a9ebed72cc1667aa384348510a4c8",
+      "mag_sobel_S01": "6f6aafc24004b1699b0243766a4712cf43fd4256f3287c743b4b73ff389ea452",
+      "mag_sobel_S02": "4f5d0da2478c2eb8cda85a259f0936a2ff164c5bd62d00ad282d5cf099b60bba",
+      "mag_sobel_S03": "6f6aafc24004b1699b0243766a4712cf43fd4256f3287c743b4b73ff389ea452",
+      "mag_sobel_S04": "27ac6a8aae7b9034876739133f705073e24b637190932e000afeb243ba00b38d",
+      "mag_sobel_S05": "3c404e22a9ad553bea8aa6b85fc0788c5fe51f63be07f8a844a3a4879b2bcc8b",
+      "mag_sobel_S06": "3b38e8d612b5216d8f9a823d304af0e9b85a9ebed72cc1667aa384348510a4c8",
+      "mag_sobel_S07": "b71a9b9ffcb1a3666e7f071096dc639b8bffb7ef6aff26117c3a50ee9ad730fe",
+      "mag_sobel_S08": "30ab0555b213c0ee30a06744ce696e37d24a6523f655aeed343a01fb1015dcde",
+      "mag_sobel_X01": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "mag_sobel_X02": "6f6aafc24004b1699b0243766a4712cf43fd4256f3287c743b4b73ff389ea452",
+      "mag_sobel_X03": "68aa5b98696084fc487f0f6f77997da6d74feb247bf31304a581907d63c18cca",
+      "mag_sobel_X04": "1a521ffbcd97f0e8d598db12773eb642a1404ff055ae0ca0fe129a95755baf03",
+      "mag_sobel_X05": "1a521ffbcd97f0e8d598db12773eb642a1404ff055ae0ca0fe129a95755baf03",
+      "mag_sobel_X06": "1a521ffbcd97f0e8d598db12773eb642a1404ff055ae0ca0fe129a95755baf03",
+      "mag_sobel_X07": "68aa5b98696084fc487f0f6f77997da6d74feb247bf31304a581907d63c18cca",
+      "mag_sobel_X08": "93dcfdea65cb564651f00ff1e92b7cda53660372107adace5a2c7f6645607e65",
+      "prewitt_x_C01": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "prewitt_x_C02": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "prewitt_x_C03": "6dfe772f435ab6cdd4b9b2d5f97e951942696eadc973a6429646da04709c508c",
+      "prewitt_x_C04": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "prewitt_x_C05": "78c4ea572ace186bddf7196f278fed47e2f91e700761cabaebebf7129d0b606f",
+      "prewitt_x_C06": "03e9c1092da1b01c1ef5575d7849ba2e1b8666faa7f02f1b9cdda56300c45911",
+      "prewitt_x_C07": "ea076ae8cc96c0a8c64c1931e8c7ed536273c2423d8fb871ebdc567619f5855a",
+      "prewitt_x_C08": "a329ed822de3c199f8f1c77945e8504545a445db64f1d99c9dd25d067ba8ef70",
+      "prewitt_x_C09": "07fbba8c45f52ad9ef0db4f17abecbdce1ea8e00f91ac75bf44d65b92fd9baa5",
+      "prewitt_x_C10": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "prewitt_x_C11": "8d9db17b8414accf64fc284b5b059b41e85b776b6aed4f542f96201389e6bcc4",
+      "prewitt_x_C12": "db6779653fe3517f14f69d4410540685e31b2e14d150bfcd0414bce08f122dd4",
+      "prewitt_x_C13": "d0de59fa53503d2f503b01b340c05666671dd673e4cbc65527934bc7ad279364",
+      "prewitt_x_C14": "b2ec1ca7d10b7841c9b5dc8e5c31392a64738b42a62ff724881908df853f84d0",
+      "prewitt_x_C15": "576f6d222baee01d0cf78d9eac70f8b0006f14799572a753252d1b7fa6a9872e",
+      "prewitt_x_C16": "5fc6d0c0aeaa02108907b22aa1f331adaf2d2241ae86749c3dcf92c9f9150f7c",
+      "prewitt_x_C17": "3747e97f16ecbf0f823f670f68bdd719d38a98777db01392efde2bb3b9e470b0",
+      "prewitt_x_C18": "5d5dc6816ac868eed73d5f3040aceb8467bd68ec2a70533a048cbfc5f908968b",
+      "prewitt_x_C19": "8433680ffb480fd79a2e9a8c27a7e8b527a038c6d32898d088589d8f4dea38fc",
+      "prewitt_x_D01": "096f435c411e657386d229e000de50b2cb5384b6985e24d8e8f08a482a92a6bf",
+      "prewitt_x_D02": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "prewitt_x_D03": "6dfe772f435ab6cdd4b9b2d5f97e951942696eadc973a6429646da04709c508c",
+      "prewitt_x_D04": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "prewitt_x_D05": "b5cac5204f177237d0d079b3fd7e464be112f32a5a51e5225469a8141651057f",
+      "prewitt_x_D06": "f528d29166159af0d1187904138e38bfe0bbf65ed181f70465154bf7ce8860fb",
+      "prewitt_x_D07": "19153506956e137077555888308d1fb6f70aa01cc3f814789335832431f21a6f",
+      "prewitt_x_D08": "77638c8bd8a12aaccfa3c9be76c6c997135d0cf695313374cdff73e975d0bb6c",
+      "prewitt_x_D09": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "prewitt_x_D10": "78c4ea572ace186bddf7196f278fed47e2f91e700761cabaebebf7129d0b606f",
+      "prewitt_x_M01": "1226322b61a0dce7ed91995ab2da7d766b1bd62831ae903e9495be5338a6db72",
+      "prewitt_x_M02": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "prewitt_x_M03": "6dfe772f435ab6cdd4b9b2d5f97e951942696eadc973a6429646da04709c508c",
+      "prewitt_x_M04": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "prewitt_x_M05": "db6779653fe3517f14f69d4410540685e31b2e14d150bfcd0414bce08f122dd4",
+      "prewitt_x_M06": "1226322b61a0dce7ed91995ab2da7d766b1bd62831ae903e9495be5338a6db72",
+      "prewitt_x_M07": "1226322b61a0dce7ed91995ab2da7d766b1bd62831ae903e9495be5338a6db72",
+      "prewitt_x_P01": "6dfe772f435ab6cdd4b9b2d5f97e951942696eadc973a6429646da04709c508c",
+      "prewitt_x_P02": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "prewitt_x_P03": "03e9c1092da1b01c1ef5575d7849ba2e1b8666faa7f02f1b9cdda56300c45911",
+      "prewitt_x_P04": "ea076ae8cc96c0a8c64c1931e8c7ed536273c2423d8fb871ebdc567619f5855a",
+      "prewitt_x_P05": "a329ed822de3c199f8f1c77945e8504545a445db64f1d99c9dd25d067ba8ef70",
+      "prewitt_x_S01": "6dfe772f435ab6cdd4b9b2d5f97e951942696eadc973a6429646da04709c508c",
+      "prewitt_x_S02": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "prewitt_x_S03": "096f435c411e657386d229e000de50b2cb5384b6985e24d8e8f08a482a92a6bf",
+      "prewitt_x_S04": "03e9c1092da1b01c1ef5575d7849ba2e1b8666faa7f02f1b9cdda56300c45911",
+      "prewitt_x_S05": "ea076ae8cc96c0a8c64c1931e8c7ed536273c2423d8fb871ebdc567619f5855a",
+      "prewitt_x_S06": "a329ed822de3c199f8f1c77945e8504545a445db64f1d99c9dd25d067ba8ef70",
+      "prewitt_x_S07": "e37ebbf6f560a0021c4a061b5bdd99c693b58b02cad7477a1e7064eeaf227c62",
+      "prewitt_x_S08": "237369386d28bc5e1cc41df7a399f1b49ca07e592a907de1545c90119b2420c4",
+      "prewitt_x_X01": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "prewitt_x_X02": "6dfe772f435ab6cdd4b9b2d5f97e951942696eadc973a6429646da04709c508c",
+      "prewitt_x_X03": "8d9db17b8414accf64fc284b5b059b41e85b776b6aed4f542f96201389e6bcc4",
+      "prewitt_x_X04": "1226322b61a0dce7ed91995ab2da7d766b1bd62831ae903e9495be5338a6db72",
+      "prewitt_x_X05": "1226322b61a0dce7ed91995ab2da7d766b1bd62831ae903e9495be5338a6db72",
+      "prewitt_x_X06": "1226322b61a0dce7ed91995ab2da7d766b1bd62831ae903e9495be5338a6db72",
+      "prewitt_x_X07": "8d9db17b8414accf64fc284b5b059b41e85b776b6aed4f542f96201389e6bcc4",
+      "prewitt_x_X08": "8433680ffb480fd79a2e9a8c27a7e8b527a038c6d32898d088589d8f4dea38fc",
+      "prewitt_y_C01": "0b702b8df566ec914c9325914c35a6665f686333bd4f9ee4ebd5e78f55ae7195",
+      "prewitt_y_C02": "1d66f65cad55f33c8305c6b9ff0d648638b4b229d5ad912af54fc1a5ebffc7ec",
+      "prewitt_y_C03": "5c3eb05306f1b5b3ecd72e51f967e6682af4573b734a3f37f606ad6b9aa2dbd9",
+      "prewitt_y_C04": "72a03067e8b63758a77f04ef1783128bccf1f013ef4fc722f439d6dcdcdc2791",
+      "prewitt_y_C05": "ea5da5a24a88b260d988c260423a741355afc47cc9b287930bce400c37ce7daf",
+      "prewitt_y_C06": "729bfc13ddbfc2ee3dd398798d57e9a84d97121b8c2d6fc78d50efa43a45751c",
+      "prewitt_y_C07": "9f38d0dc92dcdbaf5a958350ffc837b239413eb25e31c08b2e947751e45f56f2",
+      "prewitt_y_C08": "6aa494dbdda5c5d942459326723b94685023ce16c110f8ab5a865cc4b5f226d4",
+      "prewitt_y_C09": "2a7d241897b124fb6064ff5261ffc72ea3e0d7a3917254d102228168984a8e26",
+      "prewitt_y_C10": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "prewitt_y_C11": "df3351580bd5bcbd6864dd935733f9a04625f22b0af86abab0347a13816da35a",
+      "prewitt_y_C12": "afc1e0e3d6fd5d6bade2a4f320ca5146af5308d55af81bb5363db1c200a20310",
+      "prewitt_y_C13": "c63b5e724819afa2fdc60e056b8f9bf6f70f8d0ee59dd1bb8ed47e7abc285bde",
+      "prewitt_y_C14": "1832268f425b49dcfc50ec5560b38c1c1041a6bac9057b9e9695ec87a15c3abd",
+      "prewitt_y_C15": "576f6d222baee01d0cf78d9eac70f8b0006f14799572a753252d1b7fa6a9872e",
+      "prewitt_y_C16": "19bbd6daeb7097b0713544a05373f9b8397322bf1a7fd62643b5ed2162c91c64",
+      "prewitt_y_C17": "5dc145762951d05518286b8e1dd66b4521477be3ba8d72e7af2f35cffe66f219",
+      "prewitt_y_C18": "b79a83bcf093ef672969d9a9c620ce1467ce01828228c920aeebc00672b4cfcf",
+      "prewitt_y_C19": "4338cdb623ba2216b841b330a131642233352a7e26cbd7a5ef43052862428565",
+      "prewitt_y_D01": "0ec9567e6684a70776c83387330b7620f1daa39f59e1b06c4358d62706560b12",
+      "prewitt_y_D02": "81547f3418570ad0819f4061e84f8a91c929219e7b829a21c862f79de69bf0b6",
+      "prewitt_y_D03": "5c3eb05306f1b5b3ecd72e51f967e6682af4573b734a3f37f606ad6b9aa2dbd9",
+      "prewitt_y_D04": "72a03067e8b63758a77f04ef1783128bccf1f013ef4fc722f439d6dcdcdc2791",
+      "prewitt_y_D05": "2ecccb9eca08576d03ba7a84cced327a556bab0ccf4e85f633d0dec723670280",
+      "prewitt_y_D06": "13dcb30e5be3a6d53a5abae573ff2af6f374e647314e2cd0783484fd6c581c64",
+      "prewitt_y_D07": "1325db7273c6b89407647122675637c09ff7692a3e5dfc609cefbbac957cce32",
+      "prewitt_y_D08": "72845c249c33a61648b3265c8fc8a7e96e423ce0afa023e4df9726787cfa89bd",
+      "prewitt_y_D09": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "prewitt_y_D10": "ea5da5a24a88b260d988c260423a741355afc47cc9b287930bce400c37ce7daf",
+      "prewitt_y_M01": "9a819b7d6690bdcbc5e70c3a0928f942a975846726bbcb68c65759baf2d3068d",
+      "prewitt_y_M02": "642779006d82bf4c3abc6330919532d9e6abd168ccbdd8b560f44eb443c9d5aa",
+      "prewitt_y_M03": "5c3eb05306f1b5b3ecd72e51f967e6682af4573b734a3f37f606ad6b9aa2dbd9",
+      "prewitt_y_M04": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "prewitt_y_M05": "afc1e0e3d6fd5d6bade2a4f320ca5146af5308d55af81bb5363db1c200a20310",
+      "prewitt_y_M06": "9a819b7d6690bdcbc5e70c3a0928f942a975846726bbcb68c65759baf2d3068d",
+      "prewitt_y_M07": "9a819b7d6690bdcbc5e70c3a0928f942a975846726bbcb68c65759baf2d3068d",
+      "prewitt_y_P01": "5c3eb05306f1b5b3ecd72e51f967e6682af4573b734a3f37f606ad6b9aa2dbd9",
+      "prewitt_y_P02": "72a03067e8b63758a77f04ef1783128bccf1f013ef4fc722f439d6dcdcdc2791",
+      "prewitt_y_P03": "729bfc13ddbfc2ee3dd398798d57e9a84d97121b8c2d6fc78d50efa43a45751c",
+      "prewitt_y_P04": "9f38d0dc92dcdbaf5a958350ffc837b239413eb25e31c08b2e947751e45f56f2",
+      "prewitt_y_P05": "6aa494dbdda5c5d942459326723b94685023ce16c110f8ab5a865cc4b5f226d4",
+      "prewitt_y_S01": "5c3eb05306f1b5b3ecd72e51f967e6682af4573b734a3f37f606ad6b9aa2dbd9",
+      "prewitt_y_S02": "72a03067e8b63758a77f04ef1783128bccf1f013ef4fc722f439d6dcdcdc2791",
+      "prewitt_y_S03": "0ec9567e6684a70776c83387330b7620f1daa39f59e1b06c4358d62706560b12",
+      "prewitt_y_S04": "729bfc13ddbfc2ee3dd398798d57e9a84d97121b8c2d6fc78d50efa43a45751c",
+      "prewitt_y_S05": "9f38d0dc92dcdbaf5a958350ffc837b239413eb25e31c08b2e947751e45f56f2",
+      "prewitt_y_S06": "6aa494dbdda5c5d942459326723b94685023ce16c110f8ab5a865cc4b5f226d4",
+      "prewitt_y_S07": "d795e73a7375999867f26abeb3cc6f5683fa38ad32c0a069791f8b34b4784dad",
+      "prewitt_y_S08": "e12afaea19a4f66a2e76aa5b46163fbc7d0c6790c353ecf91bda22c8ff87199d",
+      "prewitt_y_X01": "0b702b8df566ec914c9325914c35a6665f686333bd4f9ee4ebd5e78f55ae7195",
+      "prewitt_y_X02": "5c3eb05306f1b5b3ecd72e51f967e6682af4573b734a3f37f606ad6b9aa2dbd9",
+      "prewitt_y_X03": "df3351580bd5bcbd6864dd935733f9a04625f22b0af86abab0347a13816da35a",
+      "prewitt_y_X04": "9a819b7d6690bdcbc5e70c3a0928f942a975846726bbcb68c65759baf2d3068d",
+      "prewitt_y_X05": "9a819b7d6690bdcbc5e70c3a0928f942a975846726bbcb68c65759baf2d3068d",
+      "prewitt_y_X06": "9a819b7d6690bdcbc5e70c3a0928f942a975846726bbcb68c65759baf2d3068d",
+      "prewitt_y_X07": "df3351580bd5bcbd6864dd935733f9a04625f22b0af86abab0347a13816da35a",
+      "prewitt_y_X08": "4338cdb623ba2216b841b330a131642233352a7e26cbd7a5ef43052862428565",
+      "sobel_x_C01": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_x_C02": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_x_C03": "7d70fccf26a31bdd59200159d7a377ba47eadf272b394ca6219b2b15ee5115f7",
+      "sobel_x_C04": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_x_C05": "7d70fccf26a31bdd59200159d7a377ba47eadf272b394ca6219b2b15ee5115f7",
+      "sobel_x_C06": "f50a01a59d539ad3ceb7b7f14ec92a1d16b59e894059f1849769ee69dff0a408",
+      "sobel_x_C07": "ba53818c2514b367d6fdca69d9935ef519990e689bd45f6fc60f4ea8ce8e7601",
+      "sobel_x_C08": "5781ac2ba7099aa2125afaa03afe48589ce0950ca7e9f85ae85aab318e5e67a1",
+      "sobel_x_C09": "7075806865a634e892600843285b15cd29da656293217caf0fbc23d3f3c03ace",
+      "sobel_x_C10": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_x_C11": "19cb36f606972d7ebc80290d8ef7de4d3e1e28fcbecdc1aa0b74655d4063eb7b",
+      "sobel_x_C12": "db6779653fe3517f14f69d4410540685e31b2e14d150bfcd0414bce08f122dd4",
+      "sobel_x_C13": "71b5c1c0291690de7dcab589ac4fc0d76c0d81a1c4d3cb3ce0623163e015415f",
+      "sobel_x_C14": "09d27be9cd193c078c3f72e2af3188b042fc9a93de55b1353833536017d8b88f",
+      "sobel_x_C15": "576f6d222baee01d0cf78d9eac70f8b0006f14799572a753252d1b7fa6a9872e",
+      "sobel_x_C16": "5fc6d0c0aeaa02108907b22aa1f331adaf2d2241ae86749c3dcf92c9f9150f7c",
+      "sobel_x_C17": "19bbd6daeb7097b0713544a05373f9b8397322bf1a7fd62643b5ed2162c91c64",
+      "sobel_x_C18": "b5083d0254385b81e7c8f2d9b28bcebbbf70add45d738a55f02cb7de9c635dd5",
+      "sobel_x_C19": "94c1fdffb8968fb72771be18d10a03f45825378b82e48f011aeba4355af67f5e",
+      "sobel_x_D01": "6f6aafc24004b1699b0243766a4712cf43fd4256f3287c743b4b73ff389ea452",
+      "sobel_x_D02": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_x_D03": "7d70fccf26a31bdd59200159d7a377ba47eadf272b394ca6219b2b15ee5115f7",
+      "sobel_x_D04": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_x_D05": "6f6aafc24004b1699b0243766a4712cf43fd4256f3287c743b4b73ff389ea452",
+      "sobel_x_D06": "7d70fccf26a31bdd59200159d7a377ba47eadf272b394ca6219b2b15ee5115f7",
+      "sobel_x_D07": "7d70fccf26a31bdd59200159d7a377ba47eadf272b394ca6219b2b15ee5115f7",
+      "sobel_x_D08": "6f6aafc24004b1699b0243766a4712cf43fd4256f3287c743b4b73ff389ea452",
+      "sobel_x_D09": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_x_D10": "7d70fccf26a31bdd59200159d7a377ba47eadf272b394ca6219b2b15ee5115f7",
+      "sobel_x_M01": "d0cf9655514574cd6e76392c184f5a7ec4ae9bebd9feb97f15a7786c81b99594",
+      "sobel_x_M02": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_x_M03": "7d70fccf26a31bdd59200159d7a377ba47eadf272b394ca6219b2b15ee5115f7",
+      "sobel_x_M04": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_x_M05": "db6779653fe3517f14f69d4410540685e31b2e14d150bfcd0414bce08f122dd4",
+      "sobel_x_M06": "d0cf9655514574cd6e76392c184f5a7ec4ae9bebd9feb97f15a7786c81b99594",
+      "sobel_x_M07": "d0cf9655514574cd6e76392c184f5a7ec4ae9bebd9feb97f15a7786c81b99594",
+      "sobel_x_P01": "7d70fccf26a31bdd59200159d7a377ba47eadf272b394ca6219b2b15ee5115f7",
+      "sobel_x_P02": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_x_P03": "f50a01a59d539ad3ceb7b7f14ec92a1d16b59e894059f1849769ee69dff0a408",
+      "sobel_x_P04": "ba53818c2514b367d6fdca69d9935ef519990e689bd45f6fc60f4ea8ce8e7601",
+      "sobel_x_P05": "5781ac2ba7099aa2125afaa03afe48589ce0950ca7e9f85ae85aab318e5e67a1",
+      "sobel_x_S01": "7d70fccf26a31bdd59200159d7a377ba47eadf272b394ca6219b2b15ee5115f7",
+      "sobel_x_S02": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_x_S03": "6f6aafc24004b1699b0243766a4712cf43fd4256f3287c743b4b73ff389ea452",
+      "sobel_x_S04": "f50a01a59d539ad3ceb7b7f14ec92a1d16b59e894059f1849769ee69dff0a408",
+      "sobel_x_S05": "ba53818c2514b367d6fdca69d9935ef519990e689bd45f6fc60f4ea8ce8e7601",
+      "sobel_x_S06": "5781ac2ba7099aa2125afaa03afe48589ce0950ca7e9f85ae85aab318e5e67a1",
+      "sobel_x_S07": "02a9ad549b664477dd85ca9a8584d31d024c6dac493ea82db42a032870abd914",
+      "sobel_x_S08": "c2947a12eb52814dcc9a49459ea6ba9fcddccb71ab037a57edd31f3a6ba66c96",
+      "sobel_x_X01": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_x_X02": "7d70fccf26a31bdd59200159d7a377ba47eadf272b394ca6219b2b15ee5115f7",
+      "sobel_x_X03": "19cb36f606972d7ebc80290d8ef7de4d3e1e28fcbecdc1aa0b74655d4063eb7b",
+      "sobel_x_X04": "d0cf9655514574cd6e76392c184f5a7ec4ae9bebd9feb97f15a7786c81b99594",
+      "sobel_x_X05": "d0cf9655514574cd6e76392c184f5a7ec4ae9bebd9feb97f15a7786c81b99594",
+      "sobel_x_X06": "d0cf9655514574cd6e76392c184f5a7ec4ae9bebd9feb97f15a7786c81b99594",
+      "sobel_x_X07": "19cb36f606972d7ebc80290d8ef7de4d3e1e28fcbecdc1aa0b74655d4063eb7b",
+      "sobel_x_X08": "94c1fdffb8968fb72771be18d10a03f45825378b82e48f011aeba4355af67f5e",
+      "sobel_y_C01": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_y_C02": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_y_C03": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_y_C04": "c2cf4609626615e35b96ca142718444de3fe17f307df757a4e40ad6c1f7c6447",
+      "sobel_y_C05": "c2cf4609626615e35b96ca142718444de3fe17f307df757a4e40ad6c1f7c6447",
+      "sobel_y_C06": "fa31d3d9e31e34a1c8c019fec970b4b3aca7d1aa11b2ad48da8970760bae45dc",
+      "sobel_y_C07": "63b6abc5df12f7ec8f260a8011ece5cc50959736c382eec9322fc8e2167f91d2",
+      "sobel_y_C08": "45abaf9bd71946c2e1cfa755f2f26fb39059ef2b4383f4b2806ad34b387577d8",
+      "sobel_y_C09": "fecd186f6cc150d26091f3098d1b10c008848f9eebb417bce4b41d5b69185d43",
+      "sobel_y_C10": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_y_C11": "9ccb06e568989e1fd28d6f6191cd837c6ababd89fd4d05b3b270fb28fb56efa6",
+      "sobel_y_C12": "16abf8d42a361ce79f8dfa09d29777ca188a4d0d19899249d33b8d060597a0d4",
+      "sobel_y_C13": "b61b8857b786d3e832ad9708d0244b8f6887360a2e8a89802af0c0e449fcade2",
+      "sobel_y_C14": "dbe006a8dc2b79be97d8ccc8c59b9cd51770f2155b5447ff1d5cd749200602b0",
+      "sobel_y_C15": "576f6d222baee01d0cf78d9eac70f8b0006f14799572a753252d1b7fa6a9872e",
+      "sobel_y_C16": "19bbd6daeb7097b0713544a05373f9b8397322bf1a7fd62643b5ed2162c91c64",
+      "sobel_y_C17": "5fc6d0c0aeaa02108907b22aa1f331adaf2d2241ae86749c3dcf92c9f9150f7c",
+      "sobel_y_C18": "58a2d4df40d527f4e569b7ada87d54b29c8f1cb8d476da1892b2d19d0f75c037",
+      "sobel_y_C19": "ffae4e82c2b80aa1e2cc43b633aa593a7fe4d04ac997e8ffc511b9de7e8e2627",
+      "sobel_y_D01": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_y_D02": "4f5d0da2478c2eb8cda85a259f0936a2ff164c5bd62d00ad282d5cf099b60bba",
+      "sobel_y_D03": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_y_D04": "c2cf4609626615e35b96ca142718444de3fe17f307df757a4e40ad6c1f7c6447",
+      "sobel_y_D05": "997e3813435ba6cc42646a3c98a60bf80d1f173d047ebaed3e5e19111364cbe1",
+      "sobel_y_D06": "997e3813435ba6cc42646a3c98a60bf80d1f173d047ebaed3e5e19111364cbe1",
+      "sobel_y_D07": "1a8657645a3eacf44a3d15cf95c7f8df54978e70909f8b770f544719a33cad49",
+      "sobel_y_D08": "1a8657645a3eacf44a3d15cf95c7f8df54978e70909f8b770f544719a33cad49",
+      "sobel_y_D09": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_y_D10": "c2cf4609626615e35b96ca142718444de3fe17f307df757a4e40ad6c1f7c6447",
+      "sobel_y_M01": "997e3813435ba6cc42646a3c98a60bf80d1f173d047ebaed3e5e19111364cbe1",
+      "sobel_y_M02": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_y_M03": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_y_M04": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_y_M05": "16abf8d42a361ce79f8dfa09d29777ca188a4d0d19899249d33b8d060597a0d4",
+      "sobel_y_M06": "997e3813435ba6cc42646a3c98a60bf80d1f173d047ebaed3e5e19111364cbe1",
+      "sobel_y_M07": "997e3813435ba6cc42646a3c98a60bf80d1f173d047ebaed3e5e19111364cbe1",
+      "sobel_y_P01": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_y_P02": "c2cf4609626615e35b96ca142718444de3fe17f307df757a4e40ad6c1f7c6447",
+      "sobel_y_P03": "fa31d3d9e31e34a1c8c019fec970b4b3aca7d1aa11b2ad48da8970760bae45dc",
+      "sobel_y_P04": "63b6abc5df12f7ec8f260a8011ece5cc50959736c382eec9322fc8e2167f91d2",
+      "sobel_y_P05": "45abaf9bd71946c2e1cfa755f2f26fb39059ef2b4383f4b2806ad34b387577d8",
+      "sobel_y_S01": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_y_S02": "c2cf4609626615e35b96ca142718444de3fe17f307df757a4e40ad6c1f7c6447",
+      "sobel_y_S03": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_y_S04": "fa31d3d9e31e34a1c8c019fec970b4b3aca7d1aa11b2ad48da8970760bae45dc",
+      "sobel_y_S05": "63b6abc5df12f7ec8f260a8011ece5cc50959736c382eec9322fc8e2167f91d2",
+      "sobel_y_S06": "45abaf9bd71946c2e1cfa755f2f26fb39059ef2b4383f4b2806ad34b387577d8",
+      "sobel_y_S07": "8b5b2be4949d6b2e50d4103cd38b17053124ee32077a91d48bb0d77acb7e5e30",
+      "sobel_y_S08": "852865b49c4967ba3fdf5d6d1565cfa8fdcc2e9d96ad3dbe6a20e7108d22aeb9",
+      "sobel_y_X01": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_y_X02": "11336990f004acaac11acb6d119bb82b62cabd1711b9f057812d3efcb3c131c1",
+      "sobel_y_X03": "9ccb06e568989e1fd28d6f6191cd837c6ababd89fd4d05b3b270fb28fb56efa6",
+      "sobel_y_X04": "997e3813435ba6cc42646a3c98a60bf80d1f173d047ebaed3e5e19111364cbe1",
+      "sobel_y_X05": "997e3813435ba6cc42646a3c98a60bf80d1f173d047ebaed3e5e19111364cbe1",
+      "sobel_y_X06": "997e3813435ba6cc42646a3c98a60bf80d1f173d047ebaed3e5e19111364cbe1",
+      "sobel_y_X07": "9ccb06e568989e1fd28d6f6191cd837c6ababd89fd4d05b3b270fb28fb56efa6",
+      "sobel_y_X08": "ffae4e82c2b80aa1e2cc43b633aa593a7fe4d04ac997e8ffc511b9de7e8e2627"
+    },
+    "canonical_array_count": 513,
+    "installed_array_count": 156
+  },
+  "gui_not_invoked": true,
+  "installed": {
+    "binary_hashes": {
+      "/tmp/spmkit_a2_derivative_filters_installed_run1/build/derivative_filters_probe_installed_normal": "92406383630e9c41400691c9085a5df9fa585352a8fae74d471fae30c7960f98",
+      "/tmp/spmkit_a2_derivative_filters_installed_run1/build/derivative_filters_probe_installed_sanitized": "6f728d26a6bf2b8e09c20f40e42419465ac702fb7c1a77a27967f3bce5a8b76d"
+    },
+    "evidence_sha256": {
+      "run1_normal": "816e66beb014d8f703e131f606c2a18f7f5e3cbcdf2d7b7b79c58187130ed8cd",
+      "run1_sanitized": "816e66beb014d8f703e131f606c2a18f7f5e3cbcdf2d7b7b79c58187130ed8cd",
+      "run2_normal": "816e66beb014d8f703e131f606c2a18f7f5e3cbcdf2d7b7b79c58187130ed8cd",
+      "run2_sanitized": "816e66beb014d8f703e131f606c2a18f7f5e3cbcdf2d7b7b79c58187130ed8cd"
+    },
+    "exits_run1": {
+      "normal": "0",
+      "sanitized": "0"
+    },
+    "exits_run2": {
+      "normal": "0",
+      "sanitized": "0"
+    },
+    "instrumentation": {
+      "ASAN_SYMBOLS_NORMAL": 0,
+      "ASAN_SYMBOLS_SANITIZED": 12,
+      "UBSAN_SYMBOLS_NORMAL": 0,
+      "UBSAN_SYMBOLS_SANITIZED": 6
+    },
+    "module_regeneration_ok": null,
+    "sanitizer_findings": {
+      "normal": 0,
+      "sanitized": 0
+    },
+    "sanitizer_flags": {
+      "normal_has_sanitizer_flags": false,
+      "sanitized_has_sanitizer_flags": true
+    },
+    "source_hashes": {
+      "/home/kegouro/HIBRIS/Workshop \u2044 Proyectos/SPMKIT ALL/spmkit-core-first-audit/.reference/gwyddion-2.71/derivative-filters-parity/derivative_filters_behavior_probe.c": "68ff5d2defa07b363effa293fc04529d034a56447346a54b8307dbbf35f5db75",
+      "/home/kegouro/HIBRIS/Workshop \u2044 Proyectos/SPMKIT ALL/spmkit-core-first-audit/.reference/gwyddion-2.71/derivative-filters-parity/generate_source_included.py": "2f0828fdb8c58f06380dfa2edfeab696d42afc5e2ec8801681f54e13502caa49",
+      "libprocess/arithmetic.c": "78bcc0305c26188ec30ea6db820c04969d851deb96e25dcffebd438c5379dd92",
+      "libprocess/datafield.h": "1a181e7ddb6ef1824c7876fd4bc42489732298453d5e2c0db21b5ca68a761bf0",
+      "libprocess/filters-convdeconv.c": "d6a4bbdde9026791f47187080d99f402ecbc7d2c5c4ed2f209cc689339fe48f9",
+      "libprocess/filters.h": "3e2b8fe49e4f6a09d88068224e4b492d50b81d5c27d831e6bae0151591cdea8c",
+      "libprocess/gwyprocessenums.h": "eaadd9d55a163a482ab23b1cc51d535ff332090953bad1f9b1b5d3aa3903ad17"
+    },
+    "warnings_normal": 0,
+    "warnings_sanitized": 0
+  },
+  "installed_witness": {
+    "binary_hashes": {
+      "/tmp/spmkit_a2_derivative_filters_installed_run1/build/derivative_filters_probe_installed_normal": "92406383630e9c41400691c9085a5df9fa585352a8fae74d471fae30c7960f98",
+      "/tmp/spmkit_a2_derivative_filters_installed_run1/build/derivative_filters_probe_installed_sanitized": "6f728d26a6bf2b8e09c20f40e42419465ac702fb7c1a77a27967f3bce5a8b76d"
+    },
+    "classification_totals": {
+      "bitwise_arrays": 601,
+      "bitwise_elements": 17872,
+      "compared_arrays": 855,
+      "compared_elements": 20553,
+      "differing_arrays": 254,
+      "finite_rounding_differences": 1816,
+      "genuine_structural_mismatches": 0,
+      "nonfinite_differences": 0,
+      "sign_differences": 155,
+      "signed_zero_differences": 10,
+      "structurally_labelled_elements": 24,
+      "zero_to_nonzero_differences": 676
+    },
+    "library": "libgwyprocess2.so.0.51.1 (LTO build)",
+    "max_absolute_difference": 8.498207885068274e+183,
+    "profile": "INSTALLED_GWYDDION_2_71_LIBPROCESS_LTO_COMPATIBILITY_WITNESS",
+    "statement": "installed LTO arrays are NOT production expected arrays",
+    "structural_relations_exact": true
+  },
+  "installed_witness_profile": "INSTALLED_GWYDDION_2_71_LIBPROCESS_LTO_COMPATIBILITY_WITNESS",
+  "inventory": {
+    "common_cases": 19,
+    "cross_operation_cases": 8,
+    "direction_cases": 10,
+    "elements_per_run": 1374,
+    "logical_cases": 57,
+    "magnitude_cases": 7,
+    "prewitt_cases": 5,
+    "sobel_cases": 8
+  },
+  "kernels": {
+    "prewitt_horizontal": [
+      {
+        "bits": "0x3fd5555555555555",
+        "hex": "0x1.5555555555555p-2",
+        "value": 0.3333333333333333
+      },
+      {
+        "bits": "0x0000000000000000",
+        "hex": "0x0.0p+0",
+        "value": 0.0
+      },
+      {
+        "bits": "0xbfd5555555555555",
+        "hex": "-0x1.5555555555555p-2",
+        "value": -0.3333333333333333
+      },
+      {
+        "bits": "0x3fd5555555555555",
+        "hex": "0x1.5555555555555p-2",
+        "value": 0.3333333333333333
+      },
+      {
+        "bits": "0x0000000000000000",
+        "hex": "0x0.0p+0",
+        "value": 0.0
+      },
+      {
+        "bits": "0xbfd5555555555555",
+        "hex": "-0x1.5555555555555p-2",
+        "value": -0.3333333333333333
+      },
+      {
+        "bits": "0x3fd5555555555555",
+        "hex": "0x1.5555555555555p-2",
+        "value": 0.3333333333333333
+      },
+      {
+        "bits": "0x0000000000000000",
+        "hex": "0x0.0p+0",
+        "value": 0.0
+      },
+      {
+        "bits": "0xbfd5555555555555",
+        "hex": "-0x1.5555555555555p-2",
+        "value": -0.3333333333333333
+      }
+    ],
+    "prewitt_vertical": [
+      {
+        "bits": "0x3fd5555555555555",
+        "hex": "0x1.5555555555555p-2",
+        "value": 0.3333333333333333
+      },
+      {
+        "bits": "0x3fd5555555555555",
+        "hex": "0x1.5555555555555p-2",
+        "value": 0.3333333333333333
+      },
+      {
+        "bits": "0x3fd5555555555555",
+        "hex": "0x1.5555555555555p-2",
+        "value": 0.3333333333333333
+      },
+      {
+        "bits": "0x0000000000000000",
+        "hex": "0x0.0p+0",
+        "value": 0.0
+      },
+      {
+        "bits": "0x0000000000000000",
+        "hex": "0x0.0p+0",
+        "value": 0.0
+      },
+      {
+        "bits": "0x0000000000000000",
+        "hex": "0x0.0p+0",
+        "value": 0.0
+      },
+      {
+        "bits": "0xbfd5555555555555",
+        "hex": "-0x1.5555555555555p-2",
+        "value": -0.3333333333333333
+      },
+      {
+        "bits": "0xbfd5555555555555",
+        "hex": "-0x1.5555555555555p-2",
+        "value": -0.3333333333333333
+      },
+      {
+        "bits": "0xbfd5555555555555",
+        "hex": "-0x1.5555555555555p-2",
+        "value": -0.3333333333333333
+      }
+    ],
+    "sobel_horizontal": [
+      {
+        "bits": "0x3fd0000000000000",
+        "hex": "0x1.0000000000000p-2",
+        "value": 0.25
+      },
+      {
+        "bits": "0x0000000000000000",
+        "hex": "0x0.0p+0",
+        "value": 0.0
+      },
+      {
+        "bits": "0xbfd0000000000000",
+        "hex": "-0x1.0000000000000p-2",
+        "value": -0.25
+      },
+      {
+        "bits": "0x3fe0000000000000",
+        "hex": "0x1.0000000000000p-1",
+        "value": 0.5
+      },
+      {
+        "bits": "0x0000000000000000",
+        "hex": "0x0.0p+0",
+        "value": 0.0
+      },
+      {
+        "bits": "0xbfe0000000000000",
+        "hex": "-0x1.0000000000000p-1",
+        "value": -0.5
+      },
+      {
+        "bits": "0x3fd0000000000000",
+        "hex": "0x1.0000000000000p-2",
+        "value": 0.25
+      },
+      {
+        "bits": "0x0000000000000000",
+        "hex": "0x0.0p+0",
+        "value": 0.0
+      },
+      {
+        "bits": "0xbfd0000000000000",
+        "hex": "-0x1.0000000000000p-2",
+        "value": -0.25
+      }
+    ],
+    "sobel_vertical": [
+      {
+        "bits": "0x3fd0000000000000",
+        "hex": "0x1.0000000000000p-2",
+        "value": 0.25
+      },
+      {
+        "bits": "0x3fe0000000000000",
+        "hex": "0x1.0000000000000p-1",
+        "value": 0.5
+      },
+      {
+        "bits": "0x3fd0000000000000",
+        "hex": "0x1.0000000000000p-2",
+        "value": 0.25
+      },
+      {
+        "bits": "0x0000000000000000",
+        "hex": "0x0.0p+0",
+        "value": 0.0
+      },
+      {
+        "bits": "0x0000000000000000",
+        "hex": "0x0.0p+0",
+        "value": 0.0
+      },
+      {
+        "bits": "0x0000000000000000",
+        "hex": "0x0.0p+0",
+        "value": 0.0
+      },
+      {
+        "bits": "0xbfd0000000000000",
+        "hex": "-0x1.0000000000000p-2",
+        "value": -0.25
+      },
+      {
+        "bits": "0xbfe0000000000000",
+        "hex": "-0x1.0000000000000p-1",
+        "value": -0.5
+      },
+      {
+        "bits": "0xbfd0000000000000",
+        "hex": "-0x1.0000000000000p-2",
+        "value": -0.25
+      }
+    ]
+  },
+  "mask_and_selection_excluded": true,
+  "non_claims": [
+    "no Gwydion process-menu or GUI black-box execution",
+    "no presentation normalization target",
+    "no universal installed-Gwydion-build bitwise equivalence",
+    "installed LTO outputs differ from frozen source arithmetic (summation order)",
+    "installed witness arrays are not canonical production expectations",
+    "no cross-libc bitwise magnitude guarantee",
+    "no cross-architecture bitwise magnitude guarantee",
+    "direction is a native SPMKit analytical composite",
+    "direction is not direct Gwydion parity",
+    "no physical-coordinate derivative",
+    "no physical slope or angle-of-surface claim",
+    "no mask support frozen",
+    "no ROI/selection support frozen",
+    "no NaN/Inf compatibility claim",
+    "no physical validation",
+    "no claim that derivative filtering improves scientific truth",
+    "no edge-detection, segmentation or uncertainty-preservation claim"
+  ],
+  "orientation": {
+    "HORIZONTAL": 0,
+    "VERTICAL": 1
+  },
+  "platform_fingerprint": {
+    "architecture": "x86_64",
+    "hypot_symbol": "hypot@GLIBC_2.35",
+    "libc": "glibc",
+    "magnitude_orchestration": "source-included gwy_data_field_hypot_of_fields -> platform C hypot"
+  },
+  "relations": {
+    "constant_relation": "all four derivatives zero on constant fields verified on X01",
+    "magnitude_nonnegative": "verified on X04",
+    "magnitude_swap_symmetry": "hypot(a,b) == hypot(b,a) verified on X05",
+    "negation_relation": "filter(-A) == -filter(A) verified on X03",
+    "presentation_witness": "normalize(sobel_x) differs from raw sobel_x with range [0,1] (X07)",
+    "transpose_relation": "sobel_x(A) == sobel_y(A^T)^T verified bitwise on X02"
+  },
+  "schema_version": 1,
+  "source": {
+    "binary_hashes": {
+      "/tmp/spmkit_a2_derivative_filters_source_run1/build/derivative_filters_probe_canonical_normal": "d305c1d5cb1de979ea840d57a023137197b390c47b12e50ad015a21432126fcb",
+      "/tmp/spmkit_a2_derivative_filters_source_run1/build/derivative_filters_probe_canonical_sanitized": "9b5a384d8882d91cd3d1c2e6133df42f5111ba07166fb6ec49d25ca7bc4b4e5e"
+    },
+    "evidence_sha256": {
+      "run1_normal": "48ae9d0049e1b6062d5be6f166db4b311a6302deca05ae48a307cb4274312b89",
+      "run1_sanitized": "48ae9d0049e1b6062d5be6f166db4b311a6302deca05ae48a307cb4274312b89",
+      "run2_normal": "48ae9d0049e1b6062d5be6f166db4b311a6302deca05ae48a307cb4274312b89",
+      "run2_sanitized": "48ae9d0049e1b6062d5be6f166db4b311a6302deca05ae48a307cb4274312b89"
+    },
+    "exits_run1": {
+      "normal": "0",
+      "sanitized": "0"
+    },
+    "exits_run2": {
+      "normal": "0",
+      "sanitized": "0"
+    },
+    "instrumentation": {
+      "ASAN_SYMBOLS_NORMAL": 0,
+      "ASAN_SYMBOLS_SANITIZED": 14,
+      "UBSAN_SYMBOLS_NORMAL": 0,
+      "UBSAN_SYMBOLS_SANITIZED": 7
+    },
+    "module_regeneration_ok": true,
+    "sanitizer_findings": {
+      "normal": 0,
+      "sanitized": 0
+    },
+    "sanitizer_flags": {
+      "normal_has_sanitizer_flags": false,
+      "sanitized_has_sanitizer_flags": true
+    },
+    "source_hashes": {
+      "/home/kegouro/HIBRIS/Workshop \u2044 Proyectos/SPMKIT ALL/spmkit-core-first-audit/.reference/gwyddion-2.71/derivative-filters-parity/derivative_filters_behavior_probe.c": "68ff5d2defa07b363effa293fc04529d034a56447346a54b8307dbbf35f5db75",
+      "/home/kegouro/HIBRIS/Workshop \u2044 Proyectos/SPMKIT ALL/spmkit-core-first-audit/.reference/gwyddion-2.71/derivative-filters-parity/generate_source_included.py": "2f0828fdb8c58f06380dfa2edfeab696d42afc5e2ec8801681f54e13502caa49",
+      "/home/kegouro/HIBRIS/Workshop \u2044 Proyectos/SPMKIT ALL/spmkit-core-first-audit/.reference/gwyddion-2.71/derivative-filters-parity/spmkit_source_included_filters.c": "a8ececa26cce3704b2a9ddb2082c55c08950635d87f26e4ae46808a2c7dcdbee",
+      "/home/kegouro/HIBRIS/Workshop \u2044 Proyectos/SPMKIT ALL/spmkit-core-first-audit/.reference/gwyddion-2.71/derivative-filters-parity/spmkit_source_included_filters.h": "58ea79a6bc0d2e52b34d4aa9958eb05efa12603381d38d2cd3a4e3f945552014",
+      "libprocess/arithmetic.c": "78bcc0305c26188ec30ea6db820c04969d851deb96e25dcffebd438c5379dd92",
+      "libprocess/datafield.h": "1a181e7ddb6ef1824c7876fd4bc42489732298453d5e2c0db21b5ca68a761bf0",
+      "libprocess/filters-convdeconv.c": "d6a4bbdde9026791f47187080d99f402ecbc7d2c5c4ed2f209cc689339fe48f9",
+      "libprocess/filters.h": "3e2b8fe49e4f6a09d88068224e4b492d50b81d5c27d831e6bae0151591cdea8c",
+      "libprocess/gwyprocessenums.h": "eaadd9d55a163a482ab23b1cc51d535ff332090953bad1f9b1b5d3aa3903ad17"
+    },
+    "warnings_normal": 0,
+    "warnings_sanitized": 0
+  },
+  "source_oracle_metrics": {
+    "arrays_bitwise": 228,
+    "arrays_compared": 228,
+    "cases": 57,
+    "max_absolute_difference": 0.0,
+    "max_output_relative_ulp": 0.0
+  },
+  "source_version": "2.71"
+}
