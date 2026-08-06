@@ -953,6 +953,96 @@ microrheology; no active oscillatory rheology; no SMFS/unfolding support;
 no certified viscosity or modulus; no experimental cell/material truth;
 synthetic map recovery is not experimental map validation.
 
+## Single-molecule force spectroscopy (FS-F4)
+
+The FS-F4 batch adds the SMFS stack on the FS-F1/FS-F2/FS-F3 foundations:
+molecular extension with explicit zero policies, polymer fits (WLC, eWLC,
+FJC, eFJC), model comparison, unfolding-event detection and quantification,
+contour-length increments from independent fits, loading rates, Bell-Evans
+and Dudko-Hummer-Szabo kinetics, force-clamp survival with right censoring,
+population aggregation and batch orchestration.  16 public capabilities
+with typed errors, immutable results and explicit provenance.
+
+- molecular extension contract: extension = retract separation minus an
+  explicit tether zero; supported reference policies: "offset" (physical
+  offset, m), "index" (reference sample), "pre_event" (caller-supplied
+  branch start), "estimator" (the retract zero-force crossing with its own
+  diagnostics); the zero is never inferred silently from the contact;
+- frozen polymer equations: WLC F = (k_BT/Lp)[1/(4(1-x/Lc)^2) - 1/4 + x/Lc]
+  (never evaluated at or beyond the singularity); eWLC (implicit,
+  Odijk-style, solved per point by brentq with a force-scale xtol; S -> inf
+  reduces to the WLC); FJC x/Lc = coth(y) - 1/y with y = F b/k_BT (stable
+  Langevin); eFJC x/Lc = L(y) + F/Sk (Sk -> inf reduces to the FJC); the
+  WLC/FJC fits use separable closed-form structures (1-D searches over the
+  nonlinear parameter) to avoid the flat (Lc, Lp) and (Lc, b) valleys;
+- event detection is a documented heuristic (SOFTWARE_VERIFIED): sustained
+  force drops on the pull-ordered retract branch with public thresholds;
+  rejected candidates retained with reasons; the final detachment is
+  distinguished from internal unfolding (post-drop baseline return);
+  sub-threshold drops are not detected (typed NO_EVENTS);
+- contour-length increments derive from independent pre/post WLC fits on
+  the ABSOLUTE molecular extension (a branch-relative fit would absorb the
+  event offset into a biased contour length);
+- loading rates: the measured local slope of force vs time before each
+  event (least squares + robust median-of-pairs); the theoretical rate
+  (effective stiffness x pulling velocity) is reported separately, never
+  substituted;
+- Bell-Evans: the most-probable-force regression
+  F* = (k_B T/x_beta) ln(r x_beta/(k0 k_B T)) is the primary estimator
+  (the BE likelihood is degenerate toward x_beta -> 0, documented); the
+  bounded likelihood runs as a secondary with an identifiability
+  diagnosis; the survival convention is
+  S(F) = exp(-k0 k_B T/(r x_beta)(exp(F x_beta/k_B T) - 1)) (the
+  coefficient is dimensionless; an inverted convention was found and fixed
+  in the production, the oracle and the generator);
+- Dudko-Hummer-Szabo: frozen nu in {1/2, 2/3} (cusp / linear-cubic), the
+  log-space rate evaluation with a consistent exp cap (a floating-point
+  cancelation artifact in the near-boundary profile was found and fixed);
+  the fitted energy landscape is not claimed to be physically unique;
+- force clamp: Kaplan-Meier survival with right censoring (events before
+  censors at ties; events leave the risk set); median lifetime typed
+  UNDEFINED_MEDIAN when unreachable; the exponential rate is the
+  censoring-aware MLE n_events/sum(times);
+- population and batch: aggregation without molecular-identity claims;
+  per-curve results and failures retained with reasons; deterministic
+  ordering and replay.
+
+Maturity per capability (reconciled for this batch):
+
+- NUMERICALLY_VERIFIED: the four polymer fits and forward models (with
+  parameter-specific evidence: the eWLC stretch modulus and the eFJC
+  stretch scale are weakly identifiable from a single branch; the response
+  reconstruction is verified and the parameter recovery bounds are
+  documented), contour-length increments (delta-Lc within 10%; the delta is
+  largely zero-translation invariant while the absolute contours carry the
+  zero-policy error), event quantification, loading-rate arithmetic,
+  Bell-Evans (F* regression; the likelihood degeneracy documented), DHS
+  (response level with the domain-censoring identity verified; the
+  landscape non-uniqueness documented), force-clamp survival arithmetic
+  (Kaplan-Meier and the censored exponential-rate MLE verified against
+  hand-derived cases);
+- SOFTWARE_VERIFIED: compute_molecular_extension (the estimator reference
+  policy is a heuristic inside the same callable), the SMFS fit-window
+  policy, polymer-model recommendation, unfolding-event detection,
+  population grouping, batch orchestration;
+- external: no exact external polymer/kinetic profile exists; pyvisco was
+  the FS-F3 witness and does not cover the SMFS models; no CROSS_VALIDATED
+  and no PHYSICALLY_VALIDATED capability;
+- legacy chain.py (the GUI-era WLC/FJC module) is untouched and
+  unregistered; the FS-F4 models are the registered, oracle-validated
+  implementations of the frozen conventions (Marko-Siggia default, explicit
+  eWLC/eFJC stretch conventions).
+
+Non-claims: no automatic molecular identity; no universal polymer model;
+no certified contour length; no physical validation; no guaranteed single
+tether; no guaranteed unfolding interpretation; no universal event
+detector; no unique DHS energy landscape; no universal Bell-Evans validity;
+no guaranteed independence of events; no complete kinetic uncertainty; no
+hidden correction for linker or handle compliance; no experimental
+protein-state truth; no steered-MD equivalence; no force-clamp validation
+on a physical instrument; synthetic population recovery is not biological
+validation.
+
 ## Test-count policy
 
 The collection total is measured with:
