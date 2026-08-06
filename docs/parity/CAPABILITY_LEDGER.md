@@ -3,7 +3,7 @@
 Stable scientific capabilities registered by the Operation Registry v1.
 
 - schema_version: 1
-- operations: 57
+- operations: 73
 
 Source of truth: `src/spmkit/core/capabilities.json` (generated view; do not edit by hand).
 
@@ -870,6 +870,574 @@ Source of truth: `src/spmkit/core/capabilities.json` (generated view; do not edi
 
 - known deviations:
   - bitwise external identity not claimed; convention validated numerically on the frozen nanite profile
+
+## FORCE.SMFS.BATCH
+
+- operation_id: `force.smfs.batch`
+- public_name: `analyze_smfs_batch`
+- public_import: `spmkit.core.analysis:analyze_smfs_batch`
+- family: FORCE
+- maturity: SOFTWARE_VERIFIED
+- status: stable
+- reference: SPMKit native (Deterministic batch orchestration over per-curve analyses: e)
+- evidence profile: `NATIVE_SPMKIT_DESIGNED_HEURISTIC`
+
+- contract: Deterministic batch orchestration over per-curve analyses: every result retained, failed curves retained with reasons, unified event table with curve origins, population aggregation, stable ordering and replay; nothing silently dropped; the orchestration policy is SOFTWARE_VERIFIED.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: not_applicable
+
+- parameters:
+  - `analyses` (positional, required) — Per-curve analyses.
+  - `group_by` (keyword_only, 'loading_rate_decade' values=['none', 'loading_rate_decade']) — Grouping policy.
+  - `n_groups` (keyword_only, 4) — Number of groups.
+
+- evidence:
+  - `tests/validation/fixtures/force_smfs/smfs_reference.json`
+  - `tests/validation/fixtures/force_smfs/smfs_reference.npz`
+  - `tests/validation/test_force_smfs_validation.py`
+  - `tests/core/test_force_smfs.py`
+
+## FORCE.SMFS.CONTOUR_INCREMENT
+
+- operation_id: `force.smfs.contour_increment`
+- public_name: `infer_contour_length_increments`
+- public_import: `spmkit.core.analysis:infer_contour_length_increments`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Delta contour length per event from independent pre/post WLC)
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Delta contour length per event from independent pre/post WLC fits on the ABSOLUTE molecular extension (a section-relative fit would absorb the event offset into a biased contour); event-index sensitivity characterized by explicit shifts; within 10% on the doubling-contour phantoms.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: m
+
+- parameters:
+  - `extension` (positional, required) — Extension result.
+  - `events` (positional, required) — Quantified events.
+  - `model` (keyword_only, 'worm_like_chain') — Polymer model.
+  - `temperature` (keyword_only, 298.0) — Temperature (K).
+  - `pre_margin` (keyword_only, 2) — Pre-event margin (samples).
+  - `post_margin` (keyword_only, 2) — Post-event margin (samples).
+  - `min_points` (keyword_only, 8) — Minimum window points.
+  - `sensitivity_shifts` (keyword_only, [0]) — Event-index shifts.
+
+- evidence:
+  - `tests/validation/fixtures/force_smfs/smfs_reference.json`
+  - `tests/validation/fixtures/force_smfs/smfs_reference.npz`
+  - `tests/validation/test_force_smfs_validation.py`
+  - `tests/core/test_force_smfs.py`
+
+## FORCE.SMFS.EVENTS.DETECT
+
+- operation_id: `force.smfs.events.detect`
+- public_name: `detect_unfolding_events`
+- public_import: `spmkit.core.analysis:detect_unfolding_events`
+- family: FORCE
+- maturity: SOFTWARE_VERIFIED
+- status: stable
+- reference: SPMKit native (Unfolding-event detection on the pull-ordered retract segment)
+- evidence profile: `NATIVE_SPMKIT_DESIGNED_HEURISTIC`
+
+- contract: Unfolding-event detection on the pull-ordered retract section: sustained force drops with public thresholds (drop magnitude, persistence, minimum separation, boundary margin); rejected candidates retained with reasons; the final detachment is distinguished from internal unfolding; sub-threshold drops raise NO_EVENTS typed.  The detector is a documented heuristic (SOFTWARE_VERIFIED) evaluated with true/false positives on deterministic phantoms.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: N
+
+- parameters:
+  - `extension` (positional, required) — Extension result.
+  - `min_force_drop` (keyword_only, None) — Minimum drop (N).
+  - `min_persistence` (keyword_only, 3) — Sustained-drop samples.
+  - `min_event_separation` (keyword_only, 3) — Minimum separation (samples).
+  - `noise_sigma` (keyword_only, None) — Noise scale (N).
+  - `boundary_margin` (keyword_only, 2) — Boundary margin (samples).
+
+- evidence:
+  - `tests/validation/fixtures/force_smfs/smfs_reference.json`
+  - `tests/validation/fixtures/force_smfs/smfs_reference.npz`
+  - `tests/validation/test_force_smfs_validation.py`
+  - `tests/core/test_force_smfs.py`
+
+## FORCE.SMFS.EVENTS.QUANTIFY
+
+- operation_id: `force.smfs.events.quantify`
+- public_name: `quantify_unfolding_events`
+- public_import: `spmkit.core.analysis:quantify_unfolding_events`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Assign explicit pre/post windows and local loading rates to )
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Assign explicit pre/post windows and local loading rates to every selected event; the pre window spans the polymer section between the previous event (or the tether zero) and the event; the post window spans the section to the next event (or the section end).
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: N / m
+
+- parameters:
+  - `extension` (positional, required) — Extension result.
+  - `events` (positional, required) — Detected events.
+  - `pre_margin` (keyword_only, 2) — Pre-event margin (samples).
+  - `post_margin` (keyword_only, 2) — Post-event margin (samples).
+  - `min_points` (keyword_only, 8) — Minimum window points.
+
+- evidence:
+  - `tests/validation/fixtures/force_smfs/smfs_reference.json`
+  - `tests/validation/fixtures/force_smfs/smfs_reference.npz`
+  - `tests/validation/test_force_smfs_validation.py`
+  - `tests/core/test_force_smfs.py`
+
+## FORCE.SMFS.EXTENSION.COMPUTE
+
+- operation_id: `force.smfs.extension.compute`
+- public_name: `compute_molecular_extension`
+- public_import: `spmkit.core.analysis:compute_molecular_extension`
+- family: FORCE
+- maturity: SOFTWARE_VERIFIED
+- status: stable
+- reference: SPMKit native (Molecular extension of the retract segment with an explicit t)
+- evidence profile: `NATIVE_SPMKIT_DESIGNED_HEURISTIC`
+
+- contract: Molecular extension of the retract section with an explicit tether-zero policy: offset (physical m), index, pre_event (caller section start), or the estimator (retract zero-force crossing with its own diagnostics); the zero is never inferred silently from the contact; UNRESOLVED_TETHER_ZERO and INVALID_REFERENCE_POLICY typed; the estimator policy is a documented heuristic making the complete operation SOFTWARE_VERIFIED; the JPK/NID readers do not populate segment time (the SMFS retract section requires an explicit time axis where used).
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: m
+
+- parameters:
+  - `prepared` (positional, required) — FS-F1 prepared curve.
+  - `reference` (keyword_only, 'index' values=['offset', 'index', 'pre_event', 'estimator']) — Tether-zero reference policy.
+  - `reference_value` (keyword_only, None) — Offset (m) or index.
+  - `segment` (keyword_only, 'retract') — Segment (retract only).
+  - `estimator_noise_sigma` (keyword_only, None) — Estimator noise scale.
+
+- evidence:
+  - `tests/validation/fixtures/force_smfs/smfs_reference.json`
+  - `tests/validation/fixtures/force_smfs/smfs_reference.npz`
+  - `tests/validation/test_force_smfs_validation.py`
+  - `tests/core/test_force_smfs.py`
+
+## FORCE.SMFS.FORCE_CLAMP.SURVIVAL
+
+- operation_id: `force.smfs.force_clamp.survival`
+- public_name: `estimate_force_clamp_survival`
+- public_import: `spmkit.core.analysis:estimate_force_clamp_survival`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Kaplan-Meier survival with right censoring over explicit lif)
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Kaplan-Meier survival with right censoring over explicit lifetimes and flags: events before censors at ties, events leave the risk set, censored observations never discarded; the median lifetime is typed UNDEFINED_MEDIAN when unreachable; the exponential rate is the censoring-aware MLE n_events/sum(times); matches the independent oracle exactly.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: s
+
+- parameters:
+  - `lifetimes` (positional, required) — Lifetimes (s).
+  - `censored` (positional, required) — Censoring flags (0 event, 1 censored).
+  - `force_level` (keyword_only, required) — Clamp force level (N).
+  - `temperature` (keyword_only, 298.0) — Temperature (K).
+  - `fit_exponential_rate` (keyword_only, True) — Fit the MLE rate.
+
+- evidence:
+  - `tests/validation/fixtures/force_smfs/smfs_reference.json`
+  - `tests/validation/fixtures/force_smfs/smfs_reference.npz`
+  - `tests/validation/test_force_smfs_validation.py`
+  - `tests/core/test_force_smfs.py`
+
+## FORCE.SMFS.KINETICS.BELL_EVANS
+
+- operation_id: `force.smfs.kinetics.bell_evans`
+- public_name: `fit_bell_evans`
+- public_import: `spmkit.core.analysis:fit_bell_evans`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Bell-Evans fit over (loading rate, rupture force) series: th)
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Bell-Evans fit over (loading rate, rupture force) series: the primary estimator is the frozen most-probable-force regression F* = (k_B T/x_beta) ln(r x_beta/(k0 k_B T)) with the survival convention S(F) = exp(-k0 k_B T/(r x_beta)(exp(F x_beta/k_B T) - 1)); a bounded likelihood runs as a secondary with an identifiability diagnosis (the BE likelihood is degenerate toward x_beta -> 0, documented); narrow-rate ranges carry an IDENTIFIABILITY_LIMITED warning; x_beta recovered within 10% on the phantoms.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: m / 1/s
+
+- parameters:
+  - `loading_rates` (positional, required) — Loading rates (N/s).
+  - `rupture_forces` (positional, required) — Rupture forces (N).
+  - `temperature` (keyword_only, 298.0) — Temperature (K).
+  - `k0_initial` (keyword_only, 1.0) — Zero-force rate start (1/s).
+  - `x_beta_initial` (keyword_only, 1e-09) — Transition distance start (m).
+
+- evidence:
+  - `tests/validation/fixtures/force_smfs/smfs_reference.json`
+  - `tests/validation/fixtures/force_smfs/smfs_reference.npz`
+  - `tests/validation/test_force_smfs_validation.py`
+  - `tests/core/test_force_smfs.py`
+
+## FORCE.SMFS.KINETICS.DHS
+
+- operation_id: `force.smfs.kinetics.dhs`
+- public_name: `fit_dudko_hummer_szabo`
+- public_import: `spmkit.core.analysis:fit_dudko_hummer_szabo`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Dudko-Hummer-Szabo likelihood fit (k0, x_beta, dG) with the )
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Dudko-Hummer-Szabo likelihood fit (k0, x_beta, dG) with the frozen shape convention nu in {1/2, 2/3}, log-space evaluation with a consistent rate cap, the domain 1 - nu F x_beta/dG > 0 enforced; the Bell limit nu -> 0 recovers the BE rate; the fitted energy landscape is not claimed to be physically unique; parameters recovered within the documented wide bounds with the response reconstruction verified.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: m / 1/s / J
+
+- parameters:
+  - `loading_rates` (positional, required) — Loading rates (N/s).
+  - `rupture_forces` (positional, required) — Rupture forces (N).
+  - `nu` (keyword_only, 0.6666666666666666) — Potential shape (1/2 cusp, 2/3 linear-cubic).
+  - `temperature` (keyword_only, 298.0) — Temperature (K).
+  - `k0_initial` (keyword_only, 1.0) — Zero-force rate start (1/s).
+  - `x_beta_initial` (keyword_only, 1e-09) — Transition distance start (m).
+  - `dg_initial` (keyword_only, 1e-19) — Barrier height start (J).
+
+- evidence:
+  - `tests/validation/fixtures/force_smfs/smfs_reference.json`
+  - `tests/validation/fixtures/force_smfs/smfs_reference.npz`
+  - `tests/validation/test_force_smfs_validation.py`
+  - `tests/core/test_force_smfs.py`
+
+## FORCE.SMFS.LOADING_RATE
+
+- operation_id: `force.smfs.loading_rate`
+- public_name: `compute_event_loading_rates`
+- public_import: `spmkit.core.analysis:compute_event_loading_rates`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Local loading rate per event: the least-squares slope of for)
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Local loading rate per event: the least-squares slope of force vs time over the pre-event window plus the robust median-of-pairs slope (N/s); the theoretical rate (effective stiffness x pulling velocity) is reported separately when both are supplied, never substituted; requires an explicit time axis.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: N/s
+
+- parameters:
+  - `extension` (positional, required) — Extension result.
+  - `events` (positional, required) — Quantified events.
+  - `window_samples` (keyword_only, 10) — Pre-event window (samples).
+  - `min_samples` (keyword_only, 3) — Minimum samples.
+  - `pulling_velocity` (keyword_only, None) — Pulling velocity (m/s).
+  - `effective_stiffness` (keyword_only, None) — Stiffness (N/m).
+
+- evidence:
+  - `tests/validation/fixtures/force_smfs/smfs_reference.json`
+  - `tests/validation/fixtures/force_smfs/smfs_reference.npz`
+  - `tests/validation/test_force_smfs_validation.py`
+  - `tests/core/test_force_smfs.py`
+
+## FORCE.SMFS.MODEL.COMPARE
+
+- operation_id: `force.smfs.model.compare`
+- public_name: `compare_polymer_models`
+- public_import: `spmkit.core.analysis:compare_polymer_models`
+- family: FORCE
+- maturity: SOFTWARE_VERIFIED
+- status: stable
+- reference: SPMKit native (AICc comparison of the polymer models over the identical obs)
+- evidence profile: `NATIVE_SPMKIT_DESIGNED_HEURISTIC`
+
+- contract: AICc comparison of the polymer models over the identical observation set with relative weights only; Delta AICc < 4 ambiguity; failed models retained as warnings; no molecular-truth claim; the recommendation policy is SOFTWARE_VERIFIED.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: not_applicable
+
+- parameters:
+  - `extension` (positional, required) — Molecular extension (m).
+  - `force` (positional, required) — Retract force (N).
+  - `models` (keyword_only, ['worm_like_chain', 'extensible_worm_like_chain', 'freely_jointed_chain', 'extensible_freely_jointed_chain']) — Candidate models.
+  - `temperature` (keyword_only, 298.0) — Temperature (K).
+
+- evidence:
+  - `tests/validation/fixtures/force_smfs/smfs_reference.json`
+  - `tests/validation/fixtures/force_smfs/smfs_reference.npz`
+  - `tests/validation/test_force_smfs_validation.py`
+  - `tests/core/test_force_smfs.py`
+
+## FORCE.SMFS.MODEL.EXTENSIBLE_FJC
+
+- operation_id: `force.smfs.model.extensible_fjc`
+- public_name: `fit_extensible_freely_jointed_chain`
+- public_import: `spmkit.core.analysis:fit_extensible_freely_jointed_chain`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Extensible FJC fit (Lc, b, Sk) in the extension space x/Lc =)
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Extensible FJC fit (Lc, b, Sk) in the extension space x/Lc = L(y) + F/Sk with Sk the segment stretch force (N); Sk -> inf reduces to the FJC; Lc/b within 2%/5% on clean phantoms; the stretch scale is weakly identifiable from a single section (documented).
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: m
+
+- parameters:
+  - `extension` (positional, required) — Molecular extension (m).
+  - `force` (positional, required) — Retract force (N).
+  - `temperature` (keyword_only, 298.0) — Temperature (K).
+  - `Lc_initial` (keyword_only, None) — Contour start (m).
+  - `b_initial` (keyword_only, None) — Kuhn length start (m).
+  - `Sk_initial` (keyword_only, None) — Stretch force start (N).
+
+- evidence:
+  - `tests/validation/fixtures/force_smfs/smfs_reference.json`
+  - `tests/validation/fixtures/force_smfs/smfs_reference.npz`
+  - `tests/validation/test_force_smfs_validation.py`
+  - `tests/core/test_force_smfs.py`
+
+## FORCE.SMFS.MODEL.EXTENSIBLE_WLC
+
+- operation_id: `force.smfs.model.extensible_wlc`
+- public_name: `fit_extensible_worm_like_chain`
+- public_import: `spmkit.core.analysis:fit_extensible_worm_like_chain`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Implicit extensible WLC fit (Lc, Lp, S) with the Odijk-style)
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Implicit extensible WLC fit (Lc, Lp, S) with the Odijk-style convention F = (k_BT/Lp)[1/(4(1-x/Lc+F/S)^2) - 1/4 + x/Lc - F/S], solved per point by brentq with a force-scale xtol; S -> inf reduces to the WLC; Lc within 5% and Lp within 20% on clean phantoms; the stretch modulus is weakly identifiable from a single section (documented).
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: m
+
+- parameters:
+  - `extension` (positional, required) — Molecular extension (m).
+  - `force` (positional, required) — Retract force (N).
+  - `temperature` (keyword_only, 298.0) — Temperature (K).
+  - `Lc_initial` (keyword_only, None) — Contour start (m).
+  - `Lp_initial` (keyword_only, None) — Persistence start (m).
+  - `S_initial` (keyword_only, None) — Stretch modulus start (N).
+
+- evidence:
+  - `tests/validation/fixtures/force_smfs/smfs_reference.json`
+  - `tests/validation/fixtures/force_smfs/smfs_reference.npz`
+  - `tests/validation/test_force_smfs_validation.py`
+  - `tests/core/test_force_smfs.py`
+
+## FORCE.SMFS.MODEL.FJC
+
+- operation_id: `force.smfs.model.fjc`
+- public_name: `fit_freely_jointed_chain`
+- public_import: `spmkit.core.analysis:fit_freely_jointed_chain`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (FJC fit (Lc, b) in the extension space x/Lc = coth(y) - 1/y )
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: FJC fit (Lc, b) in the extension space x/Lc = coth(y) - 1/y with y = F b/k_BT (stable Langevin), separable closed-form Lc per candidate b; Lc/b within 2%/5% on clean phantoms; the persistence length is reported as Lp = b/2.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: m
+
+- parameters:
+  - `extension` (positional, required) — Molecular extension (m).
+  - `force` (positional, required) — Retract force (N).
+  - `temperature` (keyword_only, 298.0) — Temperature (K).
+  - `Lc_initial` (keyword_only, None) — Contour start (m).
+  - `b_initial` (keyword_only, None) — Kuhn length start (m).
+
+- evidence:
+  - `tests/validation/fixtures/force_smfs/smfs_reference.json`
+  - `tests/validation/fixtures/force_smfs/smfs_reference.npz`
+  - `tests/validation/test_force_smfs_validation.py`
+  - `tests/core/test_force_smfs.py`
+
+## FORCE.SMFS.MODEL.WLC
+
+- operation_id: `force.smfs.model.wlc`
+- public_name: `fit_worm_like_chain`
+- public_import: `spmkit.core.analysis:fit_worm_like_chain`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (WLC fit (Lc, Lp) by the Marko-Siggia loading relation F = (k)
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: WLC fit (Lc, Lp) by the Marko-Siggia loading relation F = (k_BT/Lp)[1/(4(1-x/Lc)^2) - 1/4 + x/Lc] with a separable closed-form Lp per candidate Lc (deterministic 1-D search); Lc/Lp within 2%/5% on clean phantoms; the singular domain (x >= Lc) is typed POLYMER_SINGULARITY.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: m
+
+- parameters:
+  - `extension` (positional, required) — Molecular extension (m).
+  - `force` (positional, required) — Retract force (N).
+  - `temperature` (keyword_only, 298.0) — Temperature (K).
+  - `Lc_initial` (keyword_only, None) — Contour start (m).
+  - `Lp_initial` (keyword_only, None) — Persistence start (m).
+
+- evidence:
+  - `tests/validation/fixtures/force_smfs/smfs_reference.json`
+  - `tests/validation/fixtures/force_smfs/smfs_reference.npz`
+  - `tests/validation/test_force_smfs_validation.py`
+  - `tests/core/test_force_smfs.py`
+
+## FORCE.SMFS.POPULATION
+
+- operation_id: `force.smfs.population`
+- public_name: `analyze_smfs_event_population`
+- public_import: `spmkit.core.analysis:analyze_smfs_event_population`
+- family: FORCE
+- maturity: SOFTWARE_VERIFIED
+- status: stable
+- reference: SPMKit native (Aggregate event records into a population: rupture-force, co)
+- evidence profile: `NATIVE_SPMKIT_DESIGNED_HEURISTIC`
+
+- contract: Aggregate event records into a population: rupture-force, contour-increment and loading-rate summaries; deterministic grouping (none or loading_rate_decade) with raw assignments exposed; ambiguity retained for small populations; no molecular-identity claim; the grouping policy is SOFTWARE_VERIFIED.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: not_applicable
+
+- parameters:
+  - `event_records` (positional, required) — Event records.
+  - `group_by` (keyword_only, 'loading_rate_decade' values=['none', 'loading_rate_decade']) — Grouping policy.
+  - `n_groups` (keyword_only, 4) — Number of groups.
+  - `force_levels` (keyword_only, None) — Force levels (N).
+
+- evidence:
+  - `tests/validation/fixtures/force_smfs/smfs_reference.json`
+  - `tests/validation/fixtures/force_smfs/smfs_reference.npz`
+  - `tests/validation/test_force_smfs_validation.py`
+  - `tests/core/test_force_smfs.py`
+
+## FORCE.SMFS.WINDOW.SELECT
+
+- operation_id: `force.smfs.window.select`
+- public_name: `select_smfs_fit_windows`
+- public_import: `spmkit.core.analysis:select_smfs_fit_windows`
+- family: FORCE
+- maturity: SOFTWARE_VERIFIED
+- status: stable
+- reference: SPMKit native (Explicit polymer fit window on the molecular extension axis:)
+- evidence profile: `NATIVE_SPMKIT_DESIGNED_HEURISTIC`
+
+- contract: Explicit polymer fit window on the molecular extension axis: negative extensions always excluded (the polymer domain starts at the tether zero), extension/force bounds, minimum points; EMPTY_WINDOW and INSUFFICIENT_POINTS typed; the window policy is SOFTWARE_VERIFIED.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: m / N
+
+- parameters:
+  - `extension` (positional, required) — Molecular extension (m).
+  - `force` (positional, required) — Retract force (N).
+  - `min_extension` (keyword_only, None) — Lower extension bound (m).
+  - `max_extension` (keyword_only, None) — Upper extension bound (m).
+  - `min_force` (keyword_only, None) — Lower force bound (N).
+  - `max_force` (keyword_only, None) — Upper force bound (N).
+  - `min_points` (keyword_only, 10) — Minimum window size.
+  - `window_label` (keyword_only, None) — Window identifier.
+
+- evidence:
+  - `tests/validation/fixtures/force_smfs/smfs_reference.json`
+  - `tests/validation/fixtures/force_smfs/smfs_reference.npz`
+  - `tests/validation/test_force_smfs_validation.py`
+  - `tests/core/test_force_smfs.py`
 
 ## FORCE.VISCO.CONTACT.LEE_RADOK
 

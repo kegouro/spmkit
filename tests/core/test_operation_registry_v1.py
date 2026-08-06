@@ -76,6 +76,23 @@ EXPECTED = {
     "force.visco.model.compare": "compare_viscoelastic_models",
     "force.visco.sensitivity": "analyze_viscoelastic_sensitivity",
     "force.visco.volume": "fit_force_volume_viscoelasticity",
+    # FS-F4 SMFS family
+    "force.smfs.extension.compute": "compute_molecular_extension",
+    "force.smfs.window.select": "select_smfs_fit_windows",
+    "force.smfs.model.wlc": "fit_worm_like_chain",
+    "force.smfs.model.extensible_wlc": "fit_extensible_worm_like_chain",
+    "force.smfs.model.fjc": "fit_freely_jointed_chain",
+    "force.smfs.model.extensible_fjc": "fit_extensible_freely_jointed_chain",
+    "force.smfs.model.compare": "compare_polymer_models",
+    "force.smfs.events.detect": "detect_unfolding_events",
+    "force.smfs.events.quantify": "quantify_unfolding_events",
+    "force.smfs.contour_increment": "infer_contour_length_increments",
+    "force.smfs.loading_rate": "compute_event_loading_rates",
+    "force.smfs.kinetics.bell_evans": "fit_bell_evans",
+    "force.smfs.kinetics.dhs": "fit_dudko_hummer_szabo",
+    "force.smfs.force_clamp.survival": "estimate_force_clamp_survival",
+    "force.smfs.population": "analyze_smfs_event_population",
+    "force.smfs.batch": "analyze_smfs_batch",
 }
 
 
@@ -93,7 +110,7 @@ def test_reject_unknown_operation() -> None:
 
 def test_deterministic_listing() -> None:
     ops = list_operations()
-    assert len(ops) == 57
+    assert len(ops) == 73
     ids = [o.operation_id for o in ops]
     assert ids == sorted(ids)
     # calling twice yields identical tuples
