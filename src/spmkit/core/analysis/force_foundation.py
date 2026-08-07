@@ -18,9 +18,13 @@ from spmkit.core.analysis.force_foundation_errors import (
     ForceFoundationError,
 )
 from spmkit.core.analysis.force_metrics import (
+    CoordinatePathDiagnostics,
     ForceEventResult,
+    ForcePathWorkResult,
     ForceWorkResult,
+    coordinate_path_diagnostics,
     extract_force_events,
+    integrate_force_path_work,
     integrate_force_work,
 )
 from spmkit.core.analysis.force_prepare import (
@@ -52,7 +56,9 @@ __all__ = [
     "contact_point_ratio_of_variances",
     "contact_point_piecewise",
     "contact_point_ensemble",
+    "coordinate_path_diagnostics",
     "extract_force_events",
+    "integrate_force_path_work",
     "integrate_force_work",
     "score_force_curve_quality",
     "prepare_force_curve",
@@ -61,7 +67,9 @@ __all__ = [
     "ForceBaselineResult",
     "ContactPointCandidate",
     "ContactPointResult",
+    "CoordinatePathDiagnostics",
     "ForceEventResult",
+    "ForcePathWorkResult",
     "ForceWorkResult",
     "ForceCurveQualityResult",
     "ForcePreparationResult",
