@@ -85,7 +85,10 @@ def main() -> int:
             "calibration": "raw_v -> deflection_m (x InVOLS m/V) -> force_n (x k N/m)",
             "separation": "height - deflection",
             "baseline": "pre_contact = first 10% of approach; linear offset + slope",
-            "contact": "threshold (k*sigma, persistence 3) / ROV (Gavara) / piecewise (1/2, value-continuous)",
+            "contact": (
+                "threshold (k*sigma, persistence 3) / ROV (Gavara) / "
+                "piecewise (1/2, value-continuous)"
+            ),
             "events": "snap-in on approach before contact; pull-off on retract",
             "work": "trapezoid over common tip-position overlap; monotone interpolation",
             "qc": "typed reasons; summary score beside component diagnostics",
