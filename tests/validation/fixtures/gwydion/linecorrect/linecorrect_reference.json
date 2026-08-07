@@ -1,0 +1,3735 @@
+{
+  "capabilities": [
+    {
+      "case_count": 16,
+      "comparison_metrics": {
+        "array_count": 176,
+        "arrays_bitwise_exact": 176,
+        "case_count": 16,
+        "element_count": 5046,
+        "elements_bitwise_exact": 5046,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "name": "gwydion_line_correct_step"
+    },
+    {
+      "case_count": 14,
+      "comparison_metrics": {
+        "array_count": 59,
+        "arrays_bitwise_exact": 59,
+        "case_count": 14,
+        "element_count": 596,
+        "elements_bitwise_exact": 596,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "name": "gwydion_mark_inverted_rows"
+    }
+  ],
+  "case_count": 30,
+  "cases": [
+    {
+      "arrays": {
+        "correction_scratch_pass1": {
+          "count": 35,
+          "dims": [
+            5,
+            7
+          ],
+          "key": "s01_constant_5x7_probe_correction_scratch_pass1",
+          "length": null
+        },
+        "correction_scratch_pass2": {
+          "count": 35,
+          "dims": [
+            5,
+            7
+          ],
+          "key": "s01_constant_5x7_probe_correction_scratch_pass2",
+          "length": null
+        },
+        "field_after_conservative_filter": {
+          "count": 35,
+          "dims": [
+            5,
+            7
+          ],
+          "key": "s01_constant_5x7_probe_field_after_conservative_filter",
+          "length": null
+        },
+        "field_after_initial_row_alignment": {
+          "count": 35,
+          "dims": [
+            5,
+            7
+          ],
+          "key": "s01_constant_5x7_probe_field_after_initial_row_alignment",
+          "length": null
+        },
+        "field_after_pass1": {
+          "count": 35,
+          "dims": [
+            5,
+            7
+          ],
+          "key": "s01_constant_5x7_probe_field_after_pass1",
+          "length": null
+        },
+        "field_after_pass2": {
+          "count": 35,
+          "dims": [
+            5,
+            7
+          ],
+          "key": "s01_constant_5x7_probe_field_after_pass2",
+          "length": null
+        },
+        "final_corrected_field": {
+          "count": 35,
+          "dims": [
+            5,
+            7
+          ],
+          "key": "s01_constant_5x7_probe_final_corrected_field",
+          "length": null
+        },
+        "final_minus_input": {
+          "count": 35,
+          "dims": null,
+          "key": "s01_constant_5x7_probe_final_minus_input",
+          "length": 35
+        },
+        "input": {
+          "count": 35,
+          "dims": [
+            5,
+            7
+          ],
+          "key": "s01_constant_5x7_probe_input",
+          "length": null
+        },
+        "input_minus_final": {
+          "count": 35,
+          "dims": null,
+          "key": "s01_constant_5x7_probe_input_minus_final",
+          "length": 35
+        },
+        "row_shift_zero_leveled": {
+          "count": 5,
+          "dims": null,
+          "key": "s01_constant_5x7_probe_row_shift_zero_leveled",
+          "length": 5
+        },
+        "row_statistic_raw_median": {
+          "count": 5,
+          "dims": null,
+          "key": "s01_constant_5x7_probe_row_statistic_raw_median",
+          "length": 5
+        }
+      },
+      "case_identifier": "s01_constant_5x7",
+      "columns": 7,
+      "exit_code": 0,
+      "expected_filter_warning": false,
+      "family": "step",
+      "observed_filter_warnings": 0,
+      "purpose": "constant field: full identity path",
+      "rows": 5,
+      "scalars": {
+        "final_mean_restoration_offset": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "original_global_mean": {
+          "bits": "0x401d000000000000",
+          "hex": "0x1.dp+2"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "fa364d12f5ccbb08a719f71a3e6eda2f25b169632d5ed4c5a5156c9c2f8dff66"
+    },
+    {
+      "arrays": {
+        "correction_scratch_pass1": {
+          "count": 24,
+          "dims": [
+            4,
+            6
+          ],
+          "key": "s02_offset_asymmetric_4x6_probe_correction_scratch_pass1",
+          "length": null
+        },
+        "correction_scratch_pass2": {
+          "count": 24,
+          "dims": [
+            4,
+            6
+          ],
+          "key": "s02_offset_asymmetric_4x6_probe_correction_scratch_pass2",
+          "length": null
+        },
+        "field_after_conservative_filter": {
+          "count": 24,
+          "dims": [
+            4,
+            6
+          ],
+          "key": "s02_offset_asymmetric_4x6_probe_field_after_conservative_filter",
+          "length": null
+        },
+        "field_after_initial_row_alignment": {
+          "count": 24,
+          "dims": [
+            4,
+            6
+          ],
+          "key": "s02_offset_asymmetric_4x6_probe_field_after_initial_row_alignment",
+          "length": null
+        },
+        "field_after_pass1": {
+          "count": 24,
+          "dims": [
+            4,
+            6
+          ],
+          "key": "s02_offset_asymmetric_4x6_probe_field_after_pass1",
+          "length": null
+        },
+        "field_after_pass2": {
+          "count": 24,
+          "dims": [
+            4,
+            6
+          ],
+          "key": "s02_offset_asymmetric_4x6_probe_field_after_pass2",
+          "length": null
+        },
+        "final_corrected_field": {
+          "count": 24,
+          "dims": [
+            4,
+            6
+          ],
+          "key": "s02_offset_asymmetric_4x6_probe_final_corrected_field",
+          "length": null
+        },
+        "final_minus_input": {
+          "count": 24,
+          "dims": null,
+          "key": "s02_offset_asymmetric_4x6_probe_final_minus_input",
+          "length": 24
+        },
+        "input": {
+          "count": 24,
+          "dims": [
+            4,
+            6
+          ],
+          "key": "s02_offset_asymmetric_4x6_probe_input",
+          "length": null
+        },
+        "input_minus_final": {
+          "count": 24,
+          "dims": null,
+          "key": "s02_offset_asymmetric_4x6_probe_input_minus_final",
+          "length": 24
+        },
+        "row_shift_zero_leveled": {
+          "count": 4,
+          "dims": null,
+          "key": "s02_offset_asymmetric_4x6_probe_row_shift_zero_leveled",
+          "length": 4
+        },
+        "row_statistic_raw_median": {
+          "count": 4,
+          "dims": null,
+          "key": "s02_offset_asymmetric_4x6_probe_row_statistic_raw_median",
+          "length": 4
+        }
+      },
+      "case_identifier": "s02_offset_asymmetric_4x6",
+      "columns": 6,
+      "exit_code": 0,
+      "expected_filter_warning": true,
+      "family": "step",
+      "observed_filter_warnings": 1,
+      "purpose": "row offsets plus asymmetric within-row values: upper-median statistic and zero-leveled shifts",
+      "rows": 4,
+      "scalars": {
+        "final_mean_restoration_offset": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "original_global_mean": {
+          "bits": "0x4007555555555555",
+          "hex": "0x1.7555555555555p+1"
+        }
+      },
+      "stderr_sha256": "19d1fed65a5eba7229355fb09e7a40c0abbfdd867ab7f676101cd18bd4e4b5f8",
+      "stdout_sha256": "05d46f50ea7d7c1d1b4948884f7490ec52d41a04b13750adf0be36a7c3ff0d72"
+    },
+    {
+      "arrays": {
+        "correction_scratch_pass1": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s03_positive_segment_4_probe_correction_scratch_pass1",
+          "length": null
+        },
+        "correction_scratch_pass2": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s03_positive_segment_4_probe_correction_scratch_pass2",
+          "length": null
+        },
+        "field_after_conservative_filter": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s03_positive_segment_4_probe_field_after_conservative_filter",
+          "length": null
+        },
+        "field_after_initial_row_alignment": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s03_positive_segment_4_probe_field_after_initial_row_alignment",
+          "length": null
+        },
+        "field_after_pass1": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s03_positive_segment_4_probe_field_after_pass1",
+          "length": null
+        },
+        "field_after_pass2": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s03_positive_segment_4_probe_field_after_pass2",
+          "length": null
+        },
+        "final_corrected_field": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s03_positive_segment_4_probe_final_corrected_field",
+          "length": null
+        },
+        "final_minus_input": {
+          "count": 48,
+          "dims": null,
+          "key": "s03_positive_segment_4_probe_final_minus_input",
+          "length": 48
+        },
+        "input": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s03_positive_segment_4_probe_input",
+          "length": null
+        },
+        "input_minus_final": {
+          "count": 48,
+          "dims": null,
+          "key": "s03_positive_segment_4_probe_input_minus_final",
+          "length": 48
+        },
+        "row_shift_zero_leveled": {
+          "count": 3,
+          "dims": null,
+          "key": "s03_positive_segment_4_probe_row_shift_zero_leveled",
+          "length": 3
+        },
+        "row_statistic_raw_median": {
+          "count": 3,
+          "dims": null,
+          "key": "s03_positive_segment_4_probe_row_statistic_raw_median",
+          "length": 3
+        }
+      },
+      "case_identifier": "s03_positive_segment_4",
+      "columns": 16,
+      "exit_code": 0,
+      "expected_filter_warning": true,
+      "family": "step",
+      "observed_filter_warnings": 1,
+      "purpose": "positive 4-wide middle-row segment: threshold, sign, minimum accepted run length",
+      "rows": 3,
+      "scalars": {
+        "final_mean_restoration_offset": {
+          "bits": "0x3fbaaaaaaaaaaab0",
+          "hex": "0x1.aaaaaaaaaaabp-4"
+        },
+        "original_global_mean": {
+          "bits": "0x3ff1aaaaaaaaaaab",
+          "hex": "0x1.1aaaaaaaaaaabp+0"
+        }
+      },
+      "stderr_sha256": "f92d9ecdd1c2e61c7fe33cd1e960627c6f1b11552275289558900c54e85a8f72",
+      "stdout_sha256": "8ed3f3421ca47f38d2245fa7929978c0112c34ae3f88cfd7c3b23045c92feb6f"
+    },
+    {
+      "arrays": {
+        "correction_scratch_pass1": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s04_positive_segment_3_probe_correction_scratch_pass1",
+          "length": null
+        },
+        "correction_scratch_pass2": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s04_positive_segment_3_probe_correction_scratch_pass2",
+          "length": null
+        },
+        "field_after_conservative_filter": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s04_positive_segment_3_probe_field_after_conservative_filter",
+          "length": null
+        },
+        "field_after_initial_row_alignment": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s04_positive_segment_3_probe_field_after_initial_row_alignment",
+          "length": null
+        },
+        "field_after_pass1": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s04_positive_segment_3_probe_field_after_pass1",
+          "length": null
+        },
+        "field_after_pass2": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s04_positive_segment_3_probe_field_after_pass2",
+          "length": null
+        },
+        "final_corrected_field": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s04_positive_segment_3_probe_final_corrected_field",
+          "length": null
+        },
+        "final_minus_input": {
+          "count": 48,
+          "dims": null,
+          "key": "s04_positive_segment_3_probe_final_minus_input",
+          "length": 48
+        },
+        "input": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s04_positive_segment_3_probe_input",
+          "length": null
+        },
+        "input_minus_final": {
+          "count": 48,
+          "dims": null,
+          "key": "s04_positive_segment_3_probe_input_minus_final",
+          "length": 48
+        },
+        "row_shift_zero_leveled": {
+          "count": 3,
+          "dims": null,
+          "key": "s04_positive_segment_3_probe_row_shift_zero_leveled",
+          "length": 3
+        },
+        "row_statistic_raw_median": {
+          "count": 3,
+          "dims": null,
+          "key": "s04_positive_segment_3_probe_row_statistic_raw_median",
+          "length": 3
+        }
+      },
+      "case_identifier": "s04_positive_segment_3",
+      "columns": 16,
+      "exit_code": 0,
+      "expected_filter_warning": true,
+      "family": "step",
+      "observed_filter_warnings": 1,
+      "purpose": "3-wide segment: rejection below min_len=4",
+      "rows": 3,
+      "scalars": {
+        "final_mean_restoration_offset": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "original_global_mean": {
+          "bits": "0x3ff1400000000000",
+          "hex": "0x1.14p+0"
+        }
+      },
+      "stderr_sha256": "5d9aeb4d49c9f6d72f4ba77fcde54beea2f82149d09efddc9d0666b3a2466a7d",
+      "stdout_sha256": "256929f4cad48427d085ee60565ff63eac44d0359c3beb3e0623bfce43a1217d"
+    },
+    {
+      "arrays": {
+        "correction_scratch_pass1": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s05_negative_segment_4_probe_correction_scratch_pass1",
+          "length": null
+        },
+        "correction_scratch_pass2": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s05_negative_segment_4_probe_correction_scratch_pass2",
+          "length": null
+        },
+        "field_after_conservative_filter": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s05_negative_segment_4_probe_field_after_conservative_filter",
+          "length": null
+        },
+        "field_after_initial_row_alignment": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s05_negative_segment_4_probe_field_after_initial_row_alignment",
+          "length": null
+        },
+        "field_after_pass1": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s05_negative_segment_4_probe_field_after_pass1",
+          "length": null
+        },
+        "field_after_pass2": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s05_negative_segment_4_probe_field_after_pass2",
+          "length": null
+        },
+        "final_corrected_field": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s05_negative_segment_4_probe_final_corrected_field",
+          "length": null
+        },
+        "final_minus_input": {
+          "count": 48,
+          "dims": null,
+          "key": "s05_negative_segment_4_probe_final_minus_input",
+          "length": 48
+        },
+        "input": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s05_negative_segment_4_probe_input",
+          "length": null
+        },
+        "input_minus_final": {
+          "count": 48,
+          "dims": null,
+          "key": "s05_negative_segment_4_probe_input_minus_final",
+          "length": 48
+        },
+        "row_shift_zero_leveled": {
+          "count": 3,
+          "dims": null,
+          "key": "s05_negative_segment_4_probe_row_shift_zero_leveled",
+          "length": 3
+        },
+        "row_statistic_raw_median": {
+          "count": 3,
+          "dims": null,
+          "key": "s05_negative_segment_4_probe_row_statistic_raw_median",
+          "length": 3
+        }
+      },
+      "case_identifier": "s05_negative_segment_4",
+      "columns": 16,
+      "exit_code": 0,
+      "expected_filter_warning": true,
+      "family": "step",
+      "observed_filter_warnings": 1,
+      "purpose": "negative 4-wide segment: sign and correction direction",
+      "rows": 3,
+      "scalars": {
+        "final_mean_restoration_offset": {
+          "bits": "0xbfbaaaaaaaaaaaa8",
+          "hex": "-0x1.aaaaaaaaaaaa8p-4"
+        },
+        "original_global_mean": {
+          "bits": "0x3fecaaaaaaaaaaab",
+          "hex": "0x1.caaaaaaaaaaabp-1"
+        }
+      },
+      "stderr_sha256": "9b673cb5a118ee60bd7888d1c39e9e04b2c456bfa93fdfb7e034331258934c96",
+      "stdout_sha256": "70cce89fb33f6a5d515e18ca0813109e4eb5975cb1154e0112698fbc501bdff9"
+    },
+    {
+      "arrays": {
+        "correction_scratch_pass1": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s06_left_edge_segment_probe_correction_scratch_pass1",
+          "length": null
+        },
+        "correction_scratch_pass2": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s06_left_edge_segment_probe_correction_scratch_pass2",
+          "length": null
+        },
+        "field_after_conservative_filter": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s06_left_edge_segment_probe_field_after_conservative_filter",
+          "length": null
+        },
+        "field_after_initial_row_alignment": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s06_left_edge_segment_probe_field_after_initial_row_alignment",
+          "length": null
+        },
+        "field_after_pass1": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s06_left_edge_segment_probe_field_after_pass1",
+          "length": null
+        },
+        "field_after_pass2": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s06_left_edge_segment_probe_field_after_pass2",
+          "length": null
+        },
+        "final_corrected_field": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s06_left_edge_segment_probe_final_corrected_field",
+          "length": null
+        },
+        "final_minus_input": {
+          "count": 48,
+          "dims": null,
+          "key": "s06_left_edge_segment_probe_final_minus_input",
+          "length": 48
+        },
+        "input": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s06_left_edge_segment_probe_input",
+          "length": null
+        },
+        "input_minus_final": {
+          "count": 48,
+          "dims": null,
+          "key": "s06_left_edge_segment_probe_input_minus_final",
+          "length": 48
+        },
+        "row_shift_zero_leveled": {
+          "count": 3,
+          "dims": null,
+          "key": "s06_left_edge_segment_probe_row_shift_zero_leveled",
+          "length": 3
+        },
+        "row_statistic_raw_median": {
+          "count": 3,
+          "dims": null,
+          "key": "s06_left_edge_segment_probe_row_statistic_raw_median",
+          "length": 3
+        }
+      },
+      "case_identifier": "s06_left_edge_segment",
+      "columns": 16,
+      "exit_code": 0,
+      "expected_filter_warning": true,
+      "family": "step",
+      "observed_filter_warnings": 1,
+      "purpose": "segment touching the left boundary: run finalization",
+      "rows": 3,
+      "scalars": {
+        "final_mean_restoration_offset": {
+          "bits": "0x3fbaaaaaaaaaaab0",
+          "hex": "0x1.aaaaaaaaaaabp-4"
+        },
+        "original_global_mean": {
+          "bits": "0x3ff1aaaaaaaaaaab",
+          "hex": "0x1.1aaaaaaaaaaabp+0"
+        }
+      },
+      "stderr_sha256": "91db8971cdaa3303b002782bca91d03a030ec50ee32a3c79a52bebb4578f73af",
+      "stdout_sha256": "28d69d56864c7edb5032682a5a32e152eba01ccf8de7c764200c2bc9be90d6de"
+    },
+    {
+      "arrays": {
+        "correction_scratch_pass1": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s07_right_edge_segment_probe_correction_scratch_pass1",
+          "length": null
+        },
+        "correction_scratch_pass2": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s07_right_edge_segment_probe_correction_scratch_pass2",
+          "length": null
+        },
+        "field_after_conservative_filter": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s07_right_edge_segment_probe_field_after_conservative_filter",
+          "length": null
+        },
+        "field_after_initial_row_alignment": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s07_right_edge_segment_probe_field_after_initial_row_alignment",
+          "length": null
+        },
+        "field_after_pass1": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s07_right_edge_segment_probe_field_after_pass1",
+          "length": null
+        },
+        "field_after_pass2": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s07_right_edge_segment_probe_field_after_pass2",
+          "length": null
+        },
+        "final_corrected_field": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s07_right_edge_segment_probe_final_corrected_field",
+          "length": null
+        },
+        "final_minus_input": {
+          "count": 48,
+          "dims": null,
+          "key": "s07_right_edge_segment_probe_final_minus_input",
+          "length": 48
+        },
+        "input": {
+          "count": 48,
+          "dims": [
+            3,
+            16
+          ],
+          "key": "s07_right_edge_segment_probe_input",
+          "length": null
+        },
+        "input_minus_final": {
+          "count": 48,
+          "dims": null,
+          "key": "s07_right_edge_segment_probe_input_minus_final",
+          "length": 48
+        },
+        "row_shift_zero_leveled": {
+          "count": 3,
+          "dims": null,
+          "key": "s07_right_edge_segment_probe_row_shift_zero_leveled",
+          "length": 3
+        },
+        "row_statistic_raw_median": {
+          "count": 3,
+          "dims": null,
+          "key": "s07_right_edge_segment_probe_row_statistic_raw_median",
+          "length": 3
+        }
+      },
+      "case_identifier": "s07_right_edge_segment",
+      "columns": 16,
+      "exit_code": 0,
+      "expected_filter_warning": true,
+      "family": "step",
+      "observed_filter_warnings": 1,
+      "purpose": "segment touching the right boundary: end-of-row finalization",
+      "rows": 3,
+      "scalars": {
+        "final_mean_restoration_offset": {
+          "bits": "0x3fbaaaaaaaaaaab0",
+          "hex": "0x1.aaaaaaaaaaabp-4"
+        },
+        "original_global_mean": {
+          "bits": "0x3ff1aaaaaaaaaaab",
+          "hex": "0x1.1aaaaaaaaaaabp+0"
+        }
+      },
+      "stderr_sha256": "f1f574664dfe09e5903e9f743011a4a47f131ddc4be8411a5795b65b040b3ecf",
+      "stdout_sha256": "5f32f1882f15ba72b8bd757cc9cd92d11586036430dca2800c4fea3a6456dfec"
+    },
+    {
+      "arrays": {
+        "correction_scratch_pass1": {
+          "count": 84,
+          "dims": [
+            3,
+            28
+          ],
+          "key": "s08_two_segments_probe_correction_scratch_pass1",
+          "length": null
+        },
+        "correction_scratch_pass2": {
+          "count": 84,
+          "dims": [
+            3,
+            28
+          ],
+          "key": "s08_two_segments_probe_correction_scratch_pass2",
+          "length": null
+        },
+        "field_after_conservative_filter": {
+          "count": 84,
+          "dims": [
+            3,
+            28
+          ],
+          "key": "s08_two_segments_probe_field_after_conservative_filter",
+          "length": null
+        },
+        "field_after_initial_row_alignment": {
+          "count": 84,
+          "dims": [
+            3,
+            28
+          ],
+          "key": "s08_two_segments_probe_field_after_initial_row_alignment",
+          "length": null
+        },
+        "field_after_pass1": {
+          "count": 84,
+          "dims": [
+            3,
+            28
+          ],
+          "key": "s08_two_segments_probe_field_after_pass1",
+          "length": null
+        },
+        "field_after_pass2": {
+          "count": 84,
+          "dims": [
+            3,
+            28
+          ],
+          "key": "s08_two_segments_probe_field_after_pass2",
+          "length": null
+        },
+        "final_corrected_field": {
+          "count": 84,
+          "dims": [
+            3,
+            28
+          ],
+          "key": "s08_two_segments_probe_final_corrected_field",
+          "length": null
+        },
+        "final_minus_input": {
+          "count": 84,
+          "dims": null,
+          "key": "s08_two_segments_probe_final_minus_input",
+          "length": 84
+        },
+        "input": {
+          "count": 84,
+          "dims": [
+            3,
+            28
+          ],
+          "key": "s08_two_segments_probe_input",
+          "length": null
+        },
+        "input_minus_final": {
+          "count": 84,
+          "dims": null,
+          "key": "s08_two_segments_probe_input_minus_final",
+          "length": 84
+        },
+        "row_shift_zero_leveled": {
+          "count": 3,
+          "dims": null,
+          "key": "s08_two_segments_probe_row_shift_zero_leveled",
+          "length": 3
+        },
+        "row_statistic_raw_median": {
+          "count": 3,
+          "dims": null,
+          "key": "s08_two_segments_probe_row_statistic_raw_median",
+          "length": 3
+        }
+      },
+      "case_identifier": "s08_two_segments",
+      "columns": 28,
+      "exit_code": 0,
+      "expected_filter_warning": true,
+      "family": "step",
+      "observed_filter_warnings": 1,
+      "purpose": "two separated segments in one row: multiple-run scanning and scratch-buffer mutation",
+      "rows": 3,
+      "scalars": {
+        "final_mean_restoration_offset": {
+          "bits": "0x3fbe79e79e79e7a0",
+          "hex": "0x1.e79e79e79e7ap-4"
+        },
+        "original_global_mean": {
+          "bits": "0x3ff1e79e79e79e7a",
+          "hex": "0x1.1e79e79e79e7ap+0"
+        }
+      },
+      "stderr_sha256": "12d237b05ebc44459af0a2ded56317aebfb3ee038f65e9032e1b55fd2dd49d92",
+      "stdout_sha256": "e31156729e67522c006d5e3e521cd909e448a9ab215dd7c1c2404d37be64737d"
+    },
+    {
+      "arrays": {
+        "correction_scratch_pass1": {
+          "count": 18,
+          "dims": [
+            3,
+            6
+          ],
+          "key": "s09_persistent_transition_probe_correction_scratch_pass1",
+          "length": null
+        },
+        "correction_scratch_pass2": {
+          "count": 18,
+          "dims": [
+            3,
+            6
+          ],
+          "key": "s09_persistent_transition_probe_correction_scratch_pass2",
+          "length": null
+        },
+        "field_after_conservative_filter": {
+          "count": 18,
+          "dims": [
+            3,
+            6
+          ],
+          "key": "s09_persistent_transition_probe_field_after_conservative_filter",
+          "length": null
+        },
+        "field_after_initial_row_alignment": {
+          "count": 18,
+          "dims": [
+            3,
+            6
+          ],
+          "key": "s09_persistent_transition_probe_field_after_initial_row_alignment",
+          "length": null
+        },
+        "field_after_pass1": {
+          "count": 18,
+          "dims": [
+            3,
+            6
+          ],
+          "key": "s09_persistent_transition_probe_field_after_pass1",
+          "length": null
+        },
+        "field_after_pass2": {
+          "count": 18,
+          "dims": [
+            3,
+            6
+          ],
+          "key": "s09_persistent_transition_probe_field_after_pass2",
+          "length": null
+        },
+        "final_corrected_field": {
+          "count": 18,
+          "dims": [
+            3,
+            6
+          ],
+          "key": "s09_persistent_transition_probe_final_corrected_field",
+          "length": null
+        },
+        "final_minus_input": {
+          "count": 18,
+          "dims": null,
+          "key": "s09_persistent_transition_probe_final_minus_input",
+          "length": 18
+        },
+        "input": {
+          "count": 18,
+          "dims": [
+            3,
+            6
+          ],
+          "key": "s09_persistent_transition_probe_input",
+          "length": null
+        },
+        "input_minus_final": {
+          "count": 18,
+          "dims": null,
+          "key": "s09_persistent_transition_probe_input_minus_final",
+          "length": 18
+        },
+        "row_shift_zero_leveled": {
+          "count": 3,
+          "dims": null,
+          "key": "s09_persistent_transition_probe_row_shift_zero_leveled",
+          "length": 3
+        },
+        "row_statistic_raw_median": {
+          "count": 3,
+          "dims": null,
+          "key": "s09_persistent_transition_probe_row_statistic_raw_median",
+          "length": 3
+        }
+      },
+      "case_identifier": "s09_persistent_transition",
+      "columns": 6,
+      "exit_code": 0,
+      "expected_filter_warning": true,
+      "family": "step",
+      "observed_filter_warnings": 1,
+      "purpose": "persistent monotonic transition across neighbouring rows: v=0, not a local middle-row displacement",
+      "rows": 3,
+      "scalars": {
+        "final_mean_restoration_offset": {
+          "bits": "0x3cc0000000000000",
+          "hex": "0x1p-51"
+        },
+        "original_global_mean": {
+          "bits": "0x4005555555555555",
+          "hex": "0x1.5555555555555p+1"
+        }
+      },
+      "stderr_sha256": "d4255338bc23ca73c71ccbd7fd3d9b8dd444888f8b30e688267d6a6604de4935",
+      "stdout_sha256": "ca42cfa6f259eec50df4734682817938996a45f44e19145b8fb9bc772ef686bc"
+    },
+    {
+      "arrays": {
+        "correction_scratch_pass1": {
+          "count": 40,
+          "dims": [
+            5,
+            8
+          ],
+          "key": "s10_outlier_filter_only_probe_correction_scratch_pass1",
+          "length": null
+        },
+        "correction_scratch_pass2": {
+          "count": 40,
+          "dims": [
+            5,
+            8
+          ],
+          "key": "s10_outlier_filter_only_probe_correction_scratch_pass2",
+          "length": null
+        },
+        "field_after_conservative_filter": {
+          "count": 40,
+          "dims": [
+            5,
+            8
+          ],
+          "key": "s10_outlier_filter_only_probe_field_after_conservative_filter",
+          "length": null
+        },
+        "field_after_initial_row_alignment": {
+          "count": 40,
+          "dims": [
+            5,
+            8
+          ],
+          "key": "s10_outlier_filter_only_probe_field_after_initial_row_alignment",
+          "length": null
+        },
+        "field_after_pass1": {
+          "count": 40,
+          "dims": [
+            5,
+            8
+          ],
+          "key": "s10_outlier_filter_only_probe_field_after_pass1",
+          "length": null
+        },
+        "field_after_pass2": {
+          "count": 40,
+          "dims": [
+            5,
+            8
+          ],
+          "key": "s10_outlier_filter_only_probe_field_after_pass2",
+          "length": null
+        },
+        "final_corrected_field": {
+          "count": 40,
+          "dims": [
+            5,
+            8
+          ],
+          "key": "s10_outlier_filter_only_probe_final_corrected_field",
+          "length": null
+        },
+        "final_minus_input": {
+          "count": 40,
+          "dims": null,
+          "key": "s10_outlier_filter_only_probe_final_minus_input",
+          "length": 40
+        },
+        "input": {
+          "count": 40,
+          "dims": [
+            5,
+            8
+          ],
+          "key": "s10_outlier_filter_only_probe_input",
+          "length": null
+        },
+        "input_minus_final": {
+          "count": 40,
+          "dims": null,
+          "key": "s10_outlier_filter_only_probe_input_minus_final",
+          "length": 40
+        },
+        "row_shift_zero_leveled": {
+          "count": 5,
+          "dims": null,
+          "key": "s10_outlier_filter_only_probe_row_shift_zero_leveled",
+          "length": 5
+        },
+        "row_statistic_raw_median": {
+          "count": 5,
+          "dims": null,
+          "key": "s10_outlier_filter_only_probe_row_statistic_raw_median",
+          "length": 5
+        }
+      },
+      "case_identifier": "s10_outlier_filter_only",
+      "columns": 8,
+      "exit_code": 0,
+      "expected_filter_warning": false,
+      "family": "step",
+      "observed_filter_warnings": 0,
+      "purpose": "single-pixel outlier (no accepted segment): only the conservative filter changes data",
+      "rows": 5,
+      "scalars": {
+        "final_mean_restoration_offset": {
+          "bits": "0x3fb99999999999a0",
+          "hex": "0x1.99999999999ap-4"
+        },
+        "original_global_mean": {
+          "bits": "0x3ff199999999999a",
+          "hex": "0x1.199999999999ap+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "146af7af87cca97d038576e42f4fc4721d735dc1bc66d5a4c724bea8801e9fa5"
+    },
+    {
+      "arrays": {
+        "correction_scratch_pass1": {
+          "count": 63,
+          "dims": [
+            3,
+            21
+          ],
+          "key": "s11_pass2_change_probe_correction_scratch_pass1",
+          "length": null
+        },
+        "correction_scratch_pass2": {
+          "count": 63,
+          "dims": [
+            3,
+            21
+          ],
+          "key": "s11_pass2_change_probe_correction_scratch_pass2",
+          "length": null
+        },
+        "field_after_conservative_filter": {
+          "count": 63,
+          "dims": [
+            3,
+            21
+          ],
+          "key": "s11_pass2_change_probe_field_after_conservative_filter",
+          "length": null
+        },
+        "field_after_initial_row_alignment": {
+          "count": 63,
+          "dims": [
+            3,
+            21
+          ],
+          "key": "s11_pass2_change_probe_field_after_initial_row_alignment",
+          "length": null
+        },
+        "field_after_pass1": {
+          "count": 63,
+          "dims": [
+            3,
+            21
+          ],
+          "key": "s11_pass2_change_probe_field_after_pass1",
+          "length": null
+        },
+        "field_after_pass2": {
+          "count": 63,
+          "dims": [
+            3,
+            21
+          ],
+          "key": "s11_pass2_change_probe_field_after_pass2",
+          "length": null
+        },
+        "final_corrected_field": {
+          "count": 63,
+          "dims": [
+            3,
+            21
+          ],
+          "key": "s11_pass2_change_probe_final_corrected_field",
+          "length": null
+        },
+        "final_minus_input": {
+          "count": 63,
+          "dims": null,
+          "key": "s11_pass2_change_probe_final_minus_input",
+          "length": 63
+        },
+        "input": {
+          "count": 63,
+          "dims": [
+            3,
+            21
+          ],
+          "key": "s11_pass2_change_probe_input",
+          "length": null
+        },
+        "input_minus_final": {
+          "count": 63,
+          "dims": null,
+          "key": "s11_pass2_change_probe_input_minus_final",
+          "length": 63
+        },
+        "row_shift_zero_leveled": {
+          "count": 3,
+          "dims": null,
+          "key": "s11_pass2_change_probe_row_shift_zero_leveled",
+          "length": 3
+        },
+        "row_statistic_raw_median": {
+          "count": 3,
+          "dims": null,
+          "key": "s11_pass2_change_probe_row_statistic_raw_median",
+          "length": 3
+        }
+      },
+      "case_identifier": "s11_pass2_change",
+      "columns": 21,
+      "exit_code": 0,
+      "expected_filter_warning": true,
+      "family": "step",
+      "observed_filter_warnings": 1,
+      "purpose": "pass 2 changes elements after pass 1 (smallest mechanical-search case)",
+      "rows": 3,
+      "scalars": {
+        "final_mean_restoration_offset": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "original_global_mean": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "cee4af0649438e64c9af8d8d043aa1af0e8e5e86a5c666af195014b6471c8d75",
+      "stdout_sha256": "bc44248a75f2bf2f7e72e977cf40719bd42204dc3de0e5fc419e26e919ac6412"
+    },
+    {
+      "arrays": {
+        "correction_scratch_pass1": {
+          "count": 1,
+          "dims": [
+            1,
+            1
+          ],
+          "key": "s12_1x1_probe_correction_scratch_pass1",
+          "length": null
+        },
+        "correction_scratch_pass2": {
+          "count": 1,
+          "dims": [
+            1,
+            1
+          ],
+          "key": "s12_1x1_probe_correction_scratch_pass2",
+          "length": null
+        },
+        "field_after_conservative_filter": {
+          "count": 1,
+          "dims": [
+            1,
+            1
+          ],
+          "key": "s12_1x1_probe_field_after_conservative_filter",
+          "length": null
+        },
+        "field_after_initial_row_alignment": {
+          "count": 1,
+          "dims": [
+            1,
+            1
+          ],
+          "key": "s12_1x1_probe_field_after_initial_row_alignment",
+          "length": null
+        },
+        "field_after_pass1": {
+          "count": 1,
+          "dims": [
+            1,
+            1
+          ],
+          "key": "s12_1x1_probe_field_after_pass1",
+          "length": null
+        },
+        "field_after_pass2": {
+          "count": 1,
+          "dims": [
+            1,
+            1
+          ],
+          "key": "s12_1x1_probe_field_after_pass2",
+          "length": null
+        },
+        "final_corrected_field": {
+          "count": 1,
+          "dims": [
+            1,
+            1
+          ],
+          "key": "s12_1x1_probe_final_corrected_field",
+          "length": null
+        },
+        "final_minus_input": {
+          "count": 1,
+          "dims": null,
+          "key": "s12_1x1_probe_final_minus_input",
+          "length": 1
+        },
+        "input": {
+          "count": 1,
+          "dims": [
+            1,
+            1
+          ],
+          "key": "s12_1x1_probe_input",
+          "length": null
+        },
+        "input_minus_final": {
+          "count": 1,
+          "dims": null,
+          "key": "s12_1x1_probe_input_minus_final",
+          "length": 1
+        },
+        "row_shift_zero_leveled": {
+          "count": 1,
+          "dims": null,
+          "key": "s12_1x1_probe_row_shift_zero_leveled",
+          "length": 1
+        },
+        "row_statistic_raw_median": {
+          "count": 1,
+          "dims": null,
+          "key": "s12_1x1_probe_row_statistic_raw_median",
+          "length": 1
+        }
+      },
+      "case_identifier": "s12_1x1",
+      "columns": 1,
+      "exit_code": 0,
+      "expected_filter_warning": true,
+      "family": "step",
+      "observed_filter_warnings": 1,
+      "purpose": "degenerate 1x1: identity, division and filter no-op",
+      "rows": 1,
+      "scalars": {
+        "final_mean_restoration_offset": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "original_global_mean": {
+          "bits": "0x400c000000000000",
+          "hex": "0x1.cp+1"
+        }
+      },
+      "stderr_sha256": "26bd67f5348ff32a6319b9bc6a2882b6bb527222ff4887b35f67cdd1cb814ad0",
+      "stdout_sha256": "fcbb39b1ca12bcdc9b0033e4a44e09b56c6b3153950e75eba2ccd5ec216a2973"
+    },
+    {
+      "arrays": {
+        "correction_scratch_pass1": {
+          "count": 5,
+          "dims": [
+            1,
+            5
+          ],
+          "key": "s12_1x5_probe_correction_scratch_pass1",
+          "length": null
+        },
+        "correction_scratch_pass2": {
+          "count": 5,
+          "dims": [
+            1,
+            5
+          ],
+          "key": "s12_1x5_probe_correction_scratch_pass2",
+          "length": null
+        },
+        "field_after_conservative_filter": {
+          "count": 5,
+          "dims": [
+            1,
+            5
+          ],
+          "key": "s12_1x5_probe_field_after_conservative_filter",
+          "length": null
+        },
+        "field_after_initial_row_alignment": {
+          "count": 5,
+          "dims": [
+            1,
+            5
+          ],
+          "key": "s12_1x5_probe_field_after_initial_row_alignment",
+          "length": null
+        },
+        "field_after_pass1": {
+          "count": 5,
+          "dims": [
+            1,
+            5
+          ],
+          "key": "s12_1x5_probe_field_after_pass1",
+          "length": null
+        },
+        "field_after_pass2": {
+          "count": 5,
+          "dims": [
+            1,
+            5
+          ],
+          "key": "s12_1x5_probe_field_after_pass2",
+          "length": null
+        },
+        "final_corrected_field": {
+          "count": 5,
+          "dims": [
+            1,
+            5
+          ],
+          "key": "s12_1x5_probe_final_corrected_field",
+          "length": null
+        },
+        "final_minus_input": {
+          "count": 5,
+          "dims": null,
+          "key": "s12_1x5_probe_final_minus_input",
+          "length": 5
+        },
+        "input": {
+          "count": 5,
+          "dims": [
+            1,
+            5
+          ],
+          "key": "s12_1x5_probe_input",
+          "length": null
+        },
+        "input_minus_final": {
+          "count": 5,
+          "dims": null,
+          "key": "s12_1x5_probe_input_minus_final",
+          "length": 5
+        },
+        "row_shift_zero_leveled": {
+          "count": 1,
+          "dims": null,
+          "key": "s12_1x5_probe_row_shift_zero_leveled",
+          "length": 1
+        },
+        "row_statistic_raw_median": {
+          "count": 1,
+          "dims": null,
+          "key": "s12_1x5_probe_row_statistic_raw_median",
+          "length": 1
+        }
+      },
+      "case_identifier": "s12_1x5",
+      "columns": 5,
+      "exit_code": 0,
+      "expected_filter_warning": true,
+      "family": "step",
+      "observed_filter_warnings": 1,
+      "purpose": "degenerate 1x5: identity, empty triplet loop, filter no-op",
+      "rows": 1,
+      "scalars": {
+        "final_mean_restoration_offset": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "original_global_mean": {
+          "bits": "0x3ff8000000000000",
+          "hex": "0x1.8p+0"
+        }
+      },
+      "stderr_sha256": "01cfec3da69febe851cbf34a3ea3815497a9e83a5fd80d3157da02c5f96cf6d5",
+      "stdout_sha256": "81bc31518bd3b007e6b1d69095272637cb700d92eff4100dcb1876b782fb471a"
+    },
+    {
+      "arrays": {
+        "correction_scratch_pass1": {
+          "count": 10,
+          "dims": [
+            2,
+            5
+          ],
+          "key": "s12_2x5_probe_correction_scratch_pass1",
+          "length": null
+        },
+        "correction_scratch_pass2": {
+          "count": 10,
+          "dims": [
+            2,
+            5
+          ],
+          "key": "s12_2x5_probe_correction_scratch_pass2",
+          "length": null
+        },
+        "field_after_conservative_filter": {
+          "count": 10,
+          "dims": [
+            2,
+            5
+          ],
+          "key": "s12_2x5_probe_field_after_conservative_filter",
+          "length": null
+        },
+        "field_after_initial_row_alignment": {
+          "count": 10,
+          "dims": [
+            2,
+            5
+          ],
+          "key": "s12_2x5_probe_field_after_initial_row_alignment",
+          "length": null
+        },
+        "field_after_pass1": {
+          "count": 10,
+          "dims": [
+            2,
+            5
+          ],
+          "key": "s12_2x5_probe_field_after_pass1",
+          "length": null
+        },
+        "field_after_pass2": {
+          "count": 10,
+          "dims": [
+            2,
+            5
+          ],
+          "key": "s12_2x5_probe_field_after_pass2",
+          "length": null
+        },
+        "final_corrected_field": {
+          "count": 10,
+          "dims": [
+            2,
+            5
+          ],
+          "key": "s12_2x5_probe_final_corrected_field",
+          "length": null
+        },
+        "final_minus_input": {
+          "count": 10,
+          "dims": null,
+          "key": "s12_2x5_probe_final_minus_input",
+          "length": 10
+        },
+        "input": {
+          "count": 10,
+          "dims": [
+            2,
+            5
+          ],
+          "key": "s12_2x5_probe_input",
+          "length": null
+        },
+        "input_minus_final": {
+          "count": 10,
+          "dims": null,
+          "key": "s12_2x5_probe_input_minus_final",
+          "length": 10
+        },
+        "row_shift_zero_leveled": {
+          "count": 2,
+          "dims": null,
+          "key": "s12_2x5_probe_row_shift_zero_leveled",
+          "length": 2
+        },
+        "row_statistic_raw_median": {
+          "count": 2,
+          "dims": null,
+          "key": "s12_2x5_probe_row_statistic_raw_median",
+          "length": 2
+        }
+      },
+      "case_identifier": "s12_2x5",
+      "columns": 5,
+      "exit_code": 0,
+      "expected_filter_warning": true,
+      "family": "step",
+      "observed_filter_warnings": 1,
+      "purpose": "degenerate 2x5: median alignment only, empty triplet loop, filter no-op",
+      "rows": 2,
+      "scalars": {
+        "final_mean_restoration_offset": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "original_global_mean": {
+          "bits": "0x4012000000000000",
+          "hex": "0x1.2p+2"
+        }
+      },
+      "stderr_sha256": "e78bac81a9638e23a33554108fa8157339a31ce3232423c1d0f830f2fc759545",
+      "stdout_sha256": "fca7221c4b52b2b8d21df0eca2ac294c38c9e48d60170a00c12d9eb1672db42e"
+    },
+    {
+      "arrays": {
+        "correction_scratch_pass1": {
+          "count": 6,
+          "dims": [
+            3,
+            2
+          ],
+          "key": "s12_3x2_probe_correction_scratch_pass1",
+          "length": null
+        },
+        "correction_scratch_pass2": {
+          "count": 6,
+          "dims": [
+            3,
+            2
+          ],
+          "key": "s12_3x2_probe_correction_scratch_pass2",
+          "length": null
+        },
+        "field_after_conservative_filter": {
+          "count": 6,
+          "dims": [
+            3,
+            2
+          ],
+          "key": "s12_3x2_probe_field_after_conservative_filter",
+          "length": null
+        },
+        "field_after_initial_row_alignment": {
+          "count": 6,
+          "dims": [
+            3,
+            2
+          ],
+          "key": "s12_3x2_probe_field_after_initial_row_alignment",
+          "length": null
+        },
+        "field_after_pass1": {
+          "count": 6,
+          "dims": [
+            3,
+            2
+          ],
+          "key": "s12_3x2_probe_field_after_pass1",
+          "length": null
+        },
+        "field_after_pass2": {
+          "count": 6,
+          "dims": [
+            3,
+            2
+          ],
+          "key": "s12_3x2_probe_field_after_pass2",
+          "length": null
+        },
+        "final_corrected_field": {
+          "count": 6,
+          "dims": [
+            3,
+            2
+          ],
+          "key": "s12_3x2_probe_final_corrected_field",
+          "length": null
+        },
+        "final_minus_input": {
+          "count": 6,
+          "dims": null,
+          "key": "s12_3x2_probe_final_minus_input",
+          "length": 6
+        },
+        "input": {
+          "count": 6,
+          "dims": [
+            3,
+            2
+          ],
+          "key": "s12_3x2_probe_input",
+          "length": null
+        },
+        "input_minus_final": {
+          "count": 6,
+          "dims": null,
+          "key": "s12_3x2_probe_input_minus_final",
+          "length": 6
+        },
+        "row_shift_zero_leveled": {
+          "count": 3,
+          "dims": null,
+          "key": "s12_3x2_probe_row_shift_zero_leveled",
+          "length": 3
+        },
+        "row_statistic_raw_median": {
+          "count": 3,
+          "dims": null,
+          "key": "s12_3x2_probe_row_statistic_raw_median",
+          "length": 3
+        }
+      },
+      "case_identifier": "s12_3x2",
+      "columns": 2,
+      "exit_code": 0,
+      "expected_filter_warning": true,
+      "family": "step",
+      "observed_filter_warnings": 1,
+      "purpose": "degenerate 3x2: median alignment only, runs below min_len, filter no-op",
+      "rows": 3,
+      "scalars": {
+        "final_mean_restoration_offset": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "original_global_mean": {
+          "bits": "0x4004000000000000",
+          "hex": "0x1.4p+1"
+        }
+      },
+      "stderr_sha256": "aae9c38b4c1060dbc230f57ed43082cf8e336f7e40ecf802323b9bb34412efb3",
+      "stdout_sha256": "8204473f029a953b7e59b8ca8dfc4820738727a3e5f2f7a8ddc7916bf357a3d1"
+    },
+    {
+      "arrays": {
+        "correction_scratch_pass1": {
+          "count": 24,
+          "dims": [
+            3,
+            8
+          ],
+          "key": "s13_signed_zero_probe_correction_scratch_pass1",
+          "length": null
+        },
+        "correction_scratch_pass2": {
+          "count": 24,
+          "dims": [
+            3,
+            8
+          ],
+          "key": "s13_signed_zero_probe_correction_scratch_pass2",
+          "length": null
+        },
+        "field_after_conservative_filter": {
+          "count": 24,
+          "dims": [
+            3,
+            8
+          ],
+          "key": "s13_signed_zero_probe_field_after_conservative_filter",
+          "length": null
+        },
+        "field_after_initial_row_alignment": {
+          "count": 24,
+          "dims": [
+            3,
+            8
+          ],
+          "key": "s13_signed_zero_probe_field_after_initial_row_alignment",
+          "length": null
+        },
+        "field_after_pass1": {
+          "count": 24,
+          "dims": [
+            3,
+            8
+          ],
+          "key": "s13_signed_zero_probe_field_after_pass1",
+          "length": null
+        },
+        "field_after_pass2": {
+          "count": 24,
+          "dims": [
+            3,
+            8
+          ],
+          "key": "s13_signed_zero_probe_field_after_pass2",
+          "length": null
+        },
+        "final_corrected_field": {
+          "count": 24,
+          "dims": [
+            3,
+            8
+          ],
+          "key": "s13_signed_zero_probe_final_corrected_field",
+          "length": null
+        },
+        "final_minus_input": {
+          "count": 24,
+          "dims": null,
+          "key": "s13_signed_zero_probe_final_minus_input",
+          "length": 24
+        },
+        "input": {
+          "count": 24,
+          "dims": [
+            3,
+            8
+          ],
+          "key": "s13_signed_zero_probe_input",
+          "length": null
+        },
+        "input_minus_final": {
+          "count": 24,
+          "dims": null,
+          "key": "s13_signed_zero_probe_input_minus_final",
+          "length": 24
+        },
+        "row_shift_zero_leveled": {
+          "count": 3,
+          "dims": null,
+          "key": "s13_signed_zero_probe_row_shift_zero_leveled",
+          "length": 3
+        },
+        "row_statistic_raw_median": {
+          "count": 3,
+          "dims": null,
+          "key": "s13_signed_zero_probe_row_statistic_raw_median",
+          "length": 3
+        }
+      },
+      "case_identifier": "s13_signed_zero",
+      "columns": 8,
+      "exit_code": 0,
+      "expected_filter_warning": true,
+      "family": "step",
+      "observed_filter_warnings": 1,
+      "purpose": "signed-zero propagation through median/shift/arithmetic",
+      "rows": 3,
+      "scalars": {
+        "final_mean_restoration_offset": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "original_global_mean": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        }
+      },
+      "stderr_sha256": "f5a2045d11f3d10ada9562d8d4f02c088dda0b7a63d6d675af6003e7aa5971f6",
+      "stdout_sha256": "8bc42257d612101ef659f9209810b3ad994d7610b4a6fb8fb7a75845ea8fc065"
+    },
+    {
+      "arrays": {
+        "block_summed_weights": {
+          "count": 0,
+          "dims": null,
+          "key": "m01_all_positive_probe_block_summed_weights",
+          "length": 0
+        },
+        "generated_binary_mask": {
+          "count": 0,
+          "dims": [
+            0,
+            0
+          ],
+          "key": "m01_all_positive_probe_generated_binary_mask",
+          "length": null
+        },
+        "input": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m01_all_positive_probe_input",
+          "length": null
+        },
+        "input_field_after_operation": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m01_all_positive_probe_input_field_after_operation",
+          "length": null
+        },
+        "raw_correlation_weights": {
+          "count": 4,
+          "dims": null,
+          "key": "m01_all_positive_probe_raw_correlation_weights",
+          "length": 4
+        },
+        "row_means": {
+          "count": 5,
+          "dims": null,
+          "key": "m01_all_positive_probe_row_means",
+          "length": 5
+        },
+        "row_rms": {
+          "count": 5,
+          "dims": null,
+          "key": "m01_all_positive_probe_row_rms",
+          "length": 5
+        }
+      },
+      "case_identifier": "m01_all_positive",
+      "columns": 5,
+      "exit_code": 0,
+      "expected_filter_warning": false,
+      "family": "inverted",
+      "observed_filter_warnings": 0,
+      "purpose": "all positively correlated rows: no-negative early return",
+      "rows": 5,
+      "scalars": {
+        "anchor_index": {
+          "bits": "0xbff0000000000000",
+          "hex": "-0x1p+0"
+        },
+        "global_mean": {
+          "bits": "0x4000000000000000",
+          "hex": "0x1p+1"
+        },
+        "global_rms": {
+          "bits": "0x4000000000000000",
+          "hex": "0x1p+1"
+        },
+        "guard_triggered": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "has_negative_weight": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "input_mutation_max_abs": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "mask_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "would_overwrite_existing_mask": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "would_write_mask_when_no_existing_mask": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "239d5f722e8fd93dabff54f23b676727849133b933c5e8d4df88ffb9a8d406af"
+    },
+    {
+      "arrays": {
+        "block_summed_weights": {
+          "count": 4,
+          "dims": null,
+          "key": "m02_one_inverted_interior_probe_block_summed_weights",
+          "length": 4
+        },
+        "generated_binary_mask": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m02_one_inverted_interior_probe_generated_binary_mask",
+          "length": null
+        },
+        "input": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m02_one_inverted_interior_probe_input",
+          "length": null
+        },
+        "input_field_after_operation": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m02_one_inverted_interior_probe_input_field_after_operation",
+          "length": null
+        },
+        "raw_correlation_weights": {
+          "count": 4,
+          "dims": null,
+          "key": "m02_one_inverted_interior_probe_raw_correlation_weights",
+          "length": 4
+        },
+        "row_means": {
+          "count": 5,
+          "dims": null,
+          "key": "m02_one_inverted_interior_probe_row_means",
+          "length": 5
+        },
+        "row_rms": {
+          "count": 5,
+          "dims": null,
+          "key": "m02_one_inverted_interior_probe_row_rms",
+          "length": 5
+        }
+      },
+      "case_identifier": "m02_one_inverted_interior",
+      "columns": 5,
+      "exit_code": 0,
+      "expected_filter_warning": false,
+      "family": "inverted",
+      "observed_filter_warnings": 0,
+      "purpose": "isolated inverted interior row: two sign changes",
+      "rows": 5,
+      "scalars": {
+        "anchor_index": {
+          "bits": "0x4000000000000000",
+          "hex": "0x1p+1"
+        },
+        "anchor_weight": {
+          "bits": "0x4013ffffffffffff",
+          "hex": "0x1.3ffffffffffffp+2"
+        },
+        "global_mean": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "global_rms": {
+          "bits": "0x3ff6a09e667f3bcd",
+          "hex": "0x1.6a09e667f3bcdp+0"
+        },
+        "guard_triggered": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "has_negative_weight": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "input_mutation_max_abs": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "mask_max": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "would_overwrite_existing_mask": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "would_write_mask_when_no_existing_mask": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "8c6696a629706c874ee8b2f474d05bc6482d4adbd1ee9d9b349132abe2074c9f"
+    },
+    {
+      "arrays": {
+        "block_summed_weights": {
+          "count": 4,
+          "dims": null,
+          "key": "m03_first_inverted_probe_block_summed_weights",
+          "length": 4
+        },
+        "generated_binary_mask": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m03_first_inverted_probe_generated_binary_mask",
+          "length": null
+        },
+        "input": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m03_first_inverted_probe_input",
+          "length": null
+        },
+        "input_field_after_operation": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m03_first_inverted_probe_input_field_after_operation",
+          "length": null
+        },
+        "raw_correlation_weights": {
+          "count": 4,
+          "dims": null,
+          "key": "m03_first_inverted_probe_raw_correlation_weights",
+          "length": 4
+        },
+        "row_means": {
+          "count": 5,
+          "dims": null,
+          "key": "m03_first_inverted_probe_row_means",
+          "length": 5
+        },
+        "row_rms": {
+          "count": 5,
+          "dims": null,
+          "key": "m03_first_inverted_probe_row_rms",
+          "length": 5
+        }
+      },
+      "case_identifier": "m03_first_inverted",
+      "columns": 5,
+      "exit_code": 0,
+      "expected_filter_warning": false,
+      "family": "inverted",
+      "observed_filter_warnings": 0,
+      "purpose": "first row inverted: upward propagation to row zero",
+      "rows": 5,
+      "scalars": {
+        "anchor_index": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "anchor_weight": {
+          "bits": "0x401dfffffffffffe",
+          "hex": "0x1.dfffffffffffep+2"
+        },
+        "global_mean": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "global_rms": {
+          "bits": "0x3ff6a09e667f3bcd",
+          "hex": "0x1.6a09e667f3bcdp+0"
+        },
+        "guard_triggered": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "has_negative_weight": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "input_mutation_max_abs": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "mask_max": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "would_overwrite_existing_mask": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "would_write_mask_when_no_existing_mask": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "07bd51945b7e964fd8ff80a7d1ed1a3b782e685f14f5c7ea63eace602914b95b"
+    },
+    {
+      "arrays": {
+        "block_summed_weights": {
+          "count": 4,
+          "dims": null,
+          "key": "m04_last_inverted_probe_block_summed_weights",
+          "length": 4
+        },
+        "generated_binary_mask": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m04_last_inverted_probe_generated_binary_mask",
+          "length": null
+        },
+        "input": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m04_last_inverted_probe_input",
+          "length": null
+        },
+        "input_field_after_operation": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m04_last_inverted_probe_input_field_after_operation",
+          "length": null
+        },
+        "raw_correlation_weights": {
+          "count": 4,
+          "dims": null,
+          "key": "m04_last_inverted_probe_raw_correlation_weights",
+          "length": 4
+        },
+        "row_means": {
+          "count": 5,
+          "dims": null,
+          "key": "m04_last_inverted_probe_row_means",
+          "length": 5
+        },
+        "row_rms": {
+          "count": 5,
+          "dims": null,
+          "key": "m04_last_inverted_probe_row_rms",
+          "length": 5
+        }
+      },
+      "case_identifier": "m04_last_inverted",
+      "columns": 5,
+      "exit_code": 0,
+      "expected_filter_warning": false,
+      "family": "inverted",
+      "observed_filter_warnings": 0,
+      "purpose": "last row inverted: downward propagation to final row",
+      "rows": 5,
+      "scalars": {
+        "anchor_index": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "anchor_weight": {
+          "bits": "0x401dfffffffffffe",
+          "hex": "0x1.dfffffffffffep+2"
+        },
+        "global_mean": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "global_rms": {
+          "bits": "0x3ff6a09e667f3bcd",
+          "hex": "0x1.6a09e667f3bcdp+0"
+        },
+        "guard_triggered": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "has_negative_weight": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "input_mutation_max_abs": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "mask_max": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "would_overwrite_existing_mask": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "would_write_mask_when_no_existing_mask": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "0e45b3052de58a4ed1751fb36dc8e222fc68442f544756dcd87f8731ded143ed"
+    },
+    {
+      "arrays": {
+        "block_summed_weights": {
+          "count": 4,
+          "dims": null,
+          "key": "m05_two_consecutive_inverted_probe_block_summed_weights",
+          "length": 4
+        },
+        "generated_binary_mask": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m05_two_consecutive_inverted_probe_generated_binary_mask",
+          "length": null
+        },
+        "input": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m05_two_consecutive_inverted_probe_input",
+          "length": null
+        },
+        "input_field_after_operation": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m05_two_consecutive_inverted_probe_input_field_after_operation",
+          "length": null
+        },
+        "raw_correlation_weights": {
+          "count": 4,
+          "dims": null,
+          "key": "m05_two_consecutive_inverted_probe_raw_correlation_weights",
+          "length": 4
+        },
+        "row_means": {
+          "count": 5,
+          "dims": null,
+          "key": "m05_two_consecutive_inverted_probe_row_means",
+          "length": 5
+        },
+        "row_rms": {
+          "count": 5,
+          "dims": null,
+          "key": "m05_two_consecutive_inverted_probe_row_rms",
+          "length": 5
+        }
+      },
+      "case_identifier": "m05_two_consecutive_inverted",
+      "columns": 5,
+      "exit_code": 0,
+      "expected_filter_warning": false,
+      "family": "inverted",
+      "observed_filter_warnings": 0,
+      "purpose": "two consecutive inverted rows: span propagation",
+      "rows": 5,
+      "scalars": {
+        "anchor_index": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "anchor_weight": {
+          "bits": "0x40058d3dcb08d3dc",
+          "hex": "0x1.58d3dcb08d3dcp+1"
+        },
+        "global_mean": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "global_rms": {
+          "bits": "0x3ff4ef58ad6803f8",
+          "hex": "0x1.4ef58ad6803f8p+0"
+        },
+        "guard_triggered": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "has_negative_weight": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "input_mutation_max_abs": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "mask_max": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "would_overwrite_existing_mask": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "would_write_mask_when_no_existing_mask": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "106d386ce5119ef66de106d69c03457b5e7d9f99c2ced1f744e9f631d2793132"
+    },
+    {
+      "arrays": {
+        "block_summed_weights": {
+          "count": 4,
+          "dims": null,
+          "key": "m06_alternating_probe_block_summed_weights",
+          "length": 4
+        },
+        "generated_binary_mask": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m06_alternating_probe_generated_binary_mask",
+          "length": null
+        },
+        "input": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m06_alternating_probe_input",
+          "length": null
+        },
+        "input_field_after_operation": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m06_alternating_probe_input_field_after_operation",
+          "length": null
+        },
+        "raw_correlation_weights": {
+          "count": 4,
+          "dims": null,
+          "key": "m06_alternating_probe_raw_correlation_weights",
+          "length": 4
+        },
+        "row_means": {
+          "count": 5,
+          "dims": null,
+          "key": "m06_alternating_probe_row_means",
+          "length": 5
+        },
+        "row_rms": {
+          "count": 5,
+          "dims": null,
+          "key": "m06_alternating_probe_row_rms",
+          "length": 5
+        }
+      },
+      "case_identifier": "m06_alternating",
+      "columns": 5,
+      "exit_code": 0,
+      "expected_filter_warning": false,
+      "family": "inverted",
+      "observed_filter_warnings": 0,
+      "purpose": "alternating row signs: repeated toggles",
+      "rows": 5,
+      "scalars": {
+        "anchor_index": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "anchor_weight": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "global_mean": {
+          "bits": "0x3c647ae147ae147b",
+          "hex": "0x1.47ae147ae147bp-57"
+        },
+        "global_rms": {
+          "bits": "0x3ff0c01a68e2e56e",
+          "hex": "0x1.0c01a68e2e56ep+0"
+        },
+        "guard_triggered": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "has_negative_weight": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "input_mutation_max_abs": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "mask_max": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "would_overwrite_existing_mask": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "would_write_mask_when_no_existing_mask": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "64b4254cac34038ca94947b870182d65ed74fce1e2a99a4c382ac5922823eba4"
+    },
+    {
+      "arrays": {
+        "generated_binary_mask": {
+          "count": 0,
+          "dims": [
+            0,
+            0
+          ],
+          "key": "m07_constant_field_probe_generated_binary_mask",
+          "length": null
+        },
+        "input": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m07_constant_field_probe_input",
+          "length": null
+        },
+        "input_field_after_operation": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m07_constant_field_probe_input_field_after_operation",
+          "length": null
+        }
+      },
+      "case_identifier": "m07_constant_field",
+      "columns": 5,
+      "exit_code": 0,
+      "expected_filter_warning": false,
+      "family": "inverted",
+      "observed_filter_warnings": 0,
+      "purpose": "constant field: total_rms <= 0 guard",
+      "rows": 5,
+      "scalars": {
+        "global_mean": {
+          "bits": "0x4014000000000000",
+          "hex": "0x1.4p+2"
+        },
+        "global_rms": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "guard_triggered": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "input_mutation_max_abs": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "would_overwrite_existing_mask": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "would_write_mask_when_no_existing_mask": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "1d3d614343424586fa39d90c6d5a25ef24504bb962856b47d731d2124f844564"
+    },
+    {
+      "arrays": {
+        "block_summed_weights": {
+          "count": 0,
+          "dims": null,
+          "key": "m08_constant_row_probe_block_summed_weights",
+          "length": 0
+        },
+        "generated_binary_mask": {
+          "count": 0,
+          "dims": [
+            0,
+            0
+          ],
+          "key": "m08_constant_row_probe_generated_binary_mask",
+          "length": null
+        },
+        "input": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m08_constant_row_probe_input",
+          "length": null
+        },
+        "input_field_after_operation": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m08_constant_row_probe_input_field_after_operation",
+          "length": null
+        },
+        "raw_correlation_weights": {
+          "count": 4,
+          "dims": null,
+          "key": "m08_constant_row_probe_raw_correlation_weights",
+          "length": 4
+        },
+        "row_means": {
+          "count": 5,
+          "dims": null,
+          "key": "m08_constant_row_probe_row_means",
+          "length": 5
+        },
+        "row_rms": {
+          "count": 5,
+          "dims": null,
+          "key": "m08_constant_row_probe_row_rms",
+          "length": 5
+        }
+      },
+      "case_identifier": "m08_constant_row",
+      "columns": 5,
+      "exit_code": 0,
+      "expected_filter_warning": false,
+      "family": "inverted",
+      "observed_filter_warnings": 0,
+      "purpose": "one constant row inside a varying field: zero weights",
+      "rows": 5,
+      "scalars": {
+        "anchor_index": {
+          "bits": "0xbff0000000000000",
+          "hex": "-0x1p+0"
+        },
+        "global_mean": {
+          "bits": "0x3fe3333333333333",
+          "hex": "0x1.3333333333333p-1"
+        },
+        "global_rms": {
+          "bits": "0x3ffbe59eba3a165a",
+          "hex": "0x1.be59eba3a165ap+0"
+        },
+        "guard_triggered": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "has_negative_weight": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "input_mutation_max_abs": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "mask_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "would_overwrite_existing_mask": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "would_write_mask_when_no_existing_mask": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "419faded17d34ca7f010c8178a160119d8f724e34800282da975509175907933"
+    },
+    {
+      "arrays": {
+        "block_summed_weights": {
+          "count": 4,
+          "dims": null,
+          "key": "m09_tie_anchor_probe_block_summed_weights",
+          "length": 4
+        },
+        "generated_binary_mask": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m09_tie_anchor_probe_generated_binary_mask",
+          "length": null
+        },
+        "input": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m09_tie_anchor_probe_input",
+          "length": null
+        },
+        "input_field_after_operation": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m09_tie_anchor_probe_input_field_after_operation",
+          "length": null
+        },
+        "raw_correlation_weights": {
+          "count": 4,
+          "dims": null,
+          "key": "m09_tie_anchor_probe_raw_correlation_weights",
+          "length": 4
+        },
+        "row_means": {
+          "count": 5,
+          "dims": null,
+          "key": "m09_tie_anchor_probe_row_means",
+          "length": 5
+        },
+        "row_rms": {
+          "count": 5,
+          "dims": null,
+          "key": "m09_tie_anchor_probe_row_rms",
+          "length": 5
+        }
+      },
+      "case_identifier": "m09_tie_anchor",
+      "columns": 5,
+      "exit_code": 0,
+      "expected_filter_warning": false,
+      "family": "inverted",
+      "observed_filter_warnings": 0,
+      "purpose": "two exactly equal candidate anchor blocks: strict-first maximum",
+      "rows": 5,
+      "scalars": {
+        "anchor_index": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "anchor_weight": {
+          "bits": "0x4003ffffffffffff",
+          "hex": "0x1.3ffffffffffffp+1"
+        },
+        "global_mean": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "global_rms": {
+          "bits": "0x3ff6a09e667f3bcd",
+          "hex": "0x1.6a09e667f3bcdp+0"
+        },
+        "guard_triggered": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "has_negative_weight": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "input_mutation_max_abs": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "mask_max": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "would_overwrite_existing_mask": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "would_write_mask_when_no_existing_mask": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "56dc8d40a3d99f8d52faa3a408793ac6d82530ec4859bcc342c0eb1857bcf158"
+    },
+    {
+      "arrays": {
+        "generated_binary_mask": {
+          "count": 0,
+          "dims": [
+            0,
+            0
+          ],
+          "key": "m10_2x5_probe_generated_binary_mask",
+          "length": null
+        },
+        "input": {
+          "count": 10,
+          "dims": [
+            2,
+            5
+          ],
+          "key": "m10_2x5_probe_input",
+          "length": null
+        },
+        "input_field_after_operation": {
+          "count": 10,
+          "dims": [
+            2,
+            5
+          ],
+          "key": "m10_2x5_probe_input_field_after_operation",
+          "length": null
+        }
+      },
+      "case_identifier": "m10_2x5",
+      "columns": 5,
+      "exit_code": 0,
+      "expected_filter_warning": false,
+      "family": "inverted",
+      "observed_filter_warnings": 0,
+      "purpose": "minimum dimensions: yres < 3 guard",
+      "rows": 2,
+      "scalars": {
+        "global_mean": {
+          "bits": "0x400c000000000000",
+          "hex": "0x1.cp+1"
+        },
+        "global_rms": {
+          "bits": "0x3ff8000000000000",
+          "hex": "0x1.8p+0"
+        },
+        "guard_triggered": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "input_mutation_max_abs": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "would_overwrite_existing_mask": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "would_write_mask_when_no_existing_mask": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "7c286f319d927159b04a455a43ca6a88f2463a66217ba771e5efcfadb82385d9"
+    },
+    {
+      "arrays": {
+        "generated_binary_mask": {
+          "count": 0,
+          "dims": [
+            0,
+            0
+          ],
+          "key": "m10_3x2_probe_generated_binary_mask",
+          "length": null
+        },
+        "input": {
+          "count": 6,
+          "dims": [
+            3,
+            2
+          ],
+          "key": "m10_3x2_probe_input",
+          "length": null
+        },
+        "input_field_after_operation": {
+          "count": 6,
+          "dims": [
+            3,
+            2
+          ],
+          "key": "m10_3x2_probe_input_field_after_operation",
+          "length": null
+        }
+      },
+      "case_identifier": "m10_3x2",
+      "columns": 2,
+      "exit_code": 0,
+      "expected_filter_warning": false,
+      "family": "inverted",
+      "observed_filter_warnings": 0,
+      "purpose": "minimum dimensions: xres < 3 guard",
+      "rows": 3,
+      "scalars": {
+        "global_mean": {
+          "bits": "0x4004000000000000",
+          "hex": "0x1.4p+1"
+        },
+        "global_rms": {
+          "bits": "0x3ffb534070e9620c",
+          "hex": "0x1.b534070e9620cp+0"
+        },
+        "guard_triggered": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "input_mutation_max_abs": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "would_overwrite_existing_mask": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "would_write_mask_when_no_existing_mask": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "6372457851a8b25ab9afcc3181eb24c024fa891933a39a87f88c4312fc6415c9"
+    },
+    {
+      "arrays": {
+        "block_summed_weights": {
+          "count": 2,
+          "dims": null,
+          "key": "m10_3x3_probe_block_summed_weights",
+          "length": 2
+        },
+        "generated_binary_mask": {
+          "count": 9,
+          "dims": [
+            3,
+            3
+          ],
+          "key": "m10_3x3_probe_generated_binary_mask",
+          "length": null
+        },
+        "input": {
+          "count": 9,
+          "dims": [
+            3,
+            3
+          ],
+          "key": "m10_3x3_probe_input",
+          "length": null
+        },
+        "input_field_after_operation": {
+          "count": 9,
+          "dims": [
+            3,
+            3
+          ],
+          "key": "m10_3x3_probe_input_field_after_operation",
+          "length": null
+        },
+        "raw_correlation_weights": {
+          "count": 2,
+          "dims": null,
+          "key": "m10_3x3_probe_raw_correlation_weights",
+          "length": 2
+        },
+        "row_means": {
+          "count": 3,
+          "dims": null,
+          "key": "m10_3x3_probe_row_means",
+          "length": 3
+        },
+        "row_rms": {
+          "count": 3,
+          "dims": null,
+          "key": "m10_3x3_probe_row_rms",
+          "length": 3
+        }
+      },
+      "case_identifier": "m10_3x3",
+      "columns": 3,
+      "exit_code": 0,
+      "expected_filter_warning": false,
+      "family": "inverted",
+      "observed_filter_warnings": 0,
+      "purpose": "minimum valid dimensions: full path",
+      "rows": 3,
+      "scalars": {
+        "anchor_index": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "anchor_weight": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "global_mean": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "global_rms": {
+          "bits": "0x3fea20bd700c2c3e",
+          "hex": "0x1.a20bd700c2c3ep-1"
+        },
+        "guard_triggered": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "has_negative_weight": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "input_mutation_max_abs": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "mask_max": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "would_overwrite_existing_mask": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "would_write_mask_when_no_existing_mask": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "9da0f11cae22b46e242e96fc55380ec5e77522100d590926ee0be5ebb2080d50"
+    },
+    {
+      "arrays": {
+        "block_summed_weights": {
+          "count": 0,
+          "dims": null,
+          "key": "m11_existing_mask_no_inverted_probe_block_summed_weights",
+          "length": 0
+        },
+        "existing_mask_after_operation": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m11_existing_mask_no_inverted_probe_existing_mask_after_operation",
+          "length": null
+        },
+        "existing_mask_before": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m11_existing_mask_no_inverted_probe_existing_mask_before",
+          "length": null
+        },
+        "generated_binary_mask": {
+          "count": 0,
+          "dims": [
+            0,
+            0
+          ],
+          "key": "m11_existing_mask_no_inverted_probe_generated_binary_mask",
+          "length": null
+        },
+        "input": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m11_existing_mask_no_inverted_probe_input",
+          "length": null
+        },
+        "input_field_after_operation": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m11_existing_mask_no_inverted_probe_input_field_after_operation",
+          "length": null
+        },
+        "raw_correlation_weights": {
+          "count": 4,
+          "dims": null,
+          "key": "m11_existing_mask_no_inverted_probe_raw_correlation_weights",
+          "length": 4
+        },
+        "row_means": {
+          "count": 5,
+          "dims": null,
+          "key": "m11_existing_mask_no_inverted_probe_row_means",
+          "length": 5
+        },
+        "row_rms": {
+          "count": 5,
+          "dims": null,
+          "key": "m11_existing_mask_no_inverted_probe_row_rms",
+          "length": 5
+        }
+      },
+      "case_identifier": "m11_existing_mask_no_inverted",
+      "columns": 5,
+      "exit_code": 0,
+      "expected_filter_warning": false,
+      "family": "inverted",
+      "observed_filter_warnings": 0,
+      "purpose": "no-negative early return: existing mask untouched",
+      "rows": 5,
+      "scalars": {
+        "anchor_index": {
+          "bits": "0xbff0000000000000",
+          "hex": "-0x1p+0"
+        },
+        "global_mean": {
+          "bits": "0x4000000000000000",
+          "hex": "0x1p+1"
+        },
+        "global_rms": {
+          "bits": "0x4000000000000000",
+          "hex": "0x1p+1"
+        },
+        "guard_triggered": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "has_negative_weight": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "input_mutation_max_abs": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "mask_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "would_overwrite_existing_mask": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "would_write_mask_when_no_existing_mask": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "f0bea6ddcb82ef9ad9933def30026a275c18ef33716f7411b580d51928e9fea8"
+    },
+    {
+      "arrays": {
+        "block_summed_weights": {
+          "count": 4,
+          "dims": null,
+          "key": "m12_existing_mask_with_inverted_row_probe_block_summed_weights",
+          "length": 4
+        },
+        "existing_mask_after_overwrite": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m12_existing_mask_with_inverted_row_probe_existing_mask_after_overwrite",
+          "length": null
+        },
+        "existing_mask_before": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m12_existing_mask_with_inverted_row_probe_existing_mask_before",
+          "length": null
+        },
+        "generated_binary_mask": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m12_existing_mask_with_inverted_row_probe_generated_binary_mask",
+          "length": null
+        },
+        "input": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m12_existing_mask_with_inverted_row_probe_input",
+          "length": null
+        },
+        "input_field_after_operation": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "m12_existing_mask_with_inverted_row_probe_input_field_after_operation",
+          "length": null
+        },
+        "raw_correlation_weights": {
+          "count": 4,
+          "dims": null,
+          "key": "m12_existing_mask_with_inverted_row_probe_raw_correlation_weights",
+          "length": 4
+        },
+        "row_means": {
+          "count": 5,
+          "dims": null,
+          "key": "m12_existing_mask_with_inverted_row_probe_row_means",
+          "length": 5
+        },
+        "row_rms": {
+          "count": 5,
+          "dims": null,
+          "key": "m12_existing_mask_with_inverted_row_probe_row_rms",
+          "length": 5
+        }
+      },
+      "case_identifier": "m12_existing_mask_with_inverted_row",
+      "columns": 5,
+      "exit_code": 0,
+      "expected_filter_warning": false,
+      "family": "inverted",
+      "observed_filter_warnings": 0,
+      "purpose": "actual detection: existing mask overwritten bitwise by the generated binary mask",
+      "rows": 5,
+      "scalars": {
+        "anchor_index": {
+          "bits": "0x4000000000000000",
+          "hex": "0x1p+1"
+        },
+        "anchor_weight": {
+          "bits": "0x4013ffffffffffff",
+          "hex": "0x1.3ffffffffffffp+2"
+        },
+        "global_mean": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "global_rms": {
+          "bits": "0x3ff6a09e667f3bcd",
+          "hex": "0x1.6a09e667f3bcdp+0"
+        },
+        "guard_triggered": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "has_negative_weight": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "input_mutation_max_abs": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "mask_max": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "would_overwrite_existing_mask": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "would_write_mask_when_no_existing_mask": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "499d44b612df315335377bb01ae7a4635505f7f9adaa2efcb32326f7f440b17b"
+    }
+  ],
+  "comparison_metrics": {
+    "mark_inverted": {
+      "array_count": 59,
+      "arrays_bitwise_exact": 59,
+      "case_count": 14,
+      "element_count": 596,
+      "elements_bitwise_exact": 596,
+      "inf_mismatches": 0,
+      "max_absolute_difference": 0.0,
+      "max_ulp_difference": 0,
+      "nan_mismatches": 0,
+      "signed_zero_mismatches": 0
+    },
+    "step": {
+      "array_count": 176,
+      "arrays_bitwise_exact": 176,
+      "case_count": 16,
+      "element_count": 5046,
+      "elements_bitwise_exact": 5046,
+      "inf_mismatches": 0,
+      "max_absolute_difference": 0.0,
+      "max_ulp_difference": 0,
+      "nan_mismatches": 0,
+      "signed_zero_mismatches": 0
+    }
+  },
+  "evidence": {
+    "deliberate_spmkit_policy_differences": [
+      "Non-finite inputs (NaN, +-Inf) are rejected at the SPMKit entry point; the Gwydion source propagates IEEE arithmetic without pre-filtering.",
+      "SPMKit SPMChannel has no persistent mask field; the Mark Inverted Rows adaptation will return masks as explicit outputs rather than mutating channel state.",
+      "GUI semantics (undo checkpoints, channel log, data-browser current channel lookup, container writes) are not part of the numerical contract and will not be emulated."
+    ],
+    "known_source_behaviours": [
+      "Step Line Correction pipeline: row upper-median alignment with zero-leveled shifts (correct.c:1599-1671, 1565-1568), two detector passes, size-5 conservative denoise, global-mean restoration (linecorrect.c:177-189).",
+      "Step detector: v = (middle-top)*(middle-bottom) > 3.0*w with w the mean squared row-to-row difference; sign from 2*middle-top-bottom; maximal runs of equal +/-1 marks; segments shorter than 4 pixels are rejected; correction add = (3*segment_mean + local residual)/4 (linecorrect.c:78-157).",
+      "Persistent monotonic row-to-row transitions give v = 0 and are not treated as steps; only local middle-row displacements trigger marks.",
+      "The size-5 conservative filter warns 'Kernel size larger than field area size.' and is a no-op when xres < 5 or yres < 5 (filters.c:1174-1177); otherwise it clamps each pixel to the min/max of its clipped 5x5 neighbourhood excluding the centre (filters.c:1188-1216).",
+      "Mark Inverted Rows statistic: sum((x-mean_a)*(y-mean_b)) divided by (rms_a*rms_b + total_rms**2); the numerator is not divided by the sample count (linecorrect.c:194-207).",
+      "Mark Inverted Rows block processing: in-place summation of same-sign weight runs; strict-first-maximum anchor selection; sign-toggle propagation upward and downward with positive weights leaving the inverted state unchanged (linecorrect.c:262-311).",
+      "Any negative correlation weight marks at least one row, so the all-zero generated mask with an existing mask present is unreachable; the existing mask is overwritten bitwise after actual detection (linecorrect.c:296-327) and left untouched on the no-negative early return (linecorrect.c:255-260).",
+      "Mark Inverted Rows never modifies the data field; the generated mask contains only 0.0 and 1.0 values.",
+      "Signed-zero bits change through the Step pipeline (s13: four -0.0 inputs become +0.0)."
+    ],
+    "non_claims": [
+      "No universal Gwydion equivalence: parity is claimed only within the frozen 30-case finite campaign.",
+      "No other Gwydion version/build claim.",
+      "No NaN/Inf compatibility claim (inputs are finite).",
+      "No vertical/column operation: both operations are strictly row-based.",
+      "No mask-aware Step Line Correction (the source ignores user masks).",
+      "No Block Line Correction claim (blockstep.c is out of scope).",
+      "No GUI, undo, logging or persistent data-browser mask parity.",
+      "No claim that these transformations preserve quantitative roughness."
+    ]
+  },
+  "fixture": {
+    "array_hashes": {
+      "m01_all_positive_probe_block_summed_weights": "1a9db4cd1ff2de7f35c0c4f08a93d434357c66d3370ddaea54a46730077a2b06",
+      "m01_all_positive_probe_generated_binary_mask": "d0d62de1303c13bb297cf8dc7616aea8210def0c9be520ff52650fa9f3a37fdd",
+      "m01_all_positive_probe_input": "72e396db671522e3aa967a3ae4bc55959910ea62908c6abab2a27909866aedd9",
+      "m01_all_positive_probe_input_field_after_operation": "72e396db671522e3aa967a3ae4bc55959910ea62908c6abab2a27909866aedd9",
+      "m01_all_positive_probe_raw_correlation_weights": "0598c2cc8a162164fd84d1d26c12dc2d1d32909847f57c76dd85828251719fae",
+      "m01_all_positive_probe_row_means": "98652372120c6779b6203f45b69f77bdc6451b88c7665df1c331b8cac60e01e8",
+      "m01_all_positive_probe_row_rms": "df1921a0c76954ace882129403e453fd8952989b344befccdb6d8aaea3db29ca",
+      "m02_one_inverted_interior_probe_block_summed_weights": "3cad535ce469985b63b0b82d4e92afe1c512e8ec5bd5812aaf1883af5098c2fc",
+      "m02_one_inverted_interior_probe_generated_binary_mask": "7d85b0d0baf658a62d4452cedf544bdeec3df5b156b60739d5c35d09499ce871",
+      "m02_one_inverted_interior_probe_input": "35b26e0cec85e2c95ab579eaffc35b771e7a20ad661e8452ef56859785201aea",
+      "m02_one_inverted_interior_probe_input_field_after_operation": "35b26e0cec85e2c95ab579eaffc35b771e7a20ad661e8452ef56859785201aea",
+      "m02_one_inverted_interior_probe_raw_correlation_weights": "737aa017babc1d6046b3e41542d7c55ac706b616b3221a33a896ab4f0f353e1b",
+      "m02_one_inverted_interior_probe_row_means": "5fc6d0c0aeaa02108907b22aa1f331adaf2d2241ae86749c3dcf92c9f9150f7c",
+      "m02_one_inverted_interior_probe_row_rms": "df1921a0c76954ace882129403e453fd8952989b344befccdb6d8aaea3db29ca",
+      "m03_first_inverted_probe_block_summed_weights": "06c1119e3042ffc2b82272f521274bee17c1510aefa164c836ccc464c74e3379",
+      "m03_first_inverted_probe_generated_binary_mask": "401df65794e4a5cecfc04302ec258167af38dfe1d69f06914783576343635d42",
+      "m03_first_inverted_probe_input": "7cc022901131c0765ea2d51ffcf98d5fe7f597ae71553fd4ce99849af0b96b56",
+      "m03_first_inverted_probe_input_field_after_operation": "7cc022901131c0765ea2d51ffcf98d5fe7f597ae71553fd4ce99849af0b96b56",
+      "m03_first_inverted_probe_raw_correlation_weights": "88dda37072826bfe4343f9b85e9dd6857201467e6090f37704b5c7309f1dc7a2",
+      "m03_first_inverted_probe_row_means": "5fc6d0c0aeaa02108907b22aa1f331adaf2d2241ae86749c3dcf92c9f9150f7c",
+      "m03_first_inverted_probe_row_rms": "df1921a0c76954ace882129403e453fd8952989b344befccdb6d8aaea3db29ca",
+      "m04_last_inverted_probe_block_summed_weights": "85fdad904dab7e6509660e0f36607d8e14b7bee4442cadfefb7066da255faf10",
+      "m04_last_inverted_probe_generated_binary_mask": "304edfe044029844ef30bbee137f60c155bb7b1b4ebc360c39cdd9ad53c055d9",
+      "m04_last_inverted_probe_input": "8d8e38723d70067276b9fc83293f295b3b0e59091824808c49b5dfd8646757b1",
+      "m04_last_inverted_probe_input_field_after_operation": "8d8e38723d70067276b9fc83293f295b3b0e59091824808c49b5dfd8646757b1",
+      "m04_last_inverted_probe_raw_correlation_weights": "6a8fffb1e663da6bbce67a1cd0b986409472d1c1cdf3b1e90163c485195eef2c",
+      "m04_last_inverted_probe_row_means": "5fc6d0c0aeaa02108907b22aa1f331adaf2d2241ae86749c3dcf92c9f9150f7c",
+      "m04_last_inverted_probe_row_rms": "df1921a0c76954ace882129403e453fd8952989b344befccdb6d8aaea3db29ca",
+      "m05_two_consecutive_inverted_probe_block_summed_weights": "5dd7379cde36834e1f93d23cb90f7e97ac3b1a4152075af8a2e253bc33a50efe",
+      "m05_two_consecutive_inverted_probe_generated_binary_mask": "e36895c94b58da67b4c2400081b4e3343661b88f01fc949d008959e2c0ccfd79",
+      "m05_two_consecutive_inverted_probe_input": "97883d5fcb3755bd7bb69cbe89bbb438a08d7c04273fe0904ea5c0d821a63425",
+      "m05_two_consecutive_inverted_probe_input_field_after_operation": "97883d5fcb3755bd7bb69cbe89bbb438a08d7c04273fe0904ea5c0d821a63425",
+      "m05_two_consecutive_inverted_probe_raw_correlation_weights": "5dd7379cde36834e1f93d23cb90f7e97ac3b1a4152075af8a2e253bc33a50efe",
+      "m05_two_consecutive_inverted_probe_row_means": "5cc92f3bebb3d38bef37bab2f82efe0134b1b45d2b3d9ad818a10ad0e26c8dd4",
+      "m05_two_consecutive_inverted_probe_row_rms": "86ea4fe9716105e6e63a42aa15cb5499c563b19bb0284566fdd47b32fe3bc1fd",
+      "m06_alternating_probe_block_summed_weights": "0ed80a044b96b8bccbee7831fdd5d535bdb492c3c776ff8dd1008b3a15fbdcdd",
+      "m06_alternating_probe_generated_binary_mask": "314d516c8eb534e03fa4b1a68aa2231eaee38efbd28f906fcdf54bb69cac50bb",
+      "m06_alternating_probe_input": "6901ad5720f97aa2b6070be6cde7eb166c72fc7c9f715e2ff365139b1d74656b",
+      "m06_alternating_probe_input_field_after_operation": "6901ad5720f97aa2b6070be6cde7eb166c72fc7c9f715e2ff365139b1d74656b",
+      "m06_alternating_probe_raw_correlation_weights": "e614b73b796d6ce356a925383d57aeb93ccb3f4f6c46c27d48333c52401ddf32",
+      "m06_alternating_probe_row_means": "bf4ab0abb3c749ac30caee88e0d78d5968c6ac3f6f298d1ebcffe7045763e0f3",
+      "m06_alternating_probe_row_rms": "79ee90600fd2c266094afa7c6ca6360d64a9b6235d6ad511136558a949adcf9c",
+      "m07_constant_field_probe_generated_binary_mask": "d0d62de1303c13bb297cf8dc7616aea8210def0c9be520ff52650fa9f3a37fdd",
+      "m07_constant_field_probe_input": "ab1aec24c1ea08aa2fa9bb9efe5aa31007cad43216bb92a26ef43e5e2027054a",
+      "m07_constant_field_probe_input_field_after_operation": "ab1aec24c1ea08aa2fa9bb9efe5aa31007cad43216bb92a26ef43e5e2027054a",
+      "m08_constant_row_probe_block_summed_weights": "1a9db4cd1ff2de7f35c0c4f08a93d434357c66d3370ddaea54a46730077a2b06",
+      "m08_constant_row_probe_generated_binary_mask": "d0d62de1303c13bb297cf8dc7616aea8210def0c9be520ff52650fa9f3a37fdd",
+      "m08_constant_row_probe_input": "f62564347ddc0fc02b0158d8d95eadb4bbba0949301b51e1ebb563e1bb55e43b",
+      "m08_constant_row_probe_input_field_after_operation": "f62564347ddc0fc02b0158d8d95eadb4bbba0949301b51e1ebb563e1bb55e43b",
+      "m08_constant_row_probe_raw_correlation_weights": "6132e1247de648e4cb92e7c1f3a04949bf70b73d853761814ad8820545167440",
+      "m08_constant_row_probe_row_means": "f0c00010c8c5260e58a2a2fe3279576e3fa2eecb09cd92d09bea8fbf10aeb9b7",
+      "m08_constant_row_probe_row_rms": "f9d36f191b5f05cd27bca49086060a86a07dac392709842389693a84d5c980c4",
+      "m09_tie_anchor_probe_block_summed_weights": "8eb89200a59e82047714ff0923f91ee025fa687d45c0aaba4eedd7dd44b84935",
+      "m09_tie_anchor_probe_generated_binary_mask": "e36895c94b58da67b4c2400081b4e3343661b88f01fc949d008959e2c0ccfd79",
+      "m09_tie_anchor_probe_input": "ff5c5abf3eb43422b476e9fba6af5fddab529883e3d05e3c75ab9081649ef1c1",
+      "m09_tie_anchor_probe_input_field_after_operation": "ff5c5abf3eb43422b476e9fba6af5fddab529883e3d05e3c75ab9081649ef1c1",
+      "m09_tie_anchor_probe_raw_correlation_weights": "8eb89200a59e82047714ff0923f91ee025fa687d45c0aaba4eedd7dd44b84935",
+      "m09_tie_anchor_probe_row_means": "5fc6d0c0aeaa02108907b22aa1f331adaf2d2241ae86749c3dcf92c9f9150f7c",
+      "m09_tie_anchor_probe_row_rms": "df1921a0c76954ace882129403e453fd8952989b344befccdb6d8aaea3db29ca",
+      "m10_2x5_probe_generated_binary_mask": "d0d62de1303c13bb297cf8dc7616aea8210def0c9be520ff52650fa9f3a37fdd",
+      "m10_2x5_probe_input": "03fe3171cfa65a1b921755bd5700fd96a6594401c7ab685aef5db84eaa966eaa",
+      "m10_2x5_probe_input_field_after_operation": "03fe3171cfa65a1b921755bd5700fd96a6594401c7ab685aef5db84eaa966eaa",
+      "m10_3x2_probe_generated_binary_mask": "d0d62de1303c13bb297cf8dc7616aea8210def0c9be520ff52650fa9f3a37fdd",
+      "m10_3x2_probe_input": "8e98655fb745c39d3f25b34eb2af9297babdbf435eb765855c480b503fe1a375",
+      "m10_3x2_probe_input_field_after_operation": "8e98655fb745c39d3f25b34eb2af9297babdbf435eb765855c480b503fe1a375",
+      "m10_3x3_probe_block_summed_weights": "738ff83767dcf742cc80f24532bd099cdbc7d1c58f2b3b77f8dc53186709b286",
+      "m10_3x3_probe_generated_binary_mask": "af701b84a045f2a6fb9bf5b6e42e4f5b5eaf4c6fc19769a03c6233717e0d9218",
+      "m10_3x3_probe_input": "866d5a21f349d98d4718afda3baf0c4109b350d51e9b01426ee189831b78baf5",
+      "m10_3x3_probe_input_field_after_operation": "866d5a21f349d98d4718afda3baf0c4109b350d51e9b01426ee189831b78baf5",
+      "m10_3x3_probe_raw_correlation_weights": "9efe95d63620b209fb2113d1769026027de96e1eed9a6d5ea5030fb24af353d5",
+      "m10_3x3_probe_row_means": "e50512deeab1fca1006866d5e38b76dd6886fda73e829b50a91e3f7a82ca86e3",
+      "m10_3x3_probe_row_rms": "51077e2306f0bacbe89c94609405fb8c9a2a338986795f2c3817ab51e22b74f7",
+      "m11_existing_mask_no_inverted_probe_block_summed_weights": "1a9db4cd1ff2de7f35c0c4f08a93d434357c66d3370ddaea54a46730077a2b06",
+      "m11_existing_mask_no_inverted_probe_existing_mask_after_operation": "e5e1d3cfe388141049070f7802c2f4197f34eb87a3a025d90eb59f940da5ca25",
+      "m11_existing_mask_no_inverted_probe_existing_mask_before": "e5e1d3cfe388141049070f7802c2f4197f34eb87a3a025d90eb59f940da5ca25",
+      "m11_existing_mask_no_inverted_probe_generated_binary_mask": "d0d62de1303c13bb297cf8dc7616aea8210def0c9be520ff52650fa9f3a37fdd",
+      "m11_existing_mask_no_inverted_probe_input": "72e396db671522e3aa967a3ae4bc55959910ea62908c6abab2a27909866aedd9",
+      "m11_existing_mask_no_inverted_probe_input_field_after_operation": "72e396db671522e3aa967a3ae4bc55959910ea62908c6abab2a27909866aedd9",
+      "m11_existing_mask_no_inverted_probe_raw_correlation_weights": "0598c2cc8a162164fd84d1d26c12dc2d1d32909847f57c76dd85828251719fae",
+      "m11_existing_mask_no_inverted_probe_row_means": "98652372120c6779b6203f45b69f77bdc6451b88c7665df1c331b8cac60e01e8",
+      "m11_existing_mask_no_inverted_probe_row_rms": "df1921a0c76954ace882129403e453fd8952989b344befccdb6d8aaea3db29ca",
+      "m12_existing_mask_with_inverted_row_probe_block_summed_weights": "3cad535ce469985b63b0b82d4e92afe1c512e8ec5bd5812aaf1883af5098c2fc",
+      "m12_existing_mask_with_inverted_row_probe_existing_mask_after_overwrite": "7d85b0d0baf658a62d4452cedf544bdeec3df5b156b60739d5c35d09499ce871",
+      "m12_existing_mask_with_inverted_row_probe_existing_mask_before": "3bb77dbe9a9aeeae210845d2b8fa9c5947dbf3639771df5aefb20240ce9668b2",
+      "m12_existing_mask_with_inverted_row_probe_generated_binary_mask": "7d85b0d0baf658a62d4452cedf544bdeec3df5b156b60739d5c35d09499ce871",
+      "m12_existing_mask_with_inverted_row_probe_input": "35b26e0cec85e2c95ab579eaffc35b771e7a20ad661e8452ef56859785201aea",
+      "m12_existing_mask_with_inverted_row_probe_input_field_after_operation": "35b26e0cec85e2c95ab579eaffc35b771e7a20ad661e8452ef56859785201aea",
+      "m12_existing_mask_with_inverted_row_probe_raw_correlation_weights": "737aa017babc1d6046b3e41542d7c55ac706b616b3221a33a896ab4f0f353e1b",
+      "m12_existing_mask_with_inverted_row_probe_row_means": "5fc6d0c0aeaa02108907b22aa1f331adaf2d2241ae86749c3dcf92c9f9150f7c",
+      "m12_existing_mask_with_inverted_row_probe_row_rms": "df1921a0c76954ace882129403e453fd8952989b344befccdb6d8aaea3db29ca",
+      "s01_constant_5x7_probe_correction_scratch_pass1": "e86c5cebaca993eec83e3e8f6671781b40dbcca3b58ed4dca233f1b5560e4c7f",
+      "s01_constant_5x7_probe_correction_scratch_pass2": "e86c5cebaca993eec83e3e8f6671781b40dbcca3b58ed4dca233f1b5560e4c7f",
+      "s01_constant_5x7_probe_field_after_conservative_filter": "a4c1d204967590ba9eadd95517b5eb5118bff88632382a2a62770ead4a9cc139",
+      "s01_constant_5x7_probe_field_after_initial_row_alignment": "a4c1d204967590ba9eadd95517b5eb5118bff88632382a2a62770ead4a9cc139",
+      "s01_constant_5x7_probe_field_after_pass1": "a4c1d204967590ba9eadd95517b5eb5118bff88632382a2a62770ead4a9cc139",
+      "s01_constant_5x7_probe_field_after_pass2": "a4c1d204967590ba9eadd95517b5eb5118bff88632382a2a62770ead4a9cc139",
+      "s01_constant_5x7_probe_final_corrected_field": "a4c1d204967590ba9eadd95517b5eb5118bff88632382a2a62770ead4a9cc139",
+      "s01_constant_5x7_probe_final_minus_input": "6144fb3ab98f09823f2db1f61dd8181ace83ffc17f775ce78648ae20475d3eef",
+      "s01_constant_5x7_probe_input": "a4c1d204967590ba9eadd95517b5eb5118bff88632382a2a62770ead4a9cc139",
+      "s01_constant_5x7_probe_input_minus_final": "6144fb3ab98f09823f2db1f61dd8181ace83ffc17f775ce78648ae20475d3eef",
+      "s01_constant_5x7_probe_row_shift_zero_leveled": "5fc6d0c0aeaa02108907b22aa1f331adaf2d2241ae86749c3dcf92c9f9150f7c",
+      "s01_constant_5x7_probe_row_statistic_raw_median": "15c2ea0cbd479ee1c3857718a7a0f72c63da1a52d24897b5a864ce374905d1b4",
+      "s02_offset_asymmetric_4x6_probe_correction_scratch_pass1": "cb5f84519d900535002c21c50f6810ffcee88656adbcb45baa0667fbb1daa736",
+      "s02_offset_asymmetric_4x6_probe_correction_scratch_pass2": "cb5f84519d900535002c21c50f6810ffcee88656adbcb45baa0667fbb1daa736",
+      "s02_offset_asymmetric_4x6_probe_field_after_conservative_filter": "74f66740aec944654f8370f0ff22b9d551bf2018f53273eec92e8e1b5bf3bdc0",
+      "s02_offset_asymmetric_4x6_probe_field_after_initial_row_alignment": "74f66740aec944654f8370f0ff22b9d551bf2018f53273eec92e8e1b5bf3bdc0",
+      "s02_offset_asymmetric_4x6_probe_field_after_pass1": "74f66740aec944654f8370f0ff22b9d551bf2018f53273eec92e8e1b5bf3bdc0",
+      "s02_offset_asymmetric_4x6_probe_field_after_pass2": "74f66740aec944654f8370f0ff22b9d551bf2018f53273eec92e8e1b5bf3bdc0",
+      "s02_offset_asymmetric_4x6_probe_final_corrected_field": "74f66740aec944654f8370f0ff22b9d551bf2018f53273eec92e8e1b5bf3bdc0",
+      "s02_offset_asymmetric_4x6_probe_final_minus_input": "5d20b369a1df8a72212d7b8e4dce600d523b6a86753918349e6fb48145a47107",
+      "s02_offset_asymmetric_4x6_probe_input": "f2b8b01aea59729db0d78b00fc52f28ad7cc1773032e7943e9081fc1bd95c996",
+      "s02_offset_asymmetric_4x6_probe_input_minus_final": "48515503123774d998799757b0a196458e4b06e5c28407caa09fe67876e1fb8c",
+      "s02_offset_asymmetric_4x6_probe_row_shift_zero_leveled": "90f8d431c3b2babba97351ce88796101965b9b2f98bebbe5b2f9b146c5a84dee",
+      "s02_offset_asymmetric_4x6_probe_row_statistic_raw_median": "1bf2dfcb0cbc9d4264eb16477ca73ae9ca56b707d978832dbcb39be9c019352a",
+      "s03_positive_segment_4_probe_correction_scratch_pass1": "3d816e46c0f0fb4ed27bd5580cd9665296647abc90edb8b6d26c6e9dd5c880f2",
+      "s03_positive_segment_4_probe_correction_scratch_pass2": "6648f8413551077691b3fc2367d47c7bc1251a5a1dbc8551e0b586696ad49386",
+      "s03_positive_segment_4_probe_field_after_conservative_filter": "474366e33c889d55287ce6cd21bf98f78f8a4d47adf93d9a682ae3ce58f27cc5",
+      "s03_positive_segment_4_probe_field_after_initial_row_alignment": "3d2dab0cf4680aeb1faa350eeabf3c03201b5f7c21a0357cd35a0a396a6cf56a",
+      "s03_positive_segment_4_probe_field_after_pass1": "474366e33c889d55287ce6cd21bf98f78f8a4d47adf93d9a682ae3ce58f27cc5",
+      "s03_positive_segment_4_probe_field_after_pass2": "474366e33c889d55287ce6cd21bf98f78f8a4d47adf93d9a682ae3ce58f27cc5",
+      "s03_positive_segment_4_probe_final_corrected_field": "0c61fba097bdaff6acf878e959baeb203bc21dcffb7396fd15456a04904beaf1",
+      "s03_positive_segment_4_probe_final_minus_input": "cfd697089778148b9e0b06b6c7180abfa076921cf7d391b4db577828b95d04db",
+      "s03_positive_segment_4_probe_input": "3d2dab0cf4680aeb1faa350eeabf3c03201b5f7c21a0357cd35a0a396a6cf56a",
+      "s03_positive_segment_4_probe_input_minus_final": "6d9876a5a4999da1a55148f2e401eeed77ee8a32837db06f965e311676dc8d12",
+      "s03_positive_segment_4_probe_row_shift_zero_leveled": "e50512deeab1fca1006866d5e38b76dd6886fda73e829b50a91e3f7a82ca86e3",
+      "s03_positive_segment_4_probe_row_statistic_raw_median": "505e0b45ea41c386f080f86d88a1098e40f0b0839ff25a49c4ecf607f3e67656",
+      "s04_positive_segment_3_probe_correction_scratch_pass1": "6648f8413551077691b3fc2367d47c7bc1251a5a1dbc8551e0b586696ad49386",
+      "s04_positive_segment_3_probe_correction_scratch_pass2": "6648f8413551077691b3fc2367d47c7bc1251a5a1dbc8551e0b586696ad49386",
+      "s04_positive_segment_3_probe_field_after_conservative_filter": "e361ae7c0a92cad714ef878832ebac5dbbbe614ca8b4da3fe190a75e6e6d28e9",
+      "s04_positive_segment_3_probe_field_after_initial_row_alignment": "e361ae7c0a92cad714ef878832ebac5dbbbe614ca8b4da3fe190a75e6e6d28e9",
+      "s04_positive_segment_3_probe_field_after_pass1": "e361ae7c0a92cad714ef878832ebac5dbbbe614ca8b4da3fe190a75e6e6d28e9",
+      "s04_positive_segment_3_probe_field_after_pass2": "e361ae7c0a92cad714ef878832ebac5dbbbe614ca8b4da3fe190a75e6e6d28e9",
+      "s04_positive_segment_3_probe_final_corrected_field": "e361ae7c0a92cad714ef878832ebac5dbbbe614ca8b4da3fe190a75e6e6d28e9",
+      "s04_positive_segment_3_probe_final_minus_input": "bece7b396bf730abe63fd8a29ea41d2f6e22b55e5925110a1e6a62a3314cb53e",
+      "s04_positive_segment_3_probe_input": "e361ae7c0a92cad714ef878832ebac5dbbbe614ca8b4da3fe190a75e6e6d28e9",
+      "s04_positive_segment_3_probe_input_minus_final": "bece7b396bf730abe63fd8a29ea41d2f6e22b55e5925110a1e6a62a3314cb53e",
+      "s04_positive_segment_3_probe_row_shift_zero_leveled": "e50512deeab1fca1006866d5e38b76dd6886fda73e829b50a91e3f7a82ca86e3",
+      "s04_positive_segment_3_probe_row_statistic_raw_median": "505e0b45ea41c386f080f86d88a1098e40f0b0839ff25a49c4ecf607f3e67656",
+      "s05_negative_segment_4_probe_correction_scratch_pass1": "0cb93218211c4799a3c8d30c26868ca5d8b611c24ff2b8b9a3e51eb595277240",
+      "s05_negative_segment_4_probe_correction_scratch_pass2": "6648f8413551077691b3fc2367d47c7bc1251a5a1dbc8551e0b586696ad49386",
+      "s05_negative_segment_4_probe_field_after_conservative_filter": "474366e33c889d55287ce6cd21bf98f78f8a4d47adf93d9a682ae3ce58f27cc5",
+      "s05_negative_segment_4_probe_field_after_initial_row_alignment": "5513b71c96c015cfeb7b815532aa90570f1d8af777c6633db45bbcd7ea9fc20c",
+      "s05_negative_segment_4_probe_field_after_pass1": "474366e33c889d55287ce6cd21bf98f78f8a4d47adf93d9a682ae3ce58f27cc5",
+      "s05_negative_segment_4_probe_field_after_pass2": "474366e33c889d55287ce6cd21bf98f78f8a4d47adf93d9a682ae3ce58f27cc5",
+      "s05_negative_segment_4_probe_final_corrected_field": "3afe16bc773e07846f2bd8339a3904404a80335e48c1363db356551440cd7e4e",
+      "s05_negative_segment_4_probe_final_minus_input": "b91d0b95d35a688c4bbceb698424467d48d24c7d42f3de48a7acccc4d56cf146",
+      "s05_negative_segment_4_probe_input": "5513b71c96c015cfeb7b815532aa90570f1d8af777c6633db45bbcd7ea9fc20c",
+      "s05_negative_segment_4_probe_input_minus_final": "3fc9ed71dd398371e9d9eb65d96db886fc5ef32334f3c39ad6a949507511c297",
+      "s05_negative_segment_4_probe_row_shift_zero_leveled": "e50512deeab1fca1006866d5e38b76dd6886fda73e829b50a91e3f7a82ca86e3",
+      "s05_negative_segment_4_probe_row_statistic_raw_median": "505e0b45ea41c386f080f86d88a1098e40f0b0839ff25a49c4ecf607f3e67656",
+      "s06_left_edge_segment_probe_correction_scratch_pass1": "7f8a190c34fd15f3dd1f021899d50feb17a3d1dc3264a1f11960552bb261d445",
+      "s06_left_edge_segment_probe_correction_scratch_pass2": "6648f8413551077691b3fc2367d47c7bc1251a5a1dbc8551e0b586696ad49386",
+      "s06_left_edge_segment_probe_field_after_conservative_filter": "474366e33c889d55287ce6cd21bf98f78f8a4d47adf93d9a682ae3ce58f27cc5",
+      "s06_left_edge_segment_probe_field_after_initial_row_alignment": "2b4ad95d47111ba6ae975847084278c41a55f4372107fbe1fccc36aba6a8c537",
+      "s06_left_edge_segment_probe_field_after_pass1": "474366e33c889d55287ce6cd21bf98f78f8a4d47adf93d9a682ae3ce58f27cc5",
+      "s06_left_edge_segment_probe_field_after_pass2": "474366e33c889d55287ce6cd21bf98f78f8a4d47adf93d9a682ae3ce58f27cc5",
+      "s06_left_edge_segment_probe_final_corrected_field": "0c61fba097bdaff6acf878e959baeb203bc21dcffb7396fd15456a04904beaf1",
+      "s06_left_edge_segment_probe_final_minus_input": "45821d77627a358aee03b369774211eb3b5308d13a3b499b0be50342d87e1418",
+      "s06_left_edge_segment_probe_input": "2b4ad95d47111ba6ae975847084278c41a55f4372107fbe1fccc36aba6a8c537",
+      "s06_left_edge_segment_probe_input_minus_final": "86e645bd716b369e860ddc7618a10f9b1e59792f39ce86691fa648a0724d0802",
+      "s06_left_edge_segment_probe_row_shift_zero_leveled": "e50512deeab1fca1006866d5e38b76dd6886fda73e829b50a91e3f7a82ca86e3",
+      "s06_left_edge_segment_probe_row_statistic_raw_median": "505e0b45ea41c386f080f86d88a1098e40f0b0839ff25a49c4ecf607f3e67656",
+      "s07_right_edge_segment_probe_correction_scratch_pass1": "7f79974f0f5d774f2f147743c7f2d699e3e464048fa4cf4f324c51bd06e52547",
+      "s07_right_edge_segment_probe_correction_scratch_pass2": "6648f8413551077691b3fc2367d47c7bc1251a5a1dbc8551e0b586696ad49386",
+      "s07_right_edge_segment_probe_field_after_conservative_filter": "474366e33c889d55287ce6cd21bf98f78f8a4d47adf93d9a682ae3ce58f27cc5",
+      "s07_right_edge_segment_probe_field_after_initial_row_alignment": "0379d60980129a4d9e7ca5b0080ab5e903e7f3a03d0e0e8106d2ee7e5a2e4ec8",
+      "s07_right_edge_segment_probe_field_after_pass1": "474366e33c889d55287ce6cd21bf98f78f8a4d47adf93d9a682ae3ce58f27cc5",
+      "s07_right_edge_segment_probe_field_after_pass2": "474366e33c889d55287ce6cd21bf98f78f8a4d47adf93d9a682ae3ce58f27cc5",
+      "s07_right_edge_segment_probe_final_corrected_field": "0c61fba097bdaff6acf878e959baeb203bc21dcffb7396fd15456a04904beaf1",
+      "s07_right_edge_segment_probe_final_minus_input": "75c6b07bf5f204704525c7eb5b521a925383040d3cc21d39e3281e6322dcf020",
+      "s07_right_edge_segment_probe_input": "0379d60980129a4d9e7ca5b0080ab5e903e7f3a03d0e0e8106d2ee7e5a2e4ec8",
+      "s07_right_edge_segment_probe_input_minus_final": "4cb338fcc68aece4d78753859d140991c5383450b31a813bb1991b95316e0fd0",
+      "s07_right_edge_segment_probe_row_shift_zero_leveled": "e50512deeab1fca1006866d5e38b76dd6886fda73e829b50a91e3f7a82ca86e3",
+      "s07_right_edge_segment_probe_row_statistic_raw_median": "505e0b45ea41c386f080f86d88a1098e40f0b0839ff25a49c4ecf607f3e67656",
+      "s08_two_segments_probe_correction_scratch_pass1": "72c2347386ef4b601363232dbdd6d20ac8b6540ee950402c72d5ae8ec00b4470",
+      "s08_two_segments_probe_correction_scratch_pass2": "d529662fb3849fd903ec467f8ddb30ec218b81cc7875251e08d6401c106985b0",
+      "s08_two_segments_probe_field_after_conservative_filter": "df48a0f196a64893838c809821d68d48722e22633a35fc656ed0d337e838020d",
+      "s08_two_segments_probe_field_after_initial_row_alignment": "df48bbd63e408a4b0c9f24148f4ede3c3481760a1e8475558d60cae50822471d",
+      "s08_two_segments_probe_field_after_pass1": "df48a0f196a64893838c809821d68d48722e22633a35fc656ed0d337e838020d",
+      "s08_two_segments_probe_field_after_pass2": "df48a0f196a64893838c809821d68d48722e22633a35fc656ed0d337e838020d",
+      "s08_two_segments_probe_final_corrected_field": "dfce0e90a0ce6055b7bae3c83221109afef67d3c5e6bd13221cfde1cc77692b1",
+      "s08_two_segments_probe_final_minus_input": "c60bfcdcc15857d4cc5c04e30d06720b74ab71a0ec800f32ee177a4d9d3707eb",
+      "s08_two_segments_probe_input": "df48bbd63e408a4b0c9f24148f4ede3c3481760a1e8475558d60cae50822471d",
+      "s08_two_segments_probe_input_minus_final": "e4e2ac4c7d9e2c139dce64308755b1a578ed75bb0bc59de1e038d991914bedba",
+      "s08_two_segments_probe_row_shift_zero_leveled": "e50512deeab1fca1006866d5e38b76dd6886fda73e829b50a91e3f7a82ca86e3",
+      "s08_two_segments_probe_row_statistic_raw_median": "505e0b45ea41c386f080f86d88a1098e40f0b0839ff25a49c4ecf607f3e67656",
+      "s09_persistent_transition_probe_correction_scratch_pass1": "69c80782b22f97f811f47ea73639f64f01c4f05dd9570df79d3de3f0b61ff701",
+      "s09_persistent_transition_probe_correction_scratch_pass2": "69c80782b22f97f811f47ea73639f64f01c4f05dd9570df79d3de3f0b61ff701",
+      "s09_persistent_transition_probe_field_after_conservative_filter": "0ceeb1a625e000519d61b6a6c539e91df64964e0d954a3d3459eef9d53570747",
+      "s09_persistent_transition_probe_field_after_initial_row_alignment": "0ceeb1a625e000519d61b6a6c539e91df64964e0d954a3d3459eef9d53570747",
+      "s09_persistent_transition_probe_field_after_pass1": "0ceeb1a625e000519d61b6a6c539e91df64964e0d954a3d3459eef9d53570747",
+      "s09_persistent_transition_probe_field_after_pass2": "0ceeb1a625e000519d61b6a6c539e91df64964e0d954a3d3459eef9d53570747",
+      "s09_persistent_transition_probe_final_corrected_field": "e3340ad5dfc93014f9e199f2393161bc1b084185e2c0a23cf5eaebacc1109508",
+      "s09_persistent_transition_probe_final_minus_input": "63ab8511b8610e3bc55de986374232e3832894f5679081d9a1c9c255c7de53a3",
+      "s09_persistent_transition_probe_input": "83a5db8c0551ffbb62a9d7cb17e0051d812088bea2d3fe38c554ddeaed26e9de",
+      "s09_persistent_transition_probe_input_minus_final": "ca7450b21be2f24f165d528a8d0bd5fee2e989eede95b3921bc53bc7bf35219a",
+      "s09_persistent_transition_probe_row_shift_zero_leveled": "f9acea6cdaf75dda7d58e8ffef99184fef28ece8a435252eb73d8733324123c8",
+      "s09_persistent_transition_probe_row_statistic_raw_median": "994d1e4ac9310efb655a7fd3d86617051f547665c75aae320fa63671c9518203",
+      "s10_outlier_filter_only_probe_correction_scratch_pass1": "f879895b1ff772e9c3c8f4ca1a70c64e11509ed971fc64f261b297e8ced19fb5",
+      "s10_outlier_filter_only_probe_correction_scratch_pass2": "f879895b1ff772e9c3c8f4ca1a70c64e11509ed971fc64f261b297e8ced19fb5",
+      "s10_outlier_filter_only_probe_field_after_conservative_filter": "cbe1b208716e20b31b03f1c6fff686091a5790ac0ab344e5cf94921fd2240caf",
+      "s10_outlier_filter_only_probe_field_after_initial_row_alignment": "11b9ddf6f9e1295143be7148d324440a36f17d9c953518999c0c4d41bb332c71",
+      "s10_outlier_filter_only_probe_field_after_pass1": "11b9ddf6f9e1295143be7148d324440a36f17d9c953518999c0c4d41bb332c71",
+      "s10_outlier_filter_only_probe_field_after_pass2": "11b9ddf6f9e1295143be7148d324440a36f17d9c953518999c0c4d41bb332c71",
+      "s10_outlier_filter_only_probe_final_corrected_field": "dd5cca25a4a477ac157a7515689205f4958cf429a6b3fb0a3a550157343d230b",
+      "s10_outlier_filter_only_probe_final_minus_input": "0c1a8df8f7854fc1b081eba361d9e7b61455da5553c662a7a24a866ab2924137",
+      "s10_outlier_filter_only_probe_input": "11b9ddf6f9e1295143be7148d324440a36f17d9c953518999c0c4d41bb332c71",
+      "s10_outlier_filter_only_probe_input_minus_final": "4ea73f69da7edce4e7fcfba88ed654e8e31b1016095aa65ac5af5f243457328a",
+      "s10_outlier_filter_only_probe_row_shift_zero_leveled": "5fc6d0c0aeaa02108907b22aa1f331adaf2d2241ae86749c3dcf92c9f9150f7c",
+      "s10_outlier_filter_only_probe_row_statistic_raw_median": "8b62fd1a75b95781312c06d7258e03611e6272afadbc437501b38eba98c2f952",
+      "s11_pass2_change_probe_correction_scratch_pass1": "73d26719863693448d1f466b13dedafd4b6f3b485a44519c263ab25442818633",
+      "s11_pass2_change_probe_correction_scratch_pass2": "544bd4828ba05343a9f60c92e6a5c3a2d31855c87cb79d024a5be1857d66a2b2",
+      "s11_pass2_change_probe_field_after_conservative_filter": "e71849ea80427ea4956941dc3dd0ff963851ff473e07e0d09be30b726c7e2678",
+      "s11_pass2_change_probe_field_after_initial_row_alignment": "ac3de73c64cf18afb59d65e5dc08ab098894835b8c5e4ac17c3dbd277967400b",
+      "s11_pass2_change_probe_field_after_pass1": "58438aeaac35cc107f73746f632105a478db1f266bb1e013cfd817d0d75f763b",
+      "s11_pass2_change_probe_field_after_pass2": "e71849ea80427ea4956941dc3dd0ff963851ff473e07e0d09be30b726c7e2678",
+      "s11_pass2_change_probe_final_corrected_field": "e71849ea80427ea4956941dc3dd0ff963851ff473e07e0d09be30b726c7e2678",
+      "s11_pass2_change_probe_final_minus_input": "d6a426cba80e018a56b8a6f971c8943bb79883dbdf8f4ec1fa49dce517c63d85",
+      "s11_pass2_change_probe_input": "ac3de73c64cf18afb59d65e5dc08ab098894835b8c5e4ac17c3dbd277967400b",
+      "s11_pass2_change_probe_input_minus_final": "fe1444155cce12aaafb9d1be44101ecfc5c2076dd4c290783c0bf2779858ce97",
+      "s11_pass2_change_probe_row_shift_zero_leveled": "e50512deeab1fca1006866d5e38b76dd6886fda73e829b50a91e3f7a82ca86e3",
+      "s11_pass2_change_probe_row_statistic_raw_median": "505e0b45ea41c386f080f86d88a1098e40f0b0839ff25a49c4ecf607f3e67656",
+      "s12_1x1_probe_correction_scratch_pass1": "8a39439d008124c73db4f3c41b941530a9e08999c00c2b80178156f471d722a6",
+      "s12_1x1_probe_correction_scratch_pass2": "8a39439d008124c73db4f3c41b941530a9e08999c00c2b80178156f471d722a6",
+      "s12_1x1_probe_field_after_conservative_filter": "2956b4130a3ade37cc66b18d779eb6fe0e775b23d3839c8ad6e9ec530494a22b",
+      "s12_1x1_probe_field_after_initial_row_alignment": "2956b4130a3ade37cc66b18d779eb6fe0e775b23d3839c8ad6e9ec530494a22b",
+      "s12_1x1_probe_field_after_pass1": "2956b4130a3ade37cc66b18d779eb6fe0e775b23d3839c8ad6e9ec530494a22b",
+      "s12_1x1_probe_field_after_pass2": "2956b4130a3ade37cc66b18d779eb6fe0e775b23d3839c8ad6e9ec530494a22b",
+      "s12_1x1_probe_final_corrected_field": "2956b4130a3ade37cc66b18d779eb6fe0e775b23d3839c8ad6e9ec530494a22b",
+      "s12_1x1_probe_final_minus_input": "576f6d222baee01d0cf78d9eac70f8b0006f14799572a753252d1b7fa6a9872e",
+      "s12_1x1_probe_input": "2956b4130a3ade37cc66b18d779eb6fe0e775b23d3839c8ad6e9ec530494a22b",
+      "s12_1x1_probe_input_minus_final": "576f6d222baee01d0cf78d9eac70f8b0006f14799572a753252d1b7fa6a9872e",
+      "s12_1x1_probe_row_shift_zero_leveled": "576f6d222baee01d0cf78d9eac70f8b0006f14799572a753252d1b7fa6a9872e",
+      "s12_1x1_probe_row_statistic_raw_median": "2b0c72cd9f32473e6a8ea508da9e7d9d432102c908bb0521a75ccdbd75a964e3",
+      "s12_1x5_probe_correction_scratch_pass1": "8d3f028c79a314dc26cf9da56ea9c801def54293f49340d6a041d42178d4d8e0",
+      "s12_1x5_probe_correction_scratch_pass2": "8d3f028c79a314dc26cf9da56ea9c801def54293f49340d6a041d42178d4d8e0",
+      "s12_1x5_probe_field_after_conservative_filter": "66178b1fc3236765d5f43d542c865df1fa03fa3db2a1fe7009c0832387a95c58",
+      "s12_1x5_probe_field_after_initial_row_alignment": "66178b1fc3236765d5f43d542c865df1fa03fa3db2a1fe7009c0832387a95c58",
+      "s12_1x5_probe_field_after_pass1": "66178b1fc3236765d5f43d542c865df1fa03fa3db2a1fe7009c0832387a95c58",
+      "s12_1x5_probe_field_after_pass2": "66178b1fc3236765d5f43d542c865df1fa03fa3db2a1fe7009c0832387a95c58",
+      "s12_1x5_probe_final_corrected_field": "66178b1fc3236765d5f43d542c865df1fa03fa3db2a1fe7009c0832387a95c58",
+      "s12_1x5_probe_final_minus_input": "5fc6d0c0aeaa02108907b22aa1f331adaf2d2241ae86749c3dcf92c9f9150f7c",
+      "s12_1x5_probe_input": "66178b1fc3236765d5f43d542c865df1fa03fa3db2a1fe7009c0832387a95c58",
+      "s12_1x5_probe_input_minus_final": "5fc6d0c0aeaa02108907b22aa1f331adaf2d2241ae86749c3dcf92c9f9150f7c",
+      "s12_1x5_probe_row_shift_zero_leveled": "576f6d222baee01d0cf78d9eac70f8b0006f14799572a753252d1b7fa6a9872e",
+      "s12_1x5_probe_row_statistic_raw_median": "553a8b56b8b4ebe0ad49622b98f49aaf9818141d4388e823e1e1813bab79df5b",
+      "s12_2x5_probe_correction_scratch_pass1": "7f5edf1424d8378eef20d945613f5b3c8d31fce18f06ce9387fb1ed4bde15f41",
+      "s12_2x5_probe_correction_scratch_pass2": "7f5edf1424d8378eef20d945613f5b3c8d31fce18f06ce9387fb1ed4bde15f41",
+      "s12_2x5_probe_field_after_conservative_filter": "097f976a89bf501232a8f313d69edeb9b389cfda38b462b75e73b301acf581bd",
+      "s12_2x5_probe_field_after_initial_row_alignment": "097f976a89bf501232a8f313d69edeb9b389cfda38b462b75e73b301acf581bd",
+      "s12_2x5_probe_field_after_pass1": "097f976a89bf501232a8f313d69edeb9b389cfda38b462b75e73b301acf581bd",
+      "s12_2x5_probe_field_after_pass2": "097f976a89bf501232a8f313d69edeb9b389cfda38b462b75e73b301acf581bd",
+      "s12_2x5_probe_final_corrected_field": "097f976a89bf501232a8f313d69edeb9b389cfda38b462b75e73b301acf581bd",
+      "s12_2x5_probe_final_minus_input": "55d3360d5a8469671937f515529fea974e061403b7c70676b14bf6ad27b7ba9e",
+      "s12_2x5_probe_input": "5c06525ccd5831cd428618a6c4924054d727f5769e8f3a9b46ab378d744ac586",
+      "s12_2x5_probe_input_minus_final": "c642beec1b55cb4e1209ea593bd9b30d0b58df6b73fc2365f1871d141a6cc6f5",
+      "s12_2x5_probe_row_shift_zero_leveled": "f02161a38f207b73a703952de70c2fe7e9c2b3a7529cafa1be78eee720ac10f3",
+      "s12_2x5_probe_row_statistic_raw_median": "9cb437e633015e887a939917956ba36b4012f1af3ef4fad007c72dd96639341b",
+      "s12_3x2_probe_correction_scratch_pass1": "88982e4be91b22fd69e4b75152ac0659adb5cf887ac8965b26bc8526e70724ff",
+      "s12_3x2_probe_correction_scratch_pass2": "88982e4be91b22fd69e4b75152ac0659adb5cf887ac8965b26bc8526e70724ff",
+      "s12_3x2_probe_field_after_conservative_filter": "2c78be0e2ce28bf89c8d5a4c06ddb81731c764872936f2d4e51b0f51669341e9",
+      "s12_3x2_probe_field_after_initial_row_alignment": "2c78be0e2ce28bf89c8d5a4c06ddb81731c764872936f2d4e51b0f51669341e9",
+      "s12_3x2_probe_field_after_pass1": "2c78be0e2ce28bf89c8d5a4c06ddb81731c764872936f2d4e51b0f51669341e9",
+      "s12_3x2_probe_field_after_pass2": "2c78be0e2ce28bf89c8d5a4c06ddb81731c764872936f2d4e51b0f51669341e9",
+      "s12_3x2_probe_final_corrected_field": "2c78be0e2ce28bf89c8d5a4c06ddb81731c764872936f2d4e51b0f51669341e9",
+      "s12_3x2_probe_final_minus_input": "3155d0037a3821ca62dd812db4336ad95a4061b49af87e410bfee9fbc813149e",
+      "s12_3x2_probe_input": "8e98655fb745c39d3f25b34eb2af9297babdbf435eb765855c480b503fe1a375",
+      "s12_3x2_probe_input_minus_final": "def8c5b6ad9b6e6eb7d8b0659be639316711cebde07640e842f8c12aae0378ec",
+      "s12_3x2_probe_row_shift_zero_leveled": "798cdaf06a82aaf5eda9d0751a246fa85b35a1eb7ad6ae693838c09d794613fb",
+      "s12_3x2_probe_row_statistic_raw_median": "c945e7bc3e9a5e428d8fee0cfca9f1a0b061f3e9a1331c8e742bd10779c3dde8",
+      "s13_signed_zero_probe_correction_scratch_pass1": "39c2307d9ffd6f96d89b8860f0cc95018150486f9d6440faf188504ab907634a",
+      "s13_signed_zero_probe_correction_scratch_pass2": "39c2307d9ffd6f96d89b8860f0cc95018150486f9d6440faf188504ab907634a",
+      "s13_signed_zero_probe_field_after_conservative_filter": "39c2307d9ffd6f96d89b8860f0cc95018150486f9d6440faf188504ab907634a",
+      "s13_signed_zero_probe_field_after_initial_row_alignment": "7a71c97c3ce30ef9498e9d44aaccfe43f1d0a679d9ee63012498a9d9f5d878cf",
+      "s13_signed_zero_probe_field_after_pass1": "39c2307d9ffd6f96d89b8860f0cc95018150486f9d6440faf188504ab907634a",
+      "s13_signed_zero_probe_field_after_pass2": "39c2307d9ffd6f96d89b8860f0cc95018150486f9d6440faf188504ab907634a",
+      "s13_signed_zero_probe_final_corrected_field": "39c2307d9ffd6f96d89b8860f0cc95018150486f9d6440faf188504ab907634a",
+      "s13_signed_zero_probe_final_minus_input": "6b92c0316cdd4393cd5b2dfeba1198fe2cb9e2429b6ae8bcf161cfe23f8a4b6b",
+      "s13_signed_zero_probe_input": "7a71c97c3ce30ef9498e9d44aaccfe43f1d0a679d9ee63012498a9d9f5d878cf",
+      "s13_signed_zero_probe_input_minus_final": "8cbfdd123bd0714482aedc4368a34b4874eabe614db72b953d4e85e5d342256d",
+      "s13_signed_zero_probe_row_shift_zero_leveled": "e50512deeab1fca1006866d5e38b76dd6886fda73e829b50a91e3f7a82ca86e3",
+      "s13_signed_zero_probe_row_statistic_raw_median": "e50512deeab1fca1006866d5e38b76dd6886fda73e829b50a91e3f7a82ca86e3"
+    }
+  },
+  "probe": {
+    "binaries_sha256": {
+      "normal": "",
+      "sanitized": ""
+    },
+    "build_exits": {
+      "normal": 0,
+      "sanitized": 0
+    },
+    "execution_exits": "60/60 zero",
+    "gui_not_invoked": "The evidence is produced by a custom binary compiled by source-including modules/process/linecorrect.c and linking the installed Gwydion 2.71 shared libraries; the installed GUI executable (/usr/bin/gwydion) and the app-layer process callbacks were not invoked.",
+    "normal_sanitized_stdout_equal": "30/30",
+    "profile": "COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION"
+  },
+  "profiles": {
+    "compiled_gwydion_2_71_source_inclusion_profile": {
+      "campaign_script_sha256": "c4ca83fa3320539774f293ec6ec5d814140948dc65ad113ed8d4c6ab6ffdf1dd",
+      "canonical_reference_sha256": "5780977668a08b3efb22cadb25416fad5ddc7b630217a0cc578d42b76b9be8d9",
+      "config_h_sha256": "3a37ad44f7a1116709b3733878176ecf5b56352256675da0ed78acc1e1f8f5c9",
+      "helper_sources": {
+        "libprocess/arithmetic.c": "78bcc0305c26188ec30ea6db820c04969d851deb96e25dcffebd438c5379dd92",
+        "libprocess/correct.c": "bdac3ea8fcc3555f33644c84d739818c12a8cb9c104cac06ac642c77d2ddaabb",
+        "libprocess/datafield.c": "223a34344f5c529a1255230f55bee53178adf6a16a20ac4d98aba47eaf1635f3",
+        "libprocess/dataline.c": "359f8fed916eb9216441e3afea4238c7128c587b0877100e0a42f2737e8edbf4",
+        "libprocess/filters.c": "9fde5354ee1c1dc302e470df3bfd6050c2a4aa70ba65cc46d23fea35cdc9f083",
+        "libprocess/gwyprocessenums.h": "eaadd9d55a163a482ab23b1cc51d535ff332090953bad1f9b1b5d3aa3903ad17",
+        "libprocess/linestats.c": "5f7a0d4cb58b5d73d6b5b4151df9a1893d0dcf4998cd7d159ab6279f6ce7c981",
+        "libprocess/stats.c": "ca0a7a2d7090479e7782514efe01b0c7dfe9488f6eda66a3af9336273127f11a"
+      },
+      "module_sha256": "5780977668a08b3efb22cadb25416fad5ddc7b630217a0cc578d42b76b9be8d9",
+      "probe_source_sha256": "7be6b65d1cb5d0370736a098248f1f6a71b27aa5225514a82b40451f6d7ca278"
+    }
+  },
+  "schema_version": 1
+}

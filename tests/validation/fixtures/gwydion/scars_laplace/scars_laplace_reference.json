@@ -1,0 +1,5264 @@
+{
+  "capabilities": [
+    {
+      "case_count": 22,
+      "comparison_metrics": {
+        "array_count": 22,
+        "arrays_bitwise_exact": 22,
+        "case_count": 22,
+        "element_count": 1726,
+        "elements_bitwise_exact": 1726,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "name": "gwydion_mark_scars"
+    },
+    {
+      "case_count": 18,
+      "comparison_metrics": {
+        "array_count": 22,
+        "arrays_bitwise_exact": 16,
+        "case_count": 22,
+        "element_count": 1068,
+        "elements_bitwise_exact": 1056,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 1.7763568394002505e-15,
+        "max_ulp_difference": 2,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 1
+      },
+      "name": "gwydion_laplace_interpolation"
+    },
+    {
+      "case_count": 6,
+      "comparison_metrics": {
+        "array_count": 6,
+        "arrays_bitwise_exact": 6,
+        "case_count": 6,
+        "element_count": 1920,
+        "elements_bitwise_exact": 1920,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "name": "gwydion_remove_scars"
+    }
+  ],
+  "case_count": 46,
+  "cases": [
+    {
+      "arrays": {
+        "input": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C01_constant_field_probe_input"
+        },
+        "input_after": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C01_constant_field_probe_input_after"
+        },
+        "kernel_mask": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C01_constant_field_probe_kernel_mask"
+        }
+      },
+      "case_identifier": "C01_constant_field",
+      "exit_code": 0,
+      "family": "mark",
+      "ints": {
+        "mask_nonzero": 0,
+        "max_width": 1,
+        "min_len": 2,
+        "module_mask_present": 0,
+        "polarity_enum": 3,
+        "polarity_id": 3,
+        "runs_count": 0
+      },
+      "purpose": "constant field: zero vertical-RMS guard -> empty mask",
+      "scalars": {
+        "mask_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "85c201487d3480ecaf4525ea89c238d2abc1157ab906db96fdce7c150f2f488a"
+    },
+    {
+      "arrays": {
+        "input": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C02_positive_hard_seeded_probe_input"
+        },
+        "input_after": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C02_positive_hard_seeded_probe_input_after"
+        },
+        "kernel_mask": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C02_positive_hard_seeded_probe_kernel_mask"
+        }
+      },
+      "case_identifier": "C02_positive_hard_seeded",
+      "exit_code": 0,
+      "family": "mark",
+      "ints": {
+        "mask_nonzero": 8,
+        "max_width": 1,
+        "min_len": 4,
+        "module_mask_present": 1,
+        "polarity_enum": 1,
+        "polarity_id": 1,
+        "runs_count": 1
+      },
+      "purpose": "single elevated row: positive polarity hard seed",
+      "scalars": {
+        "mask_max": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "b00418c06c2dfd5d8d88fdae344e0ec91a3fdcf40d908d32331aeaa5ed0a4531"
+    },
+    {
+      "arrays": {
+        "input": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C03_negative_hard_seeded_probe_input"
+        },
+        "input_after": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C03_negative_hard_seeded_probe_input_after"
+        },
+        "kernel_mask": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C03_negative_hard_seeded_probe_kernel_mask"
+        }
+      },
+      "case_identifier": "C03_negative_hard_seeded",
+      "exit_code": 0,
+      "family": "mark",
+      "ints": {
+        "mask_nonzero": 8,
+        "max_width": 1,
+        "min_len": 4,
+        "module_mask_present": 1,
+        "polarity_enum": 4,
+        "polarity_id": 4,
+        "runs_count": 1
+      },
+      "purpose": "single depressed row: negative polarity",
+      "scalars": {
+        "mask_max": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "936ed69078d857979a4070e0132795003c565c38de2146b273a8b0d8181d3a7f"
+    },
+    {
+      "arrays": {
+        "input": {
+          "count": 120,
+          "dims": [
+            12,
+            10
+          ],
+          "key": "C04_both_polarities_probe_input"
+        },
+        "input_after": {
+          "count": 120,
+          "dims": [
+            12,
+            10
+          ],
+          "key": "C04_both_polarities_probe_input_after"
+        },
+        "kernel_mask": {
+          "count": 120,
+          "dims": [
+            12,
+            10
+          ],
+          "key": "C04_both_polarities_probe_kernel_mask"
+        }
+      },
+      "case_identifier": "C04_both_polarities",
+      "exit_code": 0,
+      "family": "mark",
+      "ints": {
+        "mask_nonzero": 20,
+        "max_width": 1,
+        "min_len": 4,
+        "module_mask_present": 1,
+        "polarity_enum": 3,
+        "polarity_id": 3,
+        "runs_count": 2
+      },
+      "purpose": "one positive and one negative scar, type Both: two detector runs + fmax union",
+      "scalars": {
+        "mask_max": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "ca1d998fc443c0fecd956a2ff5ddb85ac5074cc6f492b1a0802ef1c2f394687a"
+    },
+    {
+      "arrays": {
+        "input": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C05_soft_only_no_seed_probe_input"
+        },
+        "input_after": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C05_soft_only_no_seed_probe_input_after"
+        },
+        "kernel_mask": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C05_soft_only_no_seed_probe_kernel_mask"
+        }
+      },
+      "case_identifier": "C05_soft_only_no_seed",
+      "exit_code": 0,
+      "family": "mark",
+      "ints": {
+        "mask_nonzero": 0,
+        "max_width": 1,
+        "min_len": 4,
+        "module_mask_present": 0,
+        "polarity_enum": 1,
+        "polarity_id": 1,
+        "runs_count": 0
+      },
+      "purpose": "soft-only candidate: cannot initiate a scar without a hard seed",
+      "scalars": {
+        "mask_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "threshold_high": {
+          "bits": "0x4008000000000000",
+          "hex": "0x1.8p+1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "5c23ec3d564a82e98c752ebe901d4d1712b38b42bcb692ff2e1976ccdd41337a"
+    },
+    {
+      "arrays": {
+        "input": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C06_hard_with_soft_shoulder_probe_input"
+        },
+        "input_after": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C06_hard_with_soft_shoulder_probe_input_after"
+        },
+        "kernel_mask": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C06_hard_with_soft_shoulder_probe_kernel_mask"
+        }
+      },
+      "case_identifier": "C06_hard_with_soft_shoulder",
+      "exit_code": 0,
+      "family": "mark",
+      "ints": {
+        "mask_nonzero": 8,
+        "max_width": 1,
+        "min_len": 4,
+        "module_mask_present": 1,
+        "polarity_enum": 1,
+        "polarity_id": 1,
+        "runs_count": 1
+      },
+      "purpose": "hard seed with a soft horizontal shoulder: chained attachment",
+      "scalars": {
+        "mask_max": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "79038c57c2bee9ee02a782f0828c665bcbcb3209bd26293949b32c3fb96d5ebc"
+    },
+    {
+      "arrays": {
+        "input": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C07_detached_soft_run_probe_input"
+        },
+        "input_after": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C07_detached_soft_run_probe_input_after"
+        },
+        "kernel_mask": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C07_detached_soft_run_probe_kernel_mask"
+        }
+      },
+      "case_identifier": "C07_detached_soft_run",
+      "exit_code": 0,
+      "family": "mark",
+      "ints": {
+        "mask_nonzero": 0,
+        "max_width": 1,
+        "min_len": 4,
+        "module_mask_present": 0,
+        "polarity_enum": 1,
+        "polarity_id": 1,
+        "runs_count": 0
+      },
+      "purpose": "detached soft run without hard connectivity: rejected",
+      "scalars": {
+        "mask_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "threshold_high": {
+          "bits": "0x4008000000000000",
+          "hex": "0x1.8p+1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "b9060be932f69e9fd1e0b350e92d1b5488195fbb7417b38c1b2f6a8f3c0eea74"
+    },
+    {
+      "arrays": {
+        "input": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C08_width_exactly_max_probe_input"
+        },
+        "input_after": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C08_width_exactly_max_probe_input_after"
+        },
+        "kernel_mask": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C08_width_exactly_max_probe_kernel_mask"
+        }
+      },
+      "case_identifier": "C08_width_exactly_max",
+      "exit_code": 0,
+      "family": "mark",
+      "ints": {
+        "mask_nonzero": 16,
+        "max_width": 2,
+        "min_len": 4,
+        "module_mask_present": 1,
+        "polarity_enum": 1,
+        "polarity_id": 1,
+        "runs_count": 2
+      },
+      "purpose": "two-row band with max_width=2: inclusive width boundary",
+      "scalars": {
+        "mask_max": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "158dcd9cb1522ed0860c13e4250ec4bf3578cfefef3c2b163295ac4a6086dbd1"
+    },
+    {
+      "arrays": {
+        "input": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C09_width_max_plus_one_probe_input"
+        },
+        "input_after": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C09_width_max_plus_one_probe_input_after"
+        },
+        "kernel_mask": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C09_width_max_plus_one_probe_kernel_mask"
+        }
+      },
+      "case_identifier": "C09_width_max_plus_one",
+      "exit_code": 0,
+      "family": "mark",
+      "ints": {
+        "mask_nonzero": 0,
+        "max_width": 2,
+        "min_len": 4,
+        "module_mask_present": 0,
+        "polarity_enum": 1,
+        "polarity_id": 1,
+        "runs_count": 0
+      },
+      "purpose": "three-row band with max_width=2: window cannot close -> rejected",
+      "scalars": {
+        "mask_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "6523fb98c8cbb5584079c77169a778286826692ce87680e1167a81e05ba09d38"
+    },
+    {
+      "arrays": {
+        "input": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C10_length_exactly_min_probe_input"
+        },
+        "input_after": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C10_length_exactly_min_probe_input_after"
+        },
+        "kernel_mask": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C10_length_exactly_min_probe_kernel_mask"
+        }
+      },
+      "case_identifier": "C10_length_exactly_min",
+      "exit_code": 0,
+      "family": "mark",
+      "ints": {
+        "mask_nonzero": 4,
+        "max_width": 1,
+        "min_len": 4,
+        "module_mask_present": 1,
+        "polarity_enum": 1,
+        "polarity_id": 1,
+        "runs_count": 1
+      },
+      "purpose": "run length exactly min_len: inclusive length boundary",
+      "scalars": {
+        "mask_max": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "480b988ee368253843f71ff29377eabdec4dfad7b932d5f85c8d04458b57001f"
+    },
+    {
+      "arrays": {
+        "input": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C11_length_min_minus_one_probe_input"
+        },
+        "input_after": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C11_length_min_minus_one_probe_input_after"
+        },
+        "kernel_mask": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C11_length_min_minus_one_probe_kernel_mask"
+        }
+      },
+      "case_identifier": "C11_length_min_minus_one",
+      "exit_code": 0,
+      "family": "mark",
+      "ints": {
+        "mask_nonzero": 0,
+        "max_width": 1,
+        "min_len": 4,
+        "module_mask_present": 0,
+        "polarity_enum": 1,
+        "polarity_id": 1,
+        "runs_count": 0
+      },
+      "purpose": "run length min_len-1: rejected",
+      "scalars": {
+        "mask_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "f442ad97d9000743dd25d0e4dc06079eadcfcc6d8c27bf1d8c91949764ee745d"
+    },
+    {
+      "arrays": {
+        "input": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C12_run_touching_edges_probe_input"
+        },
+        "input_after": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C12_run_touching_edges_probe_input_after"
+        },
+        "kernel_mask": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C12_run_touching_edges_probe_kernel_mask"
+        }
+      },
+      "case_identifier": "C12_run_touching_edges",
+      "exit_code": 0,
+      "family": "mark",
+      "ints": {
+        "mask_nonzero": 8,
+        "max_width": 1,
+        "min_len": 4,
+        "module_mask_present": 1,
+        "polarity_enum": 1,
+        "polarity_id": 1,
+        "runs_count": 1
+      },
+      "purpose": "full-width run touching left and right image boundaries",
+      "scalars": {
+        "mask_max": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "e8e58bfc12bd127b12e368e531b9f6bec9b8b40c2a2973db85e7ce66dd78ea69"
+    },
+    {
+      "arrays": {
+        "input": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C13_first_last_row_probe_input"
+        },
+        "input_after": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C13_first_last_row_probe_input_after"
+        },
+        "kernel_mask": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C13_first_last_row_probe_kernel_mask"
+        }
+      },
+      "case_identifier": "C13_first_last_row",
+      "exit_code": 0,
+      "family": "mark",
+      "ints": {
+        "mask_nonzero": 0,
+        "max_width": 1,
+        "min_len": 4,
+        "module_mask_present": 0,
+        "polarity_enum": 3,
+        "polarity_id": 3,
+        "runs_count": 0
+      },
+      "purpose": "candidates in first and last rows: outer rows unmarkable",
+      "scalars": {
+        "mask_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "6249bd92e2d6e702ac24031d6c079e4c4532f20baaec546292bacbf226951488"
+    },
+    {
+      "arrays": {
+        "input": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C14_adjacent_bands_fmax_probe_input"
+        },
+        "input_after": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C14_adjacent_bands_fmax_probe_input_after"
+        },
+        "kernel_mask": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C14_adjacent_bands_fmax_probe_kernel_mask"
+        }
+      },
+      "case_identifier": "C14_adjacent_bands_fmax",
+      "exit_code": 0,
+      "family": "mark",
+      "ints": {
+        "mask_nonzero": 16,
+        "max_width": 2,
+        "min_len": 4,
+        "module_mask_present": 1,
+        "polarity_enum": 1,
+        "polarity_id": 1,
+        "runs_count": 2
+      },
+      "purpose": "adjacent bands: per-row independence and fmax overlap accumulation",
+      "scalars": {
+        "mask_max": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "1f7994041cc3bea656b50113518694741cfe25172e5a997d5a496eac23f182a2"
+    },
+    {
+      "arrays": {
+        "input": {
+          "count": 6,
+          "dims": [
+            3,
+            2
+          ],
+          "key": "C15_min_dims_probe_input"
+        },
+        "input_after": {
+          "count": 6,
+          "dims": [
+            3,
+            2
+          ],
+          "key": "C15_min_dims_probe_input_after"
+        },
+        "kernel_mask": {
+          "count": 6,
+          "dims": [
+            3,
+            2
+          ],
+          "key": "C15_min_dims_probe_kernel_mask"
+        }
+      },
+      "case_identifier": "C15_min_dims",
+      "exit_code": 0,
+      "family": "mark",
+      "ints": {
+        "mask_nonzero": 2,
+        "max_width": 1,
+        "min_len": 1,
+        "module_mask_present": 1,
+        "polarity_enum": 1,
+        "polarity_id": 1,
+        "runs_count": 1
+      },
+      "purpose": "minimum valid dimensions yres=3, xres=2",
+      "scalars": {
+        "mask_max": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "2c69e3f96ab5bec79241635e0b14320e4259d01706f616dedc3e0451fb709a64"
+    },
+    {
+      "arrays": {
+        "input": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C16_threshold_sanitize_probe_input"
+        },
+        "input_after": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C16_threshold_sanitize_probe_input_after"
+        },
+        "kernel_mask": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C16_threshold_sanitize_probe_kernel_mask"
+        }
+      },
+      "case_identifier": "C16_threshold_sanitize",
+      "exit_code": 0,
+      "family": "mark",
+      "ints": {
+        "mask_nonzero": 8,
+        "max_width": 1,
+        "min_len": 4,
+        "module_mask_present": 1,
+        "polarity_enum": 1,
+        "polarity_id": 1,
+        "runs_count": 1
+      },
+      "purpose": "reversed thresholds: sanitize high := low",
+      "scalars": {
+        "effective_threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "effective_threshold_low": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "mask_max": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "threshold_high": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        },
+        "threshold_low": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "2960524c83c961eae3518258480a562ef17a3ac333b45dd0a50306c6241b0c29"
+    },
+    {
+      "arrays": {
+        "existing_after": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C17_existing_replace_probe_existing_after"
+        },
+        "existing_before": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C17_existing_replace_probe_existing_before"
+        },
+        "input": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C17_existing_replace_probe_input"
+        },
+        "input_after": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C17_existing_replace_probe_input_after"
+        },
+        "module_mask": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C17_existing_replace_probe_module_mask"
+        }
+      },
+      "case_identifier": "C17_existing_replace",
+      "exit_code": 0,
+      "family": "mark",
+      "ints": {
+        "combine": 0,
+        "combine_type": 0,
+        "mask_nonzero": 8,
+        "max_width": 1,
+        "min_len": 4,
+        "module_mask_present": 1,
+        "polarity_enum": 1,
+        "polarity_id": 1,
+        "runs_count": 1
+      },
+      "purpose": "existing mask with combine off: replaced by the detector result",
+      "scalars": {
+        "mask_max": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "055783856463a13876920f0131dd93ceed39d8a6b7e8911be156137c54d28c04"
+    },
+    {
+      "arrays": {
+        "existing_after": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C18_existing_union_probe_existing_after"
+        },
+        "existing_before": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C18_existing_union_probe_existing_before"
+        },
+        "input": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C18_existing_union_probe_input"
+        },
+        "input_after": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C18_existing_union_probe_input_after"
+        },
+        "module_mask": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C18_existing_union_probe_module_mask"
+        }
+      },
+      "case_identifier": "C18_existing_union",
+      "exit_code": 0,
+      "family": "mark",
+      "ints": {
+        "combine": 1,
+        "combine_type": 0,
+        "mask_nonzero": 16,
+        "max_width": 1,
+        "min_len": 4,
+        "module_mask_present": 1,
+        "polarity_enum": 1,
+        "polarity_id": 1,
+        "runs_count": 2
+      },
+      "purpose": "existing mask union: elementwise fmax",
+      "scalars": {
+        "mask_max": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "bfa740baee9bfe488032b2217cdf1deccb4e30ebd0424826bad8ed884b88b875"
+    },
+    {
+      "arrays": {
+        "existing_after": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C19_existing_intersection_probe_existing_after"
+        },
+        "existing_before": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C19_existing_intersection_probe_existing_before"
+        },
+        "input": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C19_existing_intersection_probe_input"
+        },
+        "input_after": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C19_existing_intersection_probe_input_after"
+        },
+        "module_mask": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C19_existing_intersection_probe_module_mask"
+        }
+      },
+      "case_identifier": "C19_existing_intersection",
+      "exit_code": 0,
+      "family": "mark",
+      "ints": {
+        "combine": 1,
+        "combine_type": 1,
+        "mask_nonzero": 4,
+        "max_width": 1,
+        "min_len": 4,
+        "module_mask_present": 1,
+        "polarity_enum": 1,
+        "polarity_id": 1,
+        "runs_count": 1
+      },
+      "purpose": "existing mask intersection: elementwise fmin",
+      "scalars": {
+        "mask_max": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "96af9d86f4539b81c9880e58687f7c4c659e8f492bade26f4bdbd08a9e903236"
+    },
+    {
+      "arrays": {
+        "existing_after": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C20_no_detection_existing_probe_existing_after"
+        },
+        "existing_before": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C20_no_detection_existing_probe_existing_before"
+        },
+        "input": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C20_no_detection_existing_probe_input"
+        },
+        "input_after": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C20_no_detection_existing_probe_input_after"
+        },
+        "module_mask": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C20_no_detection_existing_probe_module_mask"
+        }
+      },
+      "case_identifier": "C20_no_detection_existing",
+      "exit_code": 0,
+      "family": "mark",
+      "ints": {
+        "combine": 0,
+        "combine_type": 0,
+        "mask_nonzero": 0,
+        "max_width": 1,
+        "min_len": 4,
+        "module_mask_present": 0,
+        "polarity_enum": 1,
+        "polarity_id": 1,
+        "runs_count": 0
+      },
+      "purpose": "no detection with existing mask, combine off: module removes the mask",
+      "scalars": {
+        "mask_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "c03435ed46a2a8513659913800699d301ee91e5f57252e5119b1b4874f805406"
+    },
+    {
+      "arrays": {
+        "existing_after": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C20b_no_detection_existing_union_probe_existing_after"
+        },
+        "existing_before": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C20b_no_detection_existing_union_probe_existing_before"
+        },
+        "input": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C20b_no_detection_existing_union_probe_input"
+        },
+        "input_after": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C20b_no_detection_existing_union_probe_input_after"
+        },
+        "module_mask": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C20b_no_detection_existing_union_probe_module_mask"
+        }
+      },
+      "case_identifier": "C20b_no_detection_existing_union",
+      "exit_code": 0,
+      "family": "mark",
+      "ints": {
+        "combine": 1,
+        "combine_type": 0,
+        "mask_nonzero": 8,
+        "max_width": 1,
+        "min_len": 4,
+        "module_mask_present": 1,
+        "polarity_enum": 1,
+        "polarity_id": 1,
+        "runs_count": 1
+      },
+      "purpose": "no detection with existing mask, union: output equals existing mask",
+      "scalars": {
+        "mask_max": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "aa5f0ead1d28e17a9e33ab3feeb9738eb1850ddd195461dadf6bff8d11f0caf6"
+    },
+    {
+      "arrays": {
+        "input": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C21_signed_zero_probe_input"
+        },
+        "input_after": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C21_signed_zero_probe_input_after"
+        },
+        "kernel_mask": {
+          "count": 80,
+          "dims": [
+            10,
+            8
+          ],
+          "key": "C21_signed_zero_probe_kernel_mask"
+        }
+      },
+      "case_identifier": "C21_signed_zero",
+      "exit_code": 0,
+      "family": "mark",
+      "ints": {
+        "mask_nonzero": 0,
+        "max_width": 1,
+        "min_len": 4,
+        "module_mask_present": 0,
+        "polarity_enum": 3,
+        "polarity_id": 3,
+        "runs_count": 0
+      },
+      "purpose": "signed-zero finite field: no marks, zero-sign behavior only",
+      "scalars": {
+        "mask_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "705ef5efe3cfd3e179a6f686d3cf1e7768db8385fdd2a86d66094f9049bfa4bc"
+    },
+    {
+      "arrays": {
+        "corrected": {
+          "count": 48,
+          "dims": [
+            8,
+            6
+          ],
+          "key": "L01_empty_mask_probe_corrected"
+        },
+        "input": {
+          "count": 48,
+          "dims": [
+            8,
+            6
+          ],
+          "key": "L01_empty_mask_probe_input"
+        },
+        "input_mask": {
+          "count": 48,
+          "dims": [
+            8,
+            6
+          ],
+          "key": "L01_empty_mask_probe_input_mask"
+        },
+        "input_minus_output": {
+          "count": 48,
+          "dims": [
+            8,
+            6
+          ],
+          "key": "L01_empty_mask_probe_input_minus_output"
+        },
+        "mask_after": {
+          "count": 48,
+          "dims": [
+            8,
+            6
+          ],
+          "key": "L01_empty_mask_probe_mask_after"
+        },
+        "output_minus_input": {
+          "count": 48,
+          "dims": [
+            8,
+            6
+          ],
+          "key": "L01_empty_mask_probe_output_minus_input"
+        }
+      },
+      "case_identifier": "L01_empty_mask",
+      "exit_code": 0,
+      "family": "laplace",
+      "ints": {
+        "grain_count": 0,
+        "grain_id": -1,
+        "masked_pixel_count": 0,
+        "residual_count": 0,
+        "threads_enabled": 0,
+        "unmasked_mutation_count": 0
+      },
+      "purpose": "empty mask: field unchanged bitwise",
+      "scalars": {
+        "qprec": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "residual_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "residual_mean": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "xreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "yreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "f301bcecca85c3d0289b49caab212c64d6d54be8b447267d4db7b98ad129d74f"
+    },
+    {
+      "arrays": {
+        "corrected": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "L02_one_interior_pixel_probe_corrected"
+        },
+        "input": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "L02_one_interior_pixel_probe_input"
+        },
+        "input_mask": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "L02_one_interior_pixel_probe_input_mask"
+        },
+        "input_minus_output": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "L02_one_interior_pixel_probe_input_minus_output"
+        },
+        "mask_after": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "L02_one_interior_pixel_probe_mask_after"
+        },
+        "output_minus_input": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "L02_one_interior_pixel_probe_output_minus_input"
+        }
+      },
+      "case_identifier": "L02_one_interior_pixel",
+      "exit_code": 0,
+      "family": "laplace",
+      "ints": {
+        "grain_count": 1,
+        "grain_id": -1,
+        "masked_pixel_count": 1,
+        "residual_count": 1,
+        "threads_enabled": 0,
+        "unmasked_mutation_count": 0
+      },
+      "purpose": "one interior masked pixel: exact local mean",
+      "scalars": {
+        "qprec": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "residual_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "residual_mean": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "xreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "yreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "60deb6e41c321de221b82d143669650dd2a483ff21fc4991d92d12083d80f516"
+    },
+    {
+      "arrays": {
+        "corrected": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "L03_one_edge_pixel_probe_corrected"
+        },
+        "input": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "L03_one_edge_pixel_probe_input"
+        },
+        "input_mask": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "L03_one_edge_pixel_probe_input_mask"
+        },
+        "input_minus_output": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "L03_one_edge_pixel_probe_input_minus_output"
+        },
+        "mask_after": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "L03_one_edge_pixel_probe_mask_after"
+        },
+        "output_minus_input": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "L03_one_edge_pixel_probe_output_minus_input"
+        }
+      },
+      "case_identifier": "L03_one_edge_pixel",
+      "exit_code": 0,
+      "family": "laplace",
+      "ints": {
+        "grain_count": 1,
+        "grain_id": -1,
+        "masked_pixel_count": 1,
+        "residual_count": 1,
+        "threads_enabled": 0,
+        "unmasked_mutation_count": 0
+      },
+      "purpose": "one top-edge masked pixel: one-sided Neumann",
+      "scalars": {
+        "qprec": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "residual_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "residual_mean": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "xreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "yreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "e497ecb7835b22d055dd42b12954f92e2cd336c4d536ea35aedcfd9ca84b8545"
+    },
+    {
+      "arrays": {
+        "corrected": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "L04_one_corner_pixel_probe_corrected"
+        },
+        "input": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "L04_one_corner_pixel_probe_input"
+        },
+        "input_mask": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "L04_one_corner_pixel_probe_input_mask"
+        },
+        "input_minus_output": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "L04_one_corner_pixel_probe_input_minus_output"
+        },
+        "mask_after": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "L04_one_corner_pixel_probe_mask_after"
+        },
+        "output_minus_input": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "L04_one_corner_pixel_probe_output_minus_input"
+        }
+      },
+      "case_identifier": "L04_one_corner_pixel",
+      "exit_code": 0,
+      "family": "laplace",
+      "ints": {
+        "grain_count": 1,
+        "grain_id": -1,
+        "masked_pixel_count": 1,
+        "residual_count": 1,
+        "threads_enabled": 0,
+        "unmasked_mutation_count": 0
+      },
+      "purpose": "one corner masked pixel: two-edge Neumann",
+      "scalars": {
+        "qprec": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "residual_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "residual_mean": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "xreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "yreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "3e2ca9df29b17e494b3a1ba9c10d833eec33ca7e7946fb27c534717f9a8f9578"
+    },
+    {
+      "arrays": {
+        "corrected": {
+          "count": 35,
+          "dims": [
+            5,
+            7
+          ],
+          "key": "L05_horizontal_corridor_probe_corrected"
+        },
+        "input": {
+          "count": 35,
+          "dims": [
+            5,
+            7
+          ],
+          "key": "L05_horizontal_corridor_probe_input"
+        },
+        "input_mask": {
+          "count": 35,
+          "dims": [
+            5,
+            7
+          ],
+          "key": "L05_horizontal_corridor_probe_input_mask"
+        },
+        "input_minus_output": {
+          "count": 35,
+          "dims": [
+            5,
+            7
+          ],
+          "key": "L05_horizontal_corridor_probe_input_minus_output"
+        },
+        "mask_after": {
+          "count": 35,
+          "dims": [
+            5,
+            7
+          ],
+          "key": "L05_horizontal_corridor_probe_mask_after"
+        },
+        "output_minus_input": {
+          "count": 35,
+          "dims": [
+            5,
+            7
+          ],
+          "key": "L05_horizontal_corridor_probe_output_minus_input"
+        }
+      },
+      "case_identifier": "L05_horizontal_corridor",
+      "exit_code": 0,
+      "family": "laplace",
+      "ints": {
+        "grain_count": 1,
+        "grain_id": -1,
+        "masked_pixel_count": 5,
+        "residual_count": 5,
+        "threads_enabled": 0,
+        "unmasked_mutation_count": 0
+      },
+      "purpose": "thin interior horizontal corridor: tridiagonal path, linear continuation",
+      "scalars": {
+        "qprec": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "residual_max": {
+          "bits": "0x3cf0000000000000",
+          "hex": "0x1p-48"
+        },
+        "residual_mean": {
+          "bits": "0x3cc999999999999a",
+          "hex": "0x1.999999999999ap-51"
+        },
+        "unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "xreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "yreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "6e757bd8d58ec2e0f8fcf29588469edf54ebfa34e727ad20594fc22d9c066f46"
+    },
+    {
+      "arrays": {
+        "corrected": {
+          "count": 35,
+          "dims": [
+            7,
+            5
+          ],
+          "key": "L06_vertical_corridor_probe_corrected"
+        },
+        "input": {
+          "count": 35,
+          "dims": [
+            7,
+            5
+          ],
+          "key": "L06_vertical_corridor_probe_input"
+        },
+        "input_mask": {
+          "count": 35,
+          "dims": [
+            7,
+            5
+          ],
+          "key": "L06_vertical_corridor_probe_input_mask"
+        },
+        "input_minus_output": {
+          "count": 35,
+          "dims": [
+            7,
+            5
+          ],
+          "key": "L06_vertical_corridor_probe_input_minus_output"
+        },
+        "mask_after": {
+          "count": 35,
+          "dims": [
+            7,
+            5
+          ],
+          "key": "L06_vertical_corridor_probe_mask_after"
+        },
+        "output_minus_input": {
+          "count": 35,
+          "dims": [
+            7,
+            5
+          ],
+          "key": "L06_vertical_corridor_probe_output_minus_input"
+        }
+      },
+      "case_identifier": "L06_vertical_corridor",
+      "exit_code": 0,
+      "family": "laplace",
+      "ints": {
+        "grain_count": 1,
+        "grain_id": -1,
+        "masked_pixel_count": 5,
+        "residual_count": 5,
+        "threads_enabled": 0,
+        "unmasked_mutation_count": 0
+      },
+      "purpose": "thin interior vertical corridor: transposed thin path",
+      "scalars": {
+        "qprec": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "residual_max": {
+          "bits": "0x3cf0000000000000",
+          "hex": "0x1p-48"
+        },
+        "residual_mean": {
+          "bits": "0x3cc999999999999a",
+          "hex": "0x1.999999999999ap-51"
+        },
+        "unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "xreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "yreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "2dd3041b18137be5fbb079d7c231849eaa51e86910a08ce7a7099715f2fa9391"
+    },
+    {
+      "arrays": {
+        "corrected": {
+          "count": 36,
+          "dims": [
+            6,
+            6
+          ],
+          "key": "L07_three_pixel_L_probe_corrected"
+        },
+        "input": {
+          "count": 36,
+          "dims": [
+            6,
+            6
+          ],
+          "key": "L07_three_pixel_L_probe_input"
+        },
+        "input_mask": {
+          "count": 36,
+          "dims": [
+            6,
+            6
+          ],
+          "key": "L07_three_pixel_L_probe_input_mask"
+        },
+        "input_minus_output": {
+          "count": 36,
+          "dims": [
+            6,
+            6
+          ],
+          "key": "L07_three_pixel_L_probe_input_minus_output"
+        },
+        "mask_after": {
+          "count": 36,
+          "dims": [
+            6,
+            6
+          ],
+          "key": "L07_three_pixel_L_probe_mask_after"
+        },
+        "output_minus_input": {
+          "count": 36,
+          "dims": [
+            6,
+            6
+          ],
+          "key": "L07_three_pixel_L_probe_output_minus_input"
+        }
+      },
+      "case_identifier": "L07_three_pixel_L",
+      "exit_code": 0,
+      "family": "laplace",
+      "ints": {
+        "grain_count": 1,
+        "grain_id": -1,
+        "masked_pixel_count": 3,
+        "residual_count": 3,
+        "threads_enabled": 0,
+        "unmasked_mutation_count": 0
+      },
+      "purpose": "L-shaped three-pixel grain: closed-form source path",
+      "scalars": {
+        "qprec": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "residual_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "residual_mean": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "xreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "yreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "da0d7850a49e00639521684e4b80204f835c93550fbe6a9605fe71a3aaeafd80"
+    },
+    {
+      "arrays": {
+        "corrected": {
+          "count": 120,
+          "dims": [
+            12,
+            10
+          ],
+          "key": "L08_interior_rectangle_probe_corrected"
+        },
+        "input": {
+          "count": 120,
+          "dims": [
+            12,
+            10
+          ],
+          "key": "L08_interior_rectangle_probe_input"
+        },
+        "input_mask": {
+          "count": 120,
+          "dims": [
+            12,
+            10
+          ],
+          "key": "L08_interior_rectangle_probe_input_mask"
+        },
+        "input_minus_output": {
+          "count": 120,
+          "dims": [
+            12,
+            10
+          ],
+          "key": "L08_interior_rectangle_probe_input_minus_output"
+        },
+        "mask_after": {
+          "count": 120,
+          "dims": [
+            12,
+            10
+          ],
+          "key": "L08_interior_rectangle_probe_mask_after"
+        },
+        "output_minus_input": {
+          "count": 120,
+          "dims": [
+            12,
+            10
+          ],
+          "key": "L08_interior_rectangle_probe_output_minus_input"
+        }
+      },
+      "case_identifier": "L08_interior_rectangle",
+      "exit_code": 0,
+      "family": "laplace",
+      "ints": {
+        "grain_count": 1,
+        "grain_id": -1,
+        "masked_pixel_count": 15,
+        "residual_count": 15,
+        "threads_enabled": 0,
+        "unmasked_mutation_count": 0
+      },
+      "purpose": "interior rectangular island: multilevel/CG+dense solver",
+      "scalars": {
+        "qprec": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "residual_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "residual_mean": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "xreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "yreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "30506cb8d4003e90118af3cb5d3df8780450b9612c5e0d56f38c78a75aa1c7e3"
+    },
+    {
+      "arrays": {
+        "corrected": {
+          "count": 144,
+          "dims": [
+            12,
+            12
+          ],
+          "key": "L09_two_components_probe_corrected"
+        },
+        "input": {
+          "count": 144,
+          "dims": [
+            12,
+            12
+          ],
+          "key": "L09_two_components_probe_input"
+        },
+        "input_mask": {
+          "count": 144,
+          "dims": [
+            12,
+            12
+          ],
+          "key": "L09_two_components_probe_input_mask"
+        },
+        "input_minus_output": {
+          "count": 144,
+          "dims": [
+            12,
+            12
+          ],
+          "key": "L09_two_components_probe_input_minus_output"
+        },
+        "mask_after": {
+          "count": 144,
+          "dims": [
+            12,
+            12
+          ],
+          "key": "L09_two_components_probe_mask_after"
+        },
+        "output_minus_input": {
+          "count": 144,
+          "dims": [
+            12,
+            12
+          ],
+          "key": "L09_two_components_probe_output_minus_input"
+        }
+      },
+      "case_identifier": "L09_two_components",
+      "exit_code": 0,
+      "family": "laplace",
+      "ints": {
+        "grain_count": 2,
+        "grain_id": -1,
+        "masked_pixel_count": 15,
+        "residual_count": 15,
+        "threads_enabled": 0,
+        "unmasked_mutation_count": 0
+      },
+      "purpose": "two disconnected components: independent grain processing",
+      "scalars": {
+        "qprec": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "residual_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "residual_mean": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "xreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "yreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "39e22fa1af9a5dbe724de37865ab8d0b6f816d6ed86a6c530ce16f3f51df1d49"
+    },
+    {
+      "arrays": {
+        "corrected": {
+          "count": 100,
+          "dims": [
+            10,
+            10
+          ],
+          "key": "L10_edge_touching_probe_corrected"
+        },
+        "input": {
+          "count": 100,
+          "dims": [
+            10,
+            10
+          ],
+          "key": "L10_edge_touching_probe_input"
+        },
+        "input_mask": {
+          "count": 100,
+          "dims": [
+            10,
+            10
+          ],
+          "key": "L10_edge_touching_probe_input_mask"
+        },
+        "input_minus_output": {
+          "count": 100,
+          "dims": [
+            10,
+            10
+          ],
+          "key": "L10_edge_touching_probe_input_minus_output"
+        },
+        "mask_after": {
+          "count": 100,
+          "dims": [
+            10,
+            10
+          ],
+          "key": "L10_edge_touching_probe_mask_after"
+        },
+        "output_minus_input": {
+          "count": 100,
+          "dims": [
+            10,
+            10
+          ],
+          "key": "L10_edge_touching_probe_output_minus_input"
+        }
+      },
+      "case_identifier": "L10_edge_touching",
+      "exit_code": 0,
+      "family": "laplace",
+      "ints": {
+        "grain_count": 1,
+        "grain_id": -1,
+        "masked_pixel_count": 9,
+        "residual_count": 9,
+        "threads_enabled": 0,
+        "unmasked_mutation_count": 0
+      },
+      "purpose": "component touching one image edge: mixed Dirichlet/Neumann",
+      "scalars": {
+        "qprec": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "residual_max": {
+          "bits": "0x3cf0000000000000",
+          "hex": "0x1p-48"
+        },
+        "residual_mean": {
+          "bits": "0x3cc5555555555555",
+          "hex": "0x1.5555555555555p-51"
+        },
+        "unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "xreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "yreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "97237863e743d90bc05df3556cbfd331bc2a29189191cab8ebaa885d8e75e6ea"
+    },
+    {
+      "arrays": {
+        "corrected": {
+          "count": 100,
+          "dims": [
+            10,
+            10
+          ],
+          "key": "L11_corner_touching_probe_corrected"
+        },
+        "input": {
+          "count": 100,
+          "dims": [
+            10,
+            10
+          ],
+          "key": "L11_corner_touching_probe_input"
+        },
+        "input_mask": {
+          "count": 100,
+          "dims": [
+            10,
+            10
+          ],
+          "key": "L11_corner_touching_probe_input_mask"
+        },
+        "input_minus_output": {
+          "count": 100,
+          "dims": [
+            10,
+            10
+          ],
+          "key": "L11_corner_touching_probe_input_minus_output"
+        },
+        "mask_after": {
+          "count": 100,
+          "dims": [
+            10,
+            10
+          ],
+          "key": "L11_corner_touching_probe_mask_after"
+        },
+        "output_minus_input": {
+          "count": 100,
+          "dims": [
+            10,
+            10
+          ],
+          "key": "L11_corner_touching_probe_output_minus_input"
+        }
+      },
+      "case_identifier": "L11_corner_touching",
+      "exit_code": 0,
+      "family": "laplace",
+      "ints": {
+        "grain_count": 1,
+        "grain_id": -1,
+        "masked_pixel_count": 6,
+        "residual_count": 6,
+        "threads_enabled": 0,
+        "unmasked_mutation_count": 0
+      },
+      "purpose": "component touching a corner: two-edge mixed conditions",
+      "scalars": {
+        "qprec": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "residual_max": {
+          "bits": "0x3cd0000000000000",
+          "hex": "0x1p-50"
+        },
+        "residual_mean": {
+          "bits": "0x3ca5555555555555",
+          "hex": "0x1.5555555555555p-53"
+        },
+        "unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "xreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "yreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "ffd11b5175959049dda1456d61d8ff5767b74e5a0b65e2feca1bb0c332fed41e"
+    },
+    {
+      "arrays": {
+        "corrected": {
+          "count": 100,
+          "dims": [
+            10,
+            10
+          ],
+          "key": "L12_entire_masked_row_probe_corrected"
+        },
+        "input": {
+          "count": 100,
+          "dims": [
+            10,
+            10
+          ],
+          "key": "L12_entire_masked_row_probe_input"
+        },
+        "input_mask": {
+          "count": 100,
+          "dims": [
+            10,
+            10
+          ],
+          "key": "L12_entire_masked_row_probe_input_mask"
+        },
+        "input_minus_output": {
+          "count": 100,
+          "dims": [
+            10,
+            10
+          ],
+          "key": "L12_entire_masked_row_probe_input_minus_output"
+        },
+        "mask_after": {
+          "count": 100,
+          "dims": [
+            10,
+            10
+          ],
+          "key": "L12_entire_masked_row_probe_mask_after"
+        },
+        "output_minus_input": {
+          "count": 100,
+          "dims": [
+            10,
+            10
+          ],
+          "key": "L12_entire_masked_row_probe_output_minus_input"
+        }
+      },
+      "case_identifier": "L12_entire_masked_row",
+      "exit_code": 0,
+      "family": "laplace",
+      "ints": {
+        "grain_count": 1,
+        "grain_id": -1,
+        "masked_pixel_count": 10,
+        "residual_count": 10,
+        "threads_enabled": 0,
+        "unmasked_mutation_count": 0
+      },
+      "purpose": "entire masked row: long edge-to-edge geometry",
+      "scalars": {
+        "qprec": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "residual_max": {
+          "bits": "0x3d00000000000000",
+          "hex": "0x1p-47"
+        },
+        "residual_mean": {
+          "bits": "0x3cc999999999999a",
+          "hex": "0x1.999999999999ap-51"
+        },
+        "unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "xreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "yreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "fab4beb370cd4a1b5b7f33dfe16a77acb165a96277318009b27eecf11c235942"
+    },
+    {
+      "arrays": {
+        "corrected": {
+          "count": 36,
+          "dims": [
+            6,
+            6
+          ],
+          "key": "L13_whole_field_mask_probe_corrected"
+        },
+        "input": {
+          "count": 36,
+          "dims": [
+            6,
+            6
+          ],
+          "key": "L13_whole_field_mask_probe_input"
+        },
+        "input_mask": {
+          "count": 36,
+          "dims": [
+            6,
+            6
+          ],
+          "key": "L13_whole_field_mask_probe_input_mask"
+        },
+        "input_minus_output": {
+          "count": 36,
+          "dims": [
+            6,
+            6
+          ],
+          "key": "L13_whole_field_mask_probe_input_minus_output"
+        },
+        "mask_after": {
+          "count": 36,
+          "dims": [
+            6,
+            6
+          ],
+          "key": "L13_whole_field_mask_probe_mask_after"
+        },
+        "output_minus_input": {
+          "count": 36,
+          "dims": [
+            6,
+            6
+          ],
+          "key": "L13_whole_field_mask_probe_output_minus_input"
+        }
+      },
+      "case_identifier": "L13_whole_field_mask",
+      "exit_code": 0,
+      "family": "laplace",
+      "ints": {
+        "grain_count": 1,
+        "grain_id": -1,
+        "masked_pixel_count": 36,
+        "residual_count": 36,
+        "threads_enabled": 0,
+        "unmasked_mutation_count": 0
+      },
+      "purpose": "whole-field mask: source-defined all-zero result",
+      "scalars": {
+        "qprec": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "residual_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "residual_mean": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "xreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "yreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "f5f63884fc7fdd42ec999c385de95ab7c62ebbb0c40658176a9429d27a1d1730"
+    },
+    {
+      "arrays": {
+        "corrected": {
+          "count": 64,
+          "dims": [
+            8,
+            8
+          ],
+          "key": "L14_constant_boundary_probe_corrected"
+        },
+        "input": {
+          "count": 64,
+          "dims": [
+            8,
+            8
+          ],
+          "key": "L14_constant_boundary_probe_input"
+        },
+        "input_mask": {
+          "count": 64,
+          "dims": [
+            8,
+            8
+          ],
+          "key": "L14_constant_boundary_probe_input_mask"
+        },
+        "input_minus_output": {
+          "count": 64,
+          "dims": [
+            8,
+            8
+          ],
+          "key": "L14_constant_boundary_probe_input_minus_output"
+        },
+        "mask_after": {
+          "count": 64,
+          "dims": [
+            8,
+            8
+          ],
+          "key": "L14_constant_boundary_probe_mask_after"
+        },
+        "output_minus_input": {
+          "count": 64,
+          "dims": [
+            8,
+            8
+          ],
+          "key": "L14_constant_boundary_probe_output_minus_input"
+        }
+      },
+      "case_identifier": "L14_constant_boundary",
+      "exit_code": 0,
+      "family": "laplace",
+      "ints": {
+        "grain_count": 1,
+        "grain_id": -1,
+        "masked_pixel_count": 4,
+        "residual_count": 4,
+        "threads_enabled": 0,
+        "unmasked_mutation_count": 0
+      },
+      "purpose": "constant unmasked boundary: constant harmonic extension",
+      "scalars": {
+        "qprec": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "residual_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "residual_mean": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "xreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "yreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "58259def7c3d597f382a0996dcb0d5448ef35ae268f3c511f1d94bc35b77cf1c"
+    },
+    {
+      "arrays": {
+        "corrected_a": {
+          "count": 64,
+          "dims": [
+            8,
+            8
+          ],
+          "key": "L15_calibration_independence_probe_corrected_a"
+        },
+        "corrected_b": {
+          "count": 64,
+          "dims": [
+            8,
+            8
+          ],
+          "key": "L15_calibration_independence_probe_corrected_b"
+        },
+        "input": {
+          "count": 64,
+          "dims": [
+            8,
+            8
+          ],
+          "key": "L15_calibration_independence_probe_input"
+        },
+        "mask_after_a": {
+          "count": 64,
+          "dims": [
+            8,
+            8
+          ],
+          "key": "L15_calibration_independence_probe_mask_after_a"
+        },
+        "mask_after_b": {
+          "count": 64,
+          "dims": [
+            8,
+            8
+          ],
+          "key": "L15_calibration_independence_probe_mask_after_b"
+        }
+      },
+      "case_identifier": "L15_calibration_independence",
+      "exit_code": 0,
+      "family": "laplace",
+      "ints": {
+        "grain_count": 1,
+        "grain_id": -1,
+        "threads_enabled": 0
+      },
+      "purpose": "identical pixel data with different xreal/yreal: identical output",
+      "scalars": {
+        "qprec": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "xreal_a": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "xreal_b": {
+          "bits": "0x3fbf7ced916872b0",
+          "hex": "0x1.f7ced916872bp-4"
+        },
+        "yreal_a": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "yreal_b": {
+          "bits": "0x40123d70a3d70a3d",
+          "hex": "0x1.23d70a3d70a3dp+2"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "2023a469aba6f56ed19f365e7a2b18f21a4e643fda4b6faf89795694b1054b5e"
+    },
+    {
+      "arrays": {
+        "corrected": {
+          "count": 64,
+          "dims": [
+            8,
+            8
+          ],
+          "key": "L16_mask_predicate_probe_corrected"
+        },
+        "input": {
+          "count": 64,
+          "dims": [
+            8,
+            8
+          ],
+          "key": "L16_mask_predicate_probe_input"
+        },
+        "input_mask": {
+          "count": 64,
+          "dims": [
+            8,
+            8
+          ],
+          "key": "L16_mask_predicate_probe_input_mask"
+        },
+        "input_minus_output": {
+          "count": 64,
+          "dims": [
+            8,
+            8
+          ],
+          "key": "L16_mask_predicate_probe_input_minus_output"
+        },
+        "mask_after": {
+          "count": 64,
+          "dims": [
+            8,
+            8
+          ],
+          "key": "L16_mask_predicate_probe_mask_after"
+        },
+        "output_minus_input": {
+          "count": 64,
+          "dims": [
+            8,
+            8
+          ],
+          "key": "L16_mask_predicate_probe_output_minus_input"
+        }
+      },
+      "case_identifier": "L16_mask_predicate",
+      "exit_code": 0,
+      "family": "laplace",
+      "ints": {
+        "grain_count": 2,
+        "grain_id": -1,
+        "masked_pixel_count": 7,
+        "residual_count": 7,
+        "threads_enabled": 0,
+        "unmasked_mutation_count": 0
+      },
+      "purpose": "mask values 1.0/0.5/0.0/-1.0: strict >0 predicate",
+      "scalars": {
+        "qprec": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "residual_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "residual_mean": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "xreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "yreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "d5b21f644f69b7da317a9bbb21db82edb9f8cbb884204e224bff5c20279763ea"
+    },
+    {
+      "arrays": {
+        "corrected": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "L17_signed_zero_probe_corrected"
+        },
+        "input": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "L17_signed_zero_probe_input"
+        },
+        "input_mask": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "L17_signed_zero_probe_input_mask"
+        },
+        "input_minus_output": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "L17_signed_zero_probe_input_minus_output"
+        },
+        "mask_after": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "L17_signed_zero_probe_mask_after"
+        },
+        "output_minus_input": {
+          "count": 25,
+          "dims": [
+            5,
+            5
+          ],
+          "key": "L17_signed_zero_probe_output_minus_input"
+        }
+      },
+      "case_identifier": "L17_signed_zero",
+      "exit_code": 0,
+      "family": "laplace",
+      "ints": {
+        "grain_count": 1,
+        "grain_id": -1,
+        "masked_pixel_count": 1,
+        "residual_count": 1,
+        "threads_enabled": 0,
+        "unmasked_mutation_count": 0
+      },
+      "purpose": "signed-zero boundary values: zero-sign propagation semantics",
+      "scalars": {
+        "qprec": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "residual_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "residual_mean": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "xreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "yreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "40150021ed4bc3c9bcbc6f3cca882a736690c442ef6e530b0bdcba1efb19825a"
+    },
+    {
+      "arrays": {
+        "L18a_1x1_masked_corrected": {
+          "count": 1,
+          "dims": [
+            1,
+            1
+          ],
+          "key": "L18_degenerate_probe_L18a_1x1_masked_corrected"
+        },
+        "L18a_1x1_masked_input": {
+          "count": 1,
+          "dims": [
+            1,
+            1
+          ],
+          "key": "L18_degenerate_probe_L18a_1x1_masked_input"
+        },
+        "L18a_1x1_masked_input_mask": {
+          "count": 1,
+          "dims": [
+            1,
+            1
+          ],
+          "key": "L18_degenerate_probe_L18a_1x1_masked_input_mask"
+        },
+        "L18a_1x1_masked_input_minus_output": {
+          "count": 1,
+          "dims": [
+            1,
+            1
+          ],
+          "key": "L18_degenerate_probe_L18a_1x1_masked_input_minus_output"
+        },
+        "L18a_1x1_masked_mask_after": {
+          "count": 1,
+          "dims": [
+            1,
+            1
+          ],
+          "key": "L18_degenerate_probe_L18a_1x1_masked_mask_after"
+        },
+        "L18a_1x1_masked_output_minus_input": {
+          "count": 1,
+          "dims": [
+            1,
+            1
+          ],
+          "key": "L18_degenerate_probe_L18a_1x1_masked_output_minus_input"
+        },
+        "L18b_1x1_unmasked_corrected": {
+          "count": 1,
+          "dims": [
+            1,
+            1
+          ],
+          "key": "L18_degenerate_probe_L18b_1x1_unmasked_corrected"
+        },
+        "L18b_1x1_unmasked_input": {
+          "count": 1,
+          "dims": [
+            1,
+            1
+          ],
+          "key": "L18_degenerate_probe_L18b_1x1_unmasked_input"
+        },
+        "L18b_1x1_unmasked_input_mask": {
+          "count": 1,
+          "dims": [
+            1,
+            1
+          ],
+          "key": "L18_degenerate_probe_L18b_1x1_unmasked_input_mask"
+        },
+        "L18b_1x1_unmasked_input_minus_output": {
+          "count": 1,
+          "dims": [
+            1,
+            1
+          ],
+          "key": "L18_degenerate_probe_L18b_1x1_unmasked_input_minus_output"
+        },
+        "L18b_1x1_unmasked_mask_after": {
+          "count": 1,
+          "dims": [
+            1,
+            1
+          ],
+          "key": "L18_degenerate_probe_L18b_1x1_unmasked_mask_after"
+        },
+        "L18b_1x1_unmasked_output_minus_input": {
+          "count": 1,
+          "dims": [
+            1,
+            1
+          ],
+          "key": "L18_degenerate_probe_L18b_1x1_unmasked_output_minus_input"
+        },
+        "L18c_1x5_corrected": {
+          "count": 5,
+          "dims": [
+            5,
+            1
+          ],
+          "key": "L18_degenerate_probe_L18c_1x5_corrected"
+        },
+        "L18c_1x5_input": {
+          "count": 5,
+          "dims": [
+            5,
+            1
+          ],
+          "key": "L18_degenerate_probe_L18c_1x5_input"
+        },
+        "L18c_1x5_input_mask": {
+          "count": 5,
+          "dims": [
+            5,
+            1
+          ],
+          "key": "L18_degenerate_probe_L18c_1x5_input_mask"
+        },
+        "L18c_1x5_input_minus_output": {
+          "count": 5,
+          "dims": [
+            5,
+            1
+          ],
+          "key": "L18_degenerate_probe_L18c_1x5_input_minus_output"
+        },
+        "L18c_1x5_mask_after": {
+          "count": 5,
+          "dims": [
+            5,
+            1
+          ],
+          "key": "L18_degenerate_probe_L18c_1x5_mask_after"
+        },
+        "L18c_1x5_output_minus_input": {
+          "count": 5,
+          "dims": [
+            5,
+            1
+          ],
+          "key": "L18_degenerate_probe_L18c_1x5_output_minus_input"
+        },
+        "L18d_2x5_full_corrected": {
+          "count": 10,
+          "dims": [
+            5,
+            2
+          ],
+          "key": "L18_degenerate_probe_L18d_2x5_full_corrected"
+        },
+        "L18d_2x5_full_input": {
+          "count": 10,
+          "dims": [
+            5,
+            2
+          ],
+          "key": "L18_degenerate_probe_L18d_2x5_full_input"
+        },
+        "L18d_2x5_full_input_mask": {
+          "count": 10,
+          "dims": [
+            5,
+            2
+          ],
+          "key": "L18_degenerate_probe_L18d_2x5_full_input_mask"
+        },
+        "L18d_2x5_full_input_minus_output": {
+          "count": 10,
+          "dims": [
+            5,
+            2
+          ],
+          "key": "L18_degenerate_probe_L18d_2x5_full_input_minus_output"
+        },
+        "L18d_2x5_full_mask_after": {
+          "count": 10,
+          "dims": [
+            5,
+            2
+          ],
+          "key": "L18_degenerate_probe_L18d_2x5_full_mask_after"
+        },
+        "L18d_2x5_full_output_minus_input": {
+          "count": 10,
+          "dims": [
+            5,
+            2
+          ],
+          "key": "L18_degenerate_probe_L18d_2x5_full_output_minus_input"
+        },
+        "L18e_5x1_corrected": {
+          "count": 5,
+          "dims": [
+            1,
+            5
+          ],
+          "key": "L18_degenerate_probe_L18e_5x1_corrected"
+        },
+        "L18e_5x1_input": {
+          "count": 5,
+          "dims": [
+            1,
+            5
+          ],
+          "key": "L18_degenerate_probe_L18e_5x1_input"
+        },
+        "L18e_5x1_input_mask": {
+          "count": 5,
+          "dims": [
+            1,
+            5
+          ],
+          "key": "L18_degenerate_probe_L18e_5x1_input_mask"
+        },
+        "L18e_5x1_input_minus_output": {
+          "count": 5,
+          "dims": [
+            1,
+            5
+          ],
+          "key": "L18_degenerate_probe_L18e_5x1_input_minus_output"
+        },
+        "L18e_5x1_mask_after": {
+          "count": 5,
+          "dims": [
+            1,
+            5
+          ],
+          "key": "L18_degenerate_probe_L18e_5x1_mask_after"
+        },
+        "L18e_5x1_output_minus_input": {
+          "count": 5,
+          "dims": [
+            1,
+            5
+          ],
+          "key": "L18_degenerate_probe_L18e_5x1_output_minus_input"
+        }
+      },
+      "case_identifier": "L18_degenerate",
+      "exit_code": 0,
+      "family": "laplace",
+      "ints": {
+        "L18a_1x1_masked_grain_count": 1,
+        "L18a_1x1_masked_grain_id": -1,
+        "L18a_1x1_masked_masked_pixel_count": 1,
+        "L18a_1x1_masked_residual_count": 0,
+        "L18a_1x1_masked_threads_enabled": 0,
+        "L18a_1x1_masked_unmasked_mutation_count": 0,
+        "L18b_1x1_unmasked_grain_count": 0,
+        "L18b_1x1_unmasked_grain_id": -1,
+        "L18b_1x1_unmasked_masked_pixel_count": 0,
+        "L18b_1x1_unmasked_residual_count": 0,
+        "L18b_1x1_unmasked_threads_enabled": 0,
+        "L18b_1x1_unmasked_unmasked_mutation_count": 0,
+        "L18c_1x5_grain_count": 1,
+        "L18c_1x5_grain_id": -1,
+        "L18c_1x5_masked_pixel_count": 1,
+        "L18c_1x5_residual_count": 1,
+        "L18c_1x5_threads_enabled": 0,
+        "L18c_1x5_unmasked_mutation_count": 0,
+        "L18d_2x5_full_grain_count": 1,
+        "L18d_2x5_full_grain_id": -1,
+        "L18d_2x5_full_masked_pixel_count": 10,
+        "L18d_2x5_full_residual_count": 10,
+        "L18d_2x5_full_threads_enabled": 0,
+        "L18d_2x5_full_unmasked_mutation_count": 0,
+        "L18e_5x1_grain_count": 1,
+        "L18e_5x1_grain_id": -1,
+        "L18e_5x1_masked_pixel_count": 1,
+        "L18e_5x1_residual_count": 1,
+        "L18e_5x1_threads_enabled": 0,
+        "L18e_5x1_unmasked_mutation_count": 0
+      },
+      "purpose": "degenerate dimensions 1x1/1xN/2xN/Nx1 subcases (L18a-L18e)",
+      "scalars": {
+        "L18a_1x1_masked_qprec": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "L18a_1x1_masked_residual_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "L18a_1x1_masked_residual_mean": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "L18a_1x1_masked_unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "L18a_1x1_masked_xreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "L18a_1x1_masked_yreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "L18b_1x1_unmasked_qprec": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "L18b_1x1_unmasked_residual_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "L18b_1x1_unmasked_residual_mean": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "L18b_1x1_unmasked_unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "L18b_1x1_unmasked_xreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "L18b_1x1_unmasked_yreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "L18c_1x5_qprec": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "L18c_1x5_residual_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "L18c_1x5_residual_mean": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "L18c_1x5_unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "L18c_1x5_xreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "L18c_1x5_yreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "L18d_2x5_full_qprec": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "L18d_2x5_full_residual_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "L18d_2x5_full_residual_mean": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "L18d_2x5_full_unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "L18d_2x5_full_xreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "L18d_2x5_full_yreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "L18e_5x1_qprec": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "L18e_5x1_residual_max": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "L18e_5x1_residual_mean": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "L18e_5x1_unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        },
+        "L18e_5x1_xreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        },
+        "L18e_5x1_yreal": {
+          "bits": "0x3ff0000000000000",
+          "hex": "0x1p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "82c500b3af34135ac22a39297674387e57c7a24a2a3377c53fac7fee852d59de"
+    },
+    {
+      "arrays": {
+        "corrected": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R01_positive_probe_corrected"
+        },
+        "delta": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R01_positive_probe_delta"
+        },
+        "input": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R01_positive_probe_input"
+        },
+        "standalone_corrected": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R01_positive_probe_standalone_corrected"
+        },
+        "standalone_mask": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R01_positive_probe_standalone_mask"
+        },
+        "temp_mask": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R01_positive_probe_temp_mask"
+        },
+        "temp_mask_after": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R01_positive_probe_temp_mask_after"
+        }
+      },
+      "case_identifier": "R01_positive",
+      "exit_code": 0,
+      "family": "remove",
+      "ints": {
+        "max_width": 4,
+        "min_len": 16,
+        "polarity_enum": 3,
+        "threads_enabled": 0,
+        "unmasked_mutation_count": 0
+      },
+      "purpose": "remove scars: positive scar composition",
+      "scalars": {
+        "effective_threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "effective_threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        },
+        "threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        },
+        "unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "ea4c4dc2dc7dfa6001651c56c43436e4b30afecd7c0b0d655df7325afbb1fb66"
+    },
+    {
+      "arrays": {
+        "corrected": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R02_negative_probe_corrected"
+        },
+        "delta": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R02_negative_probe_delta"
+        },
+        "input": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R02_negative_probe_input"
+        },
+        "standalone_corrected": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R02_negative_probe_standalone_corrected"
+        },
+        "standalone_mask": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R02_negative_probe_standalone_mask"
+        },
+        "temp_mask": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R02_negative_probe_temp_mask"
+        },
+        "temp_mask_after": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R02_negative_probe_temp_mask_after"
+        }
+      },
+      "case_identifier": "R02_negative",
+      "exit_code": 0,
+      "family": "remove",
+      "ints": {
+        "max_width": 4,
+        "min_len": 16,
+        "polarity_enum": 3,
+        "threads_enabled": 0,
+        "unmasked_mutation_count": 0
+      },
+      "purpose": "remove scars: negative scar composition",
+      "scalars": {
+        "effective_threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "effective_threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        },
+        "threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        },
+        "unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "35755b67593f6f19aab17f7c07933db613702f31c0c82d551630db7b11bedb39"
+    },
+    {
+      "arrays": {
+        "corrected": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R03_both_probe_corrected"
+        },
+        "delta": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R03_both_probe_delta"
+        },
+        "input": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R03_both_probe_input"
+        },
+        "standalone_corrected": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R03_both_probe_standalone_corrected"
+        },
+        "standalone_mask": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R03_both_probe_standalone_mask"
+        },
+        "temp_mask": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R03_both_probe_temp_mask"
+        },
+        "temp_mask_after": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R03_both_probe_temp_mask_after"
+        }
+      },
+      "case_identifier": "R03_both",
+      "exit_code": 0,
+      "family": "remove",
+      "ints": {
+        "max_width": 4,
+        "min_len": 16,
+        "polarity_enum": 3,
+        "threads_enabled": 0,
+        "unmasked_mutation_count": 0
+      },
+      "purpose": "remove scars: positive and negative scars together",
+      "scalars": {
+        "effective_threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "effective_threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        },
+        "threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        },
+        "unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "3b7dd8cf0d7b58b63921a9255f2e74e4b58a0c3c72384d7d8955d6fa64c0836c"
+    },
+    {
+      "arrays": {
+        "corrected": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R04_no_detection_probe_corrected"
+        },
+        "delta": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R04_no_detection_probe_delta"
+        },
+        "input": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R04_no_detection_probe_input"
+        },
+        "standalone_corrected": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R04_no_detection_probe_standalone_corrected"
+        },
+        "standalone_mask": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R04_no_detection_probe_standalone_mask"
+        },
+        "temp_mask": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R04_no_detection_probe_temp_mask"
+        },
+        "temp_mask_after": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R04_no_detection_probe_temp_mask_after"
+        }
+      },
+      "case_identifier": "R04_no_detection",
+      "exit_code": 0,
+      "family": "remove",
+      "ints": {
+        "max_width": 4,
+        "min_len": 16,
+        "polarity_enum": 3,
+        "threads_enabled": 0,
+        "unmasked_mutation_count": 0
+      },
+      "purpose": "remove scars: no detection leaves the field unchanged",
+      "scalars": {
+        "effective_threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "effective_threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        },
+        "threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        },
+        "unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "0ad85078584838696df97713e2b13bb9dce1b98c0cc0305a65d94b68da8c571d"
+    },
+    {
+      "arrays": {
+        "corrected": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R05_edge_touching_probe_corrected"
+        },
+        "delta": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R05_edge_touching_probe_delta"
+        },
+        "input": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R05_edge_touching_probe_input"
+        },
+        "standalone_corrected": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R05_edge_touching_probe_standalone_corrected"
+        },
+        "standalone_mask": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R05_edge_touching_probe_standalone_mask"
+        },
+        "temp_mask": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R05_edge_touching_probe_temp_mask"
+        },
+        "temp_mask_after": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R05_edge_touching_probe_temp_mask_after"
+        }
+      },
+      "case_identifier": "R05_edge_touching",
+      "exit_code": 0,
+      "family": "remove",
+      "ints": {
+        "max_width": 4,
+        "min_len": 16,
+        "polarity_enum": 3,
+        "threads_enabled": 0,
+        "unmasked_mutation_count": 0
+      },
+      "purpose": "remove scars: scar in the first markable row",
+      "scalars": {
+        "effective_threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "effective_threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        },
+        "threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        },
+        "unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "160467bc91bc8ecd706fd8cdd4f98286cd0a25e706ea3d8997273b1d46fb7c59"
+    },
+    {
+      "arrays": {
+        "corrected": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R06_long_wide_probe_corrected"
+        },
+        "delta": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R06_long_wide_probe_delta"
+        },
+        "input": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R06_long_wide_probe_input"
+        },
+        "standalone_corrected": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R06_long_wide_probe_standalone_corrected"
+        },
+        "standalone_mask": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R06_long_wide_probe_standalone_mask"
+        },
+        "temp_mask": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R06_long_wide_probe_temp_mask"
+        },
+        "temp_mask_after": {
+          "count": 320,
+          "dims": [
+            20,
+            16
+          ],
+          "key": "R06_long_wide_probe_temp_mask_after"
+        }
+      },
+      "case_identifier": "R06_long_wide",
+      "exit_code": 0,
+      "family": "remove",
+      "ints": {
+        "max_width": 4,
+        "min_len": 16,
+        "polarity_enum": 3,
+        "threads_enabled": 0,
+        "unmasked_mutation_count": 0
+      },
+      "purpose": "remove scars: long wide (3-row) scar",
+      "scalars": {
+        "effective_threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "effective_threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        },
+        "threshold_high": {
+          "bits": "0x3fe54fdf3b645a1d",
+          "hex": "0x1.54fdf3b645a1dp-1"
+        },
+        "threshold_low": {
+          "bits": "0x3fd0000000000000",
+          "hex": "0x1p-2"
+        },
+        "unmasked_max_abs_change": {
+          "bits": "0x0000000000000000",
+          "hex": "0x0p+0"
+        }
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "c43b25de31c2436cdaa27274ec13d50e75cff126ef0276fdb7ac0a6612ec3626"
+    }
+  ],
+  "comparison_metrics": {
+    "laplace": {
+      "array_count": 22,
+      "arrays_bitwise_exact": 16,
+      "case_count": 22,
+      "element_count": 1068,
+      "elements_bitwise_exact": 1056,
+      "inf_mismatches": 0,
+      "max_absolute_difference": 1.7763568394002505e-15,
+      "max_ulp_difference": 2,
+      "nan_mismatches": 0,
+      "signed_zero_mismatches": 1
+    },
+    "mark_scars": {
+      "array_count": 22,
+      "arrays_bitwise_exact": 22,
+      "case_count": 22,
+      "element_count": 1726,
+      "elements_bitwise_exact": 1726,
+      "inf_mismatches": 0,
+      "max_absolute_difference": 0.0,
+      "max_ulp_difference": 0,
+      "nan_mismatches": 0,
+      "signed_zero_mismatches": 0
+    },
+    "remove_scars": {
+      "array_count": 6,
+      "arrays_bitwise_exact": 6,
+      "case_count": 6,
+      "element_count": 1920,
+      "elements_bitwise_exact": 1920,
+      "inf_mismatches": 0,
+      "max_absolute_difference": 0.0,
+      "max_ulp_difference": 0,
+      "nan_mismatches": 0,
+      "signed_zero_mismatches": 0
+    }
+  },
+  "evidence": {
+    "deliberate_spmkit_policy_differences": [
+      "Non-finite inputs (NaN, +-Inf) are rejected at the SPMKit entry point; the Gwydion source propagates IEEE arithmetic without pre-filtering.",
+      "GUI semantics (undo checkpoints, channel log, data-browser current channel lookup, container mask writes, settings persistence) are not part of the numerical contract and will not be emulated.",
+      "Mark Scars in SPMKit will return masks as explicit outputs rather than mutating a persistent data-browser mask."
+    ],
+    "known_source_behaviours": [
+      "Mark Scars statistic: a single global vertical-difference RMS rms = sqrt(sum((d[i,j]-d[i+1,j])**2)/(xres*yres)) over the whole field (correct.c:1413-1424); thresholds are multiples of this RMS.",
+      "Mark Scars detection: per-column band scanning with first-qualifying width k <= max_width; positive polarity detects an elevated band (min of band rows above max of boundary rows), negative a depressed band; weights (value-bottom)/rms and (top-value)/rms accumulated with C fmax semantics (correct.c:1429-1471).",
+      "Mark Scars hard/soft semantics: detection at threshold_low; pixels with weight >= threshold_high are hard seeds; soft pixels adjacent to hard runs attach through a chained forward/backward in-place expansion setting them to exactly threshold_high (correct.c:1472-1484).",
+      "Mark Scars finalization: per-row runs of pixels >= threshold_high are kept only when their length is >= min_len and are clamped to 1.0; everything else becomes 0.0; the output mask is binary (correct.c:1485-1511).",
+      "Mark Scars kernel clamps (correct.c:1407-1411): min_len = MAX(min_len,1), max_width = MIN(max_width, yres-2), threshold_high = MAX(threshold_high, threshold_low); early empty-mask returns for min_len > xres, max_width < 1, threshold_low <= 0 and rms == 0.",
+      "Module-level polarity dispatch (scars.c:158-169): POSITIVE=1/NEGATIVE=4 run one detector; BOTH=3 runs both detectors and unions the binary masks with max_of_fields.",
+      "Module-level existing-mask semantics (scars.c:249-258, 232-236): the existing mask is never read by the kernel; combine=union is elementwise fmax, intersection fmin; with no detection the container mask is removed (module_mask_present=0).",
+      "Laplace interpolation: per-grain processing of mask>0 pixels with 4-connectivity; Dirichlet data from the surrounding ring, Neumann (dz/dn=0) by omission at image borders; whole-field mask clears the field to zeros; empty mask leaves the field unchanged (correct-laplace.c:1566-1672).",
+      "Laplace solver internals are a multilevel anisotropic sparse conjugate-gradient solve with damped-Jacobi relaxation and hierarchical reconstruction followed by a dense four-neighbour CG refinement (correct-laplace.c 939-1332); the solver is iterative and its output may deviate from the exact discrete solution by a few ULPs.",
+      "Tiny-grain special paths: 1x1 grains use the exact neighbour mean (handle_1x1_grain); interior 1xN/Mx1 grains use a direct tridiagonal solve (handle_thin_grain, Thomas elimination); interior L-shaped three-pixel grains use closed-form formulas (handle_3px_grain).",
+      "L05/L06 corridor cases: the tridiagonal Thomas elimination introduces one-ULP rounding at the middle pixel (5.999999999999999 instead of 6.0); measured source-algorithm rounding, not an oracle defect.",
+      "L17 signed-zero case: the compiled probe yields -0.0 at the masked pixel while the frozen source's 1x1 arithmetic (IEEE round-to-nearest zero-sum rule) and the independent mathematical reference yield +0.0; zero sign is implementation semantics, not mathematical content."
+    ],
+    "metrics_txt_notes": {
+      "metrics_txt_notes": [
+        "metrics.txt L05 entry used row-1 (unmasked) corridor indices and reported maxabs=0/maxulp=0; the generator recomputed the true corridor row (1 ULP at the middle pixel)."
+      ]
+    },
+    "non_claims": [
+      "No universal Gwydion equivalence: parity is claimed only within the frozen 46-case finite campaign.",
+      "No other Gwydion version or library-build equivalence claim.",
+      "No installed-GUI black-box execution: /usr/bin/gwydion was never invoked.",
+      "No claim that the linked Gwydion library internals were sanitizer-instrumented (ASan/UBSan instrumented the probe executables and the call boundary only).",
+      "No NaN/Inf compatibility claim (all retained inputs are finite).",
+      "No physical or experimental validation.",
+      "No claim that interpolation preserves roughness, PSD, autocorrelation, morphology or uncertainty.",
+      "No production SPMKit implementation exists yet; the fixtures document the compiled reference behavior only.",
+      "No frozen universal Laplace parity tolerance; per-case metrics are characterization, not a production acceptance threshold."
+    ]
+  },
+  "fixture": {
+    "array_hashes": {
+      "C01_constant_field_probe_input": "38d73e83f6dfe825ef5356f914a15f331f2b40f69d78937639ddc37a79142c51",
+      "C01_constant_field_probe_input_after": "38d73e83f6dfe825ef5356f914a15f331f2b40f69d78937639ddc37a79142c51",
+      "C01_constant_field_probe_kernel_mask": "6b7667c6561ca9d4edb43aab78dd1ce169d010bb643b712880aa3a7ead613a4b",
+      "C02_positive_hard_seeded_probe_input": "4e22ecc342e2fba03d3d809727ba5f85b662bc76712a62aaad99b89b98f92fd2",
+      "C02_positive_hard_seeded_probe_input_after": "4e22ecc342e2fba03d3d809727ba5f85b662bc76712a62aaad99b89b98f92fd2",
+      "C02_positive_hard_seeded_probe_kernel_mask": "7c86b7fd2bd679b7d38a68737ec2fc576dcfda4fe47635f77fbd02de93660b2c",
+      "C03_negative_hard_seeded_probe_input": "0accc0eed52ffd9b1c780fb453dc80c42654c6b52cdb8fecc7a78e54f74918c8",
+      "C03_negative_hard_seeded_probe_input_after": "0accc0eed52ffd9b1c780fb453dc80c42654c6b52cdb8fecc7a78e54f74918c8",
+      "C03_negative_hard_seeded_probe_kernel_mask": "fee4c7198e1efe9e842c54f1bb233764f020a47996293c8097f37875eac77a01",
+      "C04_both_polarities_probe_input": "30afa5204152777fdaa1a398ab44c345b6e0b9521819114cccb8f02aecf93b52",
+      "C04_both_polarities_probe_input_after": "30afa5204152777fdaa1a398ab44c345b6e0b9521819114cccb8f02aecf93b52",
+      "C04_both_polarities_probe_kernel_mask": "f1600dd089f44bc1f8a95e9714db4bdd265268207ba7233d7fd45502cde6d8f1",
+      "C05_soft_only_no_seed_probe_input": "7c86b7fd2bd679b7d38a68737ec2fc576dcfda4fe47635f77fbd02de93660b2c",
+      "C05_soft_only_no_seed_probe_input_after": "7c86b7fd2bd679b7d38a68737ec2fc576dcfda4fe47635f77fbd02de93660b2c",
+      "C05_soft_only_no_seed_probe_kernel_mask": "6b7667c6561ca9d4edb43aab78dd1ce169d010bb643b712880aa3a7ead613a4b",
+      "C06_hard_with_soft_shoulder_probe_input": "cc23030dc2066a792a1c341f2ed5a4a702feb44498f771e31d285982efec509d",
+      "C06_hard_with_soft_shoulder_probe_input_after": "cc23030dc2066a792a1c341f2ed5a4a702feb44498f771e31d285982efec509d",
+      "C06_hard_with_soft_shoulder_probe_kernel_mask": "7c86b7fd2bd679b7d38a68737ec2fc576dcfda4fe47635f77fbd02de93660b2c",
+      "C07_detached_soft_run_probe_input": "97453298511166e64ac75f8188753cd65dfafc1fa3e029633a60e89c62584d8d",
+      "C07_detached_soft_run_probe_input_after": "97453298511166e64ac75f8188753cd65dfafc1fa3e029633a60e89c62584d8d",
+      "C07_detached_soft_run_probe_kernel_mask": "6b7667c6561ca9d4edb43aab78dd1ce169d010bb643b712880aa3a7ead613a4b",
+      "C08_width_exactly_max_probe_input": "c107fb1125d816c7c1648be44681317df8fc022eae2ebb8569187f1bd94b046b",
+      "C08_width_exactly_max_probe_input_after": "c107fb1125d816c7c1648be44681317df8fc022eae2ebb8569187f1bd94b046b",
+      "C08_width_exactly_max_probe_kernel_mask": "bdf3a52a1150afd0d86b657b32d3ca9099c122d5e2b92983fab3f27434d87b98",
+      "C09_width_max_plus_one_probe_input": "ac459a7643456f7544e1a4f25df0c8362a5f1f254514c81fa65f3371da39752d",
+      "C09_width_max_plus_one_probe_input_after": "ac459a7643456f7544e1a4f25df0c8362a5f1f254514c81fa65f3371da39752d",
+      "C09_width_max_plus_one_probe_kernel_mask": "6b7667c6561ca9d4edb43aab78dd1ce169d010bb643b712880aa3a7ead613a4b",
+      "C10_length_exactly_min_probe_input": "87a501970be29bb93662f8fd0b95b5792b15640da2a9fa48cc5d0f718bd602c4",
+      "C10_length_exactly_min_probe_input_after": "87a501970be29bb93662f8fd0b95b5792b15640da2a9fa48cc5d0f718bd602c4",
+      "C10_length_exactly_min_probe_kernel_mask": "a23b56e71e780c11083b7c76baa4f1a78cfbe1d5252fc32ff8e6be9711592ff5",
+      "C11_length_min_minus_one_probe_input": "35feebe8e972efddea2eee81b02766a504f5263fb2e19d883858a9f6281f2154",
+      "C11_length_min_minus_one_probe_input_after": "35feebe8e972efddea2eee81b02766a504f5263fb2e19d883858a9f6281f2154",
+      "C11_length_min_minus_one_probe_kernel_mask": "6b7667c6561ca9d4edb43aab78dd1ce169d010bb643b712880aa3a7ead613a4b",
+      "C12_run_touching_edges_probe_input": "1224383d6bc6579edef74e907cfd8b309fce9d5b01f8a91327bcf0ea2c6bb1a1",
+      "C12_run_touching_edges_probe_input_after": "1224383d6bc6579edef74e907cfd8b309fce9d5b01f8a91327bcf0ea2c6bb1a1",
+      "C12_run_touching_edges_probe_kernel_mask": "6e06af27b4907708314eb90c717f80f438ac456432d9c1bbb5221d6fdf78a521",
+      "C13_first_last_row_probe_input": "e03cc8ef5a700739dab8580d543472adac064662b2e82a17f3c5a5724d957aeb",
+      "C13_first_last_row_probe_input_after": "e03cc8ef5a700739dab8580d543472adac064662b2e82a17f3c5a5724d957aeb",
+      "C13_first_last_row_probe_kernel_mask": "6b7667c6561ca9d4edb43aab78dd1ce169d010bb643b712880aa3a7ead613a4b",
+      "C14_adjacent_bands_fmax_probe_input": "250b22ecaa06897f90a4e02c992263d52ef7368dba2bb04a3ba308a9ba52946e",
+      "C14_adjacent_bands_fmax_probe_input_after": "250b22ecaa06897f90a4e02c992263d52ef7368dba2bb04a3ba308a9ba52946e",
+      "C14_adjacent_bands_fmax_probe_kernel_mask": "e6f956f61b5d54b426bff8fe0420568a2ba60fc3d4c47130e44db8bc2aae1f74",
+      "C15_min_dims_probe_input": "f8cd6eb83f2b05833e3d08899d5246535be25e5dea90b4c8b9488ca6b4674528",
+      "C15_min_dims_probe_input_after": "f8cd6eb83f2b05833e3d08899d5246535be25e5dea90b4c8b9488ca6b4674528",
+      "C15_min_dims_probe_kernel_mask": "f3e67a9c3028062c1e012b21c180446f80123e3071efdb63cf1c08da911be65a",
+      "C16_threshold_sanitize_probe_input": "4e22ecc342e2fba03d3d809727ba5f85b662bc76712a62aaad99b89b98f92fd2",
+      "C16_threshold_sanitize_probe_input_after": "4e22ecc342e2fba03d3d809727ba5f85b662bc76712a62aaad99b89b98f92fd2",
+      "C16_threshold_sanitize_probe_kernel_mask": "7c86b7fd2bd679b7d38a68737ec2fc576dcfda4fe47635f77fbd02de93660b2c",
+      "C17_existing_replace_probe_existing_after": "97453298511166e64ac75f8188753cd65dfafc1fa3e029633a60e89c62584d8d",
+      "C17_existing_replace_probe_existing_before": "97453298511166e64ac75f8188753cd65dfafc1fa3e029633a60e89c62584d8d",
+      "C17_existing_replace_probe_input": "4e22ecc342e2fba03d3d809727ba5f85b662bc76712a62aaad99b89b98f92fd2",
+      "C17_existing_replace_probe_input_after": "4e22ecc342e2fba03d3d809727ba5f85b662bc76712a62aaad99b89b98f92fd2",
+      "C17_existing_replace_probe_module_mask": "7c86b7fd2bd679b7d38a68737ec2fc576dcfda4fe47635f77fbd02de93660b2c",
+      "C18_existing_union_probe_existing_after": "97453298511166e64ac75f8188753cd65dfafc1fa3e029633a60e89c62584d8d",
+      "C18_existing_union_probe_existing_before": "97453298511166e64ac75f8188753cd65dfafc1fa3e029633a60e89c62584d8d",
+      "C18_existing_union_probe_input": "4e22ecc342e2fba03d3d809727ba5f85b662bc76712a62aaad99b89b98f92fd2",
+      "C18_existing_union_probe_input_after": "4e22ecc342e2fba03d3d809727ba5f85b662bc76712a62aaad99b89b98f92fd2",
+      "C18_existing_union_probe_module_mask": "fe41f21d4d4ee3004b1f6ccdacc33b18e9b2ad527b93ecfb4302fff96b93cdfc",
+      "C19_existing_intersection_probe_existing_after": "a23b56e71e780c11083b7c76baa4f1a78cfbe1d5252fc32ff8e6be9711592ff5",
+      "C19_existing_intersection_probe_existing_before": "a23b56e71e780c11083b7c76baa4f1a78cfbe1d5252fc32ff8e6be9711592ff5",
+      "C19_existing_intersection_probe_input": "4e22ecc342e2fba03d3d809727ba5f85b662bc76712a62aaad99b89b98f92fd2",
+      "C19_existing_intersection_probe_input_after": "4e22ecc342e2fba03d3d809727ba5f85b662bc76712a62aaad99b89b98f92fd2",
+      "C19_existing_intersection_probe_module_mask": "a23b56e71e780c11083b7c76baa4f1a78cfbe1d5252fc32ff8e6be9711592ff5",
+      "C20_no_detection_existing_probe_existing_after": "97453298511166e64ac75f8188753cd65dfafc1fa3e029633a60e89c62584d8d",
+      "C20_no_detection_existing_probe_existing_before": "97453298511166e64ac75f8188753cd65dfafc1fa3e029633a60e89c62584d8d",
+      "C20_no_detection_existing_probe_input": "6b7667c6561ca9d4edb43aab78dd1ce169d010bb643b712880aa3a7ead613a4b",
+      "C20_no_detection_existing_probe_input_after": "6b7667c6561ca9d4edb43aab78dd1ce169d010bb643b712880aa3a7ead613a4b",
+      "C20_no_detection_existing_probe_module_mask": "6b7667c6561ca9d4edb43aab78dd1ce169d010bb643b712880aa3a7ead613a4b",
+      "C20b_no_detection_existing_union_probe_existing_after": "97453298511166e64ac75f8188753cd65dfafc1fa3e029633a60e89c62584d8d",
+      "C20b_no_detection_existing_union_probe_existing_before": "97453298511166e64ac75f8188753cd65dfafc1fa3e029633a60e89c62584d8d",
+      "C20b_no_detection_existing_union_probe_input": "6b7667c6561ca9d4edb43aab78dd1ce169d010bb643b712880aa3a7ead613a4b",
+      "C20b_no_detection_existing_union_probe_input_after": "6b7667c6561ca9d4edb43aab78dd1ce169d010bb643b712880aa3a7ead613a4b",
+      "C20b_no_detection_existing_union_probe_module_mask": "97453298511166e64ac75f8188753cd65dfafc1fa3e029633a60e89c62584d8d",
+      "C21_signed_zero_probe_input": "6cc80554d6cf6cddde1897f67b4dab87347c35e38ae155bd7f4c0083e77a4d9c",
+      "C21_signed_zero_probe_input_after": "6cc80554d6cf6cddde1897f67b4dab87347c35e38ae155bd7f4c0083e77a4d9c",
+      "C21_signed_zero_probe_kernel_mask": "6b7667c6561ca9d4edb43aab78dd1ce169d010bb643b712880aa3a7ead613a4b",
+      "L01_empty_mask_probe_corrected": "c7d1d5c184ef2d68181f67db1b136d14a0e0ee0799a45db8263e93b21414491c",
+      "L01_empty_mask_probe_input": "c7d1d5c184ef2d68181f67db1b136d14a0e0ee0799a45db8263e93b21414491c",
+      "L01_empty_mask_probe_input_mask": "56086dbd44ddfc1beae6ba3238270a29b9351f1e35471ee898920ab66a793c0d",
+      "L01_empty_mask_probe_input_minus_output": "56086dbd44ddfc1beae6ba3238270a29b9351f1e35471ee898920ab66a793c0d",
+      "L01_empty_mask_probe_mask_after": "56086dbd44ddfc1beae6ba3238270a29b9351f1e35471ee898920ab66a793c0d",
+      "L01_empty_mask_probe_output_minus_input": "56086dbd44ddfc1beae6ba3238270a29b9351f1e35471ee898920ab66a793c0d",
+      "L02_one_interior_pixel_probe_corrected": "71d9757a3710b1688b89084053140816b8db09971c5b6c7f9c49e94b450754c3",
+      "L02_one_interior_pixel_probe_input": "71d9757a3710b1688b89084053140816b8db09971c5b6c7f9c49e94b450754c3",
+      "L02_one_interior_pixel_probe_input_mask": "ec60e036dfc2c724afcb06073c3278efbcfd5e72ce8822b407929d4d8c99c0d2",
+      "L02_one_interior_pixel_probe_input_minus_output": "0db221a6c1a230bbb1d9c6bd2a89e3711812b8cb975c80161c7ed7b696922519",
+      "L02_one_interior_pixel_probe_mask_after": "ec60e036dfc2c724afcb06073c3278efbcfd5e72ce8822b407929d4d8c99c0d2",
+      "L02_one_interior_pixel_probe_output_minus_input": "0db221a6c1a230bbb1d9c6bd2a89e3711812b8cb975c80161c7ed7b696922519",
+      "L03_one_edge_pixel_probe_corrected": "0769992c055b7b4bc235a9126a265d5f7837de79262d18422c1f9ac87873512a",
+      "L03_one_edge_pixel_probe_input": "71d9757a3710b1688b89084053140816b8db09971c5b6c7f9c49e94b450754c3",
+      "L03_one_edge_pixel_probe_input_mask": "88686f5fbe4a69256e4004d4056a95a5e6b16f66505d596b6cbf7c394c41ab34",
+      "L03_one_edge_pixel_probe_input_minus_output": "6568fbb53ff87d700838b7ba60f6cd06f1be840a8d139a54b724de25525cf23d",
+      "L03_one_edge_pixel_probe_mask_after": "88686f5fbe4a69256e4004d4056a95a5e6b16f66505d596b6cbf7c394c41ab34",
+      "L03_one_edge_pixel_probe_output_minus_input": "5ad03a24e33dede99e23d9c4568d26830c8d9f93b1275325304dff5ea163b861",
+      "L04_one_corner_pixel_probe_corrected": "9599d46f753df012ecb8ccf2c99ca034e0bf7b35363b25b63d1ee63103ec19d0",
+      "L04_one_corner_pixel_probe_input": "71d9757a3710b1688b89084053140816b8db09971c5b6c7f9c49e94b450754c3",
+      "L04_one_corner_pixel_probe_input_mask": "d1ceed18404ea71160447a3f382fd95ba56cac90d63ef57a8e7c1a7e11d251d1",
+      "L04_one_corner_pixel_probe_input_minus_output": "6da9e874fb277eed2e165aef55d42db1dddf3024acceb00e86a1349d144a8924",
+      "L04_one_corner_pixel_probe_mask_after": "d1ceed18404ea71160447a3f382fd95ba56cac90d63ef57a8e7c1a7e11d251d1",
+      "L04_one_corner_pixel_probe_output_minus_input": "d1ceed18404ea71160447a3f382fd95ba56cac90d63ef57a8e7c1a7e11d251d1",
+      "L05_horizontal_corridor_probe_corrected": "7a0f6a5ab7bf3de39f89c49125eb2f50f0a230e7f48b92af8c6a1849ee64201d",
+      "L05_horizontal_corridor_probe_input": "a20684df4756e6f4749f81d76de4fa9a4176dabdf377ccd0695c4c05eff290df",
+      "L05_horizontal_corridor_probe_input_mask": "4fb9d319904f2ac353ac617747221a8048a3323c8d9dfab73993d0c7bec5f027",
+      "L05_horizontal_corridor_probe_input_minus_output": "cbc322a635f26d2f61355ddd6d4564a3031eb8f7aa9329c44e412884d4ddb1ad",
+      "L05_horizontal_corridor_probe_mask_after": "4fb9d319904f2ac353ac617747221a8048a3323c8d9dfab73993d0c7bec5f027",
+      "L05_horizontal_corridor_probe_output_minus_input": "38d3dde09d52c20a5a3a358e058e9bf3f98731e2ec58189d06679d398c74486b",
+      "L06_vertical_corridor_probe_corrected": "995eafea3906e4da83da05cb60c5810e9e6ee0017be3d2e420d0d0b18910656e",
+      "L06_vertical_corridor_probe_input": "d2deec4676727ab74fdd54bfee56499d2ab91b228e9353c38188b47f0165cdd0",
+      "L06_vertical_corridor_probe_input_mask": "6b2a4f642845c6a6535b0258589d9ea7af143a6bc971217d1c243308e286a6f0",
+      "L06_vertical_corridor_probe_input_minus_output": "2cd3bb8a20c195e5501c72d4fd978cb5082068b91e82d76416ee01ecc3729a34",
+      "L06_vertical_corridor_probe_mask_after": "6b2a4f642845c6a6535b0258589d9ea7af143a6bc971217d1c243308e286a6f0",
+      "L06_vertical_corridor_probe_output_minus_input": "23b979f966fefb9013b2b502b70a7ed1c669cbe123ff2c5a6fe61cc6e025f605",
+      "L07_three_pixel_L_probe_corrected": "a6e1597d4fe6c4a52ef13dd54599f9e13cbcb96c17fd12e9296fe85591b743ad",
+      "L07_three_pixel_L_probe_input": "a6e1597d4fe6c4a52ef13dd54599f9e13cbcb96c17fd12e9296fe85591b743ad",
+      "L07_three_pixel_L_probe_input_mask": "641521256f36eace0829e8faa69e751f3c804a8f957a569f205b19499981efdd",
+      "L07_three_pixel_L_probe_input_minus_output": "6f400b6c3c3d544532673777af85519e69a4fd3b81ae6a2692c06ab8c29c10a2",
+      "L07_three_pixel_L_probe_mask_after": "641521256f36eace0829e8faa69e751f3c804a8f957a569f205b19499981efdd",
+      "L07_three_pixel_L_probe_output_minus_input": "6f400b6c3c3d544532673777af85519e69a4fd3b81ae6a2692c06ab8c29c10a2",
+      "L08_interior_rectangle_probe_corrected": "a115b17dbb3d76f66940ad591d39b023e35d1d74d1cee9279e282fe9426dab2a",
+      "L08_interior_rectangle_probe_input": "a115b17dbb3d76f66940ad591d39b023e35d1d74d1cee9279e282fe9426dab2a",
+      "L08_interior_rectangle_probe_input_mask": "bfa1083391b1685236073a01dad57aae5d953dd35b9fc836363cea7706e3d145",
+      "L08_interior_rectangle_probe_input_minus_output": "018dd7814141c61bcb67f35c4f9a3dc0988dd46d4b980dcf162699ecc8342cb6",
+      "L08_interior_rectangle_probe_mask_after": "bfa1083391b1685236073a01dad57aae5d953dd35b9fc836363cea7706e3d145",
+      "L08_interior_rectangle_probe_output_minus_input": "018dd7814141c61bcb67f35c4f9a3dc0988dd46d4b980dcf162699ecc8342cb6",
+      "L09_two_components_probe_corrected": "926c9883904d0ff9ad4a1d272887140ee622b429dacb7897567126947fc26aa6",
+      "L09_two_components_probe_input": "926c9883904d0ff9ad4a1d272887140ee622b429dacb7897567126947fc26aa6",
+      "L09_two_components_probe_input_mask": "357e0a635c987b8a1cbeb1b2b328051a7dad3bbbb741e6f6c86b268bbd686946",
+      "L09_two_components_probe_input_minus_output": "5338dd0b06f2d1af3f901503d199b6226bb8a9e54895453f98ce293e2cde47e7",
+      "L09_two_components_probe_mask_after": "357e0a635c987b8a1cbeb1b2b328051a7dad3bbbb741e6f6c86b268bbd686946",
+      "L09_two_components_probe_output_minus_input": "5338dd0b06f2d1af3f901503d199b6226bb8a9e54895453f98ce293e2cde47e7",
+      "L10_edge_touching_probe_corrected": "57b44820ba0bf29bfabb9cc4ee68f228b60337a1de1808f7ee6b25f235f5bc56",
+      "L10_edge_touching_probe_input": "d3b37e1bda65e0b6b4e05d3e96e663dc2bc27983fd07075acc5f27fe29e91cd2",
+      "L10_edge_touching_probe_input_mask": "7f05faaccf7ebc37047b3b166dbbffdc7c3b819eba69a605c1f293143fad71b7",
+      "L10_edge_touching_probe_input_minus_output": "fd89d5350e8787756cdf81d68233d71c369825fd881e9dd8e6edf638f6882836",
+      "L10_edge_touching_probe_mask_after": "7f05faaccf7ebc37047b3b166dbbffdc7c3b819eba69a605c1f293143fad71b7",
+      "L10_edge_touching_probe_output_minus_input": "de90f8b12d285cf2f521f808ec9389e186e37d3a35b83750d1ad273dd3b09426",
+      "L11_corner_touching_probe_corrected": "ef867b96ebcf2c1abdab99a1e6b1f82be55e71ef608b79b73abc636f93e2ea34",
+      "L11_corner_touching_probe_input": "d3b37e1bda65e0b6b4e05d3e96e663dc2bc27983fd07075acc5f27fe29e91cd2",
+      "L11_corner_touching_probe_input_mask": "f9b328988b8a5b2dd7cb7f7429e42469dccb7ccccb70733cccf164a5613c49ee",
+      "L11_corner_touching_probe_input_minus_output": "42f5146b19a5f643b9efc82c3c9f27f267c17f7d03d917d91b881ae5a7ad73bf",
+      "L11_corner_touching_probe_mask_after": "f9b328988b8a5b2dd7cb7f7429e42469dccb7ccccb70733cccf164a5613c49ee",
+      "L11_corner_touching_probe_output_minus_input": "62bed6bc66a879a5db92996d42d8af9df7e96ef0265e171fa90ad3afb7ac1699",
+      "L12_entire_masked_row_probe_corrected": "8857b52cf8601625abdb1d2c3365a44a82987f577e250bfc58451235b22ef8ab",
+      "L12_entire_masked_row_probe_input": "d3b37e1bda65e0b6b4e05d3e96e663dc2bc27983fd07075acc5f27fe29e91cd2",
+      "L12_entire_masked_row_probe_input_mask": "2d6a0ccb8976c3a9099ecd3241930ba42c45dc112ebe7e6ef881cc70291cd7c9",
+      "L12_entire_masked_row_probe_input_minus_output": "8424fd30c19a958e54941d0d637fe79d7fb8acc59bc62a380c058911f46393d5",
+      "L12_entire_masked_row_probe_mask_after": "2d6a0ccb8976c3a9099ecd3241930ba42c45dc112ebe7e6ef881cc70291cd7c9",
+      "L12_entire_masked_row_probe_output_minus_input": "07b353ed4297f7fc75be40893e828e68b1e2ade5b9cc4d3cc92483280beefe90",
+      "L13_whole_field_mask_probe_corrected": "6f400b6c3c3d544532673777af85519e69a4fd3b81ae6a2692c06ab8c29c10a2",
+      "L13_whole_field_mask_probe_input": "a6e1597d4fe6c4a52ef13dd54599f9e13cbcb96c17fd12e9296fe85591b743ad",
+      "L13_whole_field_mask_probe_input_mask": "a7bbd93c6d2494c46bc2b53663b626ce15b36f30d434dc377873df169a016a2f",
+      "L13_whole_field_mask_probe_input_minus_output": "a6e1597d4fe6c4a52ef13dd54599f9e13cbcb96c17fd12e9296fe85591b743ad",
+      "L13_whole_field_mask_probe_mask_after": "a7bbd93c6d2494c46bc2b53663b626ce15b36f30d434dc377873df169a016a2f",
+      "L13_whole_field_mask_probe_output_minus_input": "003ca0a6d2bb4e7802190ae99309dd03593b7b90ef31eaab23d4c07950ca7e46",
+      "L14_constant_boundary_probe_corrected": "1ebc5c817cec738b634260021467ed2da7da3714e2f19d63c6474efda99d5a6a",
+      "L14_constant_boundary_probe_input": "1ebc5c817cec738b634260021467ed2da7da3714e2f19d63c6474efda99d5a6a",
+      "L14_constant_boundary_probe_input_mask": "3633683418f290236e607c9e302fc4ccab281610bd88b60f8c832eca866e2aa7",
+      "L14_constant_boundary_probe_input_minus_output": "a8b5b409603416d7d24c9ae7604074eb038da7bf02a38609418c382232e9d6e1",
+      "L14_constant_boundary_probe_mask_after": "3633683418f290236e607c9e302fc4ccab281610bd88b60f8c832eca866e2aa7",
+      "L14_constant_boundary_probe_output_minus_input": "a8b5b409603416d7d24c9ae7604074eb038da7bf02a38609418c382232e9d6e1",
+      "L15_calibration_independence_probe_corrected_a": "2b9a10f14b9f2e469983666408fc8d780c8216a90615a9d146dcbf7c5a53fe00",
+      "L15_calibration_independence_probe_corrected_b": "2b9a10f14b9f2e469983666408fc8d780c8216a90615a9d146dcbf7c5a53fe00",
+      "L15_calibration_independence_probe_input": "2b9a10f14b9f2e469983666408fc8d780c8216a90615a9d146dcbf7c5a53fe00",
+      "L15_calibration_independence_probe_mask_after_a": "4984987ad62118c9cd53c582e3cf754cca8b9af10cc169b39e757e034f9a72f8",
+      "L15_calibration_independence_probe_mask_after_b": "4984987ad62118c9cd53c582e3cf754cca8b9af10cc169b39e757e034f9a72f8",
+      "L16_mask_predicate_probe_corrected": "2b9a10f14b9f2e469983666408fc8d780c8216a90615a9d146dcbf7c5a53fe00",
+      "L16_mask_predicate_probe_input": "2b9a10f14b9f2e469983666408fc8d780c8216a90615a9d146dcbf7c5a53fe00",
+      "L16_mask_predicate_probe_input_mask": "e255e20535b82dcb6c5deb5eb5832525b638d475008711179de95b417f997f15",
+      "L16_mask_predicate_probe_input_minus_output": "a8b5b409603416d7d24c9ae7604074eb038da7bf02a38609418c382232e9d6e1",
+      "L16_mask_predicate_probe_mask_after": "e255e20535b82dcb6c5deb5eb5832525b638d475008711179de95b417f997f15",
+      "L16_mask_predicate_probe_output_minus_input": "a8b5b409603416d7d24c9ae7604074eb038da7bf02a38609418c382232e9d6e1",
+      "L17_signed_zero_probe_corrected": "ce57101c1965de91cab165055f836786b40ea32c54575797e91aeea46fc90e74",
+      "L17_signed_zero_probe_input": "ce57101c1965de91cab165055f836786b40ea32c54575797e91aeea46fc90e74",
+      "L17_signed_zero_probe_input_mask": "ec60e036dfc2c724afcb06073c3278efbcfd5e72ce8822b407929d4d8c99c0d2",
+      "L17_signed_zero_probe_input_minus_output": "0db221a6c1a230bbb1d9c6bd2a89e3711812b8cb975c80161c7ed7b696922519",
+      "L17_signed_zero_probe_mask_after": "ec60e036dfc2c724afcb06073c3278efbcfd5e72ce8822b407929d4d8c99c0d2",
+      "L17_signed_zero_probe_output_minus_input": "0db221a6c1a230bbb1d9c6bd2a89e3711812b8cb975c80161c7ed7b696922519",
+      "L18_degenerate_probe_L18a_1x1_masked_corrected": "8a39439d008124c73db4f3c41b941530a9e08999c00c2b80178156f471d722a6",
+      "L18_degenerate_probe_L18a_1x1_masked_input": "532e03267162c2ccaef12fb31a3af6be53b459bbcd1c7f0765badbe16f738c3f",
+      "L18_degenerate_probe_L18a_1x1_masked_input_mask": "76c3c80124e8621f597ed370e1f948f8f5cc8a63052ee112637a85ab33e89b62",
+      "L18_degenerate_probe_L18a_1x1_masked_input_minus_output": "532e03267162c2ccaef12fb31a3af6be53b459bbcd1c7f0765badbe16f738c3f",
+      "L18_degenerate_probe_L18a_1x1_masked_mask_after": "76c3c80124e8621f597ed370e1f948f8f5cc8a63052ee112637a85ab33e89b62",
+      "L18_degenerate_probe_L18a_1x1_masked_output_minus_input": "20d575a132cfb1d54636991c4bfbd8c124a689d2dc426325f3136fb577d48a53",
+      "L18_degenerate_probe_L18b_1x1_unmasked_corrected": "532e03267162c2ccaef12fb31a3af6be53b459bbcd1c7f0765badbe16f738c3f",
+      "L18_degenerate_probe_L18b_1x1_unmasked_input": "532e03267162c2ccaef12fb31a3af6be53b459bbcd1c7f0765badbe16f738c3f",
+      "L18_degenerate_probe_L18b_1x1_unmasked_input_mask": "8a39439d008124c73db4f3c41b941530a9e08999c00c2b80178156f471d722a6",
+      "L18_degenerate_probe_L18b_1x1_unmasked_input_minus_output": "8a39439d008124c73db4f3c41b941530a9e08999c00c2b80178156f471d722a6",
+      "L18_degenerate_probe_L18b_1x1_unmasked_mask_after": "8a39439d008124c73db4f3c41b941530a9e08999c00c2b80178156f471d722a6",
+      "L18_degenerate_probe_L18b_1x1_unmasked_output_minus_input": "8a39439d008124c73db4f3c41b941530a9e08999c00c2b80178156f471d722a6",
+      "L18_degenerate_probe_L18c_1x5_corrected": "87d110fc194804f82cdb82383518091d4bdfaa8169a0cec11487a4196ec226e3",
+      "L18_degenerate_probe_L18c_1x5_input": "65928371d86627e38240170c8e6524ae573dd24b7a850ca45bc5afc8bb702759",
+      "L18_degenerate_probe_L18c_1x5_input_mask": "ef2ade7e646276fd8e676ee9412e9c3a3258a7c8bd61400767eace492d7de32d",
+      "L18_degenerate_probe_L18c_1x5_input_minus_output": "cbe154e3912d2a2cd4c55371b75fad4b68fda6e1183c6a73dc6646b331c723be",
+      "L18_degenerate_probe_L18c_1x5_mask_after": "ef2ade7e646276fd8e676ee9412e9c3a3258a7c8bd61400767eace492d7de32d",
+      "L18_degenerate_probe_L18c_1x5_output_minus_input": "09fe7dd673bf69b583a9553f309ef0949758c57d65e3ffa6d6b13fc56811d192",
+      "L18_degenerate_probe_L18d_2x5_full_corrected": "4219fee09d3774d868e556536def2b11572a5c7b44ead2cc532386c3c8af6276",
+      "L18_degenerate_probe_L18d_2x5_full_input": "891e746aa63c0a4ac894f9a823ffd2fd6188c66bc128ee22349de87528b54914",
+      "L18_degenerate_probe_L18d_2x5_full_input_mask": "854444dee059ea47d0da3df4ea98a6961ac0642744ee05ca53a171baa35d440a",
+      "L18_degenerate_probe_L18d_2x5_full_input_minus_output": "891e746aa63c0a4ac894f9a823ffd2fd6188c66bc128ee22349de87528b54914",
+      "L18_degenerate_probe_L18d_2x5_full_mask_after": "854444dee059ea47d0da3df4ea98a6961ac0642744ee05ca53a171baa35d440a",
+      "L18_degenerate_probe_L18d_2x5_full_output_minus_input": "d5a83831becf497cd0167c26d40c1e86fba4f792a5fc8486c4b2902e04bd6175",
+      "L18_degenerate_probe_L18e_5x1_corrected": "772981b2e7cf1bf1a0f9acb4282a1ac1ed8abe28cb2be07cd667c4f4a96f22a5",
+      "L18_degenerate_probe_L18e_5x1_input": "5827c716edb96a173fed1744ee5b8442b79c820a16e6a1b4cb3ebe443b2bc20c",
+      "L18_degenerate_probe_L18e_5x1_input_mask": "2dd431787f5586af2c443ab73acd08717c85c35312125312052ccaca37fb6547",
+      "L18_degenerate_probe_L18e_5x1_input_minus_output": "e00d881e30f6fc7b55a8535d0f19171f6fa4a7b2e36169c39ac758145404d5b4",
+      "L18_degenerate_probe_L18e_5x1_mask_after": "2dd431787f5586af2c443ab73acd08717c85c35312125312052ccaca37fb6547",
+      "L18_degenerate_probe_L18e_5x1_output_minus_input": "50359dcfc7361223864e0210f2112c096be13c11f9e799dedbb2fcd1e1840bd3",
+      "R01_positive_probe_corrected": "61e2ebff31b43c96255f52af4d528e682e56c2634a434b772122bba537a122f2",
+      "R01_positive_probe_delta": "1f430bb11a1c368e2d97deebb0cb48bffc6a652c66fe7af95e52c034db9db801",
+      "R01_positive_probe_input": "5fbfd726b8cdee6f9b71bbbc8f73bdbc1cb463dd28ce07caca915454ddad6ced",
+      "R01_positive_probe_standalone_corrected": "61e2ebff31b43c96255f52af4d528e682e56c2634a434b772122bba537a122f2",
+      "R01_positive_probe_standalone_mask": "e47d8c896825ddee0ec9b1ed6bc8e3aa0211205d0d90c57a166136e9b1e9f1a8",
+      "R01_positive_probe_temp_mask": "e47d8c896825ddee0ec9b1ed6bc8e3aa0211205d0d90c57a166136e9b1e9f1a8",
+      "R01_positive_probe_temp_mask_after": "e47d8c896825ddee0ec9b1ed6bc8e3aa0211205d0d90c57a166136e9b1e9f1a8",
+      "R02_negative_probe_corrected": "61e2ebff31b43c96255f52af4d528e682e56c2634a434b772122bba537a122f2",
+      "R02_negative_probe_delta": "7ad3c0b0ca8c0a891c7859b4a91a9c1d8a48244000888cc2d38be7866a89883b",
+      "R02_negative_probe_input": "0993c2d1a14270d9e8350cd580ef1ac6a537b36ae057421b645a47fa132ac18d",
+      "R02_negative_probe_standalone_corrected": "61e2ebff31b43c96255f52af4d528e682e56c2634a434b772122bba537a122f2",
+      "R02_negative_probe_standalone_mask": "7ee1f2b3b1776f0c332f4486748559424d5790d0c6db1e1922ecc3b01a9df752",
+      "R02_negative_probe_temp_mask": "7ee1f2b3b1776f0c332f4486748559424d5790d0c6db1e1922ecc3b01a9df752",
+      "R02_negative_probe_temp_mask_after": "7ee1f2b3b1776f0c332f4486748559424d5790d0c6db1e1922ecc3b01a9df752",
+      "R03_both_probe_corrected": "61e2ebff31b43c96255f52af4d528e682e56c2634a434b772122bba537a122f2",
+      "R03_both_probe_delta": "a5fff74dc0dc23d00ab3de0435378f210c428c5523f980fc0a91c9d1e435747a",
+      "R03_both_probe_input": "ef987652b062e54c0960a03710f5b85a6eee3a9577bb0dfc59593a833bd30a1b",
+      "R03_both_probe_standalone_corrected": "61e2ebff31b43c96255f52af4d528e682e56c2634a434b772122bba537a122f2",
+      "R03_both_probe_standalone_mask": "49d72cbd41da5fd2074bfc9e719d095a9a42a1d43768443ca1d18082097dc43a",
+      "R03_both_probe_temp_mask": "49d72cbd41da5fd2074bfc9e719d095a9a42a1d43768443ca1d18082097dc43a",
+      "R03_both_probe_temp_mask_after": "49d72cbd41da5fd2074bfc9e719d095a9a42a1d43768443ca1d18082097dc43a",
+      "R04_no_detection_probe_corrected": "61e2ebff31b43c96255f52af4d528e682e56c2634a434b772122bba537a122f2",
+      "R04_no_detection_probe_delta": "61e2ebff31b43c96255f52af4d528e682e56c2634a434b772122bba537a122f2",
+      "R04_no_detection_probe_input": "61e2ebff31b43c96255f52af4d528e682e56c2634a434b772122bba537a122f2",
+      "R04_no_detection_probe_standalone_corrected": "61e2ebff31b43c96255f52af4d528e682e56c2634a434b772122bba537a122f2",
+      "R04_no_detection_probe_standalone_mask": "61e2ebff31b43c96255f52af4d528e682e56c2634a434b772122bba537a122f2",
+      "R04_no_detection_probe_temp_mask": "61e2ebff31b43c96255f52af4d528e682e56c2634a434b772122bba537a122f2",
+      "R04_no_detection_probe_temp_mask_after": "61e2ebff31b43c96255f52af4d528e682e56c2634a434b772122bba537a122f2",
+      "R05_edge_touching_probe_corrected": "61e2ebff31b43c96255f52af4d528e682e56c2634a434b772122bba537a122f2",
+      "R05_edge_touching_probe_delta": "b24d0f385f193dab0b6ef3f97e36d44282d004e2a700e7d24520da302e92e56d",
+      "R05_edge_touching_probe_input": "a77a9609a3699f19e1b6b7be06a080e0cc2afb7529887dfffccd457e9a91c372",
+      "R05_edge_touching_probe_standalone_corrected": "61e2ebff31b43c96255f52af4d528e682e56c2634a434b772122bba537a122f2",
+      "R05_edge_touching_probe_standalone_mask": "7d9bcf2caaf8bdd614da059644dae3deafa3f5e56d7dd0e73716a618ce7a0148",
+      "R05_edge_touching_probe_temp_mask": "7d9bcf2caaf8bdd614da059644dae3deafa3f5e56d7dd0e73716a618ce7a0148",
+      "R05_edge_touching_probe_temp_mask_after": "7d9bcf2caaf8bdd614da059644dae3deafa3f5e56d7dd0e73716a618ce7a0148",
+      "R06_long_wide_probe_corrected": "61e2ebff31b43c96255f52af4d528e682e56c2634a434b772122bba537a122f2",
+      "R06_long_wide_probe_delta": "b391360473cddd391161690a70be3cfbecd660c70d98fa18f0cd934466831b12",
+      "R06_long_wide_probe_input": "f82903be560a36a68a112d981488fd75390415131af1fbf2445a9e7e47b34c43",
+      "R06_long_wide_probe_standalone_corrected": "61e2ebff31b43c96255f52af4d528e682e56c2634a434b772122bba537a122f2",
+      "R06_long_wide_probe_standalone_mask": "5a8d16887029c61233bc5e12e47ce5ca13604da4ae1e849a5e354b1d7f3fee91",
+      "R06_long_wide_probe_temp_mask": "5a8d16887029c61233bc5e12e47ce5ca13604da4ae1e849a5e354b1d7f3fee91",
+      "R06_long_wide_probe_temp_mask_after": "5a8d16887029c61233bc5e12e47ce5ca13604da4ae1e849a5e354b1d7f3fee91"
+    }
+  },
+  "per_case": {
+    "C01_constant_field": {
+      "marked_runs": [],
+      "mask": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 80,
+        "elements_total": 80,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mask_present": false,
+      "nonzero_count": 0
+    },
+    "C02_positive_hard_seeded": {
+      "marked_runs": [
+        [
+          4,
+          0,
+          8
+        ]
+      ],
+      "mask": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 80,
+        "elements_total": 80,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mask_present": true,
+      "nonzero_count": 8
+    },
+    "C03_negative_hard_seeded": {
+      "marked_runs": [
+        [
+          5,
+          0,
+          8
+        ]
+      ],
+      "mask": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 80,
+        "elements_total": 80,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mask_present": true,
+      "nonzero_count": 8
+    },
+    "C04_both_polarities": {
+      "marked_runs": [
+        [
+          3,
+          0,
+          10
+        ],
+        [
+          8,
+          0,
+          10
+        ]
+      ],
+      "mask": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 120,
+        "elements_total": 120,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mask_present": true,
+      "nonzero_count": 20
+    },
+    "C05_soft_only_no_seed": {
+      "marked_runs": [],
+      "mask": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 80,
+        "elements_total": 80,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mask_present": false,
+      "nonzero_count": 0
+    },
+    "C06_hard_with_soft_shoulder": {
+      "marked_runs": [
+        [
+          4,
+          0,
+          8
+        ]
+      ],
+      "mask": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 80,
+        "elements_total": 80,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mask_present": true,
+      "nonzero_count": 8
+    },
+    "C07_detached_soft_run": {
+      "marked_runs": [],
+      "mask": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 80,
+        "elements_total": 80,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mask_present": false,
+      "nonzero_count": 0
+    },
+    "C08_width_exactly_max": {
+      "marked_runs": [
+        [
+          4,
+          0,
+          8
+        ],
+        [
+          5,
+          0,
+          8
+        ]
+      ],
+      "mask": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 80,
+        "elements_total": 80,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mask_present": true,
+      "nonzero_count": 16
+    },
+    "C09_width_max_plus_one": {
+      "marked_runs": [],
+      "mask": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 80,
+        "elements_total": 80,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mask_present": false,
+      "nonzero_count": 0
+    },
+    "C10_length_exactly_min": {
+      "marked_runs": [
+        [
+          4,
+          0,
+          4
+        ]
+      ],
+      "mask": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 80,
+        "elements_total": 80,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mask_present": true,
+      "nonzero_count": 4
+    },
+    "C11_length_min_minus_one": {
+      "marked_runs": [],
+      "mask": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 80,
+        "elements_total": 80,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mask_present": false,
+      "nonzero_count": 0
+    },
+    "C12_run_touching_edges": {
+      "marked_runs": [
+        [
+          6,
+          0,
+          8
+        ]
+      ],
+      "mask": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 80,
+        "elements_total": 80,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mask_present": true,
+      "nonzero_count": 8
+    },
+    "C13_first_last_row": {
+      "marked_runs": [],
+      "mask": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 80,
+        "elements_total": 80,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mask_present": false,
+      "nonzero_count": 0
+    },
+    "C14_adjacent_bands_fmax": {
+      "marked_runs": [
+        [
+          3,
+          0,
+          8
+        ],
+        [
+          4,
+          0,
+          8
+        ]
+      ],
+      "mask": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 80,
+        "elements_total": 80,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mask_present": true,
+      "nonzero_count": 16
+    },
+    "C15_min_dims": {
+      "marked_runs": [
+        [
+          1,
+          0,
+          2
+        ]
+      ],
+      "mask": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 6,
+        "elements_total": 6,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mask_present": true,
+      "nonzero_count": 2
+    },
+    "C16_threshold_sanitize": {
+      "marked_runs": [
+        [
+          4,
+          0,
+          8
+        ]
+      ],
+      "mask": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 80,
+        "elements_total": 80,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mask_present": true,
+      "nonzero_count": 8
+    },
+    "C17_existing_replace": {
+      "marked_runs": [
+        [
+          4,
+          0,
+          8
+        ]
+      ],
+      "mask": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 80,
+        "elements_total": 80,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mask_present": true,
+      "nonzero_count": 8
+    },
+    "C18_existing_union": {
+      "marked_runs": [
+        [
+          2,
+          0,
+          8
+        ],
+        [
+          4,
+          0,
+          8
+        ]
+      ],
+      "mask": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 80,
+        "elements_total": 80,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mask_present": true,
+      "nonzero_count": 16
+    },
+    "C19_existing_intersection": {
+      "marked_runs": [
+        [
+          4,
+          0,
+          4
+        ]
+      ],
+      "mask": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 80,
+        "elements_total": 80,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mask_present": true,
+      "nonzero_count": 4
+    },
+    "C20_no_detection_existing": {
+      "marked_runs": [],
+      "mask": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 80,
+        "elements_total": 80,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mask_present": false,
+      "nonzero_count": 0
+    },
+    "C20b_no_detection_existing_union": {
+      "marked_runs": [
+        [
+          2,
+          0,
+          8
+        ]
+      ],
+      "mask": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 80,
+        "elements_total": 80,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mask_present": true,
+      "nonzero_count": 8
+    },
+    "C21_signed_zero": {
+      "marked_runs": [],
+      "mask": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 80,
+        "elements_total": 80,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mask_present": false,
+      "nonzero_count": 0
+    },
+    "L01_empty_mask": {
+      "subcases": [
+        {
+          "arrays_bitwise_exact": true,
+          "elements_bitwise_exact": 48,
+          "elements_total": 48,
+          "empty_mask": true,
+          "inf_mismatches": 0,
+          "masked_pixel_count": 0,
+          "mathematical_residual": "0",
+          "max_absolute_difference": 0.0,
+          "max_ulp_difference": 0,
+          "nan_mismatches": 0,
+          "path_class": "empty mask",
+          "signed_zero_mismatches": 0,
+          "subcase": "L01_empty_mask",
+          "whole_field_mask": false
+        }
+      ]
+    },
+    "L02_one_interior_pixel": {
+      "subcases": [
+        {
+          "arrays_bitwise_exact": true,
+          "elements_bitwise_exact": 25,
+          "elements_total": 25,
+          "empty_mask": false,
+          "inf_mismatches": 0,
+          "masked_pixel_count": 1,
+          "mathematical_residual": "0",
+          "max_absolute_difference": 0.0,
+          "max_ulp_difference": 0,
+          "nan_mismatches": 0,
+          "path_class": "exact one-pixel local",
+          "signed_zero_mismatches": 0,
+          "subcase": "L02_one_interior_pixel",
+          "whole_field_mask": false
+        }
+      ]
+    },
+    "L03_one_edge_pixel": {
+      "subcases": [
+        {
+          "arrays_bitwise_exact": true,
+          "elements_bitwise_exact": 25,
+          "elements_total": 25,
+          "empty_mask": false,
+          "inf_mismatches": 0,
+          "masked_pixel_count": 1,
+          "mathematical_residual": "1E-79",
+          "max_absolute_difference": 0.0,
+          "max_ulp_difference": 0,
+          "nan_mismatches": 0,
+          "path_class": "exact one-pixel local",
+          "signed_zero_mismatches": 0,
+          "subcase": "L03_one_edge_pixel",
+          "whole_field_mask": false
+        }
+      ]
+    },
+    "L04_one_corner_pixel": {
+      "subcases": [
+        {
+          "arrays_bitwise_exact": true,
+          "elements_bitwise_exact": 25,
+          "elements_total": 25,
+          "empty_mask": false,
+          "inf_mismatches": 0,
+          "masked_pixel_count": 1,
+          "mathematical_residual": "0",
+          "max_absolute_difference": 0.0,
+          "max_ulp_difference": 0,
+          "nan_mismatches": 0,
+          "path_class": "exact one-pixel local",
+          "signed_zero_mismatches": 0,
+          "subcase": "L04_one_corner_pixel",
+          "whole_field_mask": false
+        }
+      ]
+    },
+    "L05_horizontal_corridor": {
+      "subcases": [
+        {
+          "arrays_bitwise_exact": false,
+          "elements_bitwise_exact": 34,
+          "elements_total": 35,
+          "empty_mask": false,
+          "inf_mismatches": 0,
+          "masked_pixel_count": 5,
+          "mathematical_residual": "1E-79",
+          "max_absolute_difference": 8.881784197001252e-16,
+          "max_ulp_difference": 1,
+          "nan_mismatches": 0,
+          "path_class": "thin/tridiagonal source path",
+          "signed_zero_mismatches": 0,
+          "subcase": "L05_horizontal_corridor",
+          "whole_field_mask": false
+        }
+      ]
+    },
+    "L06_vertical_corridor": {
+      "subcases": [
+        {
+          "arrays_bitwise_exact": false,
+          "elements_bitwise_exact": 34,
+          "elements_total": 35,
+          "empty_mask": false,
+          "inf_mismatches": 0,
+          "masked_pixel_count": 5,
+          "mathematical_residual": "1E-79",
+          "max_absolute_difference": 8.881784197001252e-16,
+          "max_ulp_difference": 1,
+          "nan_mismatches": 0,
+          "path_class": "thin/tridiagonal source path",
+          "signed_zero_mismatches": 0,
+          "subcase": "L06_vertical_corridor",
+          "whole_field_mask": false
+        }
+      ]
+    },
+    "L07_three_pixel_L": {
+      "subcases": [
+        {
+          "arrays_bitwise_exact": true,
+          "elements_bitwise_exact": 36,
+          "elements_total": 36,
+          "empty_mask": false,
+          "inf_mismatches": 0,
+          "masked_pixel_count": 3,
+          "mathematical_residual": "1E-79",
+          "max_absolute_difference": 0.0,
+          "max_ulp_difference": 0,
+          "nan_mismatches": 0,
+          "path_class": "closed-form L source path",
+          "signed_zero_mismatches": 0,
+          "subcase": "L07_three_pixel_L",
+          "whole_field_mask": false
+        }
+      ]
+    },
+    "L08_interior_rectangle": {
+      "subcases": [
+        {
+          "arrays_bitwise_exact": true,
+          "elements_bitwise_exact": 120,
+          "elements_total": 120,
+          "empty_mask": false,
+          "inf_mismatches": 0,
+          "masked_pixel_count": 15,
+          "mathematical_residual": "2.5E-78",
+          "max_absolute_difference": 0.0,
+          "max_ulp_difference": 0,
+          "nan_mismatches": 0,
+          "path_class": "iterative sparse/dense source path",
+          "signed_zero_mismatches": 0,
+          "subcase": "L08_interior_rectangle",
+          "whole_field_mask": false
+        }
+      ]
+    },
+    "L09_two_components": {
+      "subcases": [
+        {
+          "arrays_bitwise_exact": true,
+          "elements_bitwise_exact": 144,
+          "elements_total": 144,
+          "empty_mask": false,
+          "inf_mismatches": 0,
+          "masked_pixel_count": 15,
+          "mathematical_residual": "4E-78",
+          "max_absolute_difference": 0.0,
+          "max_ulp_difference": 0,
+          "nan_mismatches": 0,
+          "path_class": "iterative sparse/dense source path",
+          "signed_zero_mismatches": 0,
+          "subcase": "L09_two_components",
+          "whole_field_mask": false
+        }
+      ]
+    },
+    "L10_edge_touching": {
+      "subcases": [
+        {
+          "arrays_bitwise_exact": false,
+          "elements_bitwise_exact": 98,
+          "elements_total": 100,
+          "empty_mask": false,
+          "inf_mismatches": 0,
+          "masked_pixel_count": 9,
+          "mathematical_residual": "6E-79",
+          "max_absolute_difference": 8.881784197001252e-16,
+          "max_ulp_difference": 1,
+          "nan_mismatches": 0,
+          "path_class": "iterative sparse/dense source path",
+          "signed_zero_mismatches": 0,
+          "subcase": "L10_edge_touching",
+          "whole_field_mask": false
+        }
+      ]
+    },
+    "L11_corner_touching": {
+      "subcases": [
+        {
+          "arrays_bitwise_exact": false,
+          "elements_bitwise_exact": 94,
+          "elements_total": 100,
+          "empty_mask": false,
+          "inf_mismatches": 0,
+          "masked_pixel_count": 6,
+          "mathematical_residual": "3E-79",
+          "max_absolute_difference": 8.881784197001252e-16,
+          "max_ulp_difference": 2,
+          "nan_mismatches": 0,
+          "path_class": "iterative sparse/dense source path",
+          "signed_zero_mismatches": 0,
+          "subcase": "L11_corner_touching",
+          "whole_field_mask": false
+        }
+      ]
+    },
+    "L12_entire_masked_row": {
+      "subcases": [
+        {
+          "arrays_bitwise_exact": false,
+          "elements_bitwise_exact": 99,
+          "elements_total": 100,
+          "empty_mask": false,
+          "inf_mismatches": 0,
+          "masked_pixel_count": 10,
+          "mathematical_residual": "2E-78",
+          "max_absolute_difference": 1.7763568394002505e-15,
+          "max_ulp_difference": 1,
+          "nan_mismatches": 0,
+          "path_class": "iterative sparse/dense source path",
+          "signed_zero_mismatches": 0,
+          "subcase": "L12_entire_masked_row",
+          "whole_field_mask": false
+        }
+      ]
+    },
+    "L13_whole_field_mask": {
+      "subcases": [
+        {
+          "arrays_bitwise_exact": true,
+          "elements_bitwise_exact": 36,
+          "elements_total": 36,
+          "empty_mask": false,
+          "inf_mismatches": 0,
+          "masked_pixel_count": 36,
+          "mathematical_residual": "0",
+          "max_absolute_difference": 0.0,
+          "max_ulp_difference": 0,
+          "nan_mismatches": 0,
+          "path_class": "whole-field zero",
+          "signed_zero_mismatches": 0,
+          "subcase": "L13_whole_field_mask",
+          "whole_field_mask": true
+        }
+      ]
+    },
+    "L14_constant_boundary": {
+      "subcases": [
+        {
+          "arrays_bitwise_exact": true,
+          "elements_bitwise_exact": 64,
+          "elements_total": 64,
+          "empty_mask": false,
+          "inf_mismatches": 0,
+          "masked_pixel_count": 4,
+          "mathematical_residual": "1E-79",
+          "max_absolute_difference": 0.0,
+          "max_ulp_difference": 0,
+          "nan_mismatches": 0,
+          "path_class": "iterative sparse/dense source path",
+          "signed_zero_mismatches": 0,
+          "subcase": "L14_constant_boundary",
+          "whole_field_mask": false
+        }
+      ]
+    },
+    "L15_calibration_independence": {
+      "subcases": [
+        {
+          "arrays_bitwise_exact": true,
+          "elements_bitwise_exact": 64,
+          "elements_total": 64,
+          "empty_mask": false,
+          "inf_mismatches": 0,
+          "masked_pixel_count": 9,
+          "mathematical_residual": "2.2E-78",
+          "max_absolute_difference": 0.0,
+          "max_ulp_difference": 0,
+          "nan_mismatches": 0,
+          "path_class": "calibration-independence pair",
+          "signed_zero_mismatches": 0,
+          "subcase": "L15_calibration_independence",
+          "whole_field_mask": false
+        }
+      ]
+    },
+    "L16_mask_predicate": {
+      "subcases": [
+        {
+          "arrays_bitwise_exact": true,
+          "elements_bitwise_exact": 64,
+          "elements_total": 64,
+          "empty_mask": false,
+          "inf_mismatches": 0,
+          "masked_pixel_count": 7,
+          "mathematical_residual": "1E-78",
+          "max_absolute_difference": 0.0,
+          "max_ulp_difference": 0,
+          "nan_mismatches": 0,
+          "path_class": "iterative sparse/dense source path",
+          "signed_zero_mismatches": 0,
+          "subcase": "L16_mask_predicate",
+          "whole_field_mask": false
+        }
+      ]
+    },
+    "L17_signed_zero": {
+      "subcases": [
+        {
+          "arrays_bitwise_exact": false,
+          "elements_bitwise_exact": 24,
+          "elements_total": 25,
+          "empty_mask": false,
+          "inf_mismatches": 0,
+          "masked_pixel_count": 1,
+          "mathematical_residual": "0",
+          "max_absolute_difference": 0.0,
+          "max_ulp_difference": 0,
+          "nan_mismatches": 0,
+          "path_class": "signed-zero implementation case",
+          "signed_zero_mismatches": 1,
+          "subcase": "L17_signed_zero",
+          "whole_field_mask": false
+        }
+      ]
+    },
+    "L18_degenerate": {
+      "subcases": [
+        {
+          "arrays_bitwise_exact": true,
+          "elements_bitwise_exact": 1,
+          "elements_total": 1,
+          "empty_mask": false,
+          "inf_mismatches": 0,
+          "masked_pixel_count": 1,
+          "mathematical_residual": "0",
+          "max_absolute_difference": 0.0,
+          "max_ulp_difference": 0,
+          "nan_mismatches": 0,
+          "path_class": "degenerate geometry",
+          "signed_zero_mismatches": 0,
+          "subcase": "L18a_1x1_masked",
+          "whole_field_mask": true
+        },
+        {
+          "arrays_bitwise_exact": true,
+          "elements_bitwise_exact": 1,
+          "elements_total": 1,
+          "empty_mask": true,
+          "inf_mismatches": 0,
+          "masked_pixel_count": 0,
+          "mathematical_residual": "0",
+          "max_absolute_difference": 0.0,
+          "max_ulp_difference": 0,
+          "nan_mismatches": 0,
+          "path_class": "degenerate geometry",
+          "signed_zero_mismatches": 0,
+          "subcase": "L18b_1x1_unmasked",
+          "whole_field_mask": false
+        },
+        {
+          "arrays_bitwise_exact": true,
+          "elements_bitwise_exact": 5,
+          "elements_total": 5,
+          "empty_mask": false,
+          "inf_mismatches": 0,
+          "masked_pixel_count": 1,
+          "mathematical_residual": "0",
+          "max_absolute_difference": 0.0,
+          "max_ulp_difference": 0,
+          "nan_mismatches": 0,
+          "path_class": "degenerate geometry",
+          "signed_zero_mismatches": 0,
+          "subcase": "L18c_1x5",
+          "whole_field_mask": false
+        },
+        {
+          "arrays_bitwise_exact": true,
+          "elements_bitwise_exact": 10,
+          "elements_total": 10,
+          "empty_mask": false,
+          "inf_mismatches": 0,
+          "masked_pixel_count": 10,
+          "mathematical_residual": "0",
+          "max_absolute_difference": 0.0,
+          "max_ulp_difference": 0,
+          "nan_mismatches": 0,
+          "path_class": "degenerate geometry",
+          "signed_zero_mismatches": 0,
+          "subcase": "L18d_2x5_full",
+          "whole_field_mask": true
+        },
+        {
+          "arrays_bitwise_exact": true,
+          "elements_bitwise_exact": 5,
+          "elements_total": 5,
+          "empty_mask": false,
+          "inf_mismatches": 0,
+          "masked_pixel_count": 1,
+          "mathematical_residual": "0",
+          "max_absolute_difference": 0.0,
+          "max_ulp_difference": 0,
+          "nan_mismatches": 0,
+          "path_class": "degenerate geometry",
+          "signed_zero_mismatches": 0,
+          "subcase": "L18e_5x1",
+          "whole_field_mask": false
+        }
+      ]
+    },
+    "R01_positive": {
+      "composition_identity": true,
+      "mask_identity": true,
+      "mathematical": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 320,
+        "elements_total": 320,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mathematical_residual": "0",
+      "temp_mask_unmutated": true
+    },
+    "R02_negative": {
+      "composition_identity": true,
+      "mask_identity": true,
+      "mathematical": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 320,
+        "elements_total": 320,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mathematical_residual": "0",
+      "temp_mask_unmutated": true
+    },
+    "R03_both": {
+      "composition_identity": true,
+      "mask_identity": true,
+      "mathematical": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 320,
+        "elements_total": 320,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mathematical_residual": "0",
+      "temp_mask_unmutated": true
+    },
+    "R04_no_detection": {
+      "composition_identity": true,
+      "mask_identity": true,
+      "mathematical": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 320,
+        "elements_total": 320,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mathematical_residual": "0",
+      "temp_mask_unmutated": true
+    },
+    "R05_edge_touching": {
+      "composition_identity": true,
+      "mask_identity": true,
+      "mathematical": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 320,
+        "elements_total": 320,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mathematical_residual": "0",
+      "temp_mask_unmutated": true
+    },
+    "R06_long_wide": {
+      "composition_identity": true,
+      "mask_identity": true,
+      "mathematical": {
+        "arrays_bitwise_exact": true,
+        "elements_bitwise_exact": 320,
+        "elements_total": 320,
+        "inf_mismatches": 0,
+        "max_absolute_difference": 0.0,
+        "max_ulp_difference": 0,
+        "nan_mismatches": 0,
+        "signed_zero_mismatches": 0
+      },
+      "mathematical_residual": "0",
+      "temp_mask_unmutated": true
+    }
+  },
+  "probe": {
+    "build_exits": {
+      "normal": 0,
+      "sanitized": 0
+    },
+    "execution_exits": "92/92 zero",
+    "gui_not_invoked": "The evidence is produced by custom probe executables that link the installed Gwydion 2.71 shared library (libgwyprocess2, version 2.71, AUR package gwydion-no-python2 2.71-1); the installed GUI executable (/usr/bin/gwydion) and the app-layer process callbacks were not invoked.",
+    "normal_sanitized_stdout_equal": "46/46",
+    "profile": "COMPILED_AGAINST_GWYDDION_2_71_LIBPROCESS_WITH_FROZEN_SOURCE_IDENTITY",
+    "sanitizer_scope": "ASan and UBSan instrumented the probe executables and the call boundary into the installed shared library.  The installed shared library internals were NOT rebuilt with sanitizer instrumentation; the library kernels themselves are not claimed sanitizer-clean.",
+    "shared_library": {
+      "path": "/usr/lib/libgwyprocess2.so.0.51.1",
+      "sha256": "5f5b53cb544068638d1a3be8d6703345e49d5626d3fa4791106ce11bc051d3d7",
+      "version": "2.71"
+    }
+  },
+  "profiles": {
+    "compiled_against_libprocess_2_71_profile": {
+      "campaign_script_sha256": "a9a5458ed47df903eeada75bc6341559c7796805a01d4eeb182c4778255f29f6",
+      "checker_sha256": "5a6554bef198ab7fa8756131b46df08fc5e27e2bf1951de9de5227e141fa68e6",
+      "frozen_source_hashes": {
+        "libgwyddion/gwymath.c": "6f4330599776a81a6499cee9cf20f6d9c7fd2fb552f26c64230eea97f387cff3",
+        "libgwyddion/gwythreads.c": "17826668c0caa2da2a6cdb4f98982b18033000243a389e83d4012d2db73afb4a",
+        "libprocess/arithmetic.c": "78bcc0305c26188ec30ea6db820c04969d851deb96e25dcffebd438c5379dd92",
+        "libprocess/correct-laplace.c": "7f1ad70e1be0c13ce5722ced7afee75ec35cb9f11c7fa1db1d74d5dcaf590b64",
+        "libprocess/correct.c": "bdac3ea8fcc3555f33644c84d739818c12a8cb9c104cac06ac642c77d2ddaabb",
+        "libprocess/datafield.c": "223a34344f5c529a1255230f55bee53178adf6a16a20ac4d98aba47eaf1635f3",
+        "libprocess/grains.c": "8c1aa4b860c623747929a9250a57d49a59be7ef5323b2f9457e1c479d0beebc2",
+        "modules/process/laplace.c": "493fa6f3c48faa2139736000d445db3c21158e57cb4386a8ba8369ab6b5f0ea2",
+        "modules/process/scars.c": "e13fefcd7314cca91a1f32d6cda7390ec320878d370eebc3f3c6e8ad46081f54"
+      },
+      "helper_hashes": {
+        "libgwyddion/gwymath.c": "6f4330599776a81a6499cee9cf20f6d9c7fd2fb552f26c64230eea97f387cff3",
+        "libgwyddion/gwythreads.c": "17826668c0caa2da2a6cdb4f98982b18033000243a389e83d4012d2db73afb4a",
+        "libprocess/arithmetic.c": "78bcc0305c26188ec30ea6db820c04969d851deb96e25dcffebd438c5379dd92",
+        "libprocess/correct-laplace.c": "7f1ad70e1be0c13ce5722ced7afee75ec35cb9f11c7fa1db1d74d5dcaf590b64",
+        "libprocess/correct.c": "bdac3ea8fcc3555f33644c84d739818c12a8cb9c104cac06ac642c77d2ddaabb",
+        "libprocess/datafield.c": "223a34344f5c529a1255230f55bee53178adf6a16a20ac4d98aba47eaf1635f3",
+        "libprocess/grains.c": "8c1aa4b860c623747929a9250a57d49a59be7ef5323b2f9457e1c479d0beebc2"
+      },
+      "installed_library_sha256": "5f5b53cb544068638d1a3be8d6703345e49d5626d3fa4791106ce11bc051d3d7",
+      "probe_sources": {
+        "laplace_behavior_probe.c": "de896450c1a4929f706fa5cdef6a0e480efef49a92b1d577927d4c1769524b36",
+        "mark_scars_behavior_probe.c": "abbfd4d6627012adde7851a6be777eeb5b24e2f836c8fba862697f7e73c07e2f",
+        "remove_scars_behavior_probe.c": "06815355b61b601e6834385acc6de4031c388339892e1d74d23c07ab7fdbd9ee"
+      },
+      "reconciliation_sha256": "491bce65d2fe3f0d40ffb90a000c1777038f28939b3bf8df0a6ab5713cd55a01"
+    }
+  },
+  "schema_version": 1
+}
