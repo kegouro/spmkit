@@ -1,0 +1,32 @@
+{
+  "schema": "spmkit/jpk-forcescan2-paam-dataset-manifest/v1",
+  "dataset": {
+    "title": "Atomic force microscopy indentation data of stiff and compliant polyacrylamide hydrogels",
+    "doi": "10.6084/m9.figshare.11637675.v3",
+    "licence": "CC0 1.0 (https://creativecommons.org/publicdomain/zero/1.0/)",
+    "publisher": "figshare",
+    "format": "JPK .jpk-force (Zip, ForceScan 2.0, properties-based metadata)",
+    "schema_profile": "lcd-info indirection (channel.*.lcd-info.* -> shared-data/header.properties lcd-info.{i}.*)",
+    "content": "110 force-distance curves of stiff and compliant PAAm hydrogels (indentation)",
+    "total_size_bytes": 4183161,
+    "current_version_files": 10
+  },
+  "files": [
+    {"name": "PAAm_Stiff_ROI5_force-save-2019.10.25-11.16.51.798.jpk-force", "size": 422015, "sha256": "a42dcd694864b4ce88d5fcbd76d1012230c379a5232f9e0fae15463f96e8d7d1"},
+    {"name": "PAAm_Stiff_ROI6_force-save-2019.10.25-11.17.35.048.jpk-force", "size": 423222, "sha256": "8466e2a765e7fc6c7098d1d7bf361a777db360198abfb24aef6b977cd9916cae"},
+    {"name": "PAAm_Stiff_ROI6_force-save-2019.10.25-11.17.39.039.jpk-force", "size": 416320, "sha256": "d045e87abc1f1218c5565708eec86e57f7b671d4446fbf4f4006f2b7d90a250f"},
+    {"name": "PAAm_Stiff_ROI6_force-save-2019.10.25-11.17.43.030.jpk-force", "size": 417537, "sha256": "4e44bb513a35e017fdfadf9d076a141d03ac895e9bcbcc72b3e4fc9c1d5e427a"},
+    {"name": "PAAm_Stiff_ROI6_force-save-2019.10.25-11.17.47.001.jpk-force", "size": 410581, "sha256": "51dbd91e95932fdbbc8d9d26f8b97ce5e27ea2212eafb4dc1e2885757e178528"},
+    {"name": "PAAm_Stiff_ROI6_force-save-2019.10.25-11.17.51.050.jpk-force", "size": 424386, "sha256": "2bbddbbb29c595a02058fcb6dee19d100e44a2304dbe3bd7f35821afce53a9f8"},
+    {"name": "PAAm_Stiff_ROI6_force-save-2019.10.25-11.17.55.097.jpk-force", "size": 420372, "sha256": "6b6444e83e96e93dfca3695b74caaa05fb83ed6ab8b74984d117017ea5f0a943"},
+    {"name": "PAAm_Stiff_ROI6_force-save-2019.10.25-11.17.59.067.jpk-force", "size": 414563, "sha256": "89d14576fc6740bed48207468730d8db09e9e325e3cddbc880b349a3d0380527"},
+    {"name": "PAAm_Stiff_ROI6_force-save-2019.10.25-11.18.03.062.jpk-force", "size": 415648, "sha256": "20ebd6130cc2ba06340f9e940b1e17dde890dca025d5917695d4d376180c4f2c"},
+    {"name": "PAAm_Stiff_ROI6_force-save-2019.10.25-11.18.07.055.jpk-force", "size": 418517, "sha256": "3403e33ef3647a0241a9138bd4bde4266bb4ad0724545194b02dd5d745a336eb"}
+  ],
+  "reproduction": {
+    "download": "Record page: https://figshare.com/articles/dataset/11637675 (all files CC0; current version exposes the 10 files listed above, ~4.2 MB total)",
+    "hashes": "SHA-256 computed on download; campaign script verifies each file against this manifest before parsing",
+    "external": "The 10 original files are NOT committed (single schema profile, covered by synthetic fixtures; repository policy gitignores reference/ material). Place the files in any directory and run scripts/jpk_forcescan2_campaign.py --dir <dir>",
+    "no_absolute_paths": "This manifest intentionally contains no absolute local paths"
+  }
+}

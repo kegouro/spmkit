@@ -1,0 +1,1009 @@
+{
+  "cases": {
+    "V01": {
+      "contact_coordinate": 3e-06,
+      "contact_index": 100,
+      "expected_ambiguity": false,
+      "expected_failure": null,
+      "expected_recovery": true,
+      "metadata": {
+        "baseline_offset": 0.0,
+        "baseline_slope": 0.0,
+        "contact_offset": 0,
+        "correlated": false,
+        "drift": 0.0,
+        "duplicate_time": false,
+        "hold_fraction": 1.0,
+        "jitter": 0.0,
+        "noise": 0.0,
+        "nonuniform": false,
+        "response_delay": 0,
+        "sampling_switch": false,
+        "seed": 20260807
+      },
+      "model": "maxwell",
+      "protocol": "STRESS_RELAXATION",
+      "truth": {
+        "contact_coordinate": 3e-06,
+        "contact_index": 100,
+        "delta0": 5e-07,
+        "expected_ambiguity": false,
+        "expected_failure": null,
+        "expected_recovery": true,
+        "hold_end_index": 319,
+        "hold_start_index": 100,
+        "model": "maxwell",
+        "n_hold": 220,
+        "parameters": {
+          "E": 5000.0,
+          "tau": 0.05
+        },
+        "protocol": "STRESS_RELAXATION",
+        "t_hold": 0.5,
+        "t_ramp": 0.002
+      }
+    },
+    "V02": {
+      "contact_coordinate": 3e-06,
+      "contact_index": 40,
+      "expected_ambiguity": false,
+      "expected_failure": null,
+      "expected_recovery": true,
+      "metadata": {
+        "noise": 0.0,
+        "seed": 20260807
+      },
+      "model": "kelvin_voigt",
+      "protocol": "CREEP",
+      "truth": {
+        "contact_coordinate": 3e-06,
+        "contact_index": 40,
+        "expected_recovery": true,
+        "f_hold": 1e-06,
+        "hold_end_index": 319,
+        "hold_start_index": 100,
+        "model": "kelvin_voigt",
+        "parameters": {
+          "E": 5000.0,
+          "tau": 0.05
+        },
+        "protocol": "CREEP",
+        "t_hold": 0.5,
+        "t_ramp": 0.002
+      }
+    },
+    "V03": {
+      "contact_coordinate": 3e-06,
+      "contact_index": 100,
+      "expected_ambiguity": false,
+      "expected_failure": null,
+      "expected_recovery": true,
+      "metadata": {
+        "baseline_offset": 0.0,
+        "baseline_slope": 0.0,
+        "contact_offset": 0,
+        "correlated": false,
+        "drift": 0.0,
+        "duplicate_time": false,
+        "hold_fraction": 1.0,
+        "jitter": 0.0,
+        "noise": 0.0,
+        "nonuniform": false,
+        "response_delay": 0,
+        "sampling_switch": false,
+        "seed": 20260807
+      },
+      "model": "sls",
+      "protocol": "STRESS_RELAXATION",
+      "truth": {
+        "contact_coordinate": 3e-06,
+        "contact_index": 100,
+        "delta0": 5e-07,
+        "expected_ambiguity": false,
+        "expected_failure": null,
+        "expected_recovery": true,
+        "hold_end_index": 319,
+        "hold_start_index": 100,
+        "model": "sls",
+        "n_hold": 220,
+        "parameters": {
+          "E0": 5000.0,
+          "E_inf": 2000.0,
+          "tau": 0.05
+        },
+        "protocol": "STRESS_RELAXATION",
+        "t_hold": 0.5,
+        "t_ramp": 0.002
+      }
+    },
+    "V04": {
+      "contact_coordinate": 3e-06,
+      "contact_index": 40,
+      "expected_ambiguity": false,
+      "expected_failure": null,
+      "expected_recovery": true,
+      "metadata": {
+        "noise": 0.0,
+        "seed": 20260807
+      },
+      "model": "sls_creep",
+      "protocol": "CREEP",
+      "truth": {
+        "contact_coordinate": 3e-06,
+        "contact_index": 40,
+        "expected_recovery": true,
+        "f_hold": 1e-06,
+        "hold_end_index": 319,
+        "hold_start_index": 100,
+        "model": "sls_creep",
+        "parameters": {
+          "J0": 0.0002,
+          "J_inf": 0.0005,
+          "tau": 0.125
+        },
+        "protocol": "CREEP",
+        "t_hold": 0.5,
+        "t_ramp": 0.002
+      }
+    },
+    "V05": {
+      "contact_coordinate": 3e-06,
+      "contact_index": 100,
+      "expected_ambiguity": false,
+      "expected_failure": null,
+      "expected_recovery": true,
+      "metadata": {
+        "baseline_offset": 0.0,
+        "baseline_slope": 0.0,
+        "contact_offset": 0,
+        "correlated": false,
+        "drift": 0.0,
+        "duplicate_time": false,
+        "hold_fraction": 1.0,
+        "jitter": 0.0,
+        "noise": 0.0,
+        "nonuniform": false,
+        "response_delay": 0,
+        "sampling_switch": false,
+        "seed": 20260807
+      },
+      "model": "generalized_maxwell",
+      "protocol": "STRESS_RELAXATION",
+      "truth": {
+        "contact_coordinate": 3e-06,
+        "contact_index": 100,
+        "delta0": 5e-07,
+        "expected_ambiguity": false,
+        "expected_failure": null,
+        "expected_recovery": true,
+        "hold_end_index": 319,
+        "hold_start_index": 100,
+        "model": "generalized_maxwell",
+        "n_hold": 220,
+        "parameters": {
+          "E": 3000.0,
+          "E_inf": 2000.0,
+          "alpha": [
+            0.6,
+            0.4
+          ],
+          "tau_i": [
+            0.01,
+            0.2
+          ]
+        },
+        "protocol": "STRESS_RELAXATION",
+        "t_hold": 0.5,
+        "t_ramp": 0.002
+      }
+    },
+    "V06": {
+      "contact_coordinate": 3e-06,
+      "contact_index": 100,
+      "expected_ambiguity": false,
+      "expected_failure": null,
+      "expected_recovery": true,
+      "metadata": {
+        "baseline_offset": 0.0,
+        "baseline_slope": 0.0,
+        "contact_offset": 0,
+        "correlated": false,
+        "drift": 0.0,
+        "duplicate_time": false,
+        "hold_fraction": 1.0,
+        "jitter": 0.0,
+        "noise": 0.0,
+        "nonuniform": false,
+        "response_delay": 0,
+        "sampling_switch": false,
+        "seed": 20260807
+      },
+      "model": "generalized_maxwell",
+      "protocol": "STRESS_RELAXATION",
+      "truth": {
+        "contact_coordinate": 3e-06,
+        "contact_index": 100,
+        "delta0": 5e-07,
+        "expected_ambiguity": false,
+        "expected_failure": null,
+        "expected_recovery": true,
+        "hold_end_index": 319,
+        "hold_start_index": 100,
+        "model": "generalized_maxwell",
+        "n_hold": 220,
+        "parameters": {
+          "E": 3000.0,
+          "E_inf": 2000.0,
+          "alpha": [
+            0.5,
+            0.3,
+            0.2
+          ],
+          "tau_i": [
+            0.005,
+            0.05,
+            0.5
+          ]
+        },
+        "protocol": "STRESS_RELAXATION",
+        "t_hold": 0.5,
+        "t_ramp": 0.002
+      }
+    },
+    "V07": {
+      "contact_coordinate": 3e-06,
+      "contact_index": 100,
+      "expected_ambiguity": false,
+      "expected_failure": null,
+      "expected_recovery": true,
+      "metadata": {
+        "baseline_offset": 0.0,
+        "baseline_slope": 0.0,
+        "contact_offset": 0,
+        "correlated": false,
+        "drift": 0.0,
+        "duplicate_time": false,
+        "hold_fraction": 1.0,
+        "jitter": 0.0,
+        "noise": 0.0,
+        "nonuniform": false,
+        "response_delay": 0,
+        "sampling_switch": false,
+        "seed": 20260807
+      },
+      "model": "power_law",
+      "protocol": "STRESS_RELAXATION",
+      "truth": {
+        "contact_coordinate": 3e-06,
+        "contact_index": 100,
+        "delta0": 5e-07,
+        "expected_ambiguity": false,
+        "expected_failure": null,
+        "expected_recovery": true,
+        "hold_end_index": 319,
+        "hold_start_index": 100,
+        "model": "power_law",
+        "n_hold": 220,
+        "parameters": {
+          "E_ref": 5000.0,
+          "alpha": 0.3,
+          "t_ref": 0.002001
+        },
+        "protocol": "STRESS_RELAXATION",
+        "t_hold": 0.5,
+        "t_ramp": 0.002
+      }
+    },
+    "V08": {
+      "contact_coordinate": 3e-06,
+      "contact_index": 40,
+      "expected_ambiguity": false,
+      "expected_failure": null,
+      "expected_recovery": true,
+      "metadata": {
+        "noise": 0.0,
+        "seed": 20260807
+      },
+      "model": "lee_radok",
+      "protocol": "LOADING_RAMP",
+      "truth": {
+        "contact_coordinate": 3e-06,
+        "contact_index": 40,
+        "delta_max": 5e-07,
+        "expected_recovery": true,
+        "model": "lee_radok",
+        "parameters": {
+          "E0": 5000.0,
+          "E_inf": 2000.0,
+          "tau": 0.05
+        },
+        "protocol": "LOADING_RAMP",
+        "t_end": 0.2
+      }
+    },
+    "V09": {
+      "contact_coordinate": 3e-06,
+      "contact_index": 40,
+      "expected_ambiguity": false,
+      "expected_failure": null,
+      "expected_recovery": true,
+      "metadata": {
+        "n_load": 150,
+        "n_unload": 150,
+        "noise": 0.0,
+        "seed": 20260807
+      },
+      "model": "ting",
+      "protocol": "TRIANGULAR_LOADING",
+      "truth": {
+        "contact_coordinate": 3e-06,
+        "contact_index": 40,
+        "delta_max": 5e-07,
+        "expected_recovery": true,
+        "model": "ting",
+        "parameters": {
+          "E0": 5000.0,
+          "E_inf": 2000.0,
+          "tau": 0.05
+        },
+        "protocol": "TRIANGULAR_LOADING",
+        "t_load": 0.1,
+        "t_unload": 0.1
+      }
+    },
+    "V10": {
+      "contact_coordinate": 3e-06,
+      "contact_index": 100,
+      "expected_ambiguity": false,
+      "expected_failure": null,
+      "expected_recovery": true,
+      "metadata": {
+        "baseline_offset": 0.0,
+        "baseline_slope": 0.0,
+        "contact_offset": 0,
+        "correlated": false,
+        "drift": 0.0,
+        "duplicate_time": false,
+        "hold_fraction": 1.0,
+        "jitter": 0.0,
+        "noise": 1e-12,
+        "nonuniform": false,
+        "response_delay": 0,
+        "sampling_switch": false,
+        "seed": 20260808
+      },
+      "model": "sls",
+      "protocol": "STRESS_RELAXATION",
+      "truth": {
+        "contact_coordinate": 3e-06,
+        "contact_index": 100,
+        "delta0": 5e-07,
+        "expected_ambiguity": false,
+        "expected_failure": null,
+        "expected_recovery": true,
+        "hold_end_index": 319,
+        "hold_start_index": 100,
+        "model": "sls",
+        "n_hold": 220,
+        "parameters": {
+          "E0": 5000.0,
+          "E_inf": 2000.0,
+          "tau": 0.05
+        },
+        "protocol": "STRESS_RELAXATION",
+        "t_hold": 0.5,
+        "t_ramp": 0.002
+      }
+    },
+    "V11": {
+      "contact_coordinate": 3e-06,
+      "contact_index": 100,
+      "expected_ambiguity": false,
+      "expected_failure": null,
+      "expected_recovery": true,
+      "metadata": {
+        "baseline_offset": 0.0,
+        "baseline_slope": 0.0,
+        "contact_offset": 0,
+        "correlated": true,
+        "drift": 0.0,
+        "duplicate_time": false,
+        "hold_fraction": 1.0,
+        "jitter": 0.0,
+        "noise": 1e-12,
+        "nonuniform": false,
+        "response_delay": 0,
+        "sampling_switch": false,
+        "seed": 20260809
+      },
+      "model": "sls",
+      "protocol": "STRESS_RELAXATION",
+      "truth": {
+        "contact_coordinate": 3e-06,
+        "contact_index": 100,
+        "delta0": 5e-07,
+        "expected_ambiguity": false,
+        "expected_failure": null,
+        "expected_recovery": true,
+        "hold_end_index": 319,
+        "hold_start_index": 100,
+        "model": "sls",
+        "n_hold": 220,
+        "parameters": {
+          "E0": 5000.0,
+          "E_inf": 2000.0,
+          "tau": 0.05
+        },
+        "protocol": "STRESS_RELAXATION",
+        "t_hold": 0.5,
+        "t_ramp": 0.002
+      }
+    },
+    "V12": {
+      "contact_coordinate": 3e-06,
+      "contact_index": 100,
+      "expected_ambiguity": false,
+      "expected_failure": null,
+      "expected_recovery": true,
+      "metadata": {
+        "baseline_offset": 0.0,
+        "baseline_slope": 0.0,
+        "contact_offset": 0,
+        "correlated": false,
+        "drift": 1e-13,
+        "duplicate_time": false,
+        "hold_fraction": 1.0,
+        "jitter": 0.0,
+        "noise": 0.0,
+        "nonuniform": false,
+        "response_delay": 0,
+        "sampling_switch": false,
+        "seed": 20260807
+      },
+      "model": "sls",
+      "protocol": "STRESS_RELAXATION",
+      "truth": {
+        "contact_coordinate": 3e-06,
+        "contact_index": 100,
+        "delta0": 5e-07,
+        "expected_ambiguity": false,
+        "expected_failure": null,
+        "expected_recovery": true,
+        "hold_end_index": 319,
+        "hold_start_index": 100,
+        "model": "sls",
+        "n_hold": 220,
+        "parameters": {
+          "E0": 5000.0,
+          "E_inf": 2000.0,
+          "tau": 0.05
+        },
+        "protocol": "STRESS_RELAXATION",
+        "t_hold": 0.5,
+        "t_ramp": 0.002
+      }
+    },
+    "V13": {
+      "contact_coordinate": 3e-06,
+      "contact_index": 100,
+      "expected_ambiguity": false,
+      "expected_failure": null,
+      "expected_recovery": true,
+      "metadata": {
+        "baseline_offset": 0.0,
+        "baseline_slope": 0.0,
+        "contact_offset": 0,
+        "correlated": false,
+        "drift": 0.0,
+        "duplicate_time": false,
+        "hold_fraction": 1.0,
+        "jitter": 1e-05,
+        "noise": 0.0,
+        "nonuniform": false,
+        "response_delay": 0,
+        "sampling_switch": false,
+        "seed": 20260810
+      },
+      "model": "sls",
+      "protocol": "STRESS_RELAXATION",
+      "truth": {
+        "contact_coordinate": 3e-06,
+        "contact_index": 100,
+        "delta0": 5e-07,
+        "expected_ambiguity": false,
+        "expected_failure": null,
+        "expected_recovery": true,
+        "hold_end_index": 319,
+        "hold_start_index": 100,
+        "model": "sls",
+        "n_hold": 220,
+        "parameters": {
+          "E0": 5000.0,
+          "E_inf": 2000.0,
+          "tau": 0.05
+        },
+        "protocol": "STRESS_RELAXATION",
+        "t_hold": 0.5,
+        "t_ramp": 0.002
+      }
+    },
+    "V14": {
+      "contact_coordinate": 3e-06,
+      "contact_index": 100,
+      "expected_ambiguity": false,
+      "expected_failure": null,
+      "expected_recovery": true,
+      "metadata": {
+        "baseline_offset": 0.0,
+        "baseline_slope": 0.0,
+        "contact_offset": 0,
+        "correlated": false,
+        "drift": 0.0,
+        "duplicate_time": false,
+        "hold_fraction": 1.0,
+        "jitter": 0.0,
+        "noise": 0.0,
+        "nonuniform": true,
+        "response_delay": 0,
+        "sampling_switch": false,
+        "seed": 20260811
+      },
+      "model": "sls",
+      "protocol": "STRESS_RELAXATION",
+      "truth": {
+        "contact_coordinate": 3e-06,
+        "contact_index": 100,
+        "delta0": 5e-07,
+        "expected_ambiguity": false,
+        "expected_failure": null,
+        "expected_recovery": true,
+        "hold_end_index": 319,
+        "hold_start_index": 100,
+        "model": "sls",
+        "n_hold": 220,
+        "parameters": {
+          "E0": 5000.0,
+          "E_inf": 2000.0,
+          "tau": 0.05
+        },
+        "protocol": "STRESS_RELAXATION",
+        "t_hold": 0.5,
+        "t_ramp": 0.002
+      }
+    },
+    "V15": {
+      "contact_coordinate": 3e-06,
+      "contact_index": 100,
+      "expected_ambiguity": false,
+      "expected_failure": "DUPLICATE_TIMESTAMPS",
+      "expected_recovery": true,
+      "metadata": {
+        "baseline_offset": 0.0,
+        "baseline_slope": 0.0,
+        "contact_offset": 0,
+        "correlated": false,
+        "drift": 0.0,
+        "duplicate_time": true,
+        "hold_fraction": 1.0,
+        "jitter": 0.0,
+        "noise": 0.0,
+        "nonuniform": false,
+        "response_delay": 0,
+        "sampling_switch": false,
+        "seed": 20260807
+      },
+      "model": "sls",
+      "protocol": "STRESS_RELAXATION",
+      "truth": {
+        "contact_coordinate": 3e-06,
+        "contact_index": 100,
+        "delta0": 5e-07,
+        "expected_ambiguity": false,
+        "expected_failure": "DUPLICATE_TIMESTAMPS",
+        "expected_recovery": true,
+        "hold_end_index": 319,
+        "hold_start_index": 100,
+        "model": "sls",
+        "n_hold": 220,
+        "parameters": {
+          "E0": 5000.0,
+          "E_inf": 2000.0,
+          "tau": 0.05
+        },
+        "protocol": "STRESS_RELAXATION",
+        "t_hold": 0.5,
+        "t_ramp": 0.002
+      }
+    },
+    "V16": {
+      "contact_coordinate": 3e-06,
+      "contact_index": 100,
+      "expected_ambiguity": false,
+      "expected_failure": "EMPTY_REGION",
+      "expected_recovery": false,
+      "metadata": {
+        "baseline_offset": 0.0,
+        "baseline_slope": 0.0,
+        "contact_offset": 0,
+        "correlated": false,
+        "drift": 0.0,
+        "duplicate_time": false,
+        "hold_fraction": 0.02,
+        "jitter": 0.0,
+        "noise": 0.0,
+        "nonuniform": false,
+        "response_delay": 0,
+        "sampling_switch": false,
+        "seed": 20260807
+      },
+      "model": "sls",
+      "protocol": "STRESS_RELAXATION",
+      "truth": {
+        "contact_coordinate": 3e-06,
+        "contact_index": 100,
+        "delta0": 5e-07,
+        "expected_ambiguity": false,
+        "expected_failure": "EMPTY_REGION",
+        "expected_recovery": false,
+        "hold_end_index": 103,
+        "hold_start_index": 100,
+        "model": "sls",
+        "n_hold": 4,
+        "parameters": {
+          "E0": 5000.0,
+          "E_inf": 2000.0,
+          "tau": 0.05
+        },
+        "protocol": "STRESS_RELAXATION",
+        "t_hold": 0.5,
+        "t_ramp": 0.002
+      }
+    },
+    "V17": {
+      "contact_coordinate": 3e-06,
+      "contact_index": 100,
+      "expected_ambiguity": false,
+      "expected_failure": null,
+      "expected_recovery": true,
+      "metadata": {
+        "baseline_offset": 0.0,
+        "baseline_slope": 0.0,
+        "contact_offset": 0,
+        "correlated": false,
+        "drift": 0.0,
+        "duplicate_time": false,
+        "hold_fraction": 0.25,
+        "jitter": 0.0,
+        "noise": 0.0,
+        "nonuniform": false,
+        "response_delay": 0,
+        "sampling_switch": false,
+        "seed": 20260807
+      },
+      "model": "sls",
+      "protocol": "STRESS_RELAXATION",
+      "truth": {
+        "contact_coordinate": 3e-06,
+        "contact_index": 100,
+        "delta0": 5e-07,
+        "expected_ambiguity": false,
+        "expected_failure": null,
+        "expected_recovery": true,
+        "hold_end_index": 154,
+        "hold_start_index": 100,
+        "model": "sls",
+        "n_hold": 55,
+        "parameters": {
+          "E0": 5000.0,
+          "E_inf": 2000.0,
+          "tau": 0.05
+        },
+        "protocol": "STRESS_RELAXATION",
+        "t_hold": 0.5,
+        "t_ramp": 0.002
+      }
+    },
+    "V18": {
+      "contact_coordinate": 3e-06,
+      "contact_index": 100,
+      "expected_ambiguity": false,
+      "expected_failure": null,
+      "expected_recovery": true,
+      "metadata": {
+        "baseline_offset": 0.0,
+        "baseline_slope": 0.0,
+        "contact_offset": 0,
+        "correlated": false,
+        "drift": 0.0,
+        "duplicate_time": false,
+        "hold_fraction": 1.0,
+        "jitter": 0.0,
+        "noise": 0.0,
+        "nonuniform": false,
+        "response_delay": 0,
+        "sampling_switch": true,
+        "seed": 20260807
+      },
+      "model": "sls",
+      "protocol": "STRESS_RELAXATION",
+      "truth": {
+        "contact_coordinate": 3e-06,
+        "contact_index": 100,
+        "delta0": 5e-07,
+        "expected_ambiguity": false,
+        "expected_failure": null,
+        "expected_recovery": true,
+        "hold_end_index": 319,
+        "hold_start_index": 100,
+        "model": "sls",
+        "n_hold": 220,
+        "parameters": {
+          "E0": 5000.0,
+          "E_inf": 2000.0,
+          "tau": 0.05
+        },
+        "protocol": "STRESS_RELAXATION",
+        "t_hold": 0.5,
+        "t_ramp": 0.002
+      }
+    },
+    "V19": {
+      "contact_coordinate": 3e-06,
+      "contact_index": 103,
+      "expected_ambiguity": false,
+      "expected_failure": null,
+      "expected_recovery": true,
+      "metadata": {
+        "baseline_offset": 0.0,
+        "baseline_slope": 0.0,
+        "contact_offset": 3,
+        "correlated": false,
+        "drift": 0.0,
+        "duplicate_time": false,
+        "hold_fraction": 1.0,
+        "jitter": 0.0,
+        "noise": 0.0,
+        "nonuniform": false,
+        "response_delay": 0,
+        "sampling_switch": false,
+        "seed": 20260807
+      },
+      "model": "sls",
+      "protocol": "STRESS_RELAXATION",
+      "truth": {
+        "contact_coordinate": 3e-06,
+        "contact_index": 103,
+        "delta0": 5e-07,
+        "expected_ambiguity": false,
+        "expected_failure": null,
+        "expected_recovery": true,
+        "hold_end_index": 319,
+        "hold_start_index": 100,
+        "model": "sls",
+        "n_hold": 220,
+        "parameters": {
+          "E0": 5000.0,
+          "E_inf": 2000.0,
+          "tau": 0.05
+        },
+        "protocol": "STRESS_RELAXATION",
+        "t_hold": 0.5,
+        "t_ramp": 0.002
+      }
+    },
+    "V20": {
+      "contact_coordinate": 3e-06,
+      "contact_index": 100,
+      "expected_ambiguity": false,
+      "expected_failure": null,
+      "expected_recovery": true,
+      "metadata": {
+        "baseline_offset": 1e-11,
+        "baseline_slope": 1e-07,
+        "contact_offset": 0,
+        "correlated": false,
+        "drift": 0.0,
+        "duplicate_time": false,
+        "hold_fraction": 1.0,
+        "jitter": 0.0,
+        "noise": 0.0,
+        "nonuniform": false,
+        "response_delay": 0,
+        "sampling_switch": false,
+        "seed": 20260807
+      },
+      "model": "sls",
+      "protocol": "STRESS_RELAXATION",
+      "truth": {
+        "contact_coordinate": 3e-06,
+        "contact_index": 100,
+        "delta0": 5e-07,
+        "expected_ambiguity": false,
+        "expected_failure": null,
+        "expected_recovery": true,
+        "hold_end_index": 319,
+        "hold_start_index": 100,
+        "model": "sls",
+        "n_hold": 220,
+        "parameters": {
+          "E0": 5000.0,
+          "E_inf": 2000.0,
+          "tau": 0.05
+        },
+        "protocol": "STRESS_RELAXATION",
+        "t_hold": 0.5,
+        "t_ramp": 0.002
+      }
+    },
+    "V21": {
+      "contact_coordinate": 3e-06,
+      "contact_index": 100,
+      "expected_ambiguity": false,
+      "expected_failure": "NONMONOTONIC_COORDINATE",
+      "expected_recovery": false,
+      "metadata": {
+        "baseline_offset": 0.0,
+        "baseline_slope": 0.0,
+        "contact_offset": 0,
+        "correlated": false,
+        "drift": 0.0,
+        "duplicate_time": false,
+        "hold_fraction": 1.0,
+        "jitter": 0.0,
+        "noise": 0.0,
+        "nonuniform": false,
+        "response_delay": 3,
+        "sampling_switch": false,
+        "seed": 20260807
+      },
+      "model": "sls",
+      "protocol": "STRESS_RELAXATION",
+      "truth": {
+        "contact_coordinate": 3e-06,
+        "contact_index": 100,
+        "delta0": 5e-07,
+        "expected_ambiguity": false,
+        "expected_failure": "NONMONOTONIC_COORDINATE",
+        "expected_recovery": false,
+        "hold_end_index": 319,
+        "hold_start_index": 100,
+        "model": "sls",
+        "n_hold": 220,
+        "parameters": {
+          "E0": 5000.0,
+          "E_inf": 2000.0,
+          "tau": 0.05
+        },
+        "protocol": "STRESS_RELAXATION",
+        "t_hold": 0.5,
+        "t_ramp": 0.002
+      }
+    },
+    "V22": {
+      "contact_coordinate": 3e-06,
+      "contact_index": 100,
+      "expected_ambiguity": false,
+      "expected_failure": null,
+      "expected_recovery": true,
+      "metadata": {
+        "baseline_offset": 0.0,
+        "baseline_slope": 0.0,
+        "contact_offset": 0,
+        "correlated": false,
+        "drift": 0.0,
+        "duplicate_time": false,
+        "hold_fraction": 1.0,
+        "jitter": 0.0,
+        "noise": 0.0,
+        "nonuniform": false,
+        "response_delay": 0,
+        "sampling_switch": false,
+        "seed": 20260807
+      },
+      "model": "sls",
+      "protocol": "STRESS_RELAXATION",
+      "truth": {
+        "contact_coordinate": 3e-06,
+        "contact_index": 100,
+        "delta0": 2.5e-08,
+        "expected_ambiguity": false,
+        "expected_failure": null,
+        "expected_recovery": true,
+        "hold_end_index": 319,
+        "hold_start_index": 100,
+        "model": "sls",
+        "n_hold": 220,
+        "parameters": {
+          "E0": 5000.0,
+          "E_inf": 2000.0,
+          "tau": 0.05
+        },
+        "protocol": "STRESS_RELAXATION",
+        "t_hold": 0.5,
+        "t_ramp": 0.002
+      }
+    },
+    "V23": {
+      "contact_coordinate": 3e-06,
+      "contact_index": 100,
+      "expected_ambiguity": true,
+      "expected_failure": null,
+      "expected_recovery": true,
+      "metadata": {
+        "baseline_offset": 0.0,
+        "baseline_slope": 0.0,
+        "contact_offset": 0,
+        "correlated": false,
+        "drift": 0.0,
+        "duplicate_time": false,
+        "hold_fraction": 1.0,
+        "jitter": 0.0,
+        "noise": 0.0,
+        "nonuniform": false,
+        "response_delay": 0,
+        "sampling_switch": false,
+        "seed": 20260807
+      },
+      "model": "generalized_maxwell",
+      "protocol": "STRESS_RELAXATION",
+      "truth": {
+        "contact_coordinate": 3e-06,
+        "contact_index": 100,
+        "delta0": 5e-07,
+        "expected_ambiguity": true,
+        "expected_failure": null,
+        "expected_recovery": true,
+        "hold_end_index": 319,
+        "hold_start_index": 100,
+        "model": "generalized_maxwell",
+        "n_hold": 220,
+        "parameters": {
+          "E": 3000.0,
+          "E_inf": 2000.0,
+          "alpha": [
+            0.5,
+            0.5
+          ],
+          "tau_i": [
+            0.02,
+            0.020001
+          ]
+        },
+        "protocol": "STRESS_RELAXATION",
+        "t_hold": 0.5,
+        "t_ramp": 0.002
+      }
+    },
+    "V24": {
+      "contact_coordinate": 3e-06,
+      "contact_index": 0,
+      "expected_ambiguity": false,
+      "expected_failure": "CONTACT_NOT_FOUND",
+      "expected_recovery": false,
+      "metadata": {},
+      "model": "none",
+      "protocol": "INSUFFICIENT_PROTOCOL",
+      "truth": {
+        "contact_coordinate": 3e-06,
+        "contact_index": 0,
+        "expected_failure": "CONTACT_NOT_FOUND",
+        "expected_recovery": false,
+        "model": "none",
+        "parameters": {},
+        "protocol": "INSUFFICIENT_PROTOCOL"
+      }
+    }
+  },
+  "family": "force_viscoelasticity_phantoms",
+  "schema_version": 1,
+  "seed": 20260807,
+  "units": {
+    "force": "N",
+    "height": "m",
+    "indentation": "m",
+    "modulus": "Pa",
+    "separation": "m",
+    "time": "s",
+    "viscosity": "Pa*s"
+  }
+}
