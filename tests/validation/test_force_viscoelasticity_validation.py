@@ -577,6 +577,10 @@ def test_volume_viscoelasticity_end_to_end() -> None:
 # ---------------------------------------------------------------------------
 
 
+@pytest.mark.skipif(
+    not VISCO_REF_DIR.exists(),
+    reason="evidencia externa (pyvisco) no disponible (gitignored)",
+)
 def test_external_pyvisco_witness_reconstruction() -> None:
     """pyvisco 2.1.3 (fixed-tau-grid NNLS) and the production free-tau
     generalized-Maxwell fit both reconstruct the same synthetic normalized

@@ -37,7 +37,9 @@ jobs:
       - name: Create venv (Python ${{ matrix.python-version }})
         run: uv venv --python ${{ matrix.python-version }}
       - name: Install package + test deps
-        run: uv pip install -e ".[dev,hdf5,gwy,report,grains,jpk]"
+        # numpy 2.5.1 = el entorno en que se generó la evidencia de validación
+        # (fixtures byte-deterministas: regeneración e inventarios comparan bytes/valores)
+        run: uv pip install -e ".[dev,hdf5,gwy,report,grains,jpk]" numpy==2.5.1
       - name: Run tests (core + ciencia; los de GUI se omiten sin Qt)
         run: uv run pytest
 

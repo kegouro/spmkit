@@ -18,10 +18,21 @@ import shutil
 import sys
 from pathlib import Path
 
+import pytest
+
 FIXTURE_DIR = Path(__file__).resolve().parent / "fixtures" / "gwydion" / "linecorrect"
 GENERATOR_PATH = FIXTURE_DIR / "generate_fixtures.py"
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+
+#: Material de referencia externo (árbol fuente de Gwyddion) gitignored: los
+#: tests que construyen raíces sintéticas a partir de él se omiten sin él,
+#: siguiendo la convención del repo (test_io_jpk/test_forceload).
+REFERENCE_ROOT = Path(__file__).resolve().parents[2] / ".reference"
+requires_reference = pytest.mark.skipif(
+    not REFERENCE_ROOT.exists(),
+    reason="material de referencia externo no disponible (gitignored)",
+)
 
 # all 30 case names, as declared by the campaign
 STEP_CASES = [
@@ -335,6 +346,7 @@ def _make_synthetic_root(tmp_path: Path) -> tuple[Path, Path]:
     return root, parity
 
 
+@requires_reference
 def test_synthetic_root_valid(tmp_path) -> None:
     root, parity = _make_synthetic_root(tmp_path)
     problems: list[str] = []
@@ -342,6 +354,7 @@ def test_synthetic_root_valid(tmp_path) -> None:
     assert problems == [], problems[:5]
 
 
+@requires_reference
 def test_normal_sanitized_disagreement_rejected(tmp_path) -> None:
     root, parity = _make_synthetic_root(tmp_path)
     (root / "sanitized" / "s01_constant_5x7.stdout").write_text(
@@ -351,6 +364,7 @@ def test_normal_sanitized_disagreement_rejected(tmp_path) -> None:
     assert any("normal/sanitized stdout differ" in p for p in problems)
 
 
+@requires_reference
 def test_source_hash_mismatch_rejected(tmp_path) -> None:
     root, parity = _make_synthetic_root(tmp_path)
     lines = (root / "source-identity.txt").read_text().splitlines()
@@ -363,6 +377,7 @@ def test_source_hash_mismatch_rejected(tmp_path) -> None:
     assert any("source hash mismatch" in p for p in problems)
 
 
+@requires_reference
 def test_incomplete_sha256sums_rejected(tmp_path) -> None:
     root, parity = _make_synthetic_root(tmp_path)
     sums = (root / "SHA256SUMS").read_text().splitlines()
@@ -372,6 +387,7 @@ def test_incomplete_sha256sums_rejected(tmp_path) -> None:
     assert any("SHA256SUMS missing" in p for p in problems)
 
 
+@requires_reference
 def test_absent_case_rejected(tmp_path) -> None:
     root, parity = _make_synthetic_root(tmp_path)
     (root / "normal" / "m12_existing_mask_with_inverted_row.stdout").unlink()
@@ -381,6 +397,7 @@ def test_absent_case_rejected(tmp_path) -> None:
                for p in problems)
 
 
+@requires_reference
 def test_family_mismatch_rejected(tmp_path) -> None:
     root, parity = _make_synthetic_root(tmp_path)
     (root / "normal" / "s01_constant_5x7.stdout").write_text(

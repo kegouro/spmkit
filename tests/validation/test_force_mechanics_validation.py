@@ -387,6 +387,10 @@ def test_volume_mechanics_end_to_end() -> None:
 # ---------------------------------------------------------------------------
 
 
+@pytest.mark.skipif(
+    not NANITE_DIR.exists(),
+    reason="evidencia externa (nanite) no disponible (gitignored)",
+)
 def test_external_nanite_contact_overlap() -> None:
     """The FS-F1 contact ensemble lands inside the nanite 4-method contact
     bracket on the shared P-case campaign (checked-in black-box outputs)."""
