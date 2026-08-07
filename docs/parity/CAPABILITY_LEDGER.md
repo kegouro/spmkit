@@ -3,7 +3,7 @@
 Stable scientific capabilities registered by the Operation Registry v1.
 
 - schema_version: 1
-- operations: 73
+- operations: 74
 
 Source of truth: `src/spmkit/core/capabilities.json` (generated view; do not edit by hand).
 
@@ -2008,6 +2008,43 @@ Source of truth: `src/spmkit/core/capabilities.json` (generated view; do not edi
 
 - known deviations:
   - real tip-sample separation is often non-monotone; the operation raises NONMONOTONIC_COORDINATE instead of fabricating a value
+
+## FORCE.WORK.PATH_INTEGRATE
+
+- operation_id: `force.work.path_integrate`
+- public_name: `integrate_force_path_work`
+- public_import: `spmkit.core.analysis:integrate_force_path_work`
+- family: FORCE
+- maturity: NUMERICALLY_VERIFIED
+- status: stable
+- reference: SPMKit native (Acquisition-path force work)
+- evidence profile: `NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE`
+
+- contract: Signed path work over a single trajectory in acquisition order: W = sum_i 0.5*(F_i+F_{i+1})*(z_{i+1}-z_i) with deterministic float64 accumulation; signed dz retained (local reversals and closed loops contribute their signed path work; repeated coordinates contribute zero; translation-invariant; acquisition reversal flips sign); no sorting, no abs(), no smoothing, no point deletion; complete CoordinatePathDiagnostics; classification_tolerance only classifies (direction, reversal counts), never alters the integral; NONFINITE_DATA, LENGTH_MISMATCH, INSUFFICIENT_SAMPLES, MISSING_COORDINATE typed failures.
+
+- semantics:
+  - mask: none
+  - ROI: no
+  - NaN policy: reject
+  - border: not_applicable
+  - mutation: returns_new
+  - result: object
+  - units: J
+
+- parameters:
+  - `coordinate` (positional, required) — Coordinate axis (e.g. tip-sample separation) in acquisition order.
+  - `force` (positional, required) — Calibrated force samples (same length as coordinate).
+  - `coordinate_unit` (keyword_only, 'm') — Coordinate unit label.
+  - `force_unit` (keyword_only, 'N') — Force unit label.
+  - `classification_tolerance` (keyword_only, '0.0') — Classification-only tolerance in SI coordinate units (never used to alter the integral).
+  - `provenance` (keyword_only, None) — Provenance metadata.
+
+- evidence:
+  - `tests/core/test_force_path_work.py`
+
+- known deviations:
+  - path work is a path integral, not thermodynamic work; closed/ambiguous paths warn and split forward/backward contributions by step sign
+  - absolute_accumulated_work is not dissipation energy
 
 ## IMG.FILTER.GAUSSIAN
 

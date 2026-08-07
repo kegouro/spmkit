@@ -5319,6 +5319,111 @@
     },
     {
       "aliases": [],
+      "border_policy": "not_applicable",
+      "capability_id": "FORCE.WORK.PATH_INTEGRATE",
+      "contract": "Signed path work over a single trajectory in acquisition order: W = sum_i 0.5*(F_i+F_{i+1})*(z_{i+1}-z_i) with deterministic float64 accumulation; signed dz retained (local reversals and closed loops contribute their signed path work; repeated coordinates contribute zero; translation-invariant; acquisition reversal flips sign); no sorting, no abs(), no smoothing, no point deletion; complete CoordinatePathDiagnostics; classification_tolerance only classifies (direction, reversal counts), never alters the integral; NONFINITE_DATA, LENGTH_MISMATCH, INSUFFICIENT_SAMPLES, MISSING_COORDINATE typed failures.",
+      "evidence": [
+        "tests/core/test_force_path_work.py"
+      ],
+      "family": "FORCE",
+      "known_deviations": [
+        "path work is a path integral, not thermodynamic work; closed/ambiguous paths warn and split forward/backward contributions by step sign",
+        "absolute_accumulated_work is not dissipation energy"
+      ],
+      "mask_semantics": "none",
+      "maturity": "NUMERICALLY_VERIFIED",
+      "mutation_policy": "returns_new",
+      "nan_policy": "reject",
+      "operation_id": "force.work.path_integrate",
+      "parameters": [
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Coordinate axis (e.g. tip-sample separation) in acquisition order.",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "coordinate",
+          "required": true,
+          "type": "np.ndarray",
+          "units": "m"
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Calibrated force samples (same length as coordinate).",
+          "enum_values": null,
+          "has_default": false,
+          "kind": "positional",
+          "name": "force",
+          "required": true,
+          "type": "np.ndarray",
+          "units": "N"
+        },
+        {
+          "bounds": null,
+          "default": "m",
+          "description": "Coordinate unit label.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "coordinate_unit",
+          "required": false,
+          "type": "str",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": "N",
+          "description": "Force unit label.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "force_unit",
+          "required": false,
+          "type": "str",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": "0.0",
+          "description": "Classification-only tolerance in SI coordinate units (never used to alter the integral).",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "classification_tolerance",
+          "required": false,
+          "type": "float",
+          "units": null
+        },
+        {
+          "bounds": null,
+          "default": null,
+          "description": "Provenance metadata.",
+          "enum_values": null,
+          "has_default": true,
+          "kind": "keyword_only",
+          "name": "provenance",
+          "required": false,
+          "type": "dict | None",
+          "units": null
+        }
+      ],
+      "public_import": "spmkit.core.analysis:integrate_force_path_work",
+      "public_name": "integrate_force_path_work",
+      "reference": {
+        "software": "SPMKit",
+        "version": "native",
+        "name": "Acquisition-path force work",
+        "profile": "NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE"
+      },
+      "result_type": "object",
+      "roi_support": false,
+      "status": "stable",
+      "units": "J"
+    },
+    {
+      "aliases": [],
       "border_policy": "mirror",
       "capability_id": "IMG.FILTER.GAUSSIAN",
       "contract": "Separable Gaussian smoothing with sigma in pixels; kernel resolution 2*ceil(5*sigma)+1 capped at 3*min(xres,yres) and forced odd; mirror borders; horizontal-then-vertical passes; sequential-sum reciprocal normalization (not forced to exactly 1.0).",

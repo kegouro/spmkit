@@ -110,7 +110,7 @@ def test_reject_unknown_operation() -> None:
 
 def test_deterministic_listing() -> None:
     ops = list_operations()
-    assert len(ops) == 73
+    assert len(ops) == 74
     ids = [o.operation_id for o in ops]
     assert ids == sorted(ids)
     # calling twice yields identical tuples
