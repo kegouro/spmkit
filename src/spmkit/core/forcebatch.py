@@ -9,13 +9,16 @@ Exporta a CSV y —si hay pandas— a ``DataFrame``.
 from __future__ import annotations
 
 import csv
+import json
 import math
 from collections.abc import Callable
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
+from spmkit import __version__
 from spmkit.core.analysis.forcevolume import DEFAULT_KEYS, analyze_volume
+from spmkit.core.export.manifest import file_sha256, get_git_commit
 from spmkit.core.io.jpk import load_jpk_force
 from spmkit.core.io.nid import load_nid_force
 from spmkit.core.models import ForceVolume
@@ -61,6 +64,10 @@ class ForceBatchRow:
     adhesion_median: float = float("nan")
     dissipation_median: float = float("nan")
     error: str = ""
+    n_young_modulus: int = 0
+    n_adhesion: int = 0
+    n_dissipation: int = 0
+    source_sha256: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -71,6 +78,10 @@ class ForceBatchResult:
     """Resultado del batch: una fila por archivo."""
 
     rows: list[ForceBatchRow] = field(default_factory=list)
+
+    recipe: dict[str, Any] | None = None
+    keys: tuple[str, ...] = ()
+    git_commit: str | None = None
 
     @property
     def n_ok(self) -> int:
@@ -93,6 +104,14 @@ class ForceBatchResult:
             fh.write("# spmkit — resumen de lote de curvas/mapas de fuerza\n")
             fh.write(f"# archivos: {len(self.rows)}  ·  OK: {self.n_ok}")
             fh.write(f"  ·  fallidos: {self.n_failed}\n#\n")
+            if self.recipe is not None:
+                provenance = {
+                    "spmkit_version": __version__,
+                    "git_commit": self.git_commit,
+                    "recipe": self.recipe,
+                    "keys": self.keys,
+                }
+                fh.write("# " + json.dumps(provenance, ensure_ascii=False, sort_keys=True) + "\n")
             writer = csv.writer(fh)
             writer.writerow([f"{f} [{_ROW_UNITS[f]}]" if f in _ROW_UNITS else f for f in fields])
             for row in self.rows:
@@ -135,7 +154,9 @@ def process_force_folder(
     rows: list[ForceBatchRow] = []
     total = len(files)
     for i, f in enumerate(files):
+        digest = ""
         try:
+            digest = file_sha256(f)
             volume = load_force(f)
             result = analyze_volume(volume, recipe, keys=keys, parallel=parallel)
             e_stats = result.stats("young_modulus") if "young_modulus" in result.maps else {}
@@ -143,9 +164,14 @@ def process_force_folder(
             dis_stats = result.stats("dissipation") if "dissipation" in result.maps else {}
             rows.append(
                 ForceBatchRow(
-                    source=f.name,
+                    source=str(f.relative_to(folder)),
+                    source_sha256=digest,
                     n_curves=volume.n_curves,
                     n_ok=result.n_ok,
+                    n_young_modulus=int(e_stats.get("n", 0)),
+                    n_adhesion=int(adh_stats.get("n", 0)),
+                    n_dissipation=int(dis_stats.get("n", 0)),
+                    error="Ninguna curva procesada" if result.n_ok == 0 else "",
                     young_modulus_median=e_stats.get("median", float("nan")),
                     young_modulus_std=e_stats.get("std", float("nan")),
                     adhesion_median=adh_stats.get("median", float("nan")),
@@ -153,7 +179,13 @@ def process_force_folder(
                 )
             )
         except Exception as exc:  # noqa: BLE001 - un archivo malo no aborta el lote
-            rows.append(ForceBatchRow(source=f.name, error=str(exc)))
+            rows.append(
+                ForceBatchRow(
+                    source=str(f.relative_to(folder)), source_sha256=digest, error=str(exc)
+                )
+            )
         if progress is not None:
             progress((i + 1) / total if total else 1.0, f.name)
-    return ForceBatchResult(rows=rows)
+    return ForceBatchResult(
+        rows=rows, recipe=recipe.to_dict(), keys=keys, git_commit=get_git_commit()
+    )

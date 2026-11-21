@@ -236,6 +236,20 @@ def load_nid_force(path: str | Path) -> ForceVolume:
 
     n_curves = int(ext_force.data.shape[0])
 
+    if (ret_force is None) != (ret_z is None):
+        raise ValueError("Retracción .nid incompleta: se requieren Deflection y Z-Axis Sensor")
+
+    def in_si_row(channel: SPMChannel, unit: str, i: int) -> np.ndarray:
+        prefix_scale = {"": 1.0, "m": 1e-3, "u": 1e-6, "n": 1e-9, "p": 1e-12, "f": 1e-15}
+        declared = channel.unit.strip().replace("µ", "u").replace("μ", "u")
+        prefix = declared.removesuffix(unit)
+        if not declared.endswith(unit) or prefix not in prefix_scale:
+            raise ValueError(f"{channel.name}: unidad {channel.unit!r} incompatible con {unit}")
+        if channel.data.shape[0] != n_curves:
+            raise ValueError(f"{channel.name}: número de curvas incompatible")
+        row = np.asarray(channel.data[i], dtype=np.float64)
+        return row if prefix_scale[prefix] == 1.0 else row * prefix_scale[prefix]
+
     def _segment(
         kind: str,
         direction: str,
@@ -244,13 +258,14 @@ def load_nid_force(path: str | Path) -> ForceVolume:
         sep_ch: SPMChannel | None,
         i: int,
     ) -> ForceSegment:
-        height = np.asarray(z_ch.data[i], dtype=np.float64)
-        force = np.asarray(f_ch.data[i], dtype=np.float64)
-        separation = None
-        deflection = None
-        if sep_ch is not None:
-            separation = np.asarray(sep_ch.data[i], dtype=np.float64)
-            deflection = height - separation  # sep = height − deflexión
+        height = in_si_row(z_ch, "m", i)
+        force = in_si_row(f_ch, "N", i)
+        separation = in_si_row(sep_ch, "m", i) if sep_ch is not None else None
+        if height.shape != force.shape or (
+            separation is not None and separation.shape != height.shape
+        ):
+            raise ValueError(f"{kind}: longitudes de canal incompatibles")
+        deflection = height - separation if separation is not None else None
         return ForceSegment(
             segment_type=kind,  # type: ignore[arg-type]
             direction=direction,

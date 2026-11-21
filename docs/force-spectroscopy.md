@@ -87,3 +87,86 @@ Modelos de contacto: `sphere`, `paraboloid`, `cone`, `dmt`.
   metadatos y se aplican automáticamente.
 - Para `.nid` con la separación punta-muestra saturada, el ajuste usa la altura del
   piezo (módulo "aparente"); ver `docs/design/FORCE_SPECTROSCOPY.md` §18.
+
+## Medición de posibles escalones de fuerza
+
+Para comprobar una anotación en una curva, conservar el archivo nativo y anotar
+la rama, el ciclo y el índice de la primera muestra posterior al posible cambio.
+La definición operativa de esta medición es un salto **vertical de fuerza a una
+misma altura del piezo**. Confirmar primero los ejes y el modo de adquisición.
+Un desplazamiento a fuerza constante requiere otra magnitud y otro método.
+
+Desde la raíz del repositorio se puede ejecutar este ejemplo con el archivo
+NanoSurf de referencia. Su posición se eligió para comprobar la lectura y el
+formato de salida. La anotación carece de interpretación física.
+
+```sh
+spmkit force-steps examples/recipes/force-step-annotations.csv > medidas.jsonl
+```
+
+Las rutas del CSV son relativas a la tabla. Los índices de curva, ciclo y
+muestra comienzan en cero. Para una frontera `b` y ventana `w`, se ajustan por
+mínimos cuadrados dos rectas independientes de fuerza frente a altura, sobre
+`[b-w, b)` y `[b, b+w)` en orden de adquisición. Se evalúan en el punto medio
+entre las alturas de las muestras `b-1` y `b`. El resultado es la fuerza
+posterior menos la anterior, en N. La salida incluye altura en m, pendientes en
+N/m, residuales RMS en N, identificación del original por SHA-256, versión del
+método y revisión Git cuando está disponible. Se requiere fuerza calibrada,
+al menos tres puntos por lado y altura estrictamente monótona en la ventana.
+Una rama con una inversión local requiere revisión. El RMS describe el ajuste.
+La incertidumbre experimental requiere además caracterizar calibración, ruido
+correlacionado y selección de la frontera.
+
+El lote aplica el mismo cálculo a cada fila. Conserva las anotaciones rechazadas
+con su motivo, procesa las siguientes y devuelve código 1 si hubo rechazos.
+El lote mecánico `fbatch` exporta por separado el número de valores finitos que
+contribuyeron a cada propiedad, el hash del archivo y la receta. `n_ok` cuenta
+curvas cuyo pipeline terminó, incluso si una condición de la receta omitió
+un ajuste.
+
+### Evidencia y límites del piloto
+
+Los ensayos reproducibles están en `tests/core/test_annotated_force_steps.py`.
+Incluyen rampas ascendentes y descendentes con saltos de signo conocido y con
+salto cero, compatibilidad entre procesamiento individual y lote, y rechazo de
+voltios como fuerza calibrada. Para un salto inyectado de 2 nN, frontera
+conocida y diez muestras por lado, 512 simulaciones con semilla 20261122 y
+ruido marginal de 0,1 nN dieron los siguientes errores de amplitud.
+
+| Ruido | Sesgo (nN) | Raíz del error cuadrático medio (nN) |
+| --- | ---: | ---: |
+| Gaussiano blanco | +0,00036 | 0,0858 |
+| Gaussiano AR(1), correlación 0,8 | +0,00304 | 0,0909 |
+
+La prueba compara la dispersión con la predicción independiente obtenida a
+partir de la matriz de covarianza y el contraste lineal. Las cifras son
+condicionales a conocer la frontera y a la linealidad local. Buscar primero el
+salto más llamativo cambia la distribución del error. La correlación temporal
+también importa al evaluar detectores de escalones.
+[Estudio de detección bajo ruido correlacionado](https://doi.org/10.1371/journal.pone.0059279)
+
+### Piloto experimental con liquid marbles
+
+1. Recuperar del PC de adquisición los originales, el identificador de sonda,
+   sensibilidad, constante de resorte, fecha, frecuencia de muestreo, velocidad,
+   filtro instrumental y controles. Vincular cada calibración con su sesión y
+   conservar hashes y registros de Data Hunter, Validation y Phantoms cuando
+   correspondan al mismo archivo.
+2. Inventariar todas las curvas por muestra, sesión, ciclo y rama, incluidas
+   las revisadas sin candidatos. Conservar la señal cruda. Superponer cada
+   anotación y las dos rectas sobre los datos en orden de adquisición. Revisar
+   saturación, cuantización, inversiones y transitorios de realimentación.
+3. Fijar el rango de ventanas, las exclusiones y el protocolo de anotación antes
+   de evaluar las curvas reservadas. Dos revisores pueden anotar de forma
+   independiente. Medir sensibilidad a desplazar la frontera y a variar la
+   ventana. Inyectar escalones de signo y duración conocidos en trazas de
+   control, incluidas transiciones redondeadas por el ancho de banda.
+4. Antes de automatizar la búsqueda, medir falsos eventos por curva de control,
+   recuperación por amplitud y duración, error de localización y sesgo de
+   amplitud en datos reservados por sesión o muestra. Acordar con el laboratorio
+   los límites útiles en nN y en muestras antes de abrir ese conjunto.
+5. Para una publicación, informar los denominadores por muestra independiente,
+   la incertidumbre de calibración y la variabilidad entre muestras. Archivar
+   originales permitidos, controles, anotaciones, exclusiones, receta y salidas.
+   Citar el commit usado y el DOI de la versión archivada correspondiente.
+   El DOI de una versión anterior describe esa versión.

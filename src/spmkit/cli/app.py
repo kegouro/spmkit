@@ -734,6 +734,28 @@ def forceexport(
     console.print(f"[green]✓[/] {len(manifest)} archivos exportados → {output}")
 
 
+@app.command("force-steps")
+def force_steps(annotations: Path = typer.Argument(..., exists=True, dir_okay=False)) -> None:
+    """Mide escalones anotados en un CSV y emite una fila JSON por anotación."""
+    import json
+
+    from spmkit.core.force_step_batch import analyze_step_annotations
+
+    failed = False
+    count = 0
+    try:
+        for row in analyze_step_annotations(annotations):
+            typer.echo(json.dumps(row, ensure_ascii=False, allow_nan=False))
+            failed |= row["status"] == "rejected"
+            count += 1
+    except ValueError as exc:
+        raise typer.BadParameter(str(exc)) from exc
+    if not count:
+        raise typer.BadParameter("El CSV no contiene anotaciones")
+    if failed:
+        raise typer.Exit(1)
+
+
 @app.command()
 def fbatch(
     folder: Path = typer.Argument(..., exists=True, file_okay=False, help="Carpeta de curvas"),

@@ -20,12 +20,30 @@ import numpy as np
 from spmkit.core.export.writers import _to_serializable
 
 
-def _get_git_commit() -> str | None:
+def get_git_commit() -> str | None:
     """Intenta recuperar el hash del commit actual de Git, si está disponible limpiamente."""
     try:
         # Solo ejecutamos git si el directorio .git existe para evitar errores o delays
         git_dir = Path(__file__).resolve().parents[4] / ".git"
         if not git_dir.exists():
+            return None
+        # Uncommitted source code cannot be reproduced from HEAD alone.
+        status = subprocess.run(
+            [
+                "git",
+                "status",
+                "--porcelain",
+                "--untracked-files=normal",
+                "--",
+                "src",
+                "pyproject.toml",
+            ],
+            capture_output=True,
+            check=True,
+            cwd=git_dir.parent,
+            timeout=1.0,
+        )
+        if status.stdout:
             return None
         res = subprocess.run(
             ["git", "rev-parse", "HEAD"],
@@ -40,7 +58,7 @@ def _get_git_commit() -> str | None:
         return None
 
 
-def _get_file_hash(path: Path) -> str:
+def file_sha256(path: Path) -> str:
     """Calcula el SHA-256 de un archivo en disco."""
     h = hashlib.sha256()
     with path.open("rb") as f:
@@ -86,7 +104,7 @@ class RunManifest:
     spmkit_version: str = field(
         default_factory=lambda: (getattr(sys.modules.get("spmkit"), "__version__", "unknown"))
     )
-    git_commit: str | None = field(default_factory=_get_git_commit)
+    git_commit: str | None = field(default_factory=get_git_commit)
     timestamp_utc: str = field(
         default_factory=lambda: datetime.datetime.now(datetime.UTC).isoformat()
     )
@@ -112,7 +130,7 @@ class RunManifest:
 
         return cls(
             input_file=input_path.name,  # Guardamos solo el basename (portable)
-            input_sha256=_get_file_hash(input_path),
+            input_sha256=file_sha256(input_path),
             input_bytes=input_path.stat().st_size,
             command=command,
             args=args,
