@@ -30,6 +30,8 @@ not private dataset paths or file contents.
 | Denoise | non-Git experimental sandbox | retained locally | Not scientifically validated | No production migration |
 | Historical pending integration | `2e6b91b` | already in main `3eba2ca` | Prior integration history | Do not duplicate |
 | Sanitize / publication / presentation | `11daf88`, `372deee`, `a6e52c9` | ancestry reviewed | Included by chosen baseline | No bulk copying |
+| Native IBW v5 image reader | `7c2b385` | core reader + extension registry | Synthetic units/orientation/checksum/fallback tests | Recovered limited little-endian FP32 2D family, no general IBW claim |
+| KPFM/roughness/NHF hardening | selected `820df23`, `c76bb8a` | core and focused tests | SI-unit/finite-input guards and synthetic HDF5 | Preserve newer leveling; recover compatible guards |
 | IBW evidence-only pilot | `e9706e8` | preserved original branch | Separate archived scientific protocol | No engine code to recover; not merged into runtime |
 
 ## Hygiene and provenance
@@ -71,7 +73,7 @@ The first baseline run used the original editable environment (2243 passed,
 81 skipped); the decisive run above imported the isolated consolidation checkout.
 
 Secondary published heads: Phantoms `09aaee4870772c14be70cbd0e1f31435e177578b`;
-Validation `6f70d0cf67e07a2749e4828e8b3c072fe9b938b1`. Data Hunter remote
+Validation `89ab513` (follow-up CI fix after `6f70d0c`). Data Hunter remote
 `36b943c` already contains all recoverable local functional changes.
 
 The oldest supported Python remains 3.11. NumPy 2.5.1 requires Python >=3.12;
@@ -86,3 +88,18 @@ This remains `0.1.5.dev0`, not a stable 1.0 release.
 
 See [portable setup](../getting-started/macos.md), [scientific status](../scientific-status.md)
 and the [capability ledger](../parity/CAPABILITY_LEDGER.md).
+
+## Final recovery supplement
+
+The final ancestry audit recovered the native IBW v5 reader and compatible
+Slice B KPFM/roughness/NHF guards. Reader/plugin/architecture and affected
+scientific module tests passed: 41 passed, 2 skipped on Python 3.12;
+36 passed on Python 3.11 for IBW/KPFM/roughness/NHF. mypy now covers 187
+source files. The SMFS result annotation now honestly permits absent fits for
+invalid short windows, matching existing runtime behavior; no algorithm changed.
+The full-suite counts above describe the pre-supplement baseline; focused
+post-supplement results are recorded separately, without inflating the total.
+
+Validation's first remote CI run exposed a missing optional campaign dependency
+in its test environment. Its follow-up workflow installs `[campaign]` and keeps
+all tests; none were removed or marked skipped to conceal the failure.

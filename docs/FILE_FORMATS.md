@@ -35,3 +35,12 @@ should state the format and instrument family, acquisition mode, expected
 channels and orientation, physical units, file checksum, redistribution license,
 and whether sample identity may remain private. See the
 [fixture contribution template](https://github.com/kegouro/spmkit/issues/new?template=file_format_fixture.yml).
+
+
+## Native limited Igor Binary Wave reader
+
+`spmkit.core.io.load_igor_ibw(path)` supports observed little-endian IBW v5
+FP32 2D image stacks. It verifies header checksum, byte budgets, channel labels,
+units and orientation. Unsupported versions, big-endian waves and other sample
+types are rejected; an optional registered reader may handle those variants.
+This is scoped format support with synthetic coverage, not universal Igor support.

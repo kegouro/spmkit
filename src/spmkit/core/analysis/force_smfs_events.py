@@ -67,8 +67,8 @@ class ContourLengthIncrementResult:
     """Delta contour length from independent pre/post polymer fits."""
 
     event_index: int
-    pre_fit: PolymerFitResult
-    post_fit: PolymerFitResult
+    pre_fit: PolymerFitResult | None
+    post_fit: PolymerFitResult | None
     pre_contour_length: float
     post_contour_length: float
     delta_contour_length: float
@@ -327,7 +327,7 @@ def infer_contour_length_increments(
                 ContourLengthIncrementResult(
                     event_index=peak,
                     pre_fit=None,
-                    post_fit=None,  # type: ignore[arg-type]
+                    post_fit=None,
                     pre_contour_length=float("nan"),
                     post_contour_length=float("nan"),
                     delta_contour_length=float("nan"),

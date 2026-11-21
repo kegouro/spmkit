@@ -541,3 +541,12 @@ The plugin contract is versioned, but the surrounding package remains alpha.
 
 For end-to-end examples, continue with the [first analysis](getting-started/first-analysis.md),
 [manual](user-guide.md), and [artifact contracts](ecosystem/contracts.md).
+
+
+## Native limited Igor Binary Wave reader
+
+`spmkit.core.io.load_igor_ibw(path)` supports observed little-endian IBW v5
+FP32 2D image stacks. It verifies header checksum, byte budgets, channel labels,
+units and orientation. Unsupported versions, big-endian waves and other sample
+types are rejected; an optional registered reader may handle those variants.
+This is scoped format support with synthetic coverage, not universal Igor support.

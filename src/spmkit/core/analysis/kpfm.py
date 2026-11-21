@@ -47,8 +47,16 @@ def statistics(channel: SPMChannel, tip_work_function: float | None = None) -> C
         tip_work_function: Función de trabajo de la punta en eV. Si se entrega,
             se calcula ``phi_sample = phi_tip - V_CPD_medio``.
     """
+    if channel.unit.casefold() != "v":
+        raise ValueError("El canal KPFM debe estar expresado en voltios SI (V)")
+    if tip_work_function is not None and (
+        not np.isfinite(tip_work_function) or tip_work_function <= 0
+    ):
+        raise ValueError("tip_work_function debe ser finita y estrictamente positiva")
     v = np.asarray(channel.data, dtype=np.float64).ravel()
     v = v[np.isfinite(v)]
+    if v.size == 0:
+        raise ValueError("Canal KPFM sin datos finitos")
     mean = float(v.mean())
     work_function = None
     if tip_work_function is not None:

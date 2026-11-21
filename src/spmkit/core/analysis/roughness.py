@@ -47,6 +47,8 @@ def statistics(channel: SPMChannel) -> RoughnessResult:
     z = np.asarray(channel.data, dtype=np.float64)
     flat = z.ravel()
     flat = flat[np.isfinite(flat)]
+    if flat.size == 0:
+        raise ValueError("Canal sin datos finitos para calcular rugosidad")
     mean = flat.mean()
     dev = flat - mean
 
