@@ -38,8 +38,12 @@ def test_all_28_valid_cases_bitwise() -> None:
         cid = case["case_identifier"]
         inp = _probe(cid, "input")
         ref = oracle_step_block_source(
-            inp, threshold_param=case["threshold_param"],
-            direction=case["direction"], xreal=case["xreal"], yreal=case["yreal"])
+            inp,
+            threshold_param=case["threshold_param"],
+            direction=case["direction"],
+            xreal=case["xreal"],
+            yreal=case["yreal"],
+        )
         # effective threshold
         assert ref.effective_threshold == case["effective_threshold"], cid
         # block count and topology
@@ -50,36 +54,39 @@ def test_all_28_valid_cases_bitwise() -> None:
             assert ref.retained_blocks[k][2] == case["block_shifts"][k], cid
             # trimmed-mean state vs the frozen compiled emissions
             assert np.array_equal(
-                _bits(ref.per_block_shifts_raw[k]),
-                _probe(cid, f"tm_{k}_raw").view(np.uint64)), cid
+                _bits(ref.per_block_shifts_raw[k]), _probe(cid, f"tm_{k}_raw").view(np.uint64)
+            ), cid
             assert np.array_equal(
-                _bits(ref.per_block_shifts_selected[k]),
-                _probe(cid, f"tm_{k}_sel").view(np.uint64)), cid
+                _bits(ref.per_block_shifts_selected[k]), _probe(cid, f"tm_{k}_sel").view(np.uint64)
+            ), cid
             # retained sum == trimmed mean * retained count (exact for the
             # integer-valued retained campaign blocks)
-            assert ref.per_block_retained_sum[k] == \
-                ref.retained_blocks[k][2] * ref.retained_count, cid
+            assert (
+                ref.per_block_retained_sum[k] == ref.retained_blocks[k][2] * ref.retained_count
+            ), cid
         # corrected field bitwise
         assert np.array_equal(
-            _bits(ref.corrected_field),
-            _probe(cid, "corrected").view(np.uint64)), cid
+            _bits(ref.corrected_field), _probe(cid, "corrected").view(np.uint64)
+        ), cid
         # masks bitwise
         assert np.array_equal(
-            _bits(ref.preview_mask_discontinuity),
-            _probe(cid, "mask_discontinuity").view(np.uint64)), cid
+            _bits(ref.preview_mask_discontinuity), _probe(cid, "mask_discontinuity").view(np.uint64)
+        ), cid
         assert np.array_equal(
-            _bits(ref.preview_mask_blocks),
-            _probe(cid, "mask_blocks").view(np.uint64)), cid
+            _bits(ref.preview_mask_blocks), _probe(cid, "mask_blocks").view(np.uint64)
+        ), cid
         # input non-mutation
         assert not ref.input_mutation_evidence, cid
-        assert np.array_equal(_bits(ref.input_snapshot),
-                              _probe(cid, "input_after").view(np.uint64)), cid
+        assert np.array_equal(
+            _bits(ref.input_snapshot), _probe(cid, "input_after").view(np.uint64)
+        ), cid
 
 
 def test_xres_one_rejected() -> None:
     try:
-        oracle_step_block_source(np.zeros((8, 1)), threshold_param=2.0,
-                                 direction="left_to_right", xreal=1.0, yreal=8.0)
+        oracle_step_block_source(
+            np.zeros((8, 1)), threshold_param=2.0, direction="left_to_right", xreal=1.0, yreal=8.0
+        )
     except ValueError as exc:
         assert "xres < 2" in str(exc)
     else:
@@ -90,16 +97,18 @@ def test_finite_input_rejected() -> None:
     field = np.zeros((8, 8))
     field[2, 2] = np.nan
     try:
-        oracle_step_block_source(field, threshold_param=2.0,
-                                 direction="left_to_right", xreal=8.0, yreal=8.0)
+        oracle_step_block_source(
+            field, threshold_param=2.0, direction="left_to_right", xreal=8.0, yreal=8.0
+        )
     except ValueError:
         pass
     else:
         raise AssertionError("NaN input must be rejected")
     field[2, 2] = np.inf
     try:
-        oracle_step_block_source(field, threshold_param=2.0,
-                                 direction="left_to_right", xreal=8.0, yreal=8.0)
+        oracle_step_block_source(
+            field, threshold_param=2.0, direction="left_to_right", xreal=8.0, yreal=8.0
+        )
     except ValueError:
         pass
     else:
@@ -110,6 +119,7 @@ def test_oracle_never_reads_fixture_outputs() -> None:
     import inspect
 
     import oracle_step_block_source as o
+
     source = inspect.getsource(o)
     assert "reference.json" not in source
     assert "reference.npz" not in source
@@ -120,5 +130,6 @@ def test_no_production_imports() -> None:
     import inspect
 
     import oracle_step_block_source as o
+
     source = inspect.getsource(o)
     assert "spmkit.core" not in source

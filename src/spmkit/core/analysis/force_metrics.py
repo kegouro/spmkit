@@ -510,9 +510,7 @@ def integrate_force_path_work(
         warnings.append(
             "work_forward/work_backward split by step sign dz (no global direction assigned)"
         )
-    if abs(work_total - (work_forward + work_backward)) > 1e-12 * max(
-        1.0, abs(work_total)
-    ):
+    if abs(work_total - (work_forward + work_backward)) > 1e-12 * max(1.0, abs(work_total)):
         warnings.append("decomposition invariant |W - (W_f + W_b)| exceeded float tolerance")
 
     meta = dict(provenance or {})

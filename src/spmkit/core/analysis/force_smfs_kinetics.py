@@ -91,15 +91,16 @@ class ForceClampSurvivalResult:
 # ---------------------------------------------------------------------------
 
 
-def bell_evans_rate(force: float | np.ndarray, k0: float, x_beta: float,
-                    temperature: float) -> float | np.ndarray:
+def bell_evans_rate(
+    force: float | np.ndarray, k0: float, x_beta: float, temperature: float
+) -> float | np.ndarray:
     """k(F) = k0 exp(F x_beta / k_B T)."""
-    return k0 * np.exp(np.asarray(force, dtype=np.float64) * x_beta
-                       / (KB * temperature))
+    return k0 * np.exp(np.asarray(force, dtype=np.float64) * x_beta / (KB * temperature))
 
 
-def bell_evans_survival(force: np.ndarray, rate: float | np.ndarray, k0: float,
-                        x_beta: float, temperature: float) -> np.ndarray:
+def bell_evans_survival(
+    force: np.ndarray, rate: float | np.ndarray, k0: float, x_beta: float, temperature: float
+) -> np.ndarray:
     """S(F; r) = exp(-k0 k_B T/(r x_beta) (exp(F x_beta / k_B T) - 1)).
 
     The coefficient k0 k_B T/(r x_beta) is dimensionless: 1/s * J /
@@ -110,18 +111,26 @@ def bell_evans_survival(force: np.ndarray, rate: float | np.ndarray, k0: float,
     return np.exp(-k0 * kt / (rate * x_beta) * (np.exp(exponent) - 1.0))
 
 
-def bell_evans_pdf(force: np.ndarray, rate: float | np.ndarray, k0: float,
-                   x_beta: float, temperature: float) -> np.ndarray:
+def bell_evans_pdf(
+    force: np.ndarray, rate: float | np.ndarray, k0: float, x_beta: float, temperature: float
+) -> np.ndarray:
     """p(F; r) = k(F)/r S(F; r)."""
-    return (np.asarray(bell_evans_rate(force, k0, x_beta, temperature), dtype=np.float64)
-            / np.asarray(rate, dtype=np.float64)
-            * bell_evans_survival(np.asarray(force, dtype=np.float64),
-                                  np.asarray(rate, dtype=np.float64),
-                                  k0, x_beta, temperature))
+    return (
+        np.asarray(bell_evans_rate(force, k0, x_beta, temperature), dtype=np.float64)
+        / np.asarray(rate, dtype=np.float64)
+        * bell_evans_survival(
+            np.asarray(force, dtype=np.float64),
+            np.asarray(rate, dtype=np.float64),
+            k0,
+            x_beta,
+            temperature,
+        )
+    )
 
 
-def _bell_nll(params: np.ndarray, rates: np.ndarray, forces: np.ndarray,
-              temperature: float) -> float:
+def _bell_nll(
+    params: np.ndarray, rates: np.ndarray, forces: np.ndarray, temperature: float
+) -> float:
     k0, x_beta = float(params[0]), float(params[1])
     if k0 <= 0.0 or x_beta <= 0.0:
         return 1e300
@@ -131,8 +140,9 @@ def _bell_nll(params: np.ndarray, rates: np.ndarray, forces: np.ndarray,
     return -float(np.sum(np.log(vals)))
 
 
-def _bell_profile(x_beta: float, rates: np.ndarray, forces: np.ndarray,
-                  temperature: float) -> tuple[float, float]:
+def _bell_profile(
+    x_beta: float, rates: np.ndarray, forces: np.ndarray, temperature: float
+) -> tuple[float, float]:
     """Profile likelihood over x_beta with the closed-form k0 optimum.
 
     nll(k0) = -n log(k0) - sum(log h_i) + k0 * sum g_i with
@@ -149,8 +159,11 @@ def _bell_profile(x_beta: float, rates: np.ndarray, forces: np.ndarray,
     log_h = y - np.log(rates)
     log_g = np.log(x_beta) - np.log(rates * kt) + np.logaddexp(y, 0.0)
     log_sum_g = float(np.logaddexp.reduce(log_g))
-    nll = (float(forces.size) * (log_sum_g - math.log(float(forces.size)))
-           - float(np.sum(log_h)) + float(forces.size))
+    nll = (
+        float(forces.size) * (log_sum_g - math.log(float(forces.size)))
+        - float(np.sum(log_h))
+        + float(forces.size)
+    )
     k0 = float(forces.size) / math.exp(log_sum_g) if log_sum_g < 700.0 else 0.0
     if not np.isfinite(nll):
         return 1e300, k0
@@ -190,7 +203,8 @@ def fit_bell_evans(
     if rate_span < 10.0:
         warnings.append(
             f"loading-rate range spans only {rate_span:.1f}x: k0 and x_beta are "
-            "weakly identifiable (IDENTIFIABILITY_LIMITED)")
+            "weakly identifiable (IDENTIFIABILITY_LIMITED)"
+        )
     # PRIMARY estimator (frozen convention): the most-probable-force
     # regression F* = (k_B T / x_beta) ln(r) + (k_B T / x_beta)
     # ln(x_beta / (k0 k_B T)) over the per-rate median rupture forces.
@@ -202,19 +216,21 @@ def fit_bell_evans(
     medians = np.array([float(np.median(forces[rates == r])) for r in uniq_rates])
     log_r = np.log(uniq_rates)
     if uniq_rates.size < 2 or np.ptp(medians) <= 0.0:
-        raise SmfsError(INSUFFICIENT_EVENTS,
-                        "at least two loading rates with distinct forces required")
+        raise SmfsError(
+            INSUFFICIENT_EVENTS, "at least two loading rates with distinct forces required"
+        )
     kt = KB * temperature
     slope, intercept = np.polyfit(log_r, medians, 1)
     if slope <= 0.0:
-        raise SmfsError(KINETIC_DOMAIN,
-                        "most-probable force must increase with the loading rate")
+        raise SmfsError(KINETIC_DOMAIN, "most-probable force must increase with the loading rate")
     x_beta = kt / slope
-    k0 = x_beta / (kt * math.exp(intercept * x_beta / kt)) \
-        if intercept < 700.0 * kt / x_beta else None
+    k0 = (
+        x_beta / (kt * math.exp(intercept * x_beta / kt))
+        if intercept < 700.0 * kt / x_beta
+        else None
+    )
     if k0 is None or k0 <= 0.0 or not np.isfinite(k0):
-        raise SmfsError(KINETIC_DOMAIN,
-                        "unphysical k0 from the most-probable-force intercept")
+        raise SmfsError(KINETIC_DOMAIN, "unphysical k0 from the most-probable-force intercept")
     # bounded likelihood check: the profile optimum at the x_beta bound
     # indicates the zero-distance degeneracy
     best_nll = float("inf")
@@ -227,27 +243,35 @@ def fit_bell_evans(
         warnings.append(
             "x_beta at the physical bound: the Bell-Evans likelihood is "
             "degenerate toward x_beta -> 0; the F* regression is the "
-            "well-posed estimator (IDENTIFIABILITY_LIMITED)")
+            "well-posed estimator (IDENTIFIABILITY_LIMITED)"
+        )
     nll_at_fit = _bell_nll(np.array([k0, x_beta]), rates, forces, temperature)
-    mpf = (KB * temperature / x_beta
-           * math.log(np.median(rates) * x_beta / (k0 * KB * temperature))) \
-        if k0 * KB * temperature > 0 else None
+    mpf = (
+        (KB * temperature / x_beta * math.log(np.median(rates) * x_beta / (k0 * KB * temperature)))
+        if k0 * KB * temperature > 0
+        else None
+    )
     if mpf is not None and not np.isfinite(mpf):
         mpf = None
     return DynamicForceSpectroscopyFitResult(
-        kinetic_model="bell_evans", success=True,
+        kinetic_model="bell_evans",
+        success=True,
         parameters={"k0": k0, "x_beta": x_beta},
         parameter_units={"k0": "1/s", "x_beta": "m"},
-        n_events=int(rates.size), negative_log_likelihood=nll_at_fit,
+        n_events=int(rates.size),
+        negative_log_likelihood=nll_at_fit,
         most_probable_force_estimator=mpf,
-        included_rates=rates, included_forces=forces, warnings=tuple(warnings),
-        diagnostics={"rate_span": rate_span,
-                     "estimator": "most-probable-force F* = (k_B T/x_beta) "
-                                  "ln(r x_beta/(k0 k_B T))",
-                     "likelihood_best_nll": best_nll,
-                     "likelihood_well_posed": bool(
-                         -25.33 + 0.5 < math.log(x_beta) < -16.12 - 0.5)},
-        provenance={"kinetic_model": "bell_evans", "temperature": temperature})
+        included_rates=rates,
+        included_forces=forces,
+        warnings=tuple(warnings),
+        diagnostics={
+            "rate_span": rate_span,
+            "estimator": "most-probable-force F* = (k_B T/x_beta) " "ln(r x_beta/(k0 k_B T))",
+            "likelihood_best_nll": best_nll,
+            "likelihood_well_posed": bool(-25.33 + 0.5 < math.log(x_beta) < -16.12 - 0.5),
+        },
+        provenance={"kinetic_model": "bell_evans", "temperature": temperature},
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -255,41 +279,56 @@ def fit_bell_evans(
 # ---------------------------------------------------------------------------
 
 
-def dhs_log_rate(force: float, k0: float, x_beta: float, dg: float, nu: float,
-                 temperature: float) -> float:
+def dhs_log_rate(
+    force: float, k0: float, x_beta: float, dg: float, nu: float, temperature: float
+) -> float:
     """Log of the DHS rate (stable across the parameter sweep)."""
     kt = KB * temperature
     z = 1.0 - nu * force * x_beta / dg
     if z <= 0.0:
         return float("inf")
-    return (math.log(k0) + (1.0 / nu - 1.0) * math.log(z)
-            + dg * (1.0 - z ** (1.0 / nu)) / kt)
+    return math.log(k0) + (1.0 / nu - 1.0) * math.log(z) + dg * (1.0 - z ** (1.0 / nu)) / kt
 
 
-def dhs_rate(force: float, k0: float, x_beta: float, dg: float, nu: float,
-             temperature: float) -> float:
+def dhs_rate(
+    force: float, k0: float, x_beta: float, dg: float, nu: float, temperature: float
+) -> float:
     """DHS force-dependent rate (1/s)."""
     log_k = dhs_log_rate(force, k0, x_beta, dg, nu, temperature)
     return float("inf") if not np.isfinite(log_k) else math.exp(min(log_k, 700.0))
 
 
-def dhs_log_pdf(force: float, rate: float, k0: float, x_beta: float, dg: float,
-                nu: float, temperature: float, grid_n: int = 200) -> float:
+def dhs_log_pdf(
+    force: float,
+    rate: float,
+    k0: float,
+    x_beta: float,
+    dg: float,
+    nu: float,
+    temperature: float,
+    grid_n: int = 200,
+) -> float:
     """Log of p(F; r) = k(F)/r exp(-(1/r) int_0^F k(f) df)."""
     log_k = dhs_log_rate(force, k0, x_beta, dg, nu, temperature)
     if not np.isfinite(log_k):
         return float("-inf")
     grid = np.linspace(0.0, force, grid_n)
-    kv = np.array([dhs_rate(float(g), k0, x_beta, dg, nu, temperature)
-                   for g in grid])
+    kv = np.array([dhs_rate(float(g), k0, x_beta, dg, nu, temperature) for g in grid])
     if not np.isfinite(kv).all():
         return float("-inf")
     integral = float(np.trapezoid(kv, grid))
     return log_k - math.log(rate) - integral / rate
 
 
-def dhs_pdf(force: np.ndarray, rate: float, k0: float, x_beta: float, dg: float,
-            nu: float, temperature: float) -> np.ndarray:
+def dhs_pdf(
+    force: np.ndarray,
+    rate: float,
+    k0: float,
+    x_beta: float,
+    dg: float,
+    nu: float,
+    temperature: float,
+) -> np.ndarray:
     """p(F; r) evaluated in log space for stability."""
     out = np.empty(force.size, dtype=np.float64)
     for i, fi in enumerate(force):
@@ -298,8 +337,9 @@ def dhs_pdf(force: np.ndarray, rate: float, k0: float, x_beta: float, dg: float,
     return out
 
 
-def _dhs_nll(params: np.ndarray, rates: np.ndarray, forces: np.ndarray,
-             nu: float, temperature: float) -> float:
+def _dhs_nll(
+    params: np.ndarray, rates: np.ndarray, forces: np.ndarray, nu: float, temperature: float
+) -> float:
     k0, x_beta, dg = float(params[0]), float(params[1]), float(params[2])
     if k0 <= 0.0 or x_beta <= 0.0 or dg <= 0.0:
         return 1e300
@@ -314,8 +354,9 @@ def _dhs_nll(params: np.ndarray, rates: np.ndarray, forces: np.ndarray,
     return total
 
 
-def _dhs_profile(x_beta: float, dg: float, rates: np.ndarray, forces: np.ndarray,
-                 nu: float, temperature: float) -> tuple[float, float]:
+def _dhs_profile(
+    x_beta: float, dg: float, rates: np.ndarray, forces: np.ndarray, nu: float, temperature: float
+) -> tuple[float, float]:
     """Profile likelihood over (x_beta, dG) with the closed-form k0:
     the nll is convex in k0 with the optimum k0 = n / sum(J_i/r_i) where
     J_i = int_0^{F_i} (1-z(f))^(1/nu - 1) exp(dG(1-z(f)^(1/nu))/k_BT) df
@@ -329,8 +370,7 @@ def _dhs_profile(x_beta: float, dg: float, rates: np.ndarray, forces: np.ndarray
     log_h = 0.0
     for rate, fi in zip(rates, forces, strict=True):
         grid = np.linspace(0.0, float(fi), 120)
-        logk = np.array([dhs_log_rate(float(g), 1.0, x_beta, dg, nu, temperature)
-                         for g in grid])
+        logk = np.array([dhs_log_rate(float(g), 1.0, x_beta, dg, nu, temperature) for g in grid])
         if not np.isfinite(logk).all():
             return 1e300, 0.0
         j = float(np.trapezoid(np.exp(np.minimum(logk, 700.0)), grid))
@@ -373,19 +413,18 @@ def fit_dudko_hummer_szabo(
     if temperature <= 0.0:
         raise SmfsError(INVALID_MODEL_PARAMETER, "temperature must be positive")
     if nu not in (0.5, 2.0 / 3.0):
-        raise SmfsError(INVALID_MODEL_PARAMETER,
-                        "DHS nu must be 1/2 (cusp) or 2/3 (linear-cubic)")
+        raise SmfsError(INVALID_MODEL_PARAMETER, "DHS nu must be 1/2 (cusp) or 2/3 (linear-cubic)")
     if np.any(rates <= 0.0) or np.any(forces <= 0.0):
         raise SmfsError(INVALID_MODEL_PARAMETER, "rates/forces must be positive")
     if rates.size < 5:
         raise SmfsError(INSUFFICIENT_EVENTS, "at least 5 events required for DHS")
-    warnings: list[str] = [
-        "the fitted DHS energy landscape is not claimed to be physically unique"]
+    warnings: list[str] = ["the fitted DHS energy landscape is not claimed to be physically unique"]
     rate_span = float(np.max(rates) / np.min(rates))
     if rate_span < 10.0:
         warnings.append(
             f"loading-rate range spans only {rate_span:.1f}x: dG is weakly "
-            "identifiable (IDENTIFIABILITY_LIMITED)")
+            "identifiable (IDENTIFIABILITY_LIMITED)"
+        )
     best_nll = float("inf")
     best_params: tuple[float, float, float] | None = None
     for log_x in np.linspace(-25.33, -16.12, 41):
@@ -399,32 +438,51 @@ def fit_dudko_hummer_szabo(
     if best_params is None or not np.isfinite(best_nll):
         raise SmfsError(OPTIMIZATION_FAILED, "DHS likelihood failed")
     from scipy.optimize import minimize as _min
+
     ref = _min(
-        lambda p: _dhs_nll(np.array([math.exp(min(max(p[0], -100.0), 100.0)),
-                                     math.exp(min(max(p[1], -100.0), 100.0)),
-                                     math.exp(min(max(p[2], -100.0), 100.0))]),
-                           rates, forces, nu, temperature),
-        x0=[math.log(best_params[0]), math.log(best_params[1]),
-            math.log(best_params[2])],
-        method="Nelder-Mead", options={"maxiter": 4000, "xatol": 1e-10,
-                                       "fatol": 1e-12})
+        lambda p: _dhs_nll(
+            np.array(
+                [
+                    math.exp(min(max(p[0], -100.0), 100.0)),
+                    math.exp(min(max(p[1], -100.0), 100.0)),
+                    math.exp(min(max(p[2], -100.0), 100.0)),
+                ]
+            ),
+            rates,
+            forces,
+            nu,
+            temperature,
+        ),
+        x0=[math.log(best_params[0]), math.log(best_params[1]), math.log(best_params[2])],
+        method="Nelder-Mead",
+        options={"maxiter": 4000, "xatol": 1e-10, "fatol": 1e-12},
+    )
     if ref.fun < best_nll and np.isfinite(ref.fun):
         best_nll = float(ref.fun)
-        best_params = (math.exp(float(ref.x[0])), math.exp(float(ref.x[1])),
-                       math.exp(float(ref.x[2])))
+        best_params = (
+            math.exp(float(ref.x[0])),
+            math.exp(float(ref.x[1])),
+            math.exp(float(ref.x[2])),
+        )
     k0, x_beta, dg = best_params
     return DynamicForceSpectroscopyFitResult(
-        kinetic_model="dudko_hummer_szabo", success=True,
+        kinetic_model="dudko_hummer_szabo",
+        success=True,
         parameters={"k0": k0, "x_beta": x_beta, "dG": dg, "nu": nu},
         parameter_units={"k0": "1/s", "x_beta": "m", "dG": "J", "nu": "dimensionless"},
-        n_events=int(rates.size), negative_log_likelihood=best_nll,
+        n_events=int(rates.size),
+        negative_log_likelihood=best_nll,
         most_probable_force_estimator=None,
-        included_rates=rates, included_forces=forces, warnings=tuple(warnings),
-        diagnostics={"rate_span": rate_span, "shape": "cusp" if nu == 0.5
-                     else "linear-cubic",
-                     "bell_limit": "nu -> 0 recovers k(F) = k0 exp(F x_beta/k_B T)"},
-        provenance={"kinetic_model": "dudko_hummer_szabo", "nu": nu,
-                    "temperature": temperature})
+        included_rates=rates,
+        included_forces=forces,
+        warnings=tuple(warnings),
+        diagnostics={
+            "rate_span": rate_span,
+            "shape": "cusp" if nu == 0.5 else "linear-cubic",
+            "bell_limit": "nu -> 0 recovers k(F) = k0 exp(F x_beta/k_B T)",
+        },
+        provenance={"kinetic_model": "dudko_hummer_szabo", "nu": nu, "temperature": temperature},
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -500,8 +558,9 @@ def estimate_force_clamp_survival(
     rate_err = None
     warnings: list[str] = []
     if median is None:
-        warnings.append("median lifetime undefined: survival never reaches 0.5 "
-                        "(UNDEFINED_MEDIAN)")
+        warnings.append(
+            "median lifetime undefined: survival never reaches 0.5 " "(UNDEFINED_MEDIAN)"
+        )
     if fit_exponential_rate:
         n_events = int(np.sum(ce_s == 0.0))
         total_time = float(np.sum(lt_s))
@@ -511,10 +570,22 @@ def estimate_force_clamp_survival(
         else:
             warnings.append("exponential rate undefined: no uncensored events")
     return ForceClampSurvivalResult(
-        force_level=force_level, temperature=temperature, lifetimes=lt, censored=ce,
-        km_times=km_times, survival_probability=surv_p, at_risk=at_risk_arr,
-        n_events=int(np.sum(ce_s == 0.0)), n_censored=int(np.sum(ce_s == 1.0)),
-        median_lifetime=median, exponential_rate=rate, exponential_rate_error=rate_err,
+        force_level=force_level,
+        temperature=temperature,
+        lifetimes=lt,
+        censored=ce,
+        km_times=km_times,
+        survival_probability=surv_p,
+        at_risk=at_risk_arr,
+        n_events=int(np.sum(ce_s == 0.0)),
+        n_censored=int(np.sum(ce_s == 1.0)),
+        median_lifetime=median,
+        exponential_rate=rate,
+        exponential_rate_error=rate_err,
         warnings=tuple(warnings),
-        provenance={"estimator": "kaplan_meier", "tie_order": "events before censors",
-                    "exponential_rate_mle": fit_exponential_rate})
+        provenance={
+            "estimator": "kaplan_meier",
+            "tie_order": "events before censors",
+            "exponential_rate_mle": fit_exponential_rate,
+        },
+    )

@@ -15,13 +15,18 @@ from spmkit.core.models.spmdata import SPMChannel
 
 def _channel(data: np.ndarray, name: str = "stepblock") -> SPMChannel:
     return SPMChannel(
-        name=name, data=np.asarray(data, dtype=np.float64), unit="nm",
-        x_range=float(data.shape[1]), y_range=float(data.shape[0]),
-        metadata={"Dim1Name": "Y", "custom": 11})
+        name=name,
+        data=np.asarray(data, dtype=np.float64),
+        unit="nm",
+        x_range=float(data.shape[1]),
+        y_range=float(data.shape[0]),
+        metadata={"Dim1Name": "Y", "custom": 11},
+    )
 
 
-def _field(rows: int, cols: int, band_row: int | None = None,
-           band_value: float = 5.0) -> np.ndarray:
+def _field(
+    rows: int, cols: int, band_row: int | None = None, band_value: float = 5.0
+) -> np.ndarray:
     field = np.zeros((rows, cols), dtype=np.float64)
     if band_row is not None:
         field[band_row:, :] = band_value
@@ -69,15 +74,13 @@ def test_alternating_offsets() -> None:
 
 def test_left_to_right() -> None:
     field = _field(16, 16, 8, 5.0)
-    out = gwydion_step_block_correction(_channel(field),
-                                        direction="left_to_right")
+    out = gwydion_step_block_correction(_channel(field), direction="left_to_right")
     assert np.array_equal(_bits(out.data), _bits(np.zeros((16, 16))))
 
 
 def test_right_to_left() -> None:
     field = _field(16, 16, 8, 5.0)
-    out = gwydion_step_block_correction(_channel(field),
-                                        direction="right_to_left")
+    out = gwydion_step_block_correction(_channel(field), direction="right_to_left")
     assert np.array_equal(_bits(out.data), _bits(np.zeros((16, 16))))
 
 
@@ -151,20 +154,17 @@ def test_non_finite_rejected() -> None:
 
 def test_threshold_below_minimum() -> None:
     with pytest.raises(ValueError):
-        gwydion_step_block_correction(_channel(np.zeros((8, 8))),
-                                      threshold=0.05)
+        gwydion_step_block_correction(_channel(np.zeros((8, 8))), threshold=0.05)
 
 
 def test_threshold_above_maximum() -> None:
     with pytest.raises(ValueError):
-        gwydion_step_block_correction(_channel(np.zeros((8, 8))),
-                                      threshold=10.5)
+        gwydion_step_block_correction(_channel(np.zeros((8, 8))), threshold=10.5)
 
 
 def test_invalid_direction() -> None:
     with pytest.raises(ValueError):
-        gwydion_step_block_correction(_channel(np.zeros((8, 8))),
-                                      direction="top_to_bottom")
+        gwydion_step_block_correction(_channel(np.zeros((8, 8))), direction="top_to_bottom")
 
 
 def test_input_channel_non_mutation() -> None:

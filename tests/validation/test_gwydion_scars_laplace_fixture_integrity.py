@@ -24,26 +24,56 @@ JSON_PATH = FIXTURE_DIR / "scars_laplace_reference.json"
 NPZ_PATH = FIXTURE_DIR / "scars_laplace_reference.npz"
 
 MARK_CASES = [
-    "C01_constant_field", "C02_positive_hard_seeded", "C03_negative_hard_seeded",
-    "C04_both_polarities", "C05_soft_only_no_seed", "C06_hard_with_soft_shoulder",
-    "C07_detached_soft_run", "C08_width_exactly_max", "C09_width_max_plus_one",
-    "C10_length_exactly_min", "C11_length_min_minus_one", "C12_run_touching_edges",
-    "C13_first_last_row", "C14_adjacent_bands_fmax", "C15_min_dims",
-    "C16_threshold_sanitize", "C17_existing_replace", "C18_existing_union",
-    "C19_existing_intersection", "C20_no_detection_existing",
-    "C20b_no_detection_existing_union", "C21_signed_zero",
+    "C01_constant_field",
+    "C02_positive_hard_seeded",
+    "C03_negative_hard_seeded",
+    "C04_both_polarities",
+    "C05_soft_only_no_seed",
+    "C06_hard_with_soft_shoulder",
+    "C07_detached_soft_run",
+    "C08_width_exactly_max",
+    "C09_width_max_plus_one",
+    "C10_length_exactly_min",
+    "C11_length_min_minus_one",
+    "C12_run_touching_edges",
+    "C13_first_last_row",
+    "C14_adjacent_bands_fmax",
+    "C15_min_dims",
+    "C16_threshold_sanitize",
+    "C17_existing_replace",
+    "C18_existing_union",
+    "C19_existing_intersection",
+    "C20_no_detection_existing",
+    "C20b_no_detection_existing_union",
+    "C21_signed_zero",
 ]
 LAPLACE_CASES = [
-    "L01_empty_mask", "L02_one_interior_pixel", "L03_one_edge_pixel",
-    "L04_one_corner_pixel", "L05_horizontal_corridor", "L06_vertical_corridor",
-    "L07_three_pixel_L", "L08_interior_rectangle", "L09_two_components",
-    "L10_edge_touching", "L11_corner_touching", "L12_entire_masked_row",
-    "L13_whole_field_mask", "L14_constant_boundary", "L15_calibration_independence",
-    "L16_mask_predicate", "L17_signed_zero", "L18_degenerate",
+    "L01_empty_mask",
+    "L02_one_interior_pixel",
+    "L03_one_edge_pixel",
+    "L04_one_corner_pixel",
+    "L05_horizontal_corridor",
+    "L06_vertical_corridor",
+    "L07_three_pixel_L",
+    "L08_interior_rectangle",
+    "L09_two_components",
+    "L10_edge_touching",
+    "L11_corner_touching",
+    "L12_entire_masked_row",
+    "L13_whole_field_mask",
+    "L14_constant_boundary",
+    "L15_calibration_independence",
+    "L16_mask_predicate",
+    "L17_signed_zero",
+    "L18_degenerate",
 ]
 REMOVE_CASES = [
-    "R01_positive", "R02_negative", "R03_both", "R04_no_detection",
-    "R05_edge_touching", "R06_long_wide",
+    "R01_positive",
+    "R02_negative",
+    "R03_both",
+    "R04_no_detection",
+    "R05_edge_touching",
+    "R06_long_wide",
 ]
 ALL_CASES = MARK_CASES + LAPLACE_CASES + REMOVE_CASES
 
@@ -83,8 +113,7 @@ def test_fixture_hashes_inventory_and_arrays() -> None:
     for case in manifest["cases"]:
         for info in case["arrays"].values():
             array = arrays[info["key"]]
-            assert _array_hash(array) == manifest["fixture"]["array_hashes"][
-                info["key"]]
+            assert _array_hash(array) == manifest["fixture"]["array_hashes"][info["key"]]
             if info["dims"] is not None:
                 assert array.shape == tuple(info["dims"])
             assert array.size == info["count"]
@@ -124,18 +153,21 @@ def test_profile_identity_and_evidence_terminology() -> None:
     lib = probe["shared_library"]
     assert lib["version"] == "2.71"
     assert len(lib["sha256"]) == 64
-    assert lib["sha256"] == manifest["profiles"][PROFILE][
-        "installed_library_sha256"]
+    assert lib["sha256"] == manifest["profiles"][PROFILE]["installed_library_sha256"]
     # sanitizer scope limitation must be explicit
-    assert "NOT REBUILT WITH SANITIZER INSTRUMENTATION" in probe[
-        "sanitizer_scope"].upper()
+    assert "NOT REBUILT WITH SANITIZER INSTRUMENTATION" in probe["sanitizer_scope"].upper()
     assert "not claimed sanitizer-clean" in probe["sanitizer_scope"]
     profile = manifest["profiles"][PROFILE]
     frozen = profile["frozen_source_hashes"]
-    for rel in ["modules/process/scars.c", "modules/process/laplace.c",
-                "libprocess/correct.c", "libprocess/correct-laplace.c",
-                "libprocess/grains.c", "libprocess/arithmetic.c",
-                "libprocess/datafield.c"]:
+    for rel in [
+        "modules/process/scars.c",
+        "modules/process/laplace.c",
+        "libprocess/correct.c",
+        "libprocess/correct-laplace.c",
+        "libprocess/grains.c",
+        "libprocess/arithmetic.c",
+        "libprocess/datafield.c",
+    ]:
         assert rel in frozen
         assert len(frozen[rel]) == 64
 
@@ -173,8 +205,7 @@ def test_non_claims_present() -> None:
         "no frozen universal laplace parity tolerance",
     ]:
         assert fragment in joined, fragment
-    policy = " ".join(
-        manifest["evidence"]["deliberate_spmkit_policy_differences"]).lower()
+    policy = " ".join(manifest["evidence"]["deliberate_spmkit_policy_differences"]).lower()
     assert "non-finite" in policy
     assert "gui semantics" in policy
     assert len(manifest["evidence"]["known_source_behaviours"]) >= 5
@@ -189,30 +220,44 @@ def test_mark_masks_binary_and_inputs_unmutated() -> None:
         if case["family"] != "mark":
             continue
         cid = case["case_identifier"]
-        mask_label = ("module_mask" if cid.split("_")[0] in (
-            "C17", "C18", "C19", "C20", "C20b") else "kernel_mask")
+        mask_label = (
+            "module_mask"
+            if cid.split("_")[0] in ("C17", "C18", "C19", "C20", "C20b")
+            else "kernel_mask"
+        )
         mask = arrays[f"{cid}_probe_{mask_label}"]
         assert set(np.unique(mask)) <= {0.0, 1.0}
         assert np.array_equal(
             arrays[f"{cid}_probe_input"].view(np.uint64),
-            arrays[f"{cid}_probe_input_after"].view(np.uint64))
+            arrays[f"{cid}_probe_input_after"].view(np.uint64),
+        )
         nonzero = case["scalars"] and arrays[f"{cid}_probe_{mask_label}"].size
         assert nonzero > 0
     # positive cases effective, zero cases empty
-    positive = {"C02", "C03", "C04", "C06", "C08", "C10", "C12", "C14",
-                "C15", "C16", "C17", "C18", "C19", "C20b"}
+    positive = {
+        "C02",
+        "C03",
+        "C04",
+        "C06",
+        "C08",
+        "C10",
+        "C12",
+        "C14",
+        "C15",
+        "C16",
+        "C17",
+        "C18",
+        "C19",
+        "C20b",
+    }
     zero = {"C01", "C05", "C07", "C09", "C11", "C13", "C20", "C21"}
     for cid in positive:
-        case = next(c for c in manifest["cases"]
-                    if c["case_identifier"].startswith(cid + "_"))
-        label = ("module_mask" if cid in ("C17", "C18", "C19", "C20", "C20b")
-                 else "kernel_mask")
+        case = next(c for c in manifest["cases"] if c["case_identifier"].startswith(cid + "_"))
+        label = "module_mask" if cid in ("C17", "C18", "C19", "C20", "C20b") else "kernel_mask"
         assert np.any(arrays[f"{case['case_identifier']}_probe_{label}"] == 1.0)
     for cid in zero:
-        case = next(c for c in manifest["cases"]
-                    if c["case_identifier"].startswith(cid + "_"))
-        label = ("module_mask" if cid in ("C17", "C18", "C19", "C20", "C20b")
-                 else "kernel_mask")
+        case = next(c for c in manifest["cases"] if c["case_identifier"].startswith(cid + "_"))
+        label = "module_mask" if cid in ("C17", "C18", "C19", "C20", "C20b") else "kernel_mask"
         assert not np.any(arrays[f"{case['case_identifier']}_probe_{label}"] == 1.0)
 
 
@@ -225,8 +270,7 @@ def test_laplace_unmasked_preservation_and_policies() -> None:
         if cid == "L15_calibration_independence":
             continue
         if cid == "L18_degenerate":
-            subs = ["L18a_1x1_masked", "L18b_1x1_unmasked", "L18c_1x5",
-                    "L18d_2x5_full", "L18e_5x1"]
+            subs = ["L18a_1x1_masked", "L18b_1x1_unmasked", "L18c_1x5", "L18d_2x5_full", "L18e_5x1"]
         else:
             subs = [None]
         for sub in subs:
@@ -234,19 +278,19 @@ def test_laplace_unmasked_preservation_and_policies() -> None:
             inp = arrays[f"{prefix}input"]
             mask = arrays[f"{prefix}input_mask"]
             cor = arrays[f"{prefix}corrected"]
-            changed = np.flatnonzero(
-                inp.view(np.uint64) != cor.view(np.uint64))
+            changed = np.flatnonzero(inp.view(np.uint64) != cor.view(np.uint64))
             for i in changed:
                 assert mask.ravel()[i] > 0.0
             assert np.array_equal(
-                mask.view(np.uint64),
-                arrays[f"{prefix}mask_after"].view(np.uint64))
+                mask.view(np.uint64), arrays[f"{prefix}mask_after"].view(np.uint64)
+            )
     # whole-field zero
     assert not np.any(arrays["L13_whole_field_mask_probe_corrected"] != 0.0)
     # empty mask unchanged
     assert np.array_equal(
         arrays["L01_empty_mask_probe_corrected"].view(np.uint64),
-        arrays["L01_empty_mask_probe_input"].view(np.uint64))
+        arrays["L01_empty_mask_probe_input"].view(np.uint64),
+    )
 
 
 def test_calibration_independence() -> None:
@@ -299,13 +343,16 @@ def test_remove_composition_identities() -> None:
         cid = case["case_identifier"]
         assert np.array_equal(
             arrays[f"{cid}_probe_temp_mask"].view(np.uint64),
-            arrays[f"{cid}_probe_standalone_mask"].view(np.uint64))
+            arrays[f"{cid}_probe_standalone_mask"].view(np.uint64),
+        )
         assert np.array_equal(
             arrays[f"{cid}_probe_temp_mask"].view(np.uint64),
-            arrays[f"{cid}_probe_temp_mask_after"].view(np.uint64))
+            arrays[f"{cid}_probe_temp_mask_after"].view(np.uint64),
+        )
         assert np.array_equal(
             arrays[f"{cid}_probe_corrected"].view(np.uint64),
-            arrays[f"{cid}_probe_standalone_corrected"].view(np.uint64))
+            arrays[f"{cid}_probe_standalone_corrected"].view(np.uint64),
+        )
         entry = manifest["per_case"][cid]
         assert entry["mask_identity"] is True
         assert entry["composition_identity"] is True
@@ -313,4 +360,5 @@ def test_remove_composition_identities() -> None:
     # no-detection case leaves the field unchanged
     assert np.array_equal(
         arrays["R04_no_detection_probe_corrected"].view(np.uint64),
-        arrays["R04_no_detection_probe_input"].view(np.uint64))
+        arrays["R04_no_detection_probe_input"].view(np.uint64),
+    )

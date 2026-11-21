@@ -30,8 +30,12 @@ JSON_PATH = FIXTURE_DIR / "scars_laplace_reference.json"
 NPZ_PATH = FIXTURE_DIR / "scars_laplace_reference.npz"
 
 REMOVE_CASES = [
-    "R01_positive", "R02_negative", "R03_both", "R04_no_detection",
-    "R05_edge_touching", "R06_long_wide",
+    "R01_positive",
+    "R02_negative",
+    "R03_both",
+    "R04_no_detection",
+    "R05_edge_touching",
+    "R06_long_wide",
 ]
 
 FROZEN_MAX_ABS = 1.7763568394002505e-15
@@ -47,8 +51,12 @@ def _bits(array: np.ndarray) -> np.ndarray:
 
 def _channel(data: np.ndarray) -> SPMChannel:
     return SPMChannel(
-        name="parity", data=np.asarray(data, dtype=np.float64), unit="nm",
-        x_range=float(data.shape[1]), y_range=float(data.shape[0]))
+        name="parity",
+        data=np.asarray(data, dtype=np.float64),
+        unit="nm",
+        x_range=float(data.shape[1]),
+        y_range=float(data.shape[0]),
+    )
 
 
 def _probe(case_id: str, label: str) -> np.ndarray:
@@ -90,9 +98,14 @@ def _metrics(probe: np.ndarray, out: np.ndarray) -> dict:
             zero_nonzero += 1
             continue
         max_ulp = max(max_ulp, abs(int(pb[i]) - int(ob[i])))
-    return {"bitwise": int(np.count_nonzero(pb == ob)),
-            "total": int(pb.size), "max_abs": max_abs, "max_ulp": max_ulp,
-            "signed_zero": signed_zero, "zero_nonzero": zero_nonzero}
+    return {
+        "bitwise": int(np.count_nonzero(pb == ob)),
+        "total": int(pb.size),
+        "max_abs": max_abs,
+        "max_ulp": max_ulp,
+        "signed_zero": signed_zero,
+        "zero_nonzero": zero_nonzero,
+    }
 
 
 def test_temporary_mask_bitwise_identity() -> None:
@@ -100,14 +113,14 @@ def test_temporary_mask_bitwise_identity() -> None:
         inp = _probe(case_id, "input")
         result = _gwydion_remove_scars_result(inp)
         assert np.array_equal(
-            _bits(result.temporary_mask),
-            _bits(_probe(case_id, "temp_mask"))), case_id
+            _bits(result.temporary_mask), _bits(_probe(case_id, "temp_mask"))
+        ), case_id
         assert np.array_equal(
-            _bits(result.temporary_mask),
-            _bits(_probe(case_id, "standalone_mask"))), case_id
+            _bits(result.temporary_mask), _bits(_probe(case_id, "standalone_mask"))
+        ), case_id
         assert np.array_equal(
-            _bits(result.temporary_mask),
-            _bits(_probe(case_id, "temp_mask_after"))), case_id
+            _bits(result.temporary_mask), _bits(_probe(case_id, "temp_mask_after"))
+        ), case_id
         assert not result.temporary_mask_mutation_evidence, case_id
 
 
@@ -119,8 +132,8 @@ def test_public_result_equals_explicit_composition() -> None:
         explicit = gwydion_interpolate_data_under_mask(_channel(inp), mask)
         assert np.array_equal(_bits(out.data), _bits(explicit.data)), case_id
         assert np.array_equal(
-            _bits(out.data), _bits(_gwydion_remove_scars_result(inp)
-                                   .corrected_field)), case_id
+            _bits(out.data), _bits(_gwydion_remove_scars_result(inp).corrected_field)
+        ), case_id
 
 
 def test_corrected_within_frozen_laplace_policy() -> None:
@@ -128,9 +141,14 @@ def test_corrected_within_frozen_laplace_policy() -> None:
     # zero, production values have magnitude at most ~1.739e-15, and the
     # independent mathematical reference is exactly zero; these transitions
     # satisfy the frozen absolute bound, not the finite-nonzero ULP bound
-    distribution = {"R01_positive": 16, "R02_negative": 16, "R03_both": 32,
-                    "R04_no_detection": 0, "R05_edge_touching": 16,
-                    "R06_long_wide": 48}
+    distribution = {
+        "R01_positive": 16,
+        "R02_negative": 16,
+        "R03_both": 32,
+        "R04_no_detection": 0,
+        "R05_edge_touching": 16,
+        "R06_long_wide": 48,
+    }
     total_zero_nonzero = 0
     for case_id in REMOVE_CASES:
         inp = _probe(case_id, "input")
@@ -139,19 +157,16 @@ def test_corrected_within_frozen_laplace_policy() -> None:
         metrics = _metrics(probe, out.data)
         # the compiled composition identity (standalone Laplace == Remove)
         # is frozen in the fixtures
-        assert np.array_equal(
-            _bits(_probe(case_id, "standalone_corrected")),
-            _bits(probe)), case_id
+        assert np.array_equal(_bits(_probe(case_id, "standalone_corrected")), _bits(probe)), case_id
         assert metrics["zero_nonzero"] == distribution[case_id], (
             f"{case_id}: zero/nonzero count "
-            f"{metrics['zero_nonzero']} != {distribution[case_id]}")
+            f"{metrics['zero_nonzero']} != {distribution[case_id]}"
+        )
         assert metrics["signed_zero"] == 0, case_id
         total_zero_nonzero += metrics["zero_nonzero"]
-        assert metrics["max_abs"] <= FROZEN_MAX_ABS, (
-            f"{case_id}: maxabs {metrics['max_abs']}")
+        assert metrics["max_abs"] <= FROZEN_MAX_ABS, f"{case_id}: maxabs {metrics['max_abs']}"
         # finite-nonzero ULP bound applies only to finite nonzero pairs
-        assert metrics["max_ulp"] <= FROZEN_MAX_ULP, (
-            f"{case_id}: maxulp {metrics['max_ulp']}")
+        assert metrics["max_ulp"] <= FROZEN_MAX_ULP, f"{case_id}: maxulp {metrics['max_ulp']}"
     assert total_zero_nonzero == 128
 
 
@@ -159,8 +174,7 @@ def test_no_detection_bitwise_unchanged() -> None:
     inp = _probe("R04_no_detection", "input")
     out = gwydion_remove_scars(_channel(inp))
     assert np.array_equal(_bits(out.data), _bits(inp))
-    assert np.array_equal(_bits(out.data), _bits(_probe("R04_no_detection",
-                                                        "corrected")))
+    assert np.array_equal(_bits(out.data), _bits(_probe("R04_no_detection", "corrected")))
 
 
 def test_input_non_mutation() -> None:

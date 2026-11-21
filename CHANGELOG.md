@@ -1,5 +1,9 @@
 # Changelog
 
+## Ecosystem consolidation (2026-11-21, 0.1.5.dev0)
+
+Recovered Gwyddion leveling/filter capabilities, force foundation/mechanics/viscoelasticity/SMFS/acquisition work and JPK ForceScan 2 calibration from the local integration history. Restored CLI execution manifests with synthetic coverage and public-fixture licensing. Added portable installation guidance and reproducible development constraints. No general physical validation claim.
+
 Todos los cambios notables de este proyecto se documentan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es/1.1.0/) y
 el versionado es [SemVer](https://semver.org/lang/es/).

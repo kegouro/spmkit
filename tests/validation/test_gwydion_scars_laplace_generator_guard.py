@@ -61,43 +61,42 @@ def _valid_mark_stdout(count: int = 80, case: str = "C01_constant_field") -> str
 
 def test_missing_element_rejected() -> None:
     text = _valid_mark_stdout(80).replace(
-        "C01_constant_field_input_79=0x0p+0 0x0000000000000000\n", "")
+        "C01_constant_field_input_79=0x0p+0 0x0000000000000000\n", ""
+    )
     problems = _parse("C01_constant_field", text)
     assert any("declared count 80 but 79 elements" in p for p in problems)
 
 
 def test_extra_element_rejected() -> None:
-    text = _valid_mark_stdout(80) + (
-        "C01_constant_field_input_80=0x0p+0 0x0000000000000000\n")
+    text = _valid_mark_stdout(80) + ("C01_constant_field_input_80=0x0p+0 0x0000000000000000\n")
     problems = _parse("C01_constant_field", text)
     assert any("declared count 80 but 81 elements" in p for p in problems)
 
 
 def test_duplicate_index_rejected() -> None:
-    text = _valid_mark_stdout(80) + (
-        "C01_constant_field_input_5=0x0p+0 0x0000000000000000\n")
+    text = _valid_mark_stdout(80) + ("C01_constant_field_input_5=0x0p+0 0x0000000000000000\n")
     problems = _parse("C01_constant_field", text)
     assert any("duplicate indices" in p for p in problems)
 
 
 def test_negative_index_rejected() -> None:
-    text = _valid_mark_stdout(80) + (
-        "C01_constant_field_input_-1=0x0p+0 0x0000000000000000\n")
+    text = _valid_mark_stdout(80) + ("C01_constant_field_input_-1=0x0p+0 0x0000000000000000\n")
     problems = _parse("C01_constant_field", text)
     assert any("malformed element line" in p for p in problems)
 
 
 def test_non_contiguous_index_rejected() -> None:
     text = _valid_mark_stdout(80).replace(
-        "C01_constant_field_input_40=0x0p+0 0x0000000000000000\n", "")
+        "C01_constant_field_input_40=0x0p+0 0x0000000000000000\n", ""
+    )
     problems = _parse("C01_constant_field", text)
     assert any("indices not exactly range(80)" in p for p in problems)
 
 
 def test_dimension_count_mismatch_rejected() -> None:
     text = _valid_mark_stdout(80).replace(
-        "C01_constant_field_input_dims=10x8",
-        "C01_constant_field_input_dims=10x9")
+        "C01_constant_field_input_dims=10x8", "C01_constant_field_input_dims=10x9"
+    )
     problems = _parse("C01_constant_field", text)
     assert any("dims (10, 9) inconsistent with count 80" in p for p in problems)
 
@@ -105,15 +104,16 @@ def test_dimension_count_mismatch_rejected() -> None:
 def test_malformed_hex_rejected() -> None:
     text = _valid_mark_stdout(80).replace(
         "C01_constant_field_input_0=0x0p+0 0x0000000000000000",
-        "C01_constant_field_input_0=0x0p 0x0000000000000000")
+        "C01_constant_field_input_0=0x0p 0x0000000000000000",
+    )
     problems = _parse("C01_constant_field", text)
     assert any("malformed hex" in p for p in problems)
 
 
 def test_missing_bits_rejected() -> None:
     text = _valid_mark_stdout(80).replace(
-        "C01_constant_field_input_0=0x0p+0 0x0000000000000000",
-        "C01_constant_field_input_0=0x0p+0")
+        "C01_constant_field_input_0=0x0p+0 0x0000000000000000", "C01_constant_field_input_0=0x0p+0"
+    )
     problems = _parse("C01_constant_field", text)
     assert any("lacks hex+bits pair" in p for p in problems)
 
@@ -121,7 +121,8 @@ def test_missing_bits_rejected() -> None:
 def test_hex_bits_disagreement_rejected() -> None:
     text = _valid_mark_stdout(80).replace(
         "C01_constant_field_input_0=0x0p+0 0x0000000000000000",
-        "C01_constant_field_input_0=0x1p+0 0x0000000000000000")
+        "C01_constant_field_input_0=0x1p+0 0x0000000000000000",
+    )
     problems = _parse("C01_constant_field", text)
     assert any("hex/bits disagreement" in p for p in problems)
 
@@ -129,14 +130,16 @@ def test_hex_bits_disagreement_rejected() -> None:
 def test_signed_zero_disagreement_rejected() -> None:
     text = _valid_mark_stdout(80).replace(
         "C01_constant_field_input_1=0x0p+0 0x0000000000000000",
-        "C01_constant_field_input_1=-0x0p+0 0x0000000000000000")
+        "C01_constant_field_input_1=-0x0p+0 0x0000000000000000",
+    )
     problems = _parse("C01_constant_field", text)
     assert any("positive-zero sign disagreement" in p for p in problems)
 
 
 def test_scalar_without_bits_rejected() -> None:
     text = _valid_mark_stdout(80).replace(
-        "C01_constant_field_threshold_high_bits=0x3fe54fdf3b645a1d\n", "")
+        "C01_constant_field_threshold_high_bits=0x3fe54fdf3b645a1d\n", ""
+    )
     problems = _parse("C01_constant_field", text)
     assert any("has hex but no bits" in p for p in problems)
 
@@ -148,8 +151,7 @@ def test_unknown_key_rejected() -> None:
 
 
 def test_duplicate_scalar_rejected() -> None:
-    text = _valid_mark_stdout(80) + (
-        "C01_constant_field_threshold_high_hex=0x1p-2\n")
+    text = _valid_mark_stdout(80) + ("C01_constant_field_threshold_high_hex=0x1p-2\n")
     problems = _parse("C01_constant_field", text)
     assert any("duplicate scalar hex" in p for p in problems)
 
@@ -168,6 +170,7 @@ def test_malformed_run_rejected() -> None:
 def _requires_evidence():
     if not EVIDENCE.is_dir():
         import pytest
+
         pytest.skip("compiled campaign evidence not present")
 
 
@@ -198,9 +201,11 @@ def test_campaign_level_guards() -> None:
     # source hash mismatch
     bad = _copy_evidence()
     target = bad / "normal" / "C01_constant_field.stdout"
-    target.write_text(target.read_text().replace(
-        "C01_constant_field_input_0=0x1p+0",
-        "C01_constant_field_input_0=0x1.0000000000001p+0"))
+    target.write_text(
+        target.read_text().replace(
+            "C01_constant_field_input_0=0x1p+0", "C01_constant_field_input_0=0x1.0000000000001p+0"
+        )
+    )
     problems = _run_verify(bad)
     assert any("normal/sanitized stdout differ" in p for p in problems)
     shutil.rmtree(bad)
@@ -222,7 +227,8 @@ def test_campaign_level_guards() -> None:
     # sanitizer finding
     bad = _copy_evidence()
     (bad / "sanitized" / "C02_positive_hard_seeded.stderr").write_text(
-        "ERROR: AddressSanitizer: heap-use-after-free\n")
+        "ERROR: AddressSanitizer: heap-use-after-free\n"
+    )
     problems = _run_verify(bad)
     assert any("sanitizer stderr" in p for p in problems)
     shutil.rmtree(bad)
@@ -231,8 +237,7 @@ def test_campaign_level_guards() -> None:
     bad = _copy_evidence()
     ident = bad / "source-identity.txt"
     text = ident.read_text()
-    ident.write_text(text.replace(
-        text.splitlines()[0][:64], "0" * 64, 1))
+    ident.write_text(text.replace(text.splitlines()[0][:64], "0" * 64, 1))
     problems = _run_verify(bad)
     assert any("source hash mismatch" in p for p in problems)
     shutil.rmtree(bad)
@@ -252,19 +257,19 @@ def test_campaign_level_guards() -> None:
     # incomplete SHA256SUMS
     bad = _copy_evidence()
     sums = bad / "SHA256SUMS"
-    keep = [ln for ln in sums.read_text().splitlines()
-            if "normal/C01_constant_field." not in ln]
+    keep = [ln for ln in sums.read_text().splitlines() if "normal/C01_constant_field." not in ln]
     sums.write_text("\n".join(keep) + "\n")
     problems = _run_verify(bad)
-    assert any("SHA256SUMS missing normal/C01_constant_field" in p
-               for p in problems)
+    assert any("SHA256SUMS missing normal/C01_constant_field" in p for p in problems)
     shutil.rmtree(bad)
 
     # wrong evidence profile
     bad = _copy_evidence()
     (bad / "normal" / "C03_negative_hard_seeded.stdout").write_text(
-        (bad / "normal" / "C03_negative_hard_seeded.stdout").read_text().replace(
-            gen.PROBE_PROFILE, "BOGUS_PROFILE"))
+        (bad / "normal" / "C03_negative_hard_seeded.stdout")
+        .read_text()
+        .replace(gen.PROBE_PROFILE, "BOGUS_PROFILE")
+    )
     problems = _run_verify(bad)
     assert any("wrong profile" in p for p in problems)
     shutil.rmtree(bad)
@@ -284,17 +289,18 @@ def test_deterministic_regeneration() -> None:
     _requires_evidence()
     import hashlib
     import tempfile
+
     with tempfile.TemporaryDirectory() as tmp:
         out = Path(tmp)
         gen.main(out_dir=out)
-        new_json = hashlib.sha256(
-            (out / "scars_laplace_reference.json").read_bytes()).hexdigest()
-        new_npz = hashlib.sha256(
-            (out / "scars_laplace_reference.npz").read_bytes()).hexdigest()
+        new_json = hashlib.sha256((out / "scars_laplace_reference.json").read_bytes()).hexdigest()
+        new_npz = hashlib.sha256((out / "scars_laplace_reference.npz").read_bytes()).hexdigest()
         old_json = hashlib.sha256(
-            (FIXTURE_DIR / "scars_laplace_reference.json").read_bytes()).hexdigest()
+            (FIXTURE_DIR / "scars_laplace_reference.json").read_bytes()
+        ).hexdigest()
         old_npz = hashlib.sha256(
-            (FIXTURE_DIR / "scars_laplace_reference.npz").read_bytes()).hexdigest()
+            (FIXTURE_DIR / "scars_laplace_reference.npz").read_bytes()
+        ).hexdigest()
         assert new_json == old_json, "manifest regeneration not deterministic"
         assert new_npz == old_npz, "npz regeneration not deterministic"
 
@@ -303,12 +309,12 @@ def test_generator_never_uses_oracles_for_expected_values() -> None:
     """The generator must not derive expected outputs from the oracles:
     oracles are only used for the reconciliation metrics."""
     import inspect
+
     source = inspect.getsource(gen)
     # oracle imports happen inside the compare functions
     assert "oracle_mark_scars" in source
     assert "oracle_laplace_discrete" in source
     assert "oracle_remove_scars" in source
     # no fixture reading inside the generator
-    assert "reference.json" not in source.replace(
-        "scars_laplace_reference.json", "")
+    assert "reference.json" not in source.replace("scars_laplace_reference.json", "")
     assert "np.load" not in source

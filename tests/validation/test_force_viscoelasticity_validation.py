@@ -20,7 +20,9 @@ import pytest
 
 FIXTURE_DIR = Path(__file__).resolve().parent / "fixtures" / "force_viscoelasticity"
 VISCO_REF_DIR = (
-    Path(__file__).resolve().parents[2] / ".reference" / "force-spectroscopy"
+    Path(__file__).resolve().parents[2]
+    / ".reference"
+    / "force-spectroscopy"
     / "viscoelasticity-reference"
 )
 sys.path.insert(0, str(FIXTURE_DIR))
@@ -95,9 +97,18 @@ def _load_arrays():
 
 def _seg(st, d, z, f, t):
     return ForceSegment(
-        segment_type=st, direction=d, raw_height=z, raw_deflection=f / K_SPRING,
-        time=t, cycle=0, state="force_n", deflection=f / K_SPRING, force=f,
-        separation=None, metadata={})
+        segment_type=st,
+        direction=d,
+        raw_height=z,
+        raw_deflection=f / K_SPRING,
+        time=t,
+        cycle=0,
+        state="force_n",
+        deflection=f / K_SPRING,
+        force=f,
+        separation=None,
+        metadata={},
+    )
 
 
 def _curve_from_phantom(case) -> ForceCurve:
@@ -113,14 +124,16 @@ def _curve_from_phantom(case) -> ForceCurve:
         split = n - n_retract
     return ForceCurve(
         segments=(
-            _seg("extend", "forward", case.height[:split], case.force[:split],
-                 case.time[:split]),
-            _seg("retract", "backward", case.height[split:], case.force[split:],
-                 case.time[split:]),
+            _seg("extend", "forward", case.height[:split], case.force[:split], case.time[:split]),
+            _seg("retract", "backward", case.height[split:], case.force[split:], case.time[split:]),
         ),
-        calibration=Calibration(invols=3e-8, spring_constant=K_SPRING,
-                                method="thermal", temperature=300, provenance={}),
-        position=None, index=0, metadata={})
+        calibration=Calibration(
+            invols=3e-8, spring_constant=K_SPRING, method="thermal", temperature=300, provenance={}
+        ),
+        position=None,
+        index=0,
+        metadata={},
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -134,15 +147,14 @@ def test_fixture_regeneration_deterministic() -> None:
     out1.mkdir(parents=True, exist_ok=True)
     out2.mkdir(parents=True, exist_ok=True)
     try:
-        subprocess.run([sys.executable, str(GENERATOR), str(out1)],
-                       check=True, capture_output=True)
-        subprocess.run([sys.executable, str(GENERATOR), str(out2)],
-                       check=True, capture_output=True)
+        subprocess.run([sys.executable, str(GENERATOR), str(out1)], check=True, capture_output=True)
+        subprocess.run([sys.executable, str(GENERATOR), str(out2)], check=True, capture_output=True)
         for name in ("viscoelasticity_reference.json", "viscoelasticity_reference.npz"):
             assert (out1 / name).read_bytes() == (out2 / name).read_bytes()
             assert (out1 / name).read_bytes() == (FIXTURE_DIR / name).read_bytes()
     finally:
         import shutil
+
         shutil.rmtree(out1, ignore_errors=True)
         shutil.rmtree(out2, ignore_errors=True)
 
@@ -175,9 +187,9 @@ def test_hold_region_force_matches_model() -> None:
     c = cases["V03"]
     t0 = c.truth["hold_start_index"]
     t1 = c.truth["hold_end_index"]
-    t_rel = c.time[t0:t1 + 1] - c.time[t0]
+    t_rel = c.time[t0 : t1 + 1] - c.time[t0]
     truth_n = sls_relaxation_modulus(t_rel, 5e3, 2e3, 0.05) / 5e3
-    hold_n = c.force[t0:t1 + 1] / c.force[t0]
+    hold_n = c.force[t0 : t1 + 1] / c.force[t0]
     assert np.allclose(hold_n, truth_n, rtol=1e-6)
     c = cases["V02"]
     t0 = c.truth["hold_start_index"]
@@ -186,7 +198,7 @@ def test_hold_region_force_matches_model() -> None:
     dt_hold = c.truth["t_hold"] / n_hold
     k = np.arange(n_hold)
     truth_j = kv_compliance((k + 1.0) * dt_hold, 5e3, 0.05)
-    proxy = (c.separation[t0:t1 + 1] - 3e-6) / c.truth["f_hold"]
+    proxy = (c.separation[t0 : t1 + 1] - 3e-6) / c.truth["f_hold"]
     assert np.allclose(proxy, truth_j, rtol=1e-6)
 
 
@@ -197,22 +209,24 @@ def test_hold_region_force_matches_model() -> None:
 
 def test_lumped_oracle_parity() -> None:
     t = np.linspace(1e-3, 1.0, 97)
-    assert np.allclose(forward_sls_modulus(t, 5e3, 2e3, 0.1),
-                       sls_relaxation_modulus(t, 5e3, 2e3, 0.1), rtol=1e-12)
-    assert np.allclose(forward_maxwell_normalized(t, 0.1),
-                       maxwell_normalized(t, 0.1), rtol=1e-12)
+    assert np.allclose(
+        forward_sls_modulus(t, 5e3, 2e3, 0.1), sls_relaxation_modulus(t, 5e3, 2e3, 0.1), rtol=1e-12
+    )
+    assert np.allclose(forward_maxwell_normalized(t, 0.1), maxwell_normalized(t, 0.1), rtol=1e-12)
     alpha = np.array([0.4, 0.3])
     tau = np.array([0.05, 0.5])
-    assert np.allclose(forward_generalized_maxwell_normalized(t, alpha, tau),
-                       prony_normalized(t, alpha, tau), rtol=1e-12)
+    assert np.allclose(
+        forward_generalized_maxwell_normalized(t, alpha, tau),
+        prony_normalized(t, alpha, tau),
+        rtol=1e-12,
+    )
 
 
 def test_hereditary_oracle_parity() -> None:
     """Production and oracle Lee-Radok/Ting agree across quadratures."""
     t = np.linspace(1e-4, 0.2, 120)
     d = 5e-7 * (t / 0.2) ** 0.7
-    f_prod = lee_radok_force(t, d, {"E0": 5e3, "E_inf": 2e3, "tau": 0.05},
-                             1.0, 1e-6, 0.3)
+    f_prod = lee_radok_force(t, d, {"E0": 5e3, "E_inf": 2e3, "tau": 0.05}, 1.0, 1e-6, 0.3)
     f_ora = oracle_lee_radok(t, d, 5e3, 2e3, 0.05, 1.0, 1e-6, 0.3)
     rel = np.abs(f_prod - f_ora) / np.maximum(np.abs(f_ora), 1e-15)
     # the production increment rule is first-order in the modulus variation
@@ -223,8 +237,7 @@ def test_hereditary_oracle_parity() -> None:
     d_l = 5e-7 * (t_l / 0.1) ** 0.8
     t_u = np.linspace(0.1, 0.2, 80)
     d_u = 5e-7 * (1.0 - ((t_u - 0.1) / 0.1) ** 0.8)
-    g_prod = ting_force(t_l, d_l, t_u, d_u, {"E0": 5e3, "E_inf": 2e3, "tau": 0.05},
-                        1.0, 1e-6, 0.3)
+    g_prod = ting_force(t_l, d_l, t_u, d_u, {"E0": 5e3, "E_inf": 2e3, "tau": 0.05}, 1.0, 1e-6, 0.3)
     g_ora = oracle_ting(t_l, d_l, t_u, d_u, 5e3, 2e3, 0.05, 1.0, 1e-6, 0.3)
     # allclose with a scale-relative atol: the deep-unloading tail crosses
     # zero, where a pure relative metric diverges.  The production
@@ -242,8 +255,7 @@ def test_declarative_oracle_relations() -> None:
     assert sls_relaxation_monotone_decreasing(t, 5e3, 2e3, 0.1)
     assert sls_creep_monotone_increasing(t, 1 / 5e3, 1 / 2e3, 0.25)
     assert sls_equilibrium_ratio(5e3, 2e3, 0.1, 10.0)
-    assert prony_limits(np.geomspace(1e-3, 50.0, 200),
-                        np.array([0.4, 0.3]), np.array([0.05, 0.5]))
+    assert prony_limits(np.geomspace(1e-3, 50.0, 200), np.array([0.4, 0.3]), np.array([0.05, 0.5]))
     assert power_law_scaling(t, 5e3, 0.3, 0.01)
 
 
@@ -260,14 +272,26 @@ def _stack(cid: str):
     return case, curve, protocol, prepared
 
 
-@pytest.mark.parametrize("cid,fit_fn,kwargs,truth,rel_tol", [
-    ("V01", fit_maxwell, {"tip_radius": 1e-6},
-     {"tau": 0.05, "E": 5e3}, {"tau": 0.02, "E": 0.10}),
-    ("V03", fit_standard_linear_solid, {"tip_radius": 1e-6},
-     {"tau_relax": 0.05, "a": 0.6, "E0": 5e3}, {"tau_relax": 0.02, "a": 0.02, "E0": 0.10}),
-    ("V02", fit_kelvin_voigt, {},
-     {"E": 5e3, "tau": 0.05}, {"E": 0.10, "tau": 0.10}),
-])
+@pytest.mark.parametrize(
+    "cid,fit_fn,kwargs,truth,rel_tol",
+    [
+        (
+            "V01",
+            fit_maxwell,
+            {"tip_radius": 1e-6},
+            {"tau": 0.05, "E": 5e3},
+            {"tau": 0.02, "E": 0.10},
+        ),
+        (
+            "V03",
+            fit_standard_linear_solid,
+            {"tip_radius": 1e-6},
+            {"tau_relax": 0.05, "a": 0.6, "E0": 5e3},
+            {"tau_relax": 0.02, "a": 0.02, "E0": 0.10},
+        ),
+        ("V02", fit_kelvin_voigt, {}, {"E": 5e3, "tau": 0.05}, {"E": 0.10, "tau": 0.10}),
+    ],
+)
 def test_clean_lumped_recovery(cid, fit_fn, kwargs, truth, rel_tol) -> None:
     case, curve, protocol, prepared = _stack(cid)
     if cid == "V02":
@@ -306,8 +330,9 @@ def test_generalized_maxwell_recovery() -> None:
     resp = extract_stress_relaxation(prepared, protocol)
     fit = fit_generalized_maxwell(resp, n_terms=3)
     assert fit.success
-    taus = sorted([fit.parameters["tau_i[0]"], fit.parameters["tau_i[1]"],
-                   fit.parameters["tau_i[2]"]])
+    taus = sorted(
+        [fit.parameters["tau_i[0]"], fit.parameters["tau_i[1]"], fit.parameters["tau_i[2]"]]
+    )
     assert abs(taus[0] - 0.005) / 0.005 < 0.10
     assert abs(taus[1] - 0.05) / 0.05 < 0.10
     assert abs(taus[2] - 0.5) / 0.5 < 0.10
@@ -355,26 +380,35 @@ def test_response_level_noisy_recovery() -> None:
     rng = np.random.default_rng(7)
     noisy = resp.normalized_force + rng.normal(0.0, 1e-3, resp.normalized_force.size)
     from spmkit.core.analysis.force_viscoelasticity import RelaxationResponseResult
+
     noisy_resp = RelaxationResponseResult(
-        relative_time=resp.relative_time, indentation=resp.indentation,
-        force=resp.force, normalized_force=noisy, hold_indices=resp.hold_indices,
+        relative_time=resp.relative_time,
+        indentation=resp.indentation,
+        force=resp.force,
+        normalized_force=noisy,
+        hold_indices=resp.hold_indices,
         hold_start_time=resp.hold_start_time,
         force_at_hold_start=resp.force_at_hold_start,
-        equilibrium_force_estimate=resp.equilibrium_force_estimate, warnings=())
+        equilibrium_force_estimate=resp.equilibrium_force_estimate,
+        warnings=(),
+    )
     fit = fit_standard_linear_solid(noisy_resp, tip_radius=1e-6)
     assert abs(fit.parameters["tau_relax"] - 0.05) / 0.05 < 0.20
 
 
-@pytest.mark.parametrize("cid,tol", [
-    ("V10", 0.30),  # gaussian noise (1e-12 N)
-    ("V11", 0.30),  # correlated noise
-    ("V13", 0.30),  # timestamp jitter
-    ("V14", 0.20),  # nonuniform sampling
-    ("V18", 0.20),  # multiple sampling rates
-    ("V19", 0.30),  # contact offset
-    ("V20", 0.30),  # baseline offset/slope
-    ("V22", 0.30),  # shallow indentation
-])
+@pytest.mark.parametrize(
+    "cid,tol",
+    [
+        ("V10", 0.30),  # gaussian noise (1e-12 N)
+        ("V11", 0.30),  # correlated noise
+        ("V13", 0.30),  # timestamp jitter
+        ("V14", 0.20),  # nonuniform sampling
+        ("V18", 0.20),  # multiple sampling rates
+        ("V19", 0.30),  # contact offset
+        ("V20", 0.30),  # baseline offset/slope
+        ("V22", 0.30),  # shallow indentation
+    ],
+)
 def test_protocol_variant_recovery(cid, tol) -> None:
     case = generate_phantoms()[cid]
     curve = _curve_from_phantom(case)
@@ -386,8 +420,7 @@ def test_protocol_variant_recovery(cid, tol) -> None:
         rel = abs(fit.parameters["tau_relax"] - 0.05) / 0.05
         assert rel < tol, (cid, rel)
     except (ViscoelasticityError, ForceFoundationError) as exc:
-        raise AssertionError(
-            f"{cid} failed typed: {getattr(exc, 'code', exc)}") from exc
+        raise AssertionError(f"{cid} failed typed: {getattr(exc, 'code', exc)}") from exc
 
 
 def test_response_delay_rejected_typed() -> None:
@@ -480,11 +513,14 @@ def test_ting_missing_history_typed() -> None:
     from spmkit.core.analysis.force_viscoelasticity import (
         ViscoelasticProtocolResult,
     )
+
     case, curve, protocol, prepared = _stack("V08")
     loading_only = ViscoelasticProtocolResult(
         protocol_type="LOADING_RAMP",
         regions=tuple(r for r in protocol.regions if r.kind == "loading"),
-        method="test", provenance={})
+        method="test",
+        provenance={},
+    )
     with pytest.raises(ViscoelasticityError) as ei:
         fit_ting_sphere(prepared, loading_only, tip_radius=1e-6)
     assert ei.value.code == "TING_HISTORY_UNAVAILABLE"
@@ -502,7 +538,8 @@ def test_comparison_prefers_true_model() -> None:
     prepared = prepare_force_curve(curve)
     resp = extract_stress_relaxation(prepared, protocol)
     cmp = compare_viscoelastic_models(
-        resp, models=("maxwell", "standard_linear_solid", "power_law_relaxation"))
+        resp, models=("maxwell", "standard_linear_solid", "power_law_relaxation")
+    )
     assert cmp.recommended_model == "maxwell"
     assert cmp.weights["maxwell"] > 0.9
 
@@ -517,10 +554,8 @@ def test_sensitivity_deterministic_and_bounded() -> None:
     curve = _curve_from_phantom(case)
     protocol = identify_viscoelastic_protocol(curve)
     prepared = prepare_force_curve(curve)
-    a = analyze_viscoelastic_sensitivity(curve, prepared, protocol=protocol,
-                                         tip_radius=1e-6)
-    b = analyze_viscoelastic_sensitivity(curve, prepared, protocol=protocol,
-                                         tip_radius=1e-6)
+    a = analyze_viscoelastic_sensitivity(curve, prepared, protocol=protocol, tip_radius=1e-6)
+    b = analyze_viscoelastic_sensitivity(curve, prepared, protocol=protocol, tip_radius=1e-6)
     assert a.configurations == b.configurations
     assert a.parameter_multiverse == b.parameter_multiverse
     assert a.n_configurations <= 96
@@ -539,8 +574,13 @@ def test_sensitivity_failures_retained() -> None:
     protocol = identify_viscoelastic_protocol(curve)
     prepared = prepare_force_curve(curve)
     a = analyze_viscoelastic_sensitivity(
-        curve, prepared, protocol=protocol, tip_radius=1e-6,
-        boundary_offsets=(-200, 0, 200), max_configurations=9)
+        curve,
+        prepared,
+        protocol=protocol,
+        tip_radius=1e-6,
+        boundary_offsets=(-200, 0, 200),
+        max_configurations=9,
+    )
     assert a.n_configurations + len(a.failures) <= 9
     assert len(a.failures) >= 1  # windows reaching the pre-contact fail typed
 
@@ -556,8 +596,7 @@ def test_volume_viscoelasticity_end_to_end() -> None:
     # V10 can fail preparation on the FS-F1 height monotonicity gate, which
     # the mapping reports through the failed mask, never silently)
     curves = [_curve_from_phantom(cases[cid]) for cid in ("V03", "V19", "V24")]
-    volume = ForceVolume.from_curves(curves, grid_shape=(1, 3), x_range=1e-6,
-                                     y_range=3e-6)
+    volume = ForceVolume.from_curves(curves, grid_shape=(1, 3), x_range=1e-6, y_range=3e-6)
     res = fit_force_volume_viscoelasticity(volume, tip_radius=1e-6)
     assert res.modulus_0_map.shape == (3,)
     assert res.failed_mask[2]  # V24 flat curve explicitly masked
@@ -597,11 +636,16 @@ def test_external_pyvisco_witness_reconstruction() -> None:
     assert ext_err < 0.10  # frozen pyvisco reconstruction bound
     # production reconstruction on the same modulus
     resp = RelaxationResponseResult(
-        relative_time=truth_t, indentation=np.full(truth_t.size, 5e-7),
-        force=1e-6 * truth, normalized_force=truth,
-        hold_indices=np.arange(truth_t.size), hold_start_time=0.0,
-        force_at_hold_start=1e-6, equilibrium_force_estimate=float(truth[-1]) * 1e-6,
-        warnings=())
+        relative_time=truth_t,
+        indentation=np.full(truth_t.size, 5e-7),
+        force=1e-6 * truth,
+        normalized_force=truth,
+        hold_indices=np.arange(truth_t.size),
+        hold_start_time=0.0,
+        force_at_hold_start=1e-6,
+        equilibrium_force_estimate=float(truth[-1]) * 1e-6,
+        warnings=(),
+    )
     fit = fit_generalized_maxwell(resp, n_terms=2)
     prod_err = float(np.max(np.abs(fit.predicted_response - truth)))
     assert prod_err < 0.02

@@ -59,11 +59,18 @@ def fit_force_volume_mechanics(
             prepared = prepare_force_curve(volume.curve(i))
             ind = compute_indentation(prepared)
             window = select_contact_fit_window(prepared, ind, min_points=min_points)
-            cmp = compare_contact_models(prepared, ind, window, models=models,
-                                         tip_radius=tip_radius, poisson=poisson,
-                                         half_angle=half_angle)
-            best = next(f for f in cmp.fits if f.model == (cmp.recommended_model
-                                                           or cmp.fits[0].model))
+            cmp = compare_contact_models(
+                prepared,
+                ind,
+                window,
+                models=models,
+                tip_radius=tip_radius,
+                poisson=poisson,
+                half_angle=half_angle,
+            )
+            best = next(
+                f for f in cmp.fits if f.model == (cmp.recommended_model or cmp.fits[0].model)
+            )
             modulus_map[i] = best.parameters.get("E", np.nan)
             if "F_adh" in best.parameters:
                 adhesion_map[i] = best.parameters["F_adh"]
@@ -76,15 +83,26 @@ def fit_force_volume_mechanics(
             failed_mask[i] = True
             failed_reasons[i] = type(exc).__name__
     provenance = {
-        "pipeline": ["prepare_force_curve", "compute_indentation",
-                     "select_contact_fit_window", "compare_contact_models"],
-        "tip_radius": tip_radius, "poisson": poisson, "half_angle": half_angle,
-        "models": list(models), "n_curves": n,
+        "pipeline": [
+            "prepare_force_curve",
+            "compute_indentation",
+            "select_contact_fit_window",
+            "compare_contact_models",
+        ],
+        "tip_radius": tip_radius,
+        "poisson": poisson,
+        "half_angle": half_angle,
+        "models": list(models),
+        "n_curves": n,
         "n_failed": int(failed_mask.sum()),
         "failed_reasons": failed_reasons,
         "deterministic": True,
     }
     return ForceVolumeMechanicsResult(
-        modulus_map=modulus_map, adhesion_map=adhesion_map, model_map=model_map,
-        failed_mask=failed_mask, quality_map=quality_map, provenance=provenance,
+        modulus_map=modulus_map,
+        adhesion_map=adhesion_map,
+        model_map=model_map,
+        failed_mask=failed_mask,
+        quality_map=quality_map,
+        provenance=provenance,
     )

@@ -98,7 +98,12 @@ def generator() -> Any:
 def test_valid_horizontal_shifts_parse(tmp_path: Path, generator: Any) -> None:
     """HORIZONTAL 5x7 emits 5 shifts; parser returns (5,) unchanged."""
     _write_stdout(
-        tmp_path, "valid_h", xres=7, yres=5, xreal=5.6, direction="HORIZONTAL",
+        tmp_path,
+        "valid_h",
+        xres=7,
+        yres=5,
+        xreal=5.6,
+        direction="HORIZONTAL",
         shifts=[0, 1, 2, 3, 4],
     )
     arr = generator._parse_probe_line("valid_h", probe_root=str(tmp_path))
@@ -110,7 +115,12 @@ def test_valid_horizontal_shifts_parse(tmp_path: Path, generator: Any) -> None:
 def test_valid_vertical_shifts_parse(tmp_path: Path, generator: Any) -> None:
     """VERTICAL 5x7 emits 7 shifts (original xres); parser returns (7,)."""
     _write_stdout(
-        tmp_path, "valid_v", xres=7, yres=5, xreal=5.6, direction="VERTICAL",
+        tmp_path,
+        "valid_v",
+        xres=7,
+        yres=5,
+        xreal=5.6,
+        direction="VERTICAL",
         shifts=[0, 1, 2, 3, 4, 5, 6],
     )
     arr = generator._parse_probe_line("valid_v", probe_root=str(tmp_path))
@@ -126,7 +136,12 @@ def test_valid_vertical_shifts_parse(tmp_path: Path, generator: Any) -> None:
 def test_missing_index_rejected(tmp_path: Path, generator: Any) -> None:
     """Fewer values than expected must fail loudly."""
     _write_stdout(
-        tmp_path, "missing", xres=7, yres=5, xreal=5.6, direction="HORIZONTAL",
+        tmp_path,
+        "missing",
+        xres=7,
+        yres=5,
+        xreal=5.6,
+        direction="HORIZONTAL",
         shifts=[0, 1, 2, 3],  # index 4 missing -> 4 vs expected 5
     )
     with pytest.raises(ValueError, match="missing.*expected indices.*count 5"):
@@ -136,19 +151,27 @@ def test_missing_index_rejected(tmp_path: Path, generator: Any) -> None:
 def test_extra_index_rejected(tmp_path: Path, generator: Any) -> None:
     """More values than expected must fail loudly (old guard missed this)."""
     _write_stdout(
-        tmp_path, "extra", xres=7, yres=5, xreal=5.6, direction="HORIZONTAL",
+        tmp_path,
+        "extra",
+        xres=7,
+        yres=5,
+        xreal=5.6,
+        direction="HORIZONTAL",
         shifts=[0, 1, 2, 3, 4, 5],  # 6 values vs expected 5
     )
     with pytest.raises(ValueError, match="extra.*expected indices.*count 5"):
         generator._parse_probe_line("extra", probe_root=str(tmp_path))
 
 
-def test_historical_seven_emitted_five_expected_rejected(
-    tmp_path: Path, generator: Any
-) -> None:
+def test_historical_seven_emitted_five_expected_rejected(tmp_path: Path, generator: Any) -> None:
     """The historical 7-emitted / 5-expected truncation must be rejected."""
     _write_stdout(
-        tmp_path, "hist", xres=7, yres=5, xreal=5.6, direction="HORIZONTAL",
+        tmp_path,
+        "hist",
+        xres=7,
+        yres=5,
+        xreal=5.6,
+        direction="HORIZONTAL",
         shifts=[0, 1, 2, 3, 4, 5, 6],  # 7 values vs expected 5
     )
     with pytest.raises(ValueError, match="hist.*count 7"):
@@ -158,7 +181,12 @@ def test_historical_seven_emitted_five_expected_rejected(
 def test_non_contiguous_indices_rejected(tmp_path: Path, generator: Any) -> None:
     """A hole in the middle of the index set must fail loudly."""
     _write_stdout(
-        tmp_path, "hole", xres=7, yres=5, xreal=5.6, direction="HORIZONTAL",
+        tmp_path,
+        "hole",
+        xres=7,
+        yres=5,
+        xreal=5.6,
+        direction="HORIZONTAL",
         shifts=[0, 1, 3, 4],  # index 2 missing -> non-contiguous
     )
     with pytest.raises(ValueError, match="hole.*observed indices"):
@@ -168,7 +196,12 @@ def test_non_contiguous_indices_rejected(tmp_path: Path, generator: Any) -> None
 def test_duplicate_index_rejected(tmp_path: Path, generator: Any) -> None:
     """A repeated index must fail loudly instead of overwriting the value."""
     _write_stdout(
-        tmp_path, "dup", xres=7, yres=5, xreal=5.6, direction="HORIZONTAL",
+        tmp_path,
+        "dup",
+        xres=7,
+        yres=5,
+        xreal=5.6,
+        direction="HORIZONTAL",
         shifts=[0, 1, 2, 2, 3, 4],  # index 2 repeated
     )
     with pytest.raises(ValueError, match="dup.*duplicate index 2"):
@@ -178,7 +211,12 @@ def test_duplicate_index_rejected(tmp_path: Path, generator: Any) -> None:
 def test_negative_index_rejected(tmp_path: Path, generator: Any) -> None:
     """A negative index must fail loudly, not be skipped silently."""
     _write_stdout(
-        tmp_path, "neg", xres=7, yres=5, xreal=5.6, direction="HORIZONTAL",
+        tmp_path,
+        "neg",
+        xres=7,
+        yres=5,
+        xreal=5.6,
+        direction="HORIZONTAL",
         shifts=[-1, 0, 1, 2, 3, 4],
     )
     with pytest.raises(ValueError, match="neg.*malformed element line"):
@@ -273,9 +311,7 @@ def test_real_campaign_shifts_parse(generator: Any) -> None:
     for case_name in _REAL_CASES:
         kv = generator._parse_probe_kv(case_name)
         direction = kv.get(f"{case_name}_direction", "HORIZONTAL")
-        expected = (
-            int(kv["xres"]) if direction == "VERTICAL" else int(kv["yres"])
-        )
+        expected = int(kv["xres"]) if direction == "VERTICAL" else int(kv["yres"])
         arr = generator._parse_probe_line(case_name)
         assert arr is not None, case_name
         assert arr.shape == (expected,), case_name

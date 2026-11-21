@@ -28,8 +28,7 @@ from spmkit.core.analysis._gwyddion_neighborhood_filters import (
 )
 from spmkit.core.models.spmdata import SPMChannel
 
-FIXTURE_DIR = Path(__file__).resolve().parent / "fixtures" / "gwyddion" / \
-    "neighborhood_filters"
+FIXTURE_DIR = Path(__file__).resolve().parent / "fixtures" / "gwyddion" / "neighborhood_filters"
 JSON_PATH = FIXTURE_DIR / "neighborhood_filters_reference.json"
 NPZ_PATH = FIXTURE_DIR / "neighborhood_filters_reference.npz"
 
@@ -69,15 +68,21 @@ def _probe(cid: str, label: str) -> np.ndarray:
 
 
 def _case(cid: str) -> dict:
-    return next(c for c in _manifest["cases"]
-                if c["case_identifier"] == cid)
+    return next(c for c in _manifest["cases"] if c["case_identifier"] == cid)
 
 
 def _channel_of(cid: str) -> SPMChannel:
     inp = _probe(cid, "input")
-    return SPMChannel(name="parity", data=inp, unit="m",
-                      x_range=float(inp.shape[1]), y_range=float(inp.shape[0]),
-                      direction="forward", group="g", metadata={"Dim1Name": "Y"})
+    return SPMChannel(
+        name="parity",
+        data=inp,
+        unit="m",
+        x_range=float(inp.shape[1]),
+        y_range=float(inp.shape[0]),
+        direction="forward",
+        group="g",
+        metadata={"Dim1Name": "Y"},
+    )
 
 
 def _canonical_cases():
@@ -92,9 +97,14 @@ def test_private_kernel_59_59_bitwise() -> None:
         op = case["operation"]
         if op == "rank":
             p1, p2, both, diff = _PCTS[cid]
-            ref = _gwydion_rank_filter(inp, radius=case["radius"],
-                                        percentile=p1, percentile2=p2,
-                                        both=both, difference=diff)
+            ref = _gwydion_rank_filter(
+                inp,
+                radius=case["radius"],
+                percentile=p1,
+                percentile2=p2,
+                both=both,
+                difference=diff,
+            )
             assert ref.rank1 == case["rank1"], cid
             assert ref.footprint_count == case["footprint_count"], cid
         elif op == "median":
@@ -106,46 +116,43 @@ def test_private_kernel_59_59_bitwise() -> None:
             ref = _gwydion_gaussian_filter(inp, sigma=sigma, public=False)
             assert ref.res == case["res"], cid
             if f"{cid}_probe_kernel" in _arrays:
-                assert np.array_equal(
-                    _bits(ref.kernel),
-                    _probe(cid, "kernel").view(np.uint64)), cid
+                assert np.array_equal(_bits(ref.kernel), _probe(cid, "kernel").view(np.uint64)), cid
             if f"{cid}_probe_horizontal" in _arrays:
                 assert np.array_equal(
-                    _bits(ref.horizontal),
-                    _probe(cid, "horizontal").view(np.uint64)), cid
-        assert np.array_equal(_bits(ref.result),
-                              _probe(cid, "result").view(np.uint64)), cid
+                    _bits(ref.horizontal), _probe(cid, "horizontal").view(np.uint64)
+                ), cid
+        assert np.array_equal(_bits(ref.result), _probe(cid, "result").view(np.uint64)), cid
         if "result2" in _arrays:
             assert ref.result2 is not None, cid
-            assert np.array_equal(_bits(ref.result2),
-                                  _probe(cid, "result2").view(np.uint64)), cid
+            assert np.array_equal(_bits(ref.result2), _probe(cid, "result2").view(np.uint64)), cid
         # input non-mutation
-        assert np.array_equal(_bits(inp),
-                              _bits(_probe(cid, "input_after"))), cid
+        assert np.array_equal(_bits(inp), _bits(_probe(cid, "input_after"))), cid
         total += _probe(cid, "result").size
-    assert total == sum(c["source_oracle"]["result"]["elements_total"]
-                        for c in _canonical_cases())
+    assert total == sum(c["source_oracle"]["result"]["elements_total"] for c in _canonical_cases())
 
 
 def test_rank_output_mode_parity() -> None:
-    for cid in ("R18_BOTH_OUTPUTS", "R19_DIFFERENCE_OUTPUT",
-                "R20_INPUT_NON_MUTATION"):
+    for cid in ("R18_BOTH_OUTPUTS", "R19_DIFFERENCE_OUTPUT", "R20_INPUT_NON_MUTATION"):
         inp = _probe(cid, "input")
         p1, p2, both, diff = _PCTS[cid]
-        ref = _gwydion_rank_filter(inp, radius=_case(cid)["radius"],
-                                   percentile=p1, percentile2=p2,
-                                   both=both, difference=diff)
+        ref = _gwydion_rank_filter(
+            inp,
+            radius=_case(cid)["radius"],
+            percentile=p1,
+            percentile2=p2,
+            both=both,
+            difference=diff,
+        )
         assert ref.rank1 == _case(cid)["rank1"], cid
         assert ref.rank2 == _case(cid)["rank2"], cid
-        assert np.array_equal(_bits(ref.result),
-                              _probe(cid, "result").view(np.uint64)), cid
-        assert np.array_equal(_bits(ref.result2),
-                              _probe(cid, "result2").view(np.uint64)), cid
+        assert np.array_equal(_bits(ref.result), _probe(cid, "result").view(np.uint64)), cid
+        assert np.array_equal(_bits(ref.result2), _probe(cid, "result2").view(np.uint64)), cid
     # difference identity: result == result1 - result2
     inp = _probe("R19_DIFFERENCE_OUTPUT", "input")
     radius = _case("R19_DIFFERENCE_OUTPUT")["radius"]
-    r = _gwydion_rank_filter(inp, radius=radius, percentile=0.75,
-                             percentile2=0.25, both=True, difference=True)
+    r = _gwydion_rank_filter(
+        inp, radius=radius, percentile=0.75, percentile2=0.25, both=True, difference=True
+    )
     r1 = _gwydion_rank_filter(inp, radius=radius, percentile=0.75).result
     r2 = _gwydion_rank_filter(inp, radius=radius, percentile=0.25).result
     assert np.array_equal(_bits(r.result), _bits(r1 - r2))
@@ -156,18 +163,17 @@ def test_gaussian_sigma_zero_private() -> None:
     ref = _gwydion_gaussian_filter(inp, sigma=0.0, public=False)
     assert ref.res == 0
     assert np.array_equal(_bits(ref.result), _bits(inp))
-    assert np.array_equal(_bits(ref.result),
-                          _probe("G05_SIGMA_ZERO_LIBRARY", "result").view(np.uint64))
+    assert np.array_equal(
+        _bits(ref.result), _probe("G05_SIGMA_ZERO_LIBRARY", "result").view(np.uint64)
+    )
     # the public API rejects sigma=0
     with pytest.raises(ValueError, match="0.01..40.0"):
-        gwyddion_gaussian_filter(_channel_of("G05_SIGMA_ZERO_LIBRARY"),
-                                  sigma=0.0)
+        gwyddion_gaussian_filter(_channel_of("G05_SIGMA_ZERO_LIBRARY"), sigma=0.0)
 
 
 def test_public_api_55_55_bitwise() -> None:
     total = 0
-    public = [c for c in _canonical_cases()
-              if c["classification"] == "PUBLIC_TOOL_DOMAIN_CASE"]
+    public = [c for c in _canonical_cases() if c["classification"] == "PUBLIC_TOOL_DOMAIN_CASE"]
     assert len(public) == 55
     for case in public:
         cid = case["case_identifier"]
@@ -175,15 +181,12 @@ def test_public_api_55_55_bitwise() -> None:
         op = case["operation"]
         if op == "rank":
             p1, _, _, _ = _PCTS[cid]
-            out = gwyddion_rank_filter(ch, radius=case["radius"],
-                                        percentile=p1)
+            out = gwyddion_rank_filter(ch, radius=case["radius"], percentile=p1)
         elif op == "median":
             out = gwyddion_median_filter(ch, size=case["size"])
         else:
-            out = gwyddion_gaussian_filter(ch, sigma=float.fromhex(
-                case["sigma_bits"]))
-        assert np.array_equal(_bits(out.data),
-                              _probe(cid, "result").view(np.uint64)), cid
+            out = gwyddion_gaussian_filter(ch, sigma=float.fromhex(case["sigma_bits"]))
+        assert np.array_equal(_bits(out.data), _probe(cid, "result").view(np.uint64)), cid
         # context preservation
         assert out.name == ch.name and out.unit == ch.unit
         assert out.x_range == ch.x_range and out.y_range == ch.y_range
@@ -202,14 +205,20 @@ def test_global_metrics() -> None:
         op = case["operation"]
         if op == "rank":
             p1, p2, both, diff = _PCTS[cid]
-            ref = _gwydion_rank_filter(inp, radius=case["radius"],
-                                        percentile=p1, percentile2=p2,
-                                        both=both, difference=diff)
+            ref = _gwydion_rank_filter(
+                inp,
+                radius=case["radius"],
+                percentile=p1,
+                percentile2=p2,
+                both=both,
+                difference=diff,
+            )
         elif op == "median":
             ref = _gwydion_median_filter(inp, size=case["size"])
         else:
-            ref = _gwydion_gaussian_filter(inp, sigma=float.fromhex(
-                case["sigma_bits"]), public=False)
+            ref = _gwydion_gaussian_filter(
+                inp, sigma=float.fromhex(case["sigma_bits"]), public=False
+            )
         pb = _bits(_probe(cid, "result")).ravel()
         ob = _bits(ref.result).ravel()
         for i in range(pb.size):
@@ -265,9 +274,15 @@ def test_relations() -> None:
     # F01-F06 footprint geometry: the private kernel's elliptic spans
     # must match the frozen row spans and active counts
     from spmkit.core.analysis._gwyddion_neighborhood_filters import _elliptic_spans
-    for cid in ("F01_FOOTPRINT_SIDE3", "F02_FOOTPRINT_SIDE5",
-                "F03_FOOTPRINT_SIDE2", "F04_FOOTPRINT_SIDE4",
-                "F05_FOOTPRINT_SIDE31", "F06_FOOTPRINT_SIDE17"):
+
+    for cid in (
+        "F01_FOOTPRINT_SIDE3",
+        "F02_FOOTPRINT_SIDE5",
+        "F03_FOOTPRINT_SIDE2",
+        "F04_FOOTPRINT_SIDE4",
+        "F05_FOOTPRINT_SIDE31",
+        "F06_FOOTPRINT_SIDE17",
+    ):
         case = _case(cid)
         side = case["footprint_side"]
         _spans, count = _elliptic_spans(side, side)
@@ -278,5 +293,4 @@ def test_public_median_even_sizes() -> None:
     for cid in ("M04_EVEN_SIZE_TWO", "M05_EVEN_SIZE_FOUR"):
         case = _case(cid)
         out = gwyddion_median_filter(_channel_of(cid), size=case["size"])
-        assert np.array_equal(_bits(out.data),
-                              _probe(cid, "result").view(np.uint64)), cid
+        assert np.array_equal(_bits(out.data), _probe(cid, "result").view(np.uint64)), cid

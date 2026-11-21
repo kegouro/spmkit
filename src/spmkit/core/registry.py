@@ -41,16 +41,37 @@ __all__ = [
 _SCHEMA_VERSION = 1
 
 _REQUIRED_FIELDS = (
-    "capability_id", "operation_id", "family", "public_name", "public_import",
-    "aliases", "reference", "contract", "parameters", "result_type", "units",
-    "mask_semantics", "roi_support", "nan_policy", "border_policy",
-    "mutation_policy", "status", "maturity", "evidence", "known_deviations",
+    "capability_id",
+    "operation_id",
+    "family",
+    "public_name",
+    "public_import",
+    "aliases",
+    "reference",
+    "contract",
+    "parameters",
+    "result_type",
+    "units",
+    "mask_semantics",
+    "roi_support",
+    "nan_policy",
+    "border_policy",
+    "mutation_policy",
+    "status",
+    "maturity",
+    "evidence",
+    "known_deviations",
 )
 
-_MATURITY = frozenset({
-    "SPECIFIED", "SOFTWARE_VERIFIED", "NUMERICALLY_VERIFIED",
-    "CROSS_VALIDATED", "PHYSICALLY_VALIDATED",
-})
+_MATURITY = frozenset(
+    {
+        "SPECIFIED",
+        "SOFTWARE_VERIFIED",
+        "NUMERICALLY_VERIFIED",
+        "CROSS_VALIDATED",
+        "PHYSICALLY_VALIDATED",
+    }
+)
 _STATUS = frozenset({"stable", "experimental", "deprecated"})
 _MASK = frozenset({"none", "include_exclude_ignore", "mask_input", "mask_output"})
 _NAN = frozenset({"reject", "propagate", "replace", "not_applicable"})
@@ -185,8 +206,7 @@ def _s_or_none(raw: Mapping[str, object], key: str) -> str | None:
     if value is None:
         return None
     if not isinstance(value, str):
-        raise RegistryError(f"{key} must be a string or null, "
-                            f"got {type(value).__name__}")
+        raise RegistryError(f"{key} must be a string or null, " f"got {type(value).__name__}")
     return value
 
 
@@ -198,8 +218,7 @@ def _strs(raw: Mapping[str, object], key: str) -> tuple[str, ...]:
         raise RegistryError(f"{key} must be a list, got {type(value).__name__}")
     for item in value:
         if not isinstance(item, str):
-            raise RegistryError(
-                f"{key} items must be strings, got {type(item).__name__}")
+            raise RegistryError(f"{key} items must be strings, got {type(item).__name__}")
     return tuple(value)
 
 
@@ -232,8 +251,7 @@ def _parse_parameter(raw: Mapping[str, object]) -> ParameterSpec:
             raise RegistryError("enum_values must be a list or null")
         for item in enum_values_raw:
             if not isinstance(item, str):
-                raise RegistryError(
-                    f"enum_values items must be strings, got {type(item).__name__}")
+                raise RegistryError(f"enum_values items must be strings, got {type(item).__name__}")
         enum_values = tuple(enum_values_raw)
     bounds_raw = raw.get("bounds")
     bounds: tuple[float, float] | None = None
@@ -243,16 +261,13 @@ def _parse_parameter(raw: Mapping[str, object]) -> ParameterSpec:
         items = []
         for item in bounds_raw:
             if isinstance(item, bool) or not isinstance(item, (int, float)):
-                raise RegistryError(
-                    f"parameter {name}: bounds items must be real numbers")
+                raise RegistryError(f"parameter {name}: bounds items must be real numbers")
             value = float(item)
             if not math.isfinite(value):
-                raise RegistryError(
-                    f"parameter {name}: bounds items must be finite")
+                raise RegistryError(f"parameter {name}: bounds items must be finite")
             items.append(value)
         if items[0] > items[1]:
-            raise RegistryError(
-                f"parameter {name}: bounds must be ordered low..high")
+            raise RegistryError(f"parameter {name}: bounds must be ordered low..high")
         bounds = (items[0], items[1])
     return ParameterSpec(
         name=name,
@@ -303,16 +318,19 @@ def _parse_capability(raw: Mapping[str, object]) -> CapabilitySpec:
     if not isinstance(ref_raw, dict):
         raise RegistryError(f"{capability_id}: reference must be an object")
     ref_map = cast(Mapping[str, object], ref_raw)
-    _reject_unknown_fields(ref_map, {"software", "version", "name", "profile"},
-                           f"{capability_id}: reference")
+    _reject_unknown_fields(
+        ref_map, {"software", "version", "name", "profile"}, f"{capability_id}: reference"
+    )
     reference = ReferenceSpec(
         software=_s(ref_map, "software"),
         version=_s(ref_map, "version"),
         name=_s(ref_map, "name"),
         profile=_s(ref_map, "profile"),
     )
-    parameters = tuple(_parse_parameter(cast(Mapping[str, object], p))
-                       for p in cast(Iterable[object], raw["parameters"]))
+    parameters = tuple(
+        _parse_parameter(cast(Mapping[str, object], p))
+        for p in cast(Iterable[object], raw["parameters"])
+    )
     return CapabilitySpec(
         capability_id=capability_id,
         operation_id=operation_id,
@@ -340,13 +358,20 @@ def _parse_capability(raw: Mapping[str, object]) -> CapabilitySpec:
 _KNOWN_TOP_LEVEL = {"schema_version", "capabilities"}
 _KNOWN_CAPABILITY_FIELDS = set(_REQUIRED_FIELDS)
 _KNOWN_PARAMETER_FIELDS = {
-    "name", "kind", "required", "has_default", "default", "type",
-    "enum_values", "bounds", "units", "description",
+    "name",
+    "kind",
+    "required",
+    "has_default",
+    "default",
+    "type",
+    "enum_values",
+    "bounds",
+    "units",
+    "description",
 }
 
 
-def _reject_unknown_fields(raw: Mapping[str, object], known: set[str],
-                           context: str) -> None:
+def _reject_unknown_fields(raw: Mapping[str, object], known: set[str], context: str) -> None:
     for key in raw:
         if key not in known:
             raise RegistryError(f"{context}: unknown field {key!r}")
@@ -358,10 +383,8 @@ def _build_registry() -> tuple[CapabilitySpec, ...]:
         raise RegistryError("ledger root must be an object")
     _reject_unknown_fields(data, _KNOWN_TOP_LEVEL, "ledger")
     version = data.get("schema_version")
-    if not isinstance(version, int) or isinstance(version, bool) \
-            or version != _SCHEMA_VERSION:
-        raise RegistryError(
-            f"unsupported schema version {version!r}")
+    if not isinstance(version, int) or isinstance(version, bool) or version != _SCHEMA_VERSION:
+        raise RegistryError(f"unsupported schema version {version!r}")
     raw_caps = data.get("capabilities")
     if not isinstance(raw_caps, list):
         raise RegistryError("capabilities must be a list")
@@ -437,11 +460,9 @@ def resolve_callable(operation_id: str) -> Callable[..., object]:
     module = importlib.import_module(module_name)
     fn = getattr(module, attr, None)
     if fn is None:
-        raise RegistryError(
-            f"public import {spec.public_import!r} does not resolve")
+        raise RegistryError(f"public import {spec.public_import!r} does not resolve")
     if not callable(fn):
-        raise RegistryError(
-            f"public import {spec.public_import!r} is not callable")
+        raise RegistryError(f"public import {spec.public_import!r} is not callable")
     if attr.startswith("_"):
         raise RegistryError(f"private callable {attr!r}")
     return fn

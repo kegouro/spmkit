@@ -577,3 +577,7 @@ Si usas SPM-Kit o Fathom en una publicación, cítalo según [`CITATION.cff`](CI
 <sub>José Labarca Baeza · Proyecto independiente en el contexto del SPM Lab, UTFSM · Licencia MIT © 2026</sub>
 
 </div>
+
+
+Install from a clean clone on macOS/Linux: [portable setup](docs/getting-started/macos.md).
+Recovered capabilities and scoped verification: [consolidation report](docs/ecosystem/consolidation-20261121.md).

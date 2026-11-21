@@ -229,10 +229,6 @@ def _gwyddion_align_rows_facet_tilt(
         if selected_direction is _GwyddionAlignRowsDirection.HORIZONTAL
         else np.ascontiguousarray(working.T)
     )
-    background = (
-        _background_in_c_order(values, corrected) if extract_background else None
-    )
+    background = _background_in_c_order(values, corrected) if extract_background else None
     shifts = np.zeros(work_yres, dtype=np.float64, order="C")
-    return _GwyddionFacetTiltResult(
-        corrected=corrected, background=background, shifts=shifts
-    )
+    return _GwyddionFacetTiltResult(corrected=corrected, background=background, shifts=shifts)

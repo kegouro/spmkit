@@ -51,8 +51,7 @@ def gwyddion_rank_filter(
     Borders use nearest-constant EXTEND extension.  The result is a new
     context-preserving ``SPMChannel``; the input is never mutated.
     """
-    result = _gwydion_rank_filter(
-        channel.data, radius=radius, percentile=percentile)
+    result = _gwydion_rank_filter(channel.data, radius=radius, percentile=percentile)
     return _channel_result(channel, result.result)
 
 

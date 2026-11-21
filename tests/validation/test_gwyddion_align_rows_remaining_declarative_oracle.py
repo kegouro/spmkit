@@ -18,8 +18,7 @@ from pathlib import Path
 
 import numpy as np
 
-FIXTURE_DIR = Path(__file__).resolve().parent / "fixtures" / "gwyddion" / \
-    "align_rows_remaining"
+FIXTURE_DIR = Path(__file__).resolve().parent / "fixtures" / "gwyddion" / "align_rows_remaining"
 NPZ_PATH = FIXTURE_DIR / "align_rows_remaining_reference.npz"
 JSON_PATH = FIXTURE_DIR / "align_rows_remaining_reference.json"
 
@@ -28,8 +27,9 @@ from oracle_align_rows_declarative import oracle_align_rows_declarative  # noqa:
 
 _manifest = json.loads(JSON_PATH.read_text())
 _arrays = dict(np.load(NPZ_PATH, allow_pickle=False).items())
-_CASES = {c["case_identifier"]: c for c in _manifest["cases"]
-          if c["classification"] == "NUMERICAL_PARITY"}
+_CASES = {
+    c["case_identifier"]: c for c in _manifest["cases"] if c["classification"] == "NUMERICAL_PARITY"
+}
 
 
 def _probe(cid: str, label: str) -> np.ndarray:
@@ -41,18 +41,21 @@ def test_discrete_state_exact_for_all_cases() -> None:
         inp = _probe(cid, "input")
         mask = _probe(cid, "input_mask") if case["mask_present"] else None
         decl = oracle_align_rows_declarative(
-            inp, method=case["method"], degree=case["degree"], mask=mask,
+            inp,
+            method=case["method"],
+            degree=case["degree"],
+            mask=mask,
             masking=case["masking"],
             compiled_corrected=_probe(cid, "corrected"),
-            compiled_shifts=_probe(cid, "shifts"))
+            compiled_shifts=_probe(cid, "shifts"),
+        )
         assert decl.method == case["method"], cid
         assert decl.masking == case["masking"], cid
         assert decl.masking_enum == case["masking_enum"], cid
         assert decl.valid_counts == tuple(case["row_valid_counts"]), cid
         # discrete state is exact even when floating values are not
         assert decl.discrete_state_exact, cid
-        assert decl.corrected_total == decl.corrected_bitwise or \
-            decl.corrected_total > 0, cid
+        assert decl.corrected_total == decl.corrected_bitwise or decl.corrected_total > 0, cid
 
 
 def test_independent_polynomial_solve() -> None:
@@ -63,14 +66,18 @@ def test_independent_polynomial_solve() -> None:
             continue
         cid = case["case_identifier"]
         decl = oracle_align_rows_declarative(
-            _probe(cid, "input"), method="polynomial", degree=case["degree"],
+            _probe(cid, "input"),
+            method="polynomial",
+            degree=case["degree"],
             mask=_probe(cid, "input_mask") if case["mask_present"] else None,
-            masking=case["masking"])
+            masking=case["masking"],
+        )
         assert decl.poly_coefficients is not None, cid
-        assert decl.poly_coefficients.shape == (
-            case["dimensions"]["yres"], case["degree"] + 1), cid
-        assert decl.poly_subspace_rank == case["degree"] + 1 or \
-            case["degree"] + 1 >= case["dimensions"]["xres"], cid
+        assert decl.poly_coefficients.shape == (case["dimensions"]["yres"], case["degree"] + 1), cid
+        assert (
+            decl.poly_subspace_rank == case["degree"] + 1
+            or case["degree"] + 1 >= case["dimensions"]["xres"]
+        ), cid
 
 
 def test_degree_discrimination() -> None:
@@ -79,8 +86,8 @@ def test_degree_discrimination() -> None:
     for cid in group:
         case = _CASES[cid]
         decl = oracle_align_rows_declarative(
-            _probe(cid, "input"), method="polynomial", degree=case["degree"],
-            masking="ignore")
+            _probe(cid, "input"), method="polynomial", degree=case["degree"], masking="ignore"
+        )
         corr[cid] = decl.corrected_field
     assert not np.array_equal(corr[group[0]], corr[group[1]])
     assert not np.array_equal(corr[group[0]], corr[group[2]])
@@ -93,8 +100,8 @@ def test_method_discrimination() -> None:
     for cid in group:
         case = _CASES[cid]
         decl = oracle_align_rows_declarative(
-            _probe(cid, "input"), method=case["method"],
-            degree=case["degree"], masking="ignore")
+            _probe(cid, "input"), method=case["method"], degree=case["degree"], masking="ignore"
+        )
         corr[cid] = decl.corrected_field
     ids = list(corr)
     for a in range(len(ids)):
@@ -115,52 +122,53 @@ def test_mask_mode_discrimination() -> None:
             case = _CASES[cid]
             assert case["mask_present"], cid
             decl = oracle_align_rows_declarative(
-                _probe(cid, "input"), method=case["method"],
-                degree=case["degree"], mask=_probe(cid, "input_mask"),
-                masking=case["masking"])
+                _probe(cid, "input"),
+                method=case["method"],
+                degree=case["degree"],
+                mask=_probe(cid, "input_mask"),
+                masking=case["masking"],
+            )
             corr[cid] = decl.corrected_field
             compiled[cid] = _probe(cid, "corrected")
         ids = list(corr)
         for a in range(len(ids)):
             for b in range(a + 1, len(ids)):
-                compiled_distinct = not np.array_equal(
-                    compiled[ids[a]], compiled[ids[b]])
-                declarative_distinct = not np.array_equal(
-                    corr[ids[a]], corr[ids[b]])
-                assert declarative_distinct == compiled_distinct, \
-                    (ids[a], ids[b])
+                compiled_distinct = not np.array_equal(compiled[ids[a]], compiled[ids[b]])
+                declarative_distinct = not np.array_equal(corr[ids[a]], corr[ids[b]])
+                assert declarative_distinct == compiled_distinct, (ids[a], ids[b])
 
 
 def test_modus_window_and_tie_relations() -> None:
     # U03: 5 zeros + 5 tens per row -> narrowest window over the sorted
     # values has range 0 and the central third selects the tie population
     decl = oracle_align_rows_declarative(
-        _probe("U03_ROBUST_CENTER_DISTINGUISHER", "input"), method="modus")
+        _probe("U03_ROBUST_CENTER_DISTINGUISHER", "input"), method="modus"
+    )
     assert decl.modus_windows is not None
     assert decl.modus_min_range == 0.0
     # the selected window start must exist and the shifts be zero-levelled
     assert decl.modus_selected_start is not None
     assert abs(float(np.mean(decl.shifts))) < 1e-12
     # U04: 6 zeros + 6 tens -> window range 0 with several ties
-    decl = oracle_align_rows_declarative(
-        _probe("U04_MULTIMODAL_TIE", "input"), method="modus")
+    decl = oracle_align_rows_declarative(_probe("U04_MULTIMODAL_TIE", "input"), method="modus")
     assert decl.modus_min_range == 0.0
-    assert decl.modus_tie_multiplicity is not None and \
-        decl.modus_tie_multiplicity >= 1
+    assert decl.modus_tie_multiplicity is not None and decl.modus_tie_multiplicity >= 1
 
 
 def test_match_cumulative_and_zero_weight() -> None:
     # H03 sequential offsets: zero weight for pure offsets -> no correction
-    for cid in ("H01_IDENTICAL_ROWS", "H02_SINGLE_ROW_OFFSET",
-                "H03_SEQUENTIAL_OFFSETS", "H04_ALTERNATING_OFFSETS"):
-        decl = oracle_align_rows_declarative(_probe(cid, "input"),
-                                             method="match")
+    for cid in (
+        "H01_IDENTICAL_ROWS",
+        "H02_SINGLE_ROW_OFFSET",
+        "H03_SEQUENTIAL_OFFSETS",
+        "H04_ALTERNATING_OFFSETS",
+    ):
+        decl = oracle_align_rows_declarative(_probe(cid, "input"), method="match")
         assert decl.match_zero_weight_pairs, cid
         assert np.array_equal(decl.corrected_field, decl.input_snapshot), cid
     # H05 alternating bumps activates matching; shifts are cumulative and
     # zero-levelled
-    decl = oracle_align_rows_declarative(
-        _probe("H05_MATCH_OBJECTIVE_TIE", "input"), method="match")
+    decl = oracle_align_rows_declarative(_probe("H05_MATCH_OBJECTIVE_TIE", "input"), method="match")
     assert not decl.match_zero_weight_pairs
     assert decl.cumulative_shifts is not None
     assert abs(float(np.mean(decl.shifts))) < 1e-12
@@ -181,6 +189,5 @@ def test_no_source_oracle_import() -> None:
     assert "import oracle_align_rows_source" not in src
     assert "from oracle_align_rows_source" not in src
     assert "case_identifier" not in src
-    for forbidden in ("reference.json", "reference.npz", "np.load",
-                      "json.load", "spmkit"):
+    for forbidden in ("reference.json", "reference.npz", "np.load", "json.load", "spmkit"):
         assert forbidden not in src, forbidden

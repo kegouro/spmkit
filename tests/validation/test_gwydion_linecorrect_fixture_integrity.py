@@ -24,17 +24,37 @@ JSON_PATH = FIXTURE_DIR / "linecorrect_reference.json"
 NPZ_PATH = FIXTURE_DIR / "linecorrect_reference.npz"
 
 STEP_CASES = [
-    "s01_constant_5x7", "s02_offset_asymmetric_4x6", "s03_positive_segment_4",
-    "s04_positive_segment_3", "s05_negative_segment_4", "s06_left_edge_segment",
-    "s07_right_edge_segment", "s08_two_segments", "s09_persistent_transition",
-    "s10_outlier_filter_only", "s11_pass2_change", "s12_1x1", "s12_1x5",
-    "s12_2x5", "s12_3x2", "s13_signed_zero",
+    "s01_constant_5x7",
+    "s02_offset_asymmetric_4x6",
+    "s03_positive_segment_4",
+    "s04_positive_segment_3",
+    "s05_negative_segment_4",
+    "s06_left_edge_segment",
+    "s07_right_edge_segment",
+    "s08_two_segments",
+    "s09_persistent_transition",
+    "s10_outlier_filter_only",
+    "s11_pass2_change",
+    "s12_1x1",
+    "s12_1x5",
+    "s12_2x5",
+    "s12_3x2",
+    "s13_signed_zero",
 ]
 INVERTED_CASES = [
-    "m01_all_positive", "m02_one_inverted_interior", "m03_first_inverted",
-    "m04_last_inverted", "m05_two_consecutive_inverted", "m06_alternating",
-    "m07_constant_field", "m08_constant_row", "m09_tie_anchor",
-    "m10_2x5", "m10_3x2", "m10_3x3", "m11_existing_mask_no_inverted",
+    "m01_all_positive",
+    "m02_one_inverted_interior",
+    "m03_first_inverted",
+    "m04_last_inverted",
+    "m05_two_consecutive_inverted",
+    "m06_alternating",
+    "m07_constant_field",
+    "m08_constant_row",
+    "m09_tie_anchor",
+    "m10_2x5",
+    "m10_3x2",
+    "m10_3x3",
+    "m11_existing_mask_no_inverted",
     "m12_existing_mask_with_inverted_row",
 ]
 ALL_CASES = STEP_CASES + INVERTED_CASES
@@ -75,8 +95,7 @@ def test_fixture_hashes_inventory_and_deterministic_loading() -> None:
     for case in manifest["cases"]:
         for info in case["arrays"].values():
             array = arrays[info["key"]]
-            assert _array_hash(array) == manifest["fixture"]["array_hashes"][
-                info["key"]]
+            assert _array_hash(array) == manifest["fixture"]["array_hashes"][info["key"]]
             if info["dims"] is not None:
                 assert array.shape == tuple(info["dims"])
             else:
@@ -98,7 +117,8 @@ def test_profile_identity_and_evidence_terminology() -> None:
     assert len(profile["config_h_sha256"]) == 64
     probe = manifest["probe"]
     assert probe["profile"].startswith(
-        "COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION")
+        "COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION"
+    )
     assert "not invoked" in probe["gui_not_invoked"]
     assert "/usr/bin/gwydion" in probe["gui_not_invoked"]
     assert probe["normal_sanitized_stdout_equal"] == "30/30"
@@ -108,7 +128,8 @@ def test_profile_identity_and_evidence_terminology() -> None:
     assert profile["canonical_reference_sha256"] == (
         profile["helper_sources"].get("modules/process/linecorrect.c")
         if "modules/process/linecorrect.c" in profile["helper_sources"]
-        else profile["canonical_reference_sha256"])
+        else profile["canonical_reference_sha256"]
+    )
 
 
 def test_separated_comparison_metrics() -> None:
@@ -138,20 +159,26 @@ def test_separated_comparison_metrics() -> None:
 def test_warning_classification_matches_dimensions() -> None:
     manifest, _ = _load()
     for case in manifest["cases"]:
-        expected = (case["family"] == "step"
-                    and (case["columns"] < 5 or case["rows"] < 5))
+        expected = case["family"] == "step" and (case["columns"] < 5 or case["rows"] < 5)
         assert case["expected_filter_warning"] == expected
         assert case["observed_filter_warnings"] == (1 if expected else 0)
         assert case["exit_code"] == 0
-    warn_cases = [c["case_identifier"] for c in manifest["cases"]
-                  if c["expected_filter_warning"]]
+    warn_cases = [c["case_identifier"] for c in manifest["cases"] if c["expected_filter_warning"]]
     assert set(warn_cases) == {
-        "s02_offset_asymmetric_4x6", "s03_positive_segment_4",
-        "s04_positive_segment_3", "s05_negative_segment_4",
-        "s06_left_edge_segment", "s07_right_edge_segment",
-        "s08_two_segments", "s09_persistent_transition",
-        "s11_pass2_change", "s12_1x1", "s12_1x5", "s12_2x5",
-        "s12_3x2", "s13_signed_zero",
+        "s02_offset_asymmetric_4x6",
+        "s03_positive_segment_4",
+        "s04_positive_segment_3",
+        "s05_negative_segment_4",
+        "s06_left_edge_segment",
+        "s07_right_edge_segment",
+        "s08_two_segments",
+        "s09_persistent_transition",
+        "s11_pass2_change",
+        "s12_1x1",
+        "s12_1x5",
+        "s12_2x5",
+        "s12_3x2",
+        "s13_signed_zero",
     }
 
 
@@ -166,19 +193,15 @@ def test_step_reconstruction_relations() -> None:
         fmi = arrays[f"{case_id}_probe_final_minus_input"]
         imf = arrays[f"{case_id}_probe_input_minus_final"]
         # probe emits the diffs as flat 1-D arrays
-        assert np.array_equal(
-            fmi.view(np.uint64), (final - inp).ravel().view(np.uint64))
-        assert np.array_equal(
-            imf.view(np.uint64), (inp - final).ravel().view(np.uint64))
+        assert np.array_equal(fmi.view(np.uint64), (final - inp).ravel().view(np.uint64))
+        assert np.array_equal(imf.view(np.uint64), (inp - final).ravel().view(np.uint64))
         # mean restoration: final == filtered + offset elementwise, with the
         # offset recorded by the probe (linecorrect.c:189)
         filtered = arrays[f"{case_id}_probe_field_after_conservative_filter"]
         offset = float.fromhex(case["scalars"]["final_mean_restoration_offset"]["hex"])
-        assert np.array_equal(
-            final.view(np.uint64), (filtered + offset).view(np.uint64))
+        assert np.array_equal(final.view(np.uint64), (filtered + offset).view(np.uint64))
         # and the offset equals original mean minus filtered sequential mean
-        original_mean = float.fromhex(
-            case["scalars"]["original_global_mean"]["hex"])
+        original_mean = float.fromhex(case["scalars"]["original_global_mean"]["hex"])
         sequential_mean = 0.0
         for v in filtered.ravel():
             sequential_mean += float(v)
@@ -204,8 +227,9 @@ def test_mark_input_non_mutation_and_masks() -> None:
 
 def test_m11_early_return_preserves_existing_mask() -> None:
     manifest, arrays = _load()
-    case = next(c for c in manifest["cases"]
-                if c["case_identifier"] == "m11_existing_mask_no_inverted")
+    case = next(
+        c for c in manifest["cases"] if c["case_identifier"] == "m11_existing_mask_no_inverted"
+    )
     before = arrays[case["arrays"]["existing_mask_before"]["key"]]
     after = arrays[case["arrays"]["existing_mask_after_operation"]["key"]]
     assert np.array_equal(before.view(np.uint64), after.view(np.uint64))
@@ -216,8 +240,11 @@ def test_m11_early_return_preserves_existing_mask() -> None:
 
 def test_m12_existing_mask_overwrite() -> None:
     manifest, arrays = _load()
-    case = next(c for c in manifest["cases"]
-                if c["case_identifier"] == "m12_existing_mask_with_inverted_row")
+    case = next(
+        c
+        for c in manifest["cases"]
+        if c["case_identifier"] == "m12_existing_mask_with_inverted_row"
+    )
     generated = arrays[case["arrays"]["generated_binary_mask"]["key"]]
     before = arrays[case["arrays"]["existing_mask_before"]["key"]]
     after = arrays[case["arrays"]["existing_mask_after_overwrite"]["key"]]
@@ -234,8 +261,7 @@ def test_s11_pass2_distinction() -> None:
     p2 = arrays[f"{case_id}_probe_field_after_pass2"]
     assert not np.array_equal(p1.view(np.uint64), p2.view(np.uint64))
     # the known changed columns are the middle row, cols 5..10
-    changed = np.flatnonzero(p1.view(np.uint64).ravel()
-                             != p2.view(np.uint64).ravel())
+    changed = np.flatnonzero(p1.view(np.uint64).ravel() != p2.view(np.uint64).ravel())
     assert list(changed) == [21 + c for c in range(5, 11)]
 
 
@@ -249,8 +275,7 @@ def test_signed_zero_evidence() -> None:
     assert neg_in == 4
     assert neg_fin == 0
     # every scalar has canonical hex + bits with exact correspondence
-    case = next(c for c in manifest["cases"]
-                if c["case_identifier"] == case_id)
+    case = next(c for c in manifest["cases"] if c["case_identifier"] == case_id)
     for label, pair in case["scalars"].items():
         value = float.fromhex(pair["hex"])
         bits = struct_unpack_bits(value)
@@ -259,6 +284,7 @@ def test_signed_zero_evidence() -> None:
 
 def struct_unpack_bits(value: float) -> int:
     import struct
+
     return struct.unpack(">Q", struct.pack(">d", value))[0]
 
 
@@ -267,9 +293,14 @@ def test_non_claims_and_policy_differences_present() -> None:
     evidence = manifest["evidence"]
     joined = " ".join(evidence["non_claims"])
     for fragment in [
-        "no universal", "no other Gwydion version", "NaN/Inf",
-        "vertical/column", "mask-aware Step", "Block Line Correction",
-        "GUI, undo, logging", "quantitative roughness",
+        "no universal",
+        "no other Gwydion version",
+        "NaN/Inf",
+        "vertical/column",
+        "mask-aware Step",
+        "Block Line Correction",
+        "GUI, undo, logging",
+        "quantitative roughness",
     ]:
         assert fragment.lower() in joined.lower()
     joined_policy = " ".join(evidence["deliberate_spmkit_policy_differences"]).lower()

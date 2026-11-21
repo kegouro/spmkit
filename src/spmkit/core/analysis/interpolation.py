@@ -59,11 +59,9 @@ def gwydion_interpolate_data_under_mask(
     reconstruction or statistical neutrality is claimed for the
     interpolated values.
     """
-    data = _validated_channel_data(channel,
-                                   operation="Interpolate Data Under Mask")
+    data = _validated_channel_data(channel, operation="Interpolate Data Under Mask")
     if mask.ndim != 2:
-        raise ValueError("Interpolate Data Under Mask requires a "
-                         "two-dimensional mask")
+        raise ValueError("Interpolate Data Under Mask requires a " "two-dimensional mask")
     if mask.size == 0:
         raise ValueError("Interpolate Data Under Mask requires non-empty mask")
     if not np.issubdtype(mask.dtype, np.number) or np.iscomplexobj(mask):
@@ -71,7 +69,6 @@ def gwydion_interpolate_data_under_mask(
     if not np.all(np.isfinite(mask)):
         raise ValueError("Interpolate Data Under Mask requires a finite mask")
     if mask.shape != data.shape:
-        raise ValueError("Interpolate Data Under Mask mask shape must match "
-                         "the channel")
+        raise ValueError("Interpolate Data Under Mask mask shape must match " "the channel")
     result = _gwydion_laplace_result(data, mask)
     return channel.with_data(result.corrected_field)

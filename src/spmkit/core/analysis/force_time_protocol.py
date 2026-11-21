@@ -61,16 +61,25 @@ TRIANGULAR_LOADING = "TRIANGULAR_LOADING"
 INSUFFICIENT_PROTOCOL = "INSUFFICIENT_PROTOCOL"
 AMBIGUOUS_PROTOCOL = "AMBIGUOUS_PROTOCOL"
 
-PROTOCOL_CLASSES = (LOADING_RAMP, UNLOADING_RAMP, DISPLACEMENT_HOLD, FORCE_HOLD,
-                    CREEP, STRESS_RELAXATION, TRIANGULAR_LOADING,
-                    INSUFFICIENT_PROTOCOL, AMBIGUOUS_PROTOCOL)
+PROTOCOL_CLASSES = (
+    LOADING_RAMP,
+    UNLOADING_RAMP,
+    DISPLACEMENT_HOLD,
+    FORCE_HOLD,
+    CREEP,
+    STRESS_RELAXATION,
+    TRIANGULAR_LOADING,
+    INSUFFICIENT_PROTOCOL,
+    AMBIGUOUS_PROTOCOL,
+)
 
 #: trusted instrument labels read from curve.metadata, in priority order
 _TRUSTED_PROTOCOL_KEYS = ("protocol", "viscoelastic_protocol", "experiment_type")
 
 
-def validate_time_axis(time: np.ndarray, *, label: str = "time",
-                       allow_duplicates: bool = False) -> np.ndarray:
+def validate_time_axis(
+    time: np.ndarray, *, label: str = "time", allow_duplicates: bool = False
+) -> np.ndarray:
     """Validate one time axis against the frozen temporal contract."""
     t = np.asarray(time, dtype=np.float64)
     if t.ndim != 1 or t.size == 0:
@@ -82,9 +91,9 @@ def validate_time_axis(time: np.ndarray, *, label: str = "time",
         if np.any(d == 0.0) and not allow_duplicates:
             raise ViscoelasticityError(
                 DUPLICATE_TIMESTAMPS,
-                f"{label}: duplicate timestamps (strictly increasing required)")
-        raise ViscoelasticityError(NONMONOTONIC_TIME,
-                                   f"{label}: times must be strictly increasing")
+                f"{label}: duplicate timestamps (strictly increasing required)",
+            )
+        raise ViscoelasticityError(NONMONOTONIC_TIME, f"{label}: times must be strictly increasing")
     return t
 
 
@@ -125,12 +134,14 @@ def _segment_time(segment: ForceSegment) -> np.ndarray:
         raise ViscoelasticityError(
             MISSING_TIME,
             f"segment {segment.segment_type!r} has no time axis; pass "
-            "assume_uniform_rate to reconstruct one explicitly")
+            "assume_uniform_rate to reconstruct one explicitly",
+        )
     return validate_time_axis(np.asarray(segment.time, dtype=np.float64))
 
 
-def _rate_regions(t: np.ndarray, disp: np.ndarray, force: np.ndarray,
-                  rate_threshold: float, min_hold_points: int) -> list[dict]:
+def _rate_regions(
+    t: np.ndarray, disp: np.ndarray, force: np.ndarray, rate_threshold: float, min_hold_points: int
+) -> list[dict]:
     """Classify contiguous rate regions on one segment.
 
     Rates are finite differences d(disp)/dt and d(force)/dt.  A sample is
@@ -186,7 +197,7 @@ def _rate_regions(t: np.ndarray, disp: np.ndarray, force: np.ndarray,
             j += 1
         runs.append((i, j, out[i]))
         i = j + 1
-    for (a, b, kind) in runs:
+    for a, b, kind in runs:
         if kind.startswith("hold") and (b - a + 1) < min_hold_points:
             for k in range(a, b + 1):
                 out[k] = "loading" if rate_disp[min(k, n - 2)] >= 0 else "unloading"
@@ -197,10 +208,15 @@ def _rate_regions(t: np.ndarray, disp: np.ndarray, force: np.ndarray,
         while j + 1 < n and out[j + 1] == out[i]:
             j += 1
         if out[i].startswith("hold") or True:
-            regions.append({
-                "kind": out[i], "start": int(i), "end": int(j),
-                "t0": float(t[i]), "t1": float(t[j]),
-            })
+            regions.append(
+                {
+                    "kind": out[i],
+                    "start": int(i),
+                    "end": int(j),
+                    "t0": float(t[i]),
+                    "t1": float(t[j]),
+                }
+            )
         i = j + 1
     return regions
 
@@ -237,31 +253,37 @@ def identify_viscoelastic_protocol(
         label = curve.metadata.get(key) if isinstance(curve.metadata, dict) else None
         if isinstance(label, str) and label.upper() in PROTOCOL_CLASSES:
             return ViscoelasticProtocolResult(
-                protocol_type=label.upper(), regions=(),
-                method="trusted_label", trusted_label=key,
-                provenance={"label_key": key})
+                protocol_type=label.upper(),
+                regions=(),
+                method="trusted_label",
+                trusted_label=key,
+                provenance={"label_key": key},
+            )
     if assume_uniform_rate is not None:
         if assume_uniform_rate <= 0.0:
             raise ValueError("assume_uniform_rate must be positive (s per sample)")
-        warnings.append(
-            f"reconstructed clock: uniform rate {assume_uniform_rate} s/sample assumed")
+        warnings.append(f"reconstructed clock: uniform rate {assume_uniform_rate} s/sample assumed")
 
     segments: list[tuple[str, np.ndarray, np.ndarray, np.ndarray]] = []
     for s in curve.segments:
         if s.time is None:
             if assume_uniform_rate is None:
                 raise ViscoelasticityError(
-                    MISSING_TIME,
-                    f"segment {s.segment_type!r} lacks a time axis")
+                    MISSING_TIME, f"segment {s.segment_type!r} lacks a time axis"
+                )
             t = np.arange(len(s), dtype=np.float64) * assume_uniform_rate
         else:
             t = validate_time_axis(np.asarray(s.time, dtype=np.float64))
         if s.force is None:
-            raise ViscoelasticityError(CURVE_NOT_FIT_ELIGIBLE,
-                                       f"segment {s.segment_type!r} is not calibrated")
+            raise ViscoelasticityError(
+                CURVE_NOT_FIT_ELIGIBLE, f"segment {s.segment_type!r} is not calibrated"
+            )
         disp = np.asarray(s.raw_height, dtype=np.float64)
-        if contact_index is not None and contact_coordinate is not None \
-                and s.segment_type == "extend":
+        if (
+            contact_index is not None
+            and contact_coordinate is not None
+            and s.segment_type == "extend"
+        ):
             sep = np.asarray(s.raw_height, dtype=np.float64)
             ind = sep - float(contact_coordinate)
             disp = np.where(np.arange(sep.size) >= contact_index, ind, disp)
@@ -277,9 +299,16 @@ def identify_viscoelastic_protocol(
             r["segment"] = seg_name
         all_regions.extend(regs)
         for r in regs:
-            regions_out.append(ProtocolRegion(
-                kind=r["kind"], segment=seg_name, start_index=r["start"],
-                end_index=r["end"], start_time=r["t0"], end_time=r["t1"]))
+            regions_out.append(
+                ProtocolRegion(
+                    kind=r["kind"],
+                    segment=seg_name,
+                    start_index=r["start"],
+                    end_index=r["end"],
+                    start_time=r["t0"],
+                    end_time=r["t1"],
+                )
+            )
 
     holds = [r for r in all_regions if r["kind"].startswith("hold")]
     loading = [r for r in all_regions if r["kind"] == "loading"]
@@ -288,9 +317,13 @@ def identify_viscoelastic_protocol(
 
     if not holds and not extend_loading:
         return ViscoelasticProtocolResult(
-            protocol_type=INSUFFICIENT_PROTOCOL, regions=tuple(regions_out),
-            method="rate_regions", ambiguity=True, warnings=tuple(warnings),
-            provenance={"reason": "no loading or hold region identified"})
+            protocol_type=INSUFFICIENT_PROTOCOL,
+            regions=tuple(regions_out),
+            method="rate_regions",
+            ambiguity=True,
+            warnings=tuple(warnings),
+            provenance={"reason": "no loading or hold region identified"},
+        )
 
     force_holds = [r for r in holds if r["kind"] == "hold_force"]
     disp_holds = [r for r in holds if r["kind"] == "hold_displacement"]
@@ -302,7 +335,7 @@ def identify_viscoelastic_protocol(
         # STRESS_RELAXATION: displacement hold with decaying force
         h = disp_holds[0]
         seg = next(s for s in segments if s[0] == h["segment"])
-        fh = seg[3][h["start"]: h["end"] + 1]
+        fh = seg[3][h["start"] : h["end"] + 1]
         f0 = float(fh[0])
         decay = (float(fh[-1]) - f0) / abs(f0) if f0 != 0.0 else 0.0
         if f0 != 0.0 and decay <= -force_threshold_fraction:
@@ -321,12 +354,18 @@ def identify_viscoelastic_protocol(
         ambiguity = True
         warnings.append("both force-hold and displacement-hold regions found")
     return ViscoelasticProtocolResult(
-        protocol_type=protocol, regions=tuple(regions_out), method="rate_regions",
-        ambiguity=ambiguity, warnings=tuple(warnings),
-        provenance={"rate_threshold": rate_threshold,
-                    "min_hold_points": min_hold_points,
-                    "min_hold_fraction": min_hold_fraction,
-                    "assume_uniform_rate": assume_uniform_rate})
+        protocol_type=protocol,
+        regions=tuple(regions_out),
+        method="rate_regions",
+        ambiguity=ambiguity,
+        warnings=tuple(warnings),
+        provenance={
+            "rate_threshold": rate_threshold,
+            "min_hold_points": min_hold_points,
+            "min_hold_fraction": min_hold_fraction,
+            "assume_uniform_rate": assume_uniform_rate,
+        },
+    )
 
 
 @dataclass(frozen=True)
@@ -400,19 +439,25 @@ def compute_indentation_rate(
     )
 
 
-def _hold_window(prepared: ForcePreparationResult,
-                 protocol: ViscoelasticProtocolResult,
-                 hold_kind: str, segment: str) -> tuple[np.ndarray, np.ndarray,
-                                                        np.ndarray, np.ndarray]:
+def _hold_window(
+    prepared: ForcePreparationResult,
+    protocol: ViscoelasticProtocolResult,
+    hold_kind: str,
+    segment: str,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     approach = prepared.curve.extend
-    if approach is None or approach.separation is None or approach.force is None \
-            or approach.time is None:
+    if (
+        approach is None
+        or approach.separation is None
+        or approach.force is None
+        or approach.time is None
+    ):
         raise ViscoelasticityError(CURVE_NOT_FIT_ELIGIBLE, "no prepared approach branch")
     reg = protocol.region(hold_kind, segment)
     if reg is None:
         raise ViscoelasticityError(
-            EMPTY_REGION,
-            f"protocol {protocol.protocol_type!r} has no {hold_kind!r} region")
+            EMPTY_REGION, f"protocol {protocol.protocol_type!r} has no {hold_kind!r} region"
+        )
     t = validate_time_axis(np.asarray(approach.time, dtype=np.float64))
     a, b = reg.start_index, reg.end_index + 1
     if b > t.size:
@@ -420,8 +465,9 @@ def _hold_window(prepared: ForcePreparationResult,
     sep = np.asarray(approach.separation, dtype=np.float64)
     ind = sep - float(prepared.contact.selected.coordinate)
     f = np.asarray(approach.force, dtype=np.float64)
-    if not (np.isfinite(t[a:b]).all() and np.isfinite(ind[a:b]).all()
-            and np.isfinite(f[a:b]).all()):
+    if not (
+        np.isfinite(t[a:b]).all() and np.isfinite(ind[a:b]).all() and np.isfinite(f[a:b]).all()
+    ):
         raise ViscoelasticityError(NONFINITE_RESPONSE, "non-finite hold response")
     return t[a:b], ind[a:b], f[a:b], np.arange(a, b)
 
@@ -529,7 +575,9 @@ def extract_creep_compliance(
         hold_start_time=float(t[0]),
         force_hold_value=f_hold,
         indentation_at_hold_start=float(ind[0]),
-        warnings=("compliance increment = (indentation - indentation(0))/"
-                  "F_hold (raw m/N, robust to the contact-coordinate "
-                  "offset; not a calibrated material compliance)",),
+        warnings=(
+            "compliance increment = (indentation - indentation(0))/"
+            "F_hold (raw m/N, robust to the contact-coordinate "
+            "offset; not a calibrated material compliance)",
+        ),
     )

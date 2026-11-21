@@ -128,13 +128,15 @@ def test_family_filtering() -> None:
         "img.filter.prewitt_y",
         "img.filter.rank",
         "img.filter.sobel_x",
-        "img.filter.sobel_y"]
+        "img.filter.sobel_y",
+    ]
     scanline = filter_operations(family="IMG.SCANLINE")
     assert {o.operation_id for o in scanline} == {
         "img.scanline.step_line_correction",
         "img.scanline.mark_scars",
         "img.scanline.remove_scars",
-        "img.scanline.step_block_correction"}
+        "img.scanline.step_block_correction",
+    }
 
 
 def test_maturity_filtering() -> None:
@@ -149,7 +151,8 @@ def test_combined_filters() -> None:
     assert {o.operation_id for o in out} == {
         "img.level.align_rows_polynomial",
         "img.level.align_rows_modus",
-        "img.level.align_rows_match"}
+        "img.level.align_rows_match",
+    }
     with pytest.raises(RegistryError):
         filter_operations(maturity="NOT_A_MATURITY")
 
@@ -167,17 +170,23 @@ def test_lazy_imports() -> None:
     # resolution must not eagerly import every analysis module; verify by
     # checking that resolving a scanline op does not import the filters module
     import sys
+
     resolve_callable("img.scanline.step_line_correction")
     assert "spmkit.core.analysis.filters" in sys.modules  # already loaded via package
     # the registry itself must not import analysis at module scope
     import spmkit.core.registry as reg
+
     src = inspect.getsource(reg)
     assert "import spmkit.core.analysis" not in src
 
 
 def test_derivative_records_maturity_split() -> None:
-    for op_id in ("img.filter.sobel_x", "img.filter.sobel_y",
-                  "img.filter.prewitt_x", "img.filter.prewitt_y"):
+    for op_id in (
+        "img.filter.sobel_x",
+        "img.filter.sobel_y",
+        "img.filter.prewitt_x",
+        "img.filter.prewitt_y",
+    ):
         spec = get_operation(op_id)
         assert spec.maturity == Maturity.CROSS_VALIDATED
         assert spec.reference.software == "Gwydion"
@@ -231,18 +240,22 @@ def test_signature_consistency_all_operations() -> None:
         assert set(reg_by_name) == set(sig_by_name), op_id
         for name, p in reg_by_name.items():
             sp = sig_by_name[name]
-            want_kind = inspect.Parameter.POSITIONAL_OR_KEYWORD \
-                if p.kind == "positional" else inspect.Parameter.KEYWORD_ONLY
+            want_kind = (
+                inspect.Parameter.POSITIONAL_OR_KEYWORD
+                if p.kind == "positional"
+                else inspect.Parameter.KEYWORD_ONLY
+            )
             assert sp.kind == want_kind, (op_id, name)
             if p.has_default:
                 # JSON cannot encode tuples: normalize sequence defaults
                 # (tuple in the signature vs list in the registry)
-                if isinstance(sp.default, (list, tuple)) and isinstance(
-                        p.default, (list, tuple)):
+                if isinstance(sp.default, (list, tuple)) and isinstance(p.default, (list, tuple)):
                     assert list(sp.default) == list(p.default), (op_id, name)
                 else:
-                    assert sp.default == p.default or (
-                        sp.default is None and p.default is None), (op_id, name)
+                    assert sp.default == p.default or (sp.default is None and p.default is None), (
+                        op_id,
+                        name,
+                    )
             else:
                 assert sp.default is inspect.Parameter.empty, (op_id, name)
 
@@ -283,6 +296,7 @@ def _patch_ledger(mutator, *, root_mutator=None):
 # helper: rebuild from a raw dict via the internal loader
 def _build_from(data):
     import spmkit.core.registry as reg
+
     orig = reg._load_json
     reg._load_json = lambda: data
     try:
@@ -293,8 +307,7 @@ def _build_from(data):
         reg._REGISTRY = None
 
 
-_RESOURCE = importlib.resources.files("spmkit.core").joinpath(
-    "capabilities.json")
+_RESOURCE = importlib.resources.files("spmkit.core").joinpath("capabilities.json")
 BASE = json.loads(_RESOURCE.read_text(encoding="utf-8"))
 
 
@@ -304,12 +317,14 @@ def _valid_record():
 
 def _expect_reject(mutated, label):
     import spmkit.core.registry as reg
+
     with pytest.raises(reg.RegistryError):
         _build_from({"schema_version": 1, "capabilities": [mutated]})
 
 
 def test_top_level_type_validation() -> None:
     import spmkit.core.registry as reg
+
     with pytest.raises(reg.RegistryError):
         _build_from({"schema_version": True, "capabilities": []})
     with pytest.raises(reg.RegistryError):
@@ -387,8 +402,13 @@ def test_reference_validation() -> None:
     rec["reference"] = "not-an-object"
     _expect_reject(rec, "reference string")
     rec = _valid_record()
-    rec["reference"] = {"software": "Gwydion", "version": "2.71",
-                        "name": "X", "profile": "Y", "bogus": 1}
+    rec["reference"] = {
+        "software": "Gwydion",
+        "version": "2.71",
+        "name": "X",
+        "profile": "Y",
+        "bogus": 1,
+    }
     _expect_reject(rec, "reference unknown field")
     rec = _valid_record()
     del rec["reference"]["profile"]

@@ -77,9 +77,17 @@ def _curve_from_phantom(case) -> ForceCurve:
 
     def _seg(seg_type, direction, z, f):
         return ForceSegment(
-            segment_type=seg_type, direction=direction, raw_height=z,
-            raw_deflection=f / k, time=None, cycle=0, state="force_n",
-            deflection=f / k, force=f, separation=None, metadata={},
+            segment_type=seg_type,
+            direction=direction,
+            raw_height=z,
+            raw_deflection=f / k,
+            time=None,
+            cycle=0,
+            state="force_n",
+            deflection=f / k,
+            force=f,
+            separation=None,
+            metadata={},
         )
 
     retract_force = case.force[::-1].copy()
@@ -89,10 +97,15 @@ def _curve_from_phantom(case) -> ForceCurve:
             _seg("retract", "backward", case.height[::-1].copy(), retract_force),
         ),
         calibration=Calibration(
-            invols=3e-8, spring_constant=k, method="thermal",
-            temperature=300, provenance={},
+            invols=3e-8,
+            spring_constant=k,
+            method="thermal",
+            temperature=300,
+            provenance={},
         ),
-        position=None, index=0, metadata={},
+        position=None,
+        index=0,
+        metadata={},
     )
 
 
@@ -112,12 +125,8 @@ def test_fixture_regeneration_deterministic() -> None:
     out1.mkdir(parents=True, exist_ok=True)
     out2.mkdir(parents=True, exist_ok=True)
     try:
-        subprocess.run(
-            [sys.executable, str(GENERATOR), str(out1)], check=True, capture_output=True
-        )
-        subprocess.run(
-            [sys.executable, str(GENERATOR), str(out2)], check=True, capture_output=True
-        )
+        subprocess.run([sys.executable, str(GENERATOR), str(out1)], check=True, capture_output=True)
+        subprocess.run([sys.executable, str(GENERATOR), str(out2)], check=True, capture_output=True)
         for name in ("force_mechanics_reference.json", "force_mechanics_reference.npz"):
             assert (out1 / name).read_bytes() == (out2 / name).read_bytes()
             assert (out1 / name).read_bytes() == (FIXTURE_DIR / name).read_bytes()
@@ -150,8 +159,7 @@ def test_clean_cases_have_zero_pre_contact_force() -> None:
     """Clean (noise-free, offset-free) phantoms carry zero pre-contact
     force so the FS-F1 baseline correction cannot subtract model signal."""
     cases = generate_phantoms()
-    for cid in ("M01", "M02", "M03", "M04", "M05", "M09", "M11", "M12",
-                "M15", "M16"):
+    for cid in ("M01", "M02", "M03", "M04", "M05", "M09", "M11", "M12", "M15", "M16"):
         case = cases[cid]
         pre = slice(0, max(case.contact_index - 5, 0))
         assert np.all(np.abs(case.force[pre]) < 1e-14), cid
@@ -167,20 +175,31 @@ def test_oracle_forward_equations_parity() -> None:
     d = np.linspace(1e-9, 1e-6, 97)
     assert np.allclose(
         forward_model("hertz_sphere", d, {"E": 5e3, "R": 1e-6, "poisson": 0.3}),
-        forward_hertz(d, EST, 1e-6), rtol=1e-12)
+        forward_hertz(d, EST, 1e-6),
+        rtol=1e-12,
+    )
     assert np.allclose(
-        forward_model("sneddon_cone", d,
-                      {"E": 5e3, "alpha": math.radians(20.0), "poisson": 0.3}),
-        forward_sneddon(d, EST, math.radians(20.0)), rtol=1e-12)
+        forward_model("sneddon_cone", d, {"E": 5e3, "alpha": math.radians(20.0), "poisson": 0.3}),
+        forward_sneddon(d, EST, math.radians(20.0)),
+        rtol=1e-12,
+    )
     assert np.allclose(
         forward_model("flat_punch", d, {"E": 5e3, "R": 1e-6, "poisson": 0.3}),
-        forward_punch(d, EST, 1e-6), rtol=1e-12)
+        forward_punch(d, EST, 1e-6),
+        rtol=1e-12,
+    )
     assert np.allclose(
         forward_model("dmt", d, {"E": 5e3, "R": 1e-6, "poisson": 0.3, "F_adh": 2e-9}),
-        forward_dmt(d, EST, 1e-6, 2e-9), rtol=1e-9, atol=1e-13)
+        forward_dmt(d, EST, 1e-6, 2e-9),
+        rtol=1e-9,
+        atol=1e-13,
+    )
     assert np.allclose(
         forward_model("jkr", d, {"E": 5e3, "R": 1e-6, "poisson": 0.3, "w": 1e-3}),
-        forward_jkr(d, EST, 1e-6, 1e-3), rtol=1e-9, atol=1e-13)
+        forward_jkr(d, EST, 1e-6, 1e-3),
+        rtol=1e-9,
+        atol=1e-13,
+    )
 
 
 def test_jkr_reduces_to_hertz_without_adhesion() -> None:
@@ -209,8 +228,7 @@ def test_clean_hertz_family_recovery() -> None:
     for cid, (fn, kwargs) in fits.items():
         prepared = _prepared(cases[cid])
         ind = compute_indentation(prepared)
-        window = select_contact_fit_window(prepared, ind, min_indentation=0.0,
-                                           min_points=10)
+        window = select_contact_fit_window(prepared, ind, min_indentation=0.0, min_points=10)
         fit = fn(prepared, ind, window, **kwargs)
         assert fit.success, cid
         rel = abs(fit.parameters["E"] - 5e3) / 5e3
@@ -224,8 +242,7 @@ def test_noisy_recovery_within_ten_percent() -> None:
     for cid in ("M06", "M10", "M13"):
         prepared = _prepared(cases[cid])
         ind = compute_indentation(prepared)
-        window = select_contact_fit_window(prepared, ind, min_indentation=0.0,
-                                           min_points=10)
+        window = select_contact_fit_window(prepared, ind, min_indentation=0.0, min_points=10)
         fit = fit_hertz_sphere(prepared, ind, window, tip_radius=1e-6)
         rel = abs(fit.parameters["E"] - 5e3) / 5e3
         assert rel < 0.10, (cid, rel)
@@ -237,8 +254,7 @@ def test_offset_slope_robustness() -> None:
     prepared = _prepared(case)
     ind = compute_indentation(prepared)
     window = select_contact_fit_window(prepared, ind, min_indentation=0.0, min_points=10)
-    fit = fit_sneddon_cone(prepared, ind, window,
-                           half_angle=math.radians(20.0))
+    fit = fit_sneddon_cone(prepared, ind, window, half_angle=math.radians(20.0))
     rel = abs(fit.parameters["E"] - 5e3) / 5e3
     assert rel < 0.05, rel
 
@@ -250,16 +266,14 @@ def test_adhesive_recovery_trimmed_windows() -> None:
     cases = generate_phantoms()
     prepared = _prepared(cases["M04"])
     ind = compute_indentation(prepared)
-    window = select_contact_fit_window(prepared, ind, min_indentation=1.8e-7,
-                                       min_points=10)
+    window = select_contact_fit_window(prepared, ind, min_indentation=1.8e-7, min_points=10)
     fit = fit_dmt(prepared, ind, window, tip_radius=1e-6)
     assert abs(fit.parameters["E"] - 5e3) / 5e3 < 0.30
     assert abs(fit.parameters["F_adh"] - 2e-9) < 1.5e-9
 
     prepared = _prepared(cases["M05"])
     ind = compute_indentation(prepared)
-    window = select_contact_fit_window(prepared, ind, min_indentation=2e-7,
-                                       min_points=10)
+    window = select_contact_fit_window(prepared, ind, min_indentation=2e-7, min_points=10)
     fit = fit_jkr(prepared, ind, window, tip_radius=1e-6)
     assert fit.success
     assert abs(fit.parameters["E"] - 5e3) / 5e3 < 0.20
@@ -332,10 +346,12 @@ def test_sensitivity_and_bootstrap_deterministic() -> None:
     assert a.n_configurations <= 512
     assert a.n_skipped == b.n_skipped
 
-    boot_a = bootstrap_force_fit((prepared, ind, window, "hertz_sphere"),
-                                 samples=60, seed=11, tip_radius=1e-6)
-    boot_b = bootstrap_force_fit((prepared, ind, window, "hertz_sphere"),
-                                 samples=60, seed=11, tip_radius=1e-6)
+    boot_a = bootstrap_force_fit(
+        (prepared, ind, window, "hertz_sphere"), samples=60, seed=11, tip_radius=1e-6
+    )
+    boot_b = bootstrap_force_fit(
+        (prepared, ind, window, "hertz_sphere"), samples=60, seed=11, tip_radius=1e-6
+    )
     assert boot_a.parameter_samples == boot_b.parameter_samples
     assert boot_a.n_success >= 0.8 * 60
     # the diagnostic status is a policy, not a probability
@@ -355,10 +371,8 @@ def test_volume_mechanics_end_to_end() -> None:
     volume mixes clean, noisy, contact-offset, adhesive and failed curves:
     a vertical proof, not an experimental map validation."""
     cases = generate_phantoms()
-    curves = [_curve_from_phantom(cases[cid])
-              for cid in ("M01", "M06", "M09", "M04", "M18")]
-    volume = ForceVolume.from_curves(curves, grid_shape=(1, 5), x_range=1e-6,
-                                     y_range=5e-6)
+    curves = [_curve_from_phantom(cases[cid]) for cid in ("M01", "M06", "M09", "M04", "M18")]
+    volume = ForceVolume.from_curves(curves, grid_shape=(1, 5), x_range=1e-6, y_range=5e-6)
     res = fit_force_volume_mechanics(volume, tip_radius=1e-6, min_points=20)
     assert res.modulus_map.shape == (5,)
     assert res.failed_mask[4]  # M18 flat curve is explicitly masked
@@ -370,11 +384,11 @@ def test_volume_mechanics_end_to_end() -> None:
     assert res.provenance["failed_reasons"] == {4: "ForceFoundationError"}
     # mixed-model region: the cone curve must be mapped to the cone model
     mixed = ForceVolume.from_curves(
-        [_curve_from_phantom(cases["M02"])], grid_shape=(1, 1), x_range=1e-6,
-        y_range=1e-6)
+        [_curve_from_phantom(cases["M02"])], grid_shape=(1, 1), x_range=1e-6, y_range=1e-6
+    )
     res2 = fit_force_volume_mechanics(
-        mixed, tip_radius=1e-6, min_points=20,
-        models=("hertz_sphere", "sneddon_cone"))
+        mixed, tip_radius=1e-6, min_points=20, models=("hertz_sphere", "sneddon_cone")
+    )
     assert res2.model_map[0] == "sneddon_cone"
     # replay is identical (NaN-safe: the failed curve stays NaN-masked)
     res3 = fit_force_volume_mechanics(volume, tip_radius=1e-6, min_points=20)
@@ -408,8 +422,10 @@ def test_external_nanite_contact_overlap() -> None:
         nanite = [v for k, v in o.items() if k.startswith("contact_") and isinstance(v, int)]
         assert nanite, cid
         curve = _curve_from_phantom_arrays(
-            np.asarray(case["approach_height"]), np.asarray(case["approach_force"]),
-            np.asarray(case["retract_height"]), np.asarray(case["retract_force"]),
+            np.asarray(case["approach_height"]),
+            np.asarray(case["approach_force"]),
+            np.asarray(case["retract_height"]),
+            np.asarray(case["retract_force"]),
             case["spring_constant"],
         )
         try:
@@ -427,17 +443,27 @@ def test_external_nanite_contact_overlap() -> None:
 def _curve_from_phantom_arrays(za, fa, zr, fr, k) -> ForceCurve:
     def _seg(seg_type, direction, z, f):
         return ForceSegment(
-            segment_type=seg_type, direction=direction, raw_height=z,
-            raw_deflection=f / k, time=None, cycle=0, state="force_n",
-            deflection=f / k, force=f, separation=None, metadata={},
+            segment_type=seg_type,
+            direction=direction,
+            raw_height=z,
+            raw_deflection=f / k,
+            time=None,
+            cycle=0,
+            state="force_n",
+            deflection=f / k,
+            force=f,
+            separation=None,
+            metadata={},
         )
 
     return ForceCurve(
-        segments=(_seg("extend", "forward", za, fa),
-                  _seg("retract", "backward", zr, fr)),
-        calibration=Calibration(invols=3e-8, spring_constant=k, method="thermal",
-                                temperature=300, provenance={}),
-        position=None, index=0, metadata={},
+        segments=(_seg("extend", "forward", za, fa), _seg("retract", "backward", zr, fr)),
+        calibration=Calibration(
+            invols=3e-8, spring_constant=k, method="thermal", temperature=300, provenance={}
+        ),
+        position=None,
+        index=0,
+        metadata={},
     )
 
 

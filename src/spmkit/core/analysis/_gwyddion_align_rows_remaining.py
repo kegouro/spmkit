@@ -140,9 +140,7 @@ def _validated_mask(value: ArrayLike | None, shape: tuple[int, int]) -> FloatArr
 
 def _validated_enum(value: object, enum_type: type[IntEnum], label: str) -> IntEnum:
     """Validate an integer enum value against a Gwydion enum."""
-    if isinstance(value, (bool, np.bool_)) or not isinstance(
-        value, (int, np.integer, IntEnum)
-    ):
+    if isinstance(value, (bool, np.bool_)) or not isinstance(value, (int, np.integer, IntEnum)):
         raise TypeError(f"Gwydion Align Rows {label} must be an integer enum value")
     try:
         return enum_type(int(value))
@@ -157,9 +155,7 @@ def _validated_degree(value: object) -> int:
     The frozen kernel only requires ``degree >= 0`` (``g_return_if_fail``);
     the public API layer applies the GUI parameter range ``0..5``.
     """
-    if isinstance(value, (bool, np.bool_)) or not isinstance(
-        value, (int, np.integer)
-    ):
+    if isinstance(value, (bool, np.bool_)) or not isinstance(value, (int, np.integer)):
         raise TypeError("Gwydion Align Rows degree must be an integer")
     degree = int(value)
     if degree < 0:
@@ -326,11 +322,9 @@ def _polynomial_degree_ge1(
         zx = [0.0] * (degree + 1)
         mrow = None if mask is None else mask[row]
         for column in range(xres):
-            if mrow is not None and mode is _GwydionMaskMode.INCLUDE \
-                    and float(mrow[column]) <= 0.0:
+            if mrow is not None and mode is _GwydionMaskMode.INCLUDE and float(mrow[column]) <= 0.0:
                 continue
-            if mrow is not None and mode is _GwydionMaskMode.EXCLUDE \
-                    and float(mrow[column]) >= 1.0:
+            if mrow is not None and mode is _GwydionMaskMode.EXCLUDE and float(mrow[column]) >= 1.0:
                 continue
             p = 1.0
             x = column - xc
@@ -412,8 +406,7 @@ def _match_corrections(
         ma = None if mask is None else mask[row - 1]
         mb = None if mask is None else mask[row]
 
-        def masked(column: int, ma: FloatArray | None = ma,
-                   mb: FloatArray | None = mb) -> bool:
+        def masked(column: int, ma: FloatArray | None = ma, mb: FloatArray | None = mb) -> bool:
             if mode is _GwydionMaskMode.INCLUDE:
                 if ma is None or mb is None:
                     return False
@@ -490,9 +483,7 @@ def _row_statuses(input_data: FloatArray, corrected: FloatArray) -> tuple[str, .
     cb = np.ascontiguousarray(corrected).view(np.uint64)
     statuses: list[str] = []
     for row in range(input_data.shape[0]):
-        statuses.append(
-            "corrected" if not np.array_equal(ib[row], cb[row]) else "unchanged"
-        )
+        statuses.append("corrected" if not np.array_equal(ib[row], cb[row]) else "unchanged")
     return tuple(statuses)
 
 
@@ -531,9 +522,7 @@ def _gwydion_align_rows_remaining_result(
         _validated_enum(direction, _GwydionAlignRowsDirection, "direction"),
     )
     selected_degree = (
-        _validated_degree(degree)
-        if selected_method is _GwydionAlignRowsMethod.POLYNOMIAL
-        else 0
+        _validated_degree(degree) if selected_method is _GwydionAlignRowsMethod.POLYNOMIAL else 0
     )
     if selected_method is _GwydionAlignRowsMethod.MATCH and values.shape[1] < 2:
         raise ValueError(
@@ -617,15 +606,9 @@ def _gwydion_align_rows_remaining_result(
         branch=branch,
         poly_coefficients=coeffs,
         modus_total_median=modus_median,
-        modus_row_estimates=(
-            None if modus_estimates is None else tuple(modus_estimates)
-        ),
-        match_pair_lambdas=(
-            None if pair_lambdas is None else tuple(pair_lambdas)
-        ),
-        match_pair_wsum0=(
-            None if pair_wsum0 is None else tuple(pair_wsum0)
-        ),
+        modus_row_estimates=(None if modus_estimates is None else tuple(modus_estimates)),
+        match_pair_lambdas=(None if pair_lambdas is None else tuple(pair_lambdas)),
+        match_pair_wsum0=(None if pair_wsum0 is None else tuple(pair_wsum0)),
         input_mutation_evidence=True,
         mask_mutation_evidence=True,
     )

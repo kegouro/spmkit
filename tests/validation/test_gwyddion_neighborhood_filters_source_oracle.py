@@ -18,14 +18,15 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-FIXTURE_DIR = Path(__file__).resolve().parent / "fixtures" / "gwyddion" / \
-    "neighborhood_filters"
+FIXTURE_DIR = Path(__file__).resolve().parent / "fixtures" / "gwyddion" / "neighborhood_filters"
 NPZ_PATH = FIXTURE_DIR / "neighborhood_filters_reference.npz"
 JSON_PATH = FIXTURE_DIR / "neighborhood_filters_reference.json"
 
 sys.path.insert(0, str(FIXTURE_DIR))
 from oracle_neighborhood_filters_source import (  # noqa: E402  # isort: skip
-    elliptic_spans, oracle_gaussian_filter, oracle_median_filter,
+    elliptic_spans,
+    oracle_gaussian_filter,
+    oracle_median_filter,
     oracle_rank_filter,
 )
 
@@ -78,9 +79,14 @@ def test_all_59_canonical_cases_bitwise() -> None:
         op = case["operation"]
         if op == "rank":
             p1, p2, both, diff = _PCTS[cid]
-            ref = oracle_rank_filter(inp, radius=case["radius"],
-                                     percentile1=p1, percentile2=p2,
-                                     both=both, difference=diff)
+            ref = oracle_rank_filter(
+                inp,
+                radius=case["radius"],
+                percentile1=p1,
+                percentile2=p2,
+                both=both,
+                difference=diff,
+            )
             assert ref.rank1 == case["rank1"], cid
             assert ref.footprint_count == case["footprint_count"], cid
         elif op == "median":
@@ -88,29 +94,29 @@ def test_all_59_canonical_cases_bitwise() -> None:
             assert ref.rank == case["rank"], cid
             assert ref.footprint_count == case["footprint_count"], cid
         else:
-            ref = oracle_gaussian_filter(inp, sigma=float.fromhex(
-                case["sigma_bits"]))
+            ref = oracle_gaussian_filter(inp, sigma=float.fromhex(case["sigma_bits"]))
             assert ref.res == case["res"], cid
-        assert np.array_equal(_bits(ref.result),
-                              _probe(cid, "result").view(np.uint64)), cid
+        assert np.array_equal(_bits(ref.result), _probe(cid, "result").view(np.uint64)), cid
         assert np.array_equal(_bits(inp), _bits(_probe(cid, "input_after"))), cid
 
 
 def test_rank_output_modes() -> None:
     inp = _probe("R18_BOTH_OUTPUTS", "input")
-    ref = oracle_rank_filter(inp, radius=2, percentile1=0.75, percentile2=0.25,
-                             both=True, difference=False)
-    assert np.array_equal(_bits(ref.result2),
-                          _probe("R18_BOTH_OUTPUTS", "result2").view(np.uint64))
+    ref = oracle_rank_filter(
+        inp, radius=2, percentile1=0.75, percentile2=0.25, both=True, difference=False
+    )
+    assert np.array_equal(_bits(ref.result2), _probe("R18_BOTH_OUTPUTS", "result2").view(np.uint64))
     # difference mode: compiled result IS result1 - result2
     inp = _probe("R19_DIFFERENCE_OUTPUT", "input")
-    ref = oracle_rank_filter(inp, radius=2, percentile1=0.75, percentile2=0.25,
-                             both=True, difference=True)
+    ref = oracle_rank_filter(
+        inp, radius=2, percentile1=0.75, percentile2=0.25, both=True, difference=True
+    )
     r1 = oracle_rank_filter(inp, radius=2, percentile1=0.75).result
     r2 = oracle_rank_filter(inp, radius=2, percentile1=0.25).result
     assert np.array_equal(_bits(ref.result), _bits(r1 - r2))
-    assert np.array_equal(_bits(ref.result),
-                          _probe("R19_DIFFERENCE_OUTPUT", "result").view(np.uint64))
+    assert np.array_equal(
+        _bits(ref.result), _probe("R19_DIFFERENCE_OUTPUT", "result").view(np.uint64)
+    )
 
 
 def test_rank_endpoint_dispatch() -> None:
@@ -128,8 +134,11 @@ def test_rank_endpoint_dispatch() -> None:
 
 def test_rank_percentile_conversion_edges() -> None:
     # R06/R07/R08: GWY_ROUND boundary behavior with n=13 (radius 2)
-    for cid in ("R06_PERCENTILE_ROUND_DOWN_EDGE", "R07_PERCENTILE_EXACT_BOUNDARY",
-                "R08_PERCENTILE_ROUND_UP_EDGE"):
+    for cid in (
+        "R06_PERCENTILE_ROUND_DOWN_EDGE",
+        "R07_PERCENTILE_EXACT_BOUNDARY",
+        "R08_PERCENTILE_ROUND_UP_EDGE",
+    ):
         inp = _probe(cid, "input")
         p1, _, _, _ = _PCTS[cid]
         ref = oracle_rank_filter(inp, radius=2, percentile1=p1)
@@ -141,8 +150,7 @@ def test_median_even_sizes() -> None:
         inp = _probe(cid, "input")
         ref = oracle_median_filter(inp, size=_CASES[cid]["size"])
         assert ref.rank == _CASES[cid]["rank"], cid
-        assert np.array_equal(_bits(ref.result),
-                              _probe(cid, "result").view(np.uint64)), cid
+        assert np.array_equal(_bits(ref.result), _probe(cid, "result").view(np.uint64)), cid
     # even size 2: footprint is the full 2x2 box, upper median rank n//2=2
     spans, n = elliptic_spans(2, 2)
     assert n == 4
@@ -150,41 +158,53 @@ def test_median_even_sizes() -> None:
 
 
 def test_median_borders_extend() -> None:
-    for cid in ("M09_CORNER", "M10_TOP_EDGE", "M11_LEFT_EDGE",
-                "M12_BOTTOM_RIGHT_EDGE", "M13_SIZE_LARGER_THAN_FIELD",
-                "M14_ONE_BY_ONE", "M15_ONE_BY_N", "M16_N_BY_ONE"):
+    for cid in (
+        "M09_CORNER",
+        "M10_TOP_EDGE",
+        "M11_LEFT_EDGE",
+        "M12_BOTTOM_RIGHT_EDGE",
+        "M13_SIZE_LARGER_THAN_FIELD",
+        "M14_ONE_BY_ONE",
+        "M15_ONE_BY_N",
+        "M16_N_BY_ONE",
+    ):
         inp = _probe(cid, "input")
         ref = oracle_median_filter(inp, size=_CASES[cid]["size"])
-        assert np.array_equal(_bits(ref.result),
-                              _probe(cid, "result").view(np.uint64)), cid
+        assert np.array_equal(_bits(ref.result), _probe(cid, "result").view(np.uint64)), cid
 
 
 def test_gaussian_mirror_borders_and_intermediate() -> None:
-    for cid in ("G06_IMPULSE_INTERIOR", "G07_IMPULSE_CORNER",
-                "G08_IMPULSE_EDGE", "G10_ONE_BY_N", "G11_N_BY_ONE"):
+    for cid in (
+        "G06_IMPULSE_INTERIOR",
+        "G07_IMPULSE_CORNER",
+        "G08_IMPULSE_EDGE",
+        "G10_ONE_BY_N",
+        "G11_N_BY_ONE",
+    ):
         inp = _probe(cid, "input")
-        ref = oracle_gaussian_filter(inp, sigma=float.fromhex(
-            _CASES[cid]["sigma_bits"]))
-        assert np.array_equal(_bits(ref.horizontal),
-                              _probe(cid, "horizontal").view(np.uint64)), cid
-        assert np.array_equal(_bits(ref.result),
-                              _probe(cid, "result").view(np.uint64)), cid
+        ref = oracle_gaussian_filter(inp, sigma=float.fromhex(_CASES[cid]["sigma_bits"]))
+        assert np.array_equal(_bits(ref.horizontal), _probe(cid, "horizontal").view(np.uint64)), cid
+        assert np.array_equal(_bits(ref.result), _probe(cid, "result").view(np.uint64)), cid
 
 
 def test_gaussian_resolution_and_cap() -> None:
-    for cid in ("G02_SIGMA_TOOL_MIN", "G03_SIGMA_DEFAULT", "G04_SIGMA_TOOL_MAX",
-                "G12_NON_SQUARE_WIDE", "G13_NON_SQUARE_TALL",
-                "G14_RESOLUTION_CAP", "G15_ODD_RESOLUTION_FORCING"):
+    for cid in (
+        "G02_SIGMA_TOOL_MIN",
+        "G03_SIGMA_DEFAULT",
+        "G04_SIGMA_TOOL_MAX",
+        "G12_NON_SQUARE_WIDE",
+        "G13_NON_SQUARE_TALL",
+        "G14_RESOLUTION_CAP",
+        "G15_ODD_RESOLUTION_FORCING",
+    ):
         inp = _probe(cid, "input")
         sigma = float.fromhex(_CASES[cid]["sigma_bits"])
         ref = oracle_gaussian_filter(inp, sigma=sigma)
         assert ref.res == _CASES[cid]["res"], cid
         assert ref.res % 2 == 1, cid
         if cid != "G05_SIGMA_ZERO_LIBRARY":
-            assert np.array_equal(_bits(ref.kernel),
-                                  _probe(cid, "kernel").view(np.uint64)), cid
-            assert np.array_equal(_bits(ref.result),
-                                  _probe(cid, "result").view(np.uint64)), cid
+            assert np.array_equal(_bits(ref.kernel), _probe(cid, "kernel").view(np.uint64)), cid
+            assert np.array_equal(_bits(ref.result), _probe(cid, "result").view(np.uint64)), cid
 
 
 def test_gaussian_sigma_zero_library_only() -> None:
@@ -192,8 +212,9 @@ def test_gaussian_sigma_zero_library_only() -> None:
     ref = oracle_gaussian_filter(inp, sigma=0.0)
     assert ref.res == 0
     assert np.array_equal(_bits(ref.result), _bits(inp))
-    assert np.array_equal(_bits(ref.result),
-                          _probe("G05_SIGMA_ZERO_LIBRARY", "result").view(np.uint64))
+    assert np.array_equal(
+        _bits(ref.result), _probe("G05_SIGMA_ZERO_LIBRARY", "result").view(np.uint64)
+    )
 
 
 def test_gaussian_constant_rounding_preserved() -> None:
@@ -218,17 +239,17 @@ def test_signed_zero() -> None:
         elif op == "median":
             ref = oracle_median_filter(inp, size=case["size"])
         else:
-            ref = oracle_gaussian_filter(inp, sigma=float.fromhex(
-                case["sigma_bits"]))
-        assert np.array_equal(_bits(ref.result),
-                              _probe(cid, "result").view(np.uint64)), cid
+            ref = oracle_gaussian_filter(inp, sigma=float.fromhex(case["sigma_bits"]))
+        assert np.array_equal(_bits(ref.result), _probe(cid, "result").view(np.uint64)), cid
 
 
 def test_non_finite_rejection() -> None:
     bad = np.array([[1.0, np.inf], [3.0, 4.0]])
-    for fn, kw in ((oracle_rank_filter, {"radius": 1, "percentile1": 0.5}),
-                   (oracle_median_filter, {"size": 3}),
-                   (oracle_gaussian_filter, {"sigma": 1.0})):
+    for fn, kw in (
+        (oracle_rank_filter, {"radius": 1, "percentile1": 0.5}),
+        (oracle_median_filter, {"size": 3}),
+        (oracle_gaussian_filter, {"sigma": 1.0}),
+    ):
         with pytest.raises(ValueError, match="finite"):
             fn(bad, **kw)
     nan = np.array([[1.0, np.nan], [3.0, 4.0]])
@@ -252,8 +273,14 @@ def test_parameter_validation() -> None:
 
 def test_no_fixture_reads_no_production_imports() -> None:
     src = inspect.getsource(sys.modules["oracle_neighborhood_filters_source"])
-    for forbidden in ("reference.json", "reference.npz", "np.load",
-                      "json.load", "spmkit", "generate_fixtures",
-                      "oracle_neighborhood_filters_declarative"):
+    for forbidden in (
+        "reference.json",
+        "reference.npz",
+        "np.load",
+        "json.load",
+        "spmkit",
+        "generate_fixtures",
+        "oracle_neighborhood_filters_declarative",
+    ):
         assert forbidden not in src, forbidden
     assert "case_identifier" not in src

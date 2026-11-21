@@ -22,14 +22,28 @@ JSON_PATH = FIXTURE_DIR / "scars_laplace_reference.json"
 NPZ_PATH = FIXTURE_DIR / "scars_laplace_reference.npz"
 
 MARK_CASES = [
-    "C01_constant_field", "C02_positive_hard_seeded", "C03_negative_hard_seeded",
-    "C04_both_polarities", "C05_soft_only_no_seed", "C06_hard_with_soft_shoulder",
-    "C07_detached_soft_run", "C08_width_exactly_max", "C09_width_max_plus_one",
-    "C10_length_exactly_min", "C11_length_min_minus_one", "C12_run_touching_edges",
-    "C13_first_last_row", "C14_adjacent_bands_fmax", "C15_min_dims",
-    "C16_threshold_sanitize", "C17_existing_replace", "C18_existing_union",
-    "C19_existing_intersection", "C20_no_detection_existing",
-    "C20b_no_detection_existing_union", "C21_signed_zero",
+    "C01_constant_field",
+    "C02_positive_hard_seeded",
+    "C03_negative_hard_seeded",
+    "C04_both_polarities",
+    "C05_soft_only_no_seed",
+    "C06_hard_with_soft_shoulder",
+    "C07_detached_soft_run",
+    "C08_width_exactly_max",
+    "C09_width_max_plus_one",
+    "C10_length_exactly_min",
+    "C11_length_min_minus_one",
+    "C12_run_touching_edges",
+    "C13_first_last_row",
+    "C14_adjacent_bands_fmax",
+    "C15_min_dims",
+    "C16_threshold_sanitize",
+    "C17_existing_replace",
+    "C18_existing_union",
+    "C19_existing_intersection",
+    "C20_no_detection_existing",
+    "C20b_no_detection_existing_union",
+    "C21_signed_zero",
 ]
 
 _manifest = json.loads(JSON_PATH.read_text())
@@ -44,8 +58,12 @@ def _bits(array: np.ndarray) -> np.ndarray:
 
 def _channel(data: np.ndarray) -> SPMChannel:
     return SPMChannel(
-        name="parity", data=np.asarray(data, dtype=np.float64), unit="nm",
-        x_range=float(data.shape[1]), y_range=float(data.shape[0]))
+        name="parity",
+        data=np.asarray(data, dtype=np.float64),
+        unit="nm",
+        x_range=float(data.shape[1]),
+        y_range=float(data.shape[0]),
+    )
 
 
 def _probe(case_id: str, label: str) -> np.ndarray:
@@ -65,28 +83,28 @@ def _run_public(case_id: str) -> tuple[np.ndarray, dict]:
     case = _CASES[case_id]
     ints = case["ints"]
     scalars = case["scalars"]
-    existing = (_probe(case_id, "existing_before")
-                if "existing_before" in case["arrays"] else None)
+    existing = _probe(case_id, "existing_before") if "existing_before" in case["arrays"] else None
     combine = "replace"
     if ints.get("combine", 0):
-        combine = ("union" if ints.get("combine_type", 0) == 0
-                   else "intersection")
+        combine = "union" if ints.get("combine_type", 0) == 0 else "intersection"
     threshold_high = float.fromhex(scalars["threshold_high"]["hex"])
     threshold_low = float.fromhex(scalars["threshold_low"]["hex"])
     kwargs = {
-        "threshold_high": threshold_high, "threshold_low": threshold_low,
-        "min_length": ints["min_len"], "max_width": ints["max_width"],
+        "threshold_high": threshold_high,
+        "threshold_low": threshold_low,
+        "min_length": ints["min_len"],
+        "max_width": ints["max_width"],
         "polarity": _POLARITY[ints["polarity_enum"]],
-        "existing_mask": existing, "combine": combine,
+        "existing_mask": existing,
+        "combine": combine,
     }
     if case_id in ("C05_soft_only_no_seed", "C07_detached_soft_run"):
         from spmkit.core.analysis._gwydion_mark_scars import (  # noqa: PLC0415
             _gwydion_mark_scars_result,
         )
-        return _gwydion_mark_scars_result(
-            _probe(case_id, "input"), **kwargs).final_mask, ints
-    return (gwydion_mark_scars(_channel(_probe(case_id, "input")), **kwargs),
-            ints)
+
+        return _gwydion_mark_scars_result(_probe(case_id, "input"), **kwargs).final_mask, ints
+    return (gwydion_mark_scars(_channel(_probe(case_id, "input")), **kwargs), ints)
 
 
 def test_all_22_mark_cases_bitwise_exact() -> None:
@@ -98,8 +116,7 @@ def test_all_22_mark_cases_bitwise_exact() -> None:
     for case_id in MARK_CASES:
         case = _CASES[case_id]
         mask, ints = _run_public(case_id)
-        label = ("module_mask" if "module_mask" in case["arrays"]
-                 else "kernel_mask")
+        label = "module_mask" if "module_mask" in case["arrays"] else "kernel_mask"
         probe = _probe(case_id, label)
         assert mask.shape == probe.shape, case_id
         pb = _bits(probe).ravel()
@@ -109,8 +126,7 @@ def test_all_22_mark_cases_bitwise_exact() -> None:
         total_exact += int(np.count_nonzero(pb == ob))
         # classification parity: nonzero count and mask-present flag
         assert int(np.count_nonzero(mask)) == ints["mask_nonzero"], case_id
-        assert (np.any(mask == 1.0)) == bool(ints["module_mask_present"]), \
-            case_id
+        assert (np.any(mask == 1.0)) == bool(ints["module_mask_present"]), case_id
     assert total_elements == 1726
     assert total_exact == 1726
     assert max_abs == 0.0
@@ -126,8 +142,8 @@ def test_mark_input_and_existing_mask_non_mutation() -> None:
         assert np.array_equal(_bits(inp), _bits(after)), case_id
         if "existing_before" in case["arrays"]:
             assert np.array_equal(
-                _bits(_probe(case_id, "existing_before")),
-                _bits(_probe(case_id, "existing_after"))), case_id
+                _bits(_probe(case_id, "existing_before")), _bits(_probe(case_id, "existing_after"))
+            ), case_id
 
 
 def test_effective_thresholds() -> None:
@@ -140,8 +156,22 @@ def test_effective_thresholds() -> None:
 
 
 def test_positive_cases_effective_and_zero_cases_empty() -> None:
-    positive = {"C02", "C03", "C04", "C06", "C08", "C10", "C12", "C14",
-                "C15", "C16", "C17", "C18", "C19", "C20b"}
+    positive = {
+        "C02",
+        "C03",
+        "C04",
+        "C06",
+        "C08",
+        "C10",
+        "C12",
+        "C14",
+        "C15",
+        "C16",
+        "C17",
+        "C18",
+        "C19",
+        "C20b",
+    }
     zero = {"C01", "C05", "C07", "C09", "C11", "C13", "C20", "C21"}
     for case_id in MARK_CASES:
         mask, _ = _run_public(case_id)

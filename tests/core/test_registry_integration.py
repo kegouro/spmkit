@@ -23,14 +23,12 @@ from spmkit.core.analysis import (
 from spmkit.core.models import SPMChannel
 
 REPRESENTATIVE: list[tuple[str, Callable[..., object], dict[str, object]]] = [
-    ("img.filter.rank", gwyddion_rank_filter,
-     {"radius": 1, "percentile": 0.5}),
+    ("img.filter.rank", gwyddion_rank_filter, {"radius": 1, "percentile": 0.5}),
     ("img.filter.gaussian", gwyddion_gaussian_filter, {"sigma": 1.0}),
     ("img.filter.sobel_x", gwyddion_sobel_x, {}),
     ("img.filter.gradient_magnitude", gwyddion_gradient_magnitude, {}),
     ("img.filter.gradient_direction", gradient_direction, {}),
-    ("img.level.align_rows_polynomial", gwyddion_align_rows_polynomial,
-     {"degree": 1}),
+    ("img.level.align_rows_polynomial", gwyddion_align_rows_polynomial, {"degree": 1}),
     ("img.scanline.step_line_correction", gwydion_step_line_correction, {}),
 ]
 PAIR_OPS: set[str] = {"img.filter.gradient_magnitude", "img.filter.gradient_direction"}
@@ -38,8 +36,15 @@ PAIR_OPS: set[str] = {"img.filter.gradient_magnitude", "img.filter.gradient_dire
 
 def _channel(data: np.ndarray) -> SPMChannel:
     rows, cols = data.shape
-    return SPMChannel(name="t", data=data, unit="m", x_range=float(cols),
-                      y_range=float(rows), direction="forward", group="g")
+    return SPMChannel(
+        name="t",
+        data=data,
+        unit="m",
+        x_range=float(cols),
+        y_range=float(rows),
+        direction="forward",
+        group="g",
+    )
 
 
 def _bits(a: np.ndarray) -> np.ndarray:
@@ -67,6 +72,7 @@ def test_registry_resolution_equals_direct_call() -> None:
 
 def test_all_17_resolve_and_run() -> None:
     from spmkit.core import list_operations
+
     rng = np.random.default_rng(5)
     data = rng.normal(size=(10, 10))
     ch = _channel(data)
@@ -77,7 +83,8 @@ def test_all_17_resolve_and_run() -> None:
         for spec in list_operations()
     }
     resolve_only = {
-        op_id for op_id, names in required_params.items()
+        op_id
+        for op_id, names in required_params.items()
         if len(names) > 1 or (names and names[0] != "channel")
     }
     for spec in list_operations():

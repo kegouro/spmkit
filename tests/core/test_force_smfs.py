@@ -40,8 +40,9 @@ T = 298.0
 LC, LP, B = 100e-9, 0.5e-9, 1e-9
 
 
-def _wlc_data(x_max: float = 90e-9, n: int = 200, noise: float = 0.0,
-              lc: float = LC, lp: float = LP):
+def _wlc_data(
+    x_max: float = 90e-9, n: int = 200, noise: float = 0.0, lc: float = LC, lp: float = LP
+):
     rng = np.random.default_rng(0)
     x = np.linspace(1e-9, x_max, n)
     f = wlc_force(x, lc, lp, T)
@@ -123,21 +124,46 @@ def _prepared_curve(n_retract: int = 300):
     t_a = np.linspace(-0.5, 0.0, 120)
     curve = ForceCurve(
         segments=(
-            ForceSegment(segment_type="extend", direction="forward", raw_height=z_a,
-                         raw_deflection=f_a / 10.0, time=t_a, cycle=0, state="force_n",
-                         deflection=f_a / 10.0, force=f_a, separation=None, metadata={}),
-            ForceSegment(segment_type="retract", direction="backward", raw_height=sep + f / 10.0,
-                         raw_deflection=f / 10.0, time=t, cycle=0, state="force_n",
-                         deflection=f / 10.0, force=f, separation=None, metadata={}),
+            ForceSegment(
+                segment_type="extend",
+                direction="forward",
+                raw_height=z_a,
+                raw_deflection=f_a / 10.0,
+                time=t_a,
+                cycle=0,
+                state="force_n",
+                deflection=f_a / 10.0,
+                force=f_a,
+                separation=None,
+                metadata={},
+            ),
+            ForceSegment(
+                segment_type="retract",
+                direction="backward",
+                raw_height=sep + f / 10.0,
+                raw_deflection=f / 10.0,
+                time=t,
+                cycle=0,
+                state="force_n",
+                deflection=f / 10.0,
+                force=f,
+                separation=None,
+                metadata={},
+            ),
         ),
-        calibration=Calibration(invols=3e-8, spring_constant=10.0, method="thermal",
-                                temperature=300, provenance={}),
-        position=None, index=0, metadata={})
+        calibration=Calibration(
+            invols=3e-8, spring_constant=10.0, method="thermal", temperature=300, provenance={}
+        ),
+        position=None,
+        index=0,
+        metadata={},
+    )
     return curve
 
 
 def test_extension_reference_policies() -> None:
     from spmkit.core.analysis import prepare_force_curve
+
     curve = _prepared_curve()
     prepared = prepare_force_curve(curve)
     # offset policy
@@ -162,6 +188,7 @@ def test_extension_reference_policies() -> None:
 
 def test_extension_estimator_zero_crossing() -> None:
     from spmkit.core.analysis import prepare_force_curve
+
     curve = _prepared_curve()
     prepared = prepare_force_curve(curve)
     ext = compute_molecular_extension(prepared, reference="estimator")
@@ -218,8 +245,9 @@ def test_ewlc_clean_recovery_bounds() -> None:
     assert abs(fit.parameters["Lp"] - LP) / LP < 0.20
     # the stretch modulus is weakly identifiable from a single branch
     # (documented); the response reconstruction must be accurate
-    pred = extensible_wlc_force(x, fit.parameters["Lc"], fit.parameters["Lp"],
-                                fit.parameters["S"], T)
+    pred = extensible_wlc_force(
+        x, fit.parameters["Lc"], fit.parameters["Lp"], fit.parameters["S"], T
+    )
     assert np.max(np.abs(pred - f)) / np.max(np.abs(f)) < 0.02
 
 
@@ -249,9 +277,9 @@ def test_polymer_fit_determinism() -> None:
 
 def test_polymer_comparison_prefers_true_model() -> None:
     x, f = _wlc_data()
-    cmp = __import__("spmkit.core.analysis.force_smfs",
-                     fromlist=["compare_polymer_models"]).compare_polymer_models(
-        x, f, models=("worm_like_chain", "freely_jointed_chain"))
+    cmp = __import__(
+        "spmkit.core.analysis.force_smfs", fromlist=["compare_polymer_models"]
+    ).compare_polymer_models(x, f, models=("worm_like_chain", "freely_jointed_chain"))
     assert cmp.recommended_model == "worm_like_chain"
     assert cmp.weights["worm_like_chain"] > 0.9
 
@@ -274,10 +302,17 @@ def _sawtooth_extension(n: int = 400):
     sep = 3.0e-6 + x
     t = np.linspace(0.0, 1.0, n)
     return MolecularExtensionResult(
-        extension=x, separation=sep, force=f, time=t,
-        retract_indices=np.arange(n), reference_policy="offset",
-        reference_coordinate=3.0e-6, reference_index=None, valid=np.ones(n, dtype=bool),
-        provenance={})
+        extension=x,
+        separation=sep,
+        force=f,
+        time=t,
+        retract_indices=np.arange(n),
+        reference_policy="offset",
+        reference_coordinate=3.0e-6,
+        reference_index=None,
+        valid=np.ones(n, dtype=bool),
+        provenance={},
+    )
 
 
 def test_event_detection_tp_fp_fn() -> None:
@@ -299,10 +334,17 @@ def test_event_detection_rejects_noise_peak() -> None:
     peak = int(np.argmin(np.abs(ext.extension - 5e-9)))
     f[peak] += float(np.max(f)) * 0.01  # a 1% spike (below the 5-sigma drop)
     ext2 = MolecularExtensionResult(
-        extension=ext.extension, separation=ext.separation, force=f, time=ext.time,
-        retract_indices=ext.retract_indices, reference_policy="offset",
-        reference_coordinate=3.0e-6, reference_index=None,
-        valid=ext.valid, provenance={})
+        extension=ext.extension,
+        separation=ext.separation,
+        force=f,
+        time=ext.time,
+        retract_indices=ext.retract_indices,
+        reference_policy="offset",
+        reference_coordinate=3.0e-6,
+        reference_index=None,
+        valid=ext.valid,
+        provenance={},
+    )
     ev = detect_unfolding_events(ext2, noise_sigma=1e-13)
     assert len(ev.events) == 1  # the noise peak is not a false positive
     assert len(ev.rejected) >= 1  # retained with the reason
@@ -312,10 +354,17 @@ def test_event_detection_no_events_typed() -> None:
     x = np.linspace(0.0, 90e-9, 300)
     f = wlc_force(x, LC, LP, T)  # smooth branch, no events
     ext = MolecularExtensionResult(
-        extension=x, separation=3.0e-6 + x, force=f, time=np.linspace(0, 1, 300),
-        retract_indices=np.arange(300), reference_policy="offset",
-        reference_coordinate=3.0e-6, reference_index=None,
-        valid=np.ones(300, dtype=bool), provenance={})
+        extension=x,
+        separation=3.0e-6 + x,
+        force=f,
+        time=np.linspace(0, 1, 300),
+        retract_indices=np.arange(300),
+        reference_policy="offset",
+        reference_coordinate=3.0e-6,
+        reference_index=None,
+        valid=np.ones(300, dtype=bool),
+        provenance={},
+    )
     with pytest.raises(SmfsError) as ei:
         detect_unfolding_events(ext, noise_sigma=1e-13)
     assert ei.value.code == "NO_EVENTS"
@@ -339,8 +388,7 @@ def test_loading_rates_measured_vs_theoretical() -> None:
     ext = _sawtooth_extension()
     ev = detect_unfolding_events(ext, noise_sigma=1e-13)
     ev2 = quantify_unfolding_events(ext, ev)
-    rates = compute_event_loading_rates(ext, ev2, pulling_velocity=1e-6,
-                                        effective_stiffness=1e-4)
+    rates = compute_event_loading_rates(ext, ev2, pulling_velocity=1e-6, effective_stiffness=1e-4)
     r = rates[0]
     assert r.local_slope > 0.0  # force rises before the rupture
     assert r.units == "N/s"
@@ -353,10 +401,17 @@ def test_loading_rates_measured_vs_theoretical() -> None:
 def test_loading_rates_require_time() -> None:
     ext = _sawtooth_extension()
     ext2 = MolecularExtensionResult(
-        extension=ext.extension, separation=ext.separation, force=ext.force,
-        time=None, retract_indices=ext.retract_indices, reference_policy="offset",
-        reference_coordinate=3.0e-6, reference_index=None, valid=ext.valid,
-        provenance={})
+        extension=ext.extension,
+        separation=ext.separation,
+        force=ext.force,
+        time=None,
+        retract_indices=ext.retract_indices,
+        reference_policy="offset",
+        reference_coordinate=3.0e-6,
+        reference_index=None,
+        valid=ext.valid,
+        provenance={},
+    )
     ev = detect_unfolding_events(ext2, noise_sigma=1e-13)
     ev2 = quantify_unfolding_events(ext2, ev)
     with pytest.raises(SmfsError) as ei:
@@ -417,8 +472,7 @@ def test_dhs_forward_and_bell_limit() -> None:
     assert abs(k_dhs - k_be) < 1e-6
     # domain violation typed
     with pytest.raises(SmfsError) as ei:
-        fit_dudko_hummer_szabo(np.array([1e3, 1e4, 1e5, 1e6, 1e7]),
-                               np.array([1e-10] * 5), nu=0.4)
+        fit_dudko_hummer_szabo(np.array([1e3, 1e4, 1e5, 1e6, 1e7]), np.array([1e-10] * 5), nu=0.4)
     assert ei.value.code == "INVALID_MODEL_PARAMETER"
 
 
@@ -430,14 +484,14 @@ def test_dhs_recovery_bounds() -> None:
     for r in rates:
         grid = np.linspace(0.0, 1.4e-10, 3000)
         from spmkit.core.analysis.force_smfs import dhs_pdf
+
         p = dhs_pdf(grid, r, 1.0, 1e-9, 1e-19, 2.0 / 3.0, T)
         cdf = np.cumsum(p) * (grid[1] - grid[0])
         cdf = cdf / cdf[-1]
         u = rng.random(30)
         forces.extend(np.interp(u, cdf, grid))
         rate_list.extend([r] * 30)
-    fit = fit_dudko_hummer_szabo(np.asarray(rate_list), np.asarray(forces),
-                                 temperature=T)
+    fit = fit_dudko_hummer_szabo(np.asarray(rate_list), np.asarray(forces), temperature=T)
     assert fit.success
     # the energy-landscape parameters are weakly identifiable (the fit can
     # land at the physical bounds on a finite sample): the honest evidence
@@ -446,13 +500,19 @@ def test_dhs_recovery_bounds() -> None:
     assert 1e-22 <= fit.parameters["dG"] <= 1e-11
     assert any("not claimed to be physically unique" in w for w in fit.warnings)
     # the predicted per-rate median forces reproduce the data within 30%
-    med_data = np.array([float(np.median(forces[i * 30:(i + 1) * 30]))
-                         for i in range(4)])
+    med_data = np.array([float(np.median(forces[i * 30 : (i + 1) * 30])) for i in range(4)])
     grid = np.linspace(0.0, 1.5e-10, 400)
     med_pred = np.empty(4)
     for i, r in enumerate(rates):
-        pdf = dhs_pdf(grid, r, fit.parameters["k0"], fit.parameters["x_beta"],
-                      fit.parameters["dG"], 2.0 / 3.0, T)
+        pdf = dhs_pdf(
+            grid,
+            r,
+            fit.parameters["k0"],
+            fit.parameters["x_beta"],
+            fit.parameters["dG"],
+            2.0 / 3.0,
+            T,
+        )
         cdf = np.cumsum(pdf)
         cdf = cdf / cdf[-1]
         med_pred[i] = float(np.interp(0.5, cdf, grid))
@@ -509,8 +569,9 @@ def test_km_undefined_median() -> None:
     assert km.exponential_rate is None
     assert any("UNDEFINED_MEDIAN" in w for w in km.warnings)
     with pytest.raises(SmfsError) as ei:
-        estimate_force_clamp_survival(np.array([1.0, -2.0]), np.array([0.0, 0.0]),
-                                      force_level=1e-11)
+        estimate_force_clamp_survival(
+            np.array([1.0, -2.0]), np.array([0.0, 0.0]), force_level=1e-11
+        )
     assert ei.value.code == "CENSORING_INVALID"
 
 
@@ -535,13 +596,20 @@ def test_population_aggregation_and_ambiguity() -> None:
 
 
 def test_batch_retains_failures() -> None:
-    batch = analyze_smfs_batch([
-        {"curve_id": "A", "ok": True, "events": [
-            {"rupture_force": 1e-10, "delta_contour_length": 1e-7,
-             "loading_rate": 1e3}]},
-        {"curve_id": "B", "curve_index": 1, "ok": False, "failure": "MISSING_TIME"},
-        {"curve_id": "C", "curve_index": 2, "ok": False, "failure": "NO_EVENTS"},
-    ], group_by="none")
+    batch = analyze_smfs_batch(
+        [
+            {
+                "curve_id": "A",
+                "ok": True,
+                "events": [
+                    {"rupture_force": 1e-10, "delta_contour_length": 1e-7, "loading_rate": 1e3}
+                ],
+            },
+            {"curve_id": "B", "curve_index": 1, "ok": False, "failure": "MISSING_TIME"},
+            {"curve_id": "C", "curve_index": 2, "ok": False, "failure": "NO_EVENTS"},
+        ],
+        group_by="none",
+    )
     assert batch.n_curves == 3
     assert batch.n_ok == 1
     assert batch.n_failed == 2

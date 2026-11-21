@@ -67,8 +67,7 @@ def fit_force_volume_viscoelasticity(
             protocol = identify_viscoelastic_protocol(curve, min_hold_points=min_hold_points)
             prepared = prepare_force_curve(curve)
             response = extract_stress_relaxation(prepared, protocol)
-            fit = fit_standard_linear_solid(response, tip_radius=tip_radius,
-                                            poisson=poisson)
+            fit = fit_standard_linear_solid(response, tip_radius=tip_radius, poisson=poisson)
             e0 = fit.parameters.get("E0", np.nan)
             e_inf = fit.parameters.get("E_inf", np.nan)
             tau = fit.parameters.get("tau_relax", np.nan)
@@ -79,8 +78,9 @@ def fit_force_volume_viscoelasticity(
             model_map[i] = fit.model
             protocol_map[i] = protocol.protocol_type
             ambiguity_map[i] = protocol.ambiguity
-            sensitivity_map[i] = fit.condition_number if np.isfinite(fit.condition_number) \
-                else np.nan
+            sensitivity_map[i] = (
+                fit.condition_number if np.isfinite(fit.condition_number) else np.nan
+            )
         except ViscoelasticityError as exc:
             failed[i] = True
             failed_reasons[i] = exc.code
@@ -88,14 +88,28 @@ def fit_force_volume_viscoelasticity(
             failed[i] = True
             failed_reasons[i] = type(exc).__name__
     provenance: dict[str, object] = {
-        "pipeline": ["identify_viscoelastic_protocol", "prepare_force_curve",
-                     "extract_stress_relaxation", "fit_standard_linear_solid"],
-        "tip_radius": tip_radius, "poisson": poisson, "n_curves": n,
-        "n_failed": int(failed.sum()), "failed_reasons": failed_reasons,
+        "pipeline": [
+            "identify_viscoelastic_protocol",
+            "prepare_force_curve",
+            "extract_stress_relaxation",
+            "fit_standard_linear_solid",
+        ],
+        "tip_radius": tip_radius,
+        "poisson": poisson,
+        "n_curves": n,
+        "n_failed": int(failed.sum()),
+        "failed_reasons": failed_reasons,
         "deterministic": True,
     }
     return ForceVolumeViscoelasticityResult(
-        modulus_0_map=modulus_0, modulus_inf_map=modulus_inf,
-        viscosity_map=viscosity, relaxation_time_map=tau_map, model_map=model_map,
-        ambiguity_map=ambiguity_map, sensitivity_map=sensitivity_map,
-        protocol_map=protocol_map, failed_mask=failed, provenance=provenance)
+        modulus_0_map=modulus_0,
+        modulus_inf_map=modulus_inf,
+        viscosity_map=viscosity,
+        relaxation_time_map=tau_map,
+        model_map=model_map,
+        ambiguity_map=ambiguity_map,
+        sensitivity_map=sensitivity_map,
+        protocol_map=protocol_map,
+        failed_mask=failed,
+        provenance=provenance,
+    )

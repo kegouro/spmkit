@@ -48,7 +48,7 @@ import numpy as np
 
 FloatArray = np.ndarray
 
-_CG_TOLERANCE = 1e-15      # relative residual target
+_CG_TOLERANCE = 1e-15  # relative residual target
 _CG_MIN_ITERATIONS = 4
 
 
@@ -65,8 +65,7 @@ def _validated_field(value: object, *, operation: str) -> np.ndarray:
     return np.array(source, dtype=np.float64, order="C", copy=True)
 
 
-def _validated_mask(value: object, shape: tuple[int, int],
-                    *, operation: str) -> np.ndarray:
+def _validated_mask(value: object, shape: tuple[int, int], *, operation: str) -> np.ndarray:
     mask = _validated_field(value, operation=operation)
     if mask.shape != shape:
         raise ValueError(f"{operation} mask shape must match the channel")
@@ -94,8 +93,7 @@ def _label_components(masked: np.ndarray) -> tuple[np.ndarray, list[int]]:
                 size += 1
                 for di, dj in ((-1, 0), (1, 0), (0, -1), (0, 1)):
                     ni, nj = ci + di, cj + dj
-                    if (0 <= ni < yres and 0 <= nj < xres
-                            and masked[ni, nj] and labels[ni, nj] == 0):
+                    if 0 <= ni < yres and 0 <= nj < xres and masked[ni, nj] and labels[ni, nj] == 0:
                         labels[ni, nj] = next_label
                         queue.append((ni, nj))
             sizes.append(size)
@@ -130,8 +128,7 @@ def _one_pixel_mean(z: np.ndarray, width: int, k: int) -> float:
     return s / n
 
 
-def _thomas(d: np.ndarray, a: np.ndarray, b: np.ndarray,
-            rhs: np.ndarray) -> np.ndarray:
+def _thomas(d: np.ndarray, a: np.ndarray, b: np.ndarray, rhs: np.ndarray) -> np.ndarray:
     """gwy_math_tridiag_solve_rewrite (gwymath.c:716-743) verbatim order.
 
     d: diagonal (modified in place conceptually), a: sub-diagonal,
@@ -154,8 +151,9 @@ def _thomas(d: np.ndarray, a: np.ndarray, b: np.ndarray,
     return rr
 
 
-def _solve_thin_grain(field: np.ndarray, labels: np.ndarray, label: int,
-                      bbox: tuple[int, int, int, int]) -> np.ndarray:
+def _solve_thin_grain(
+    field: np.ndarray, labels: np.ndarray, label: int, bbox: tuple[int, int, int, int]
+) -> np.ndarray:
     """handle_thin_grain (correct-laplace.c:1466-1511) + Thomas solve.
 
     Returns the solved bbox (z) for a fully-interior 1xN or Mx1 component.
@@ -166,7 +164,7 @@ def _solve_thin_grain(field: np.ndarray, labels: np.ndarray, label: int,
     # source orientation test: (height-2 == 1) on the enlarged bbox
     horizontal = (height - 2) == 1
     n = width - 2 if horizontal else height - 2
-    z = np.array(field[r0:r1 + 1, c0:c1 + 1], dtype=np.float64, copy=True)
+    z = np.array(field[r0 : r1 + 1, c0 : c1 + 1], dtype=np.float64, copy=True)
     d = np.full(n, 4.0)
     a = np.full(n, -1.0)
     b = np.full(n, -1.0)
@@ -185,53 +183,63 @@ def _solve_thin_grain(field: np.ndarray, labels: np.ndarray, label: int,
         rhs[n - 1] = z[0, n] + z[1, n + 1] + z[2, n]
     sol = _thomas(d, a, b, rhs)
     if horizontal:
-        z[1, 1:n + 1] = sol
+        z[1, 1 : n + 1] = sol
     else:
-        z[1:n + 1, 1] = sol
+        z[1 : n + 1, 1] = sol
     return z
 
 
-def _solve_l_grain(field: np.ndarray, labels: np.ndarray, label: int,
-                   bbox: tuple[int, int, int, int]) -> np.ndarray:
+def _solve_l_grain(
+    field: np.ndarray, labels: np.ndarray, label: int, bbox: tuple[int, int, int, int]
+) -> np.ndarray:
     """handle_3px_grain (correct-laplace.c:1514-1536) closed forms.
 
     bbox must be 4x4; the L occupies three of the (1,1),(1,2),(2,1),(2,2)
     positions.  Returns the solved bbox (z).
     """
     r0, r1, c0, c1 = bbox
-    z = np.array(field[r0:r1 + 1, c0:c1 + 1], dtype=np.float64, copy=True)
+    z = np.array(field[r0 : r1 + 1, c0 : c1 + 1], dtype=np.float64, copy=True)
     levels = np.zeros((4, 4), dtype=np.int64)
-    levels[(labels[r0:r1 + 1, c0:c1 + 1] == label)] = 1
+    levels[(labels[r0 : r1 + 1, c0 : c1 + 1] == label)] = 1
+
     # source index k = i*width + j with width 4
     def lv(i: int, j: int) -> int:
         return int(levels[i, j])
 
     if not lv(1, 1):
-        z[2, 2] = (2 * (z[2, 3] + z[3, 2]) + z[1, 1]
-                   + 0.5 * (z[0, 2] + z[1, 3] + z[2, 0] + z[3, 1])) / 7.0
+        z[2, 2] = (
+            2 * (z[2, 3] + z[3, 2]) + z[1, 1] + 0.5 * (z[0, 2] + z[1, 3] + z[2, 0] + z[3, 1])
+        ) / 7.0
         z[1, 2] = 0.25 * (z[0, 2] + z[1, 1] + z[1, 3] + z[2, 2])
         z[2, 1] = 0.25 * (z[1, 1] + z[2, 0] + z[2, 2] + z[3, 1])
     elif not lv(1, 2):
-        z[2, 1] = (2 * (z[2, 0] + z[3, 1]) + z[1, 2]
-                   + 0.5 * (z[0, 1] + z[1, 0] + z[2, 3] + z[3, 2])) / 7.0
+        z[2, 1] = (
+            2 * (z[2, 0] + z[3, 1]) + z[1, 2] + 0.5 * (z[0, 1] + z[1, 0] + z[2, 3] + z[3, 2])
+        ) / 7.0
         z[1, 1] = 0.25 * (z[0, 1] + z[1, 0] + z[1, 2] + z[2, 1])
         z[2, 2] = 0.25 * (z[1, 2] + z[2, 1] + z[2, 3] + z[3, 2])
     elif not lv(2, 1):
-        z[1, 2] = (2 * (z[0, 2] + z[1, 3]) + z[2, 1]
-                   + 0.5 * (z[0, 1] + z[1, 0] + z[2, 3] + z[3, 2])) / 7.0
+        z[1, 2] = (
+            2 * (z[0, 2] + z[1, 3]) + z[2, 1] + 0.5 * (z[0, 1] + z[1, 0] + z[2, 3] + z[3, 2])
+        ) / 7.0
         z[1, 1] = 0.25 * (z[0, 1] + z[1, 0] + z[1, 2] + z[2, 1])
         z[2, 2] = 0.25 * (z[1, 2] + z[2, 1] + z[2, 3] + z[3, 2])
     else:
-        z[1, 1] = (2 * (z[0, 1] + z[1, 0]) + z[2, 2]
-                   + 0.5 * (z[0, 2] + z[1, 3] + z[2, 0] + z[3, 1])) / 7.0
+        z[1, 1] = (
+            2 * (z[0, 1] + z[1, 0]) + z[2, 2] + 0.5 * (z[0, 2] + z[1, 3] + z[2, 0] + z[3, 1])
+        ) / 7.0
         z[1, 2] = 0.25 * (z[0, 2] + z[1, 1] + z[1, 3] + z[2, 2])
         z[2, 1] = 0.25 * (z[1, 1] + z[2, 0] + z[2, 2] + z[3, 1])
     return z
 
 
-def _conjugate_gradient(field: np.ndarray, labels: np.ndarray, label: int,
-                        bbox: tuple[int, int, int, int],
-                        classification: str) -> tuple[np.ndarray, int, float]:
+def _conjugate_gradient(
+    field: np.ndarray,
+    labels: np.ndarray,
+    label: int,
+    bbox: tuple[int, int, int, int],
+    classification: str,
+) -> tuple[np.ndarray, int, float]:
     """Deterministic matrix-free Jacobi-preconditioned CG for one component.
 
     Unknowns are the component's masked pixels in row-major order.  The
@@ -242,7 +250,7 @@ def _conjugate_gradient(field: np.ndarray, labels: np.ndarray, label: int,
     """
     r0, r1, c0, c1 = bbox
     yres, xres = field.shape
-    rows, cols = np.where(labels[r0:r1 + 1, c0:c1 + 1] == label)
+    rows, cols = np.where(labels[r0 : r1 + 1, c0 : c1 + 1] == label)
     rows = rows + r0
     cols = cols + c0
     n = len(rows)
@@ -314,7 +322,8 @@ def _conjugate_gradient(field: np.ndarray, labels: np.ndarray, label: int,
     if not converged and r_sq > target_sq:
         raise ArithmeticError(
             f"Laplace conjugate gradient did not converge for a component "
-            f"({classification}, n={n}, residual {r_sq:.3e})")
+            f"({classification}, n={n}, residual {r_sq:.3e})"
+        )
     # final residual diagnostics (the residual is already at the stopping
     # target; damped-Jacobi refinement is deliberately NOT used because it
     # is not contractive for Neumann-edge components)
@@ -322,8 +331,9 @@ def _conjugate_gradient(field: np.ndarray, labels: np.ndarray, label: int,
     return x, iterations, float(np.max(res))
 
 
-def _enlarged_bbox(bbox: tuple[int, int, int, int], yres: int,
-                  xres: int) -> tuple[int, int, int, int]:
+def _enlarged_bbox(
+    bbox: tuple[int, int, int, int], yres: int, xres: int
+) -> tuple[int, int, int, int]:
     """Source enlarge_field_part: grow by one on each side, clipped."""
     r0, r1, c0, c1 = bbox
     er0 = max(r0 - 1, 0)
@@ -333,22 +343,22 @@ def _enlarged_bbox(bbox: tuple[int, int, int, int], yres: int,
     return er0, er1, ec0, ec1
 
 
-def _component_classification(size: int, bbox: tuple[int, int, int, int],
-                              yres: int, xres: int,
-                              labels: np.ndarray, label: int) -> str:
+def _component_classification(
+    size: int, bbox: tuple[int, int, int, int], yres: int, xres: int, labels: np.ndarray, label: int
+) -> str:
     r0, r1, c0, c1 = bbox
     height = r1 - r0 + 1
     width = c1 - c0 + 1
     er0, er1, ec0, ec1 = _enlarged_bbox(bbox, yres, xres)
     eheight = er1 - er0 + 1
     ewidth = ec1 - ec0 + 1
-    fully_inside = (eheight == height + 2 and ewidth == width + 2)
+    fully_inside = eheight == height + 2 and ewidth == width + 2
     if size == 1:
         return "exact one-pixel local"
     if fully_inside and (height == 1 or width == 1):
         return "thin/tridiagonal"
     if fully_inside and size == 3 and eheight == 4 and ewidth == 4:
-        sub = labels[er0:er1 + 1, ec0:ec1 + 1]
+        sub = labels[er0 : er1 + 1, ec0 : ec1 + 1]
         if int(np.count_nonzero(sub == label)) == 3:
             return "closed-form L"
     return "iterative conjugate gradient"
@@ -387,25 +397,42 @@ def _gwydion_laplace_result(field: object, mask: object) -> _GwydionLaplaceResul
     if not np.any(masked):
         corrected = np.array(data, dtype=np.float64, order="C", copy=True)
         return _GwydionLaplaceResult(
-            input_snapshot=data, mask_snapshot=m, corrected_field=corrected,
-            solved_coordinates=(), component_count=0, component_sizes=(),
-            special_path_classifications=(), iteration_counts=(),
-            max_residual=0.0, mean_residual=0.0, empty_mask=True,
-            whole_field_mask=False, unmasked_mutation_count=0,
-            mask_mutation_evidence=False, input_mutation_evidence=False)
+            input_snapshot=data,
+            mask_snapshot=m,
+            corrected_field=corrected,
+            solved_coordinates=(),
+            component_count=0,
+            component_sizes=(),
+            special_path_classifications=(),
+            iteration_counts=(),
+            max_residual=0.0,
+            mean_residual=0.0,
+            empty_mask=True,
+            whole_field_mask=False,
+            unmasked_mutation_count=0,
+            mask_mutation_evidence=False,
+            input_mutation_evidence=False,
+        )
     if np.all(masked):
         corrected = np.zeros((yres, xres), dtype=np.float64)
-        coords = tuple((int(i), int(j)) for i, j in zip(
-            *np.where(masked), strict=True))
+        coords = tuple((int(i), int(j)) for i, j in zip(*np.where(masked), strict=True))
         return _GwydionLaplaceResult(
-            input_snapshot=data, mask_snapshot=m, corrected_field=corrected,
-            solved_coordinates=coords, component_count=1,
+            input_snapshot=data,
+            mask_snapshot=m,
+            corrected_field=corrected,
+            solved_coordinates=coords,
+            component_count=1,
             component_sizes=(int(masked.size),),
             special_path_classifications=("whole-field zero",),
-            iteration_counts=(0,), max_residual=0.0, mean_residual=0.0,
-            empty_mask=False, whole_field_mask=True,
-            unmasked_mutation_count=0, mask_mutation_evidence=False,
-            input_mutation_evidence=False)
+            iteration_counts=(0,),
+            max_residual=0.0,
+            mean_residual=0.0,
+            empty_mask=False,
+            whole_field_mask=True,
+            unmasked_mutation_count=0,
+            mask_mutation_evidence=False,
+            input_mutation_evidence=False,
+        )
 
     labels, sizes = _label_components(masked)
     corrected = np.array(data, dtype=np.float64, order="C", copy=True)
@@ -416,15 +443,15 @@ def _gwydion_laplace_result(field: object, mask: object) -> _GwydionLaplaceResul
 
     for label, size in enumerate(sizes, start=1):
         bbox = _bbox_of(labels, label)
-        classification = _component_classification(size, bbox, yres, xres,
-                                                   labels, label)
+        classification = _component_classification(size, bbox, yres, xres, labels, label)
         r0, r1, c0, c1 = bbox
         er0, er1, ec0, ec1 = _enlarged_bbox(bbox, yres, xres)
         ewidth = ec1 - ec0 + 1
         eheight = er1 - er0 + 1
         if classification == "exact one-pixel local":
-            z = np.array(data[er0:er1 + 1, ec0:ec1 + 1], dtype=np.float64,
-                         copy=True).reshape(-1)
+            z = np.array(data[er0 : er1 + 1, ec0 : ec1 + 1], dtype=np.float64, copy=True).reshape(
+                -1
+            )
             for i in range(eheight):
                 for j in range(ewidth):
                     k = i * ewidth + j
@@ -435,8 +462,7 @@ def _gwydion_laplace_result(field: object, mask: object) -> _GwydionLaplaceResul
             iterations.append(0)
             residuals.append(0.0)
         elif classification == "thin/tridiagonal":
-            sub = _solve_thin_grain(data, labels, label,
-                                    (er0, er1, ec0, ec1))
+            sub = _solve_thin_grain(data, labels, label, (er0, er1, ec0, ec1))
             wr0, wr1, wc0, wc1 = er0, er1, ec0, ec1
             iterations.append(0)
             residuals.append(0.0)
@@ -446,17 +472,17 @@ def _gwydion_laplace_result(field: object, mask: object) -> _GwydionLaplaceResul
             iterations.append(0)
             residuals.append(0.0)
         else:
-            x, iters, resmax = _conjugate_gradient(data, labels, label, bbox,
-                                                   classification)
-            sub = np.array(data[r0:r1 + 1, c0:c1 + 1], dtype=np.float64,
-                           copy=True)
-            sub[labels[r0:r1 + 1, c0:c1 + 1] == label] = x
+            x, iters, resmax = _conjugate_gradient(data, labels, label, bbox, classification)
+            sub = np.array(data[r0 : r1 + 1, c0 : c1 + 1], dtype=np.float64, copy=True)
+            sub[labels[r0 : r1 + 1, c0 : c1 + 1] == label] = x
             wr0, wr1, wc0, wc1 = r0, r1, c0, c1
             iterations.append(iters)
             residuals.append(resmax)
-        corrected[wr0:wr1 + 1, wc0:wc1 + 1] = np.where(
-            labels[wr0:wr1 + 1, wc0:wc1 + 1] == label, sub,
-            corrected[wr0:wr1 + 1, wc0:wc1 + 1])
+        corrected[wr0 : wr1 + 1, wc0 : wc1 + 1] = np.where(
+            labels[wr0 : wr1 + 1, wc0 : wc1 + 1] == label,
+            sub,
+            corrected[wr0 : wr1 + 1, wc0 : wc1 + 1],
+        )
         for i in range(r0, r1 + 1):
             for j in range(c0, c1 + 1):
                 if labels[i, j] == label:
@@ -470,17 +496,22 @@ def _gwydion_laplace_result(field: object, mask: object) -> _GwydionLaplaceResul
     mask_mutation = False
     in_bits = data.view(np.uint64)
     out_bits = corrected.view(np.uint64)
-    unmasked_changed = int(np.count_nonzero(
-        (in_bits != out_bits) & (m <= 0.0)))
+    unmasked_changed = int(np.count_nonzero((in_bits != out_bits) & (m <= 0.0)))
 
     return _GwydionLaplaceResult(
-        input_snapshot=data, mask_snapshot=m, corrected_field=corrected,
-        solved_coordinates=tuple(solved), component_count=len(sizes),
+        input_snapshot=data,
+        mask_snapshot=m,
+        corrected_field=corrected,
+        solved_coordinates=tuple(solved),
+        component_count=len(sizes),
         component_sizes=tuple(sizes),
         special_path_classifications=tuple(classifications),
         iteration_counts=tuple(iterations),
-        max_residual=max_residual, mean_residual=mean_residual,
-        empty_mask=False, whole_field_mask=False,
+        max_residual=max_residual,
+        mean_residual=mean_residual,
+        empty_mask=False,
+        whole_field_mask=False,
         unmasked_mutation_count=unmasked_changed,
         mask_mutation_evidence=mask_mutation,
-        input_mutation_evidence=False)
+        input_mutation_evidence=False,
+    )

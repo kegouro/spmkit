@@ -1,0 +1,10 @@
+# Tested Linux/Python 3.12 numerical evidence and tooling environment.
+# Apply as constraints: pip install -c requirements-reproducible.txt -e '.[dev,gui,test-gui,hdf5,gwy,jpk,docs]'
+numpy==2.5.1; python_version >= "3.12"
+numpy==2.4.6; python_version < "3.12"
+scipy==1.18.0; python_version >= "3.12"
+scipy==1.17.1; python_version < "3.12"
+PyQt6==6.11.0
+ruff==0.16.1
+mypy==2.3.0
+black==26.5.1

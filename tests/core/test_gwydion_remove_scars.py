@@ -16,9 +16,13 @@ from spmkit.core.models.spmdata import SPMChannel
 
 def _channel(data: np.ndarray, name: str = "removescars") -> SPMChannel:
     return SPMChannel(
-        name=name, data=np.asarray(data, dtype=np.float64), unit="nm",
-        x_range=float(data.shape[1]), y_range=float(data.shape[0]),
-        metadata={"Dim1Name": "Y"})
+        name=name,
+        data=np.asarray(data, dtype=np.float64),
+        unit="nm",
+        x_range=float(data.shape[1]),
+        y_range=float(data.shape[0]),
+        metadata={"Dim1Name": "Y"},
+    )
 
 
 def _bits(array: np.ndarray) -> np.ndarray:
@@ -50,8 +54,7 @@ def test_positive_negative_both() -> None:
     pos = gwydion_remove_scars(_channel(field), polarity="positive")
     assert not np.array_equal(_bits(pos.data), _bits(out.data))
     mask_pos = gwydion_mark_scars(_channel(field), polarity="positive")
-    assert np.all(pos.data[11, :] == field[11, :]) if not np.any(
-        mask_pos[11, :]) else True
+    assert np.all(pos.data[11, :] == field[11, :]) if not np.any(mask_pos[11, :]) else True
 
 
 def test_no_detection_noop() -> None:
@@ -62,7 +65,7 @@ def test_no_detection_noop() -> None:
 
 def test_edge_touching_scar() -> None:
     field = np.zeros((16, 20), dtype=np.float64)
-    field[1, :] = 5.0   # first markable row
+    field[1, :] = 5.0  # first markable row
     out = gwydion_remove_scars(_channel(field))
     explicit = _explicit_composition(field)
     assert np.array_equal(_bits(out.data), _bits(explicit))
@@ -109,8 +112,9 @@ def test_delta_and_trace_evidence() -> None:
     field = np.zeros((16, 20), dtype=np.float64)
     field[4, :] = 5.0
     result = _gwydion_remove_scars_result(field)
-    assert np.array_equal(_bits(result.delta),
-                          _bits(result.corrected_field - result.input_snapshot))
+    assert np.array_equal(
+        _bits(result.delta), _bits(result.corrected_field - result.input_snapshot)
+    )
     assert not result.input_mutation_evidence
     assert result.mark_trace is not None
     assert result.laplace_trace is not None
@@ -121,15 +125,19 @@ def test_delta_and_trace_evidence() -> None:
 
 def test_parameter_validation() -> None:
     ch = _channel(np.zeros((16, 20)))
-    for kwargs in [{"threshold_high": 2.5}, {"threshold_low": -0.1},
-                   {"min_length": 0}, {"min_length": 1025},
-                   {"max_width": 0}, {"max_width": 17},
-                   {"polarity": "sideways"}]:
+    for kwargs in [
+        {"threshold_high": 2.5},
+        {"threshold_low": -0.1},
+        {"min_length": 0},
+        {"min_length": 1025},
+        {"max_width": 0},
+        {"max_width": 17},
+        {"polarity": "sideways"},
+    ]:
         with pytest.raises(ValueError):
             gwydion_remove_scars(ch, **kwargs)
     with pytest.raises(TypeError):
         gwydion_remove_scars(ch, min_length=4.5)
-    bad = SPMChannel(name="x", data=np.full((4, 4), np.nan), unit="nm",
-                     x_range=4.0, y_range=4.0)
+    bad = SPMChannel(name="x", data=np.full((4, 4), np.nan), unit="nm", x_range=4.0, y_range=4.0)
     with pytest.raises(ValueError):
         gwydion_remove_scars(bad)

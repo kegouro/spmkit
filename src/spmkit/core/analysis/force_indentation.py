@@ -79,7 +79,8 @@ def compute_indentation(
     if not prepared.quality.eligible:
         raise ForceMechanicsError(
             CURVE_NOT_FIT_ELIGIBLE,
-            "curve is not fit-eligible: " + ", ".join(prepared.quality.failure_reasons))
+            "curve is not fit-eligible: " + ", ".join(prepared.quality.failure_reasons),
+        )
     approach = prepared.curve.extend
     if approach is None or approach.force is None:
         raise ForceMechanicsError(CURVE_NOT_FIT_ELIGIBLE, "no calibrated approach")
@@ -144,7 +145,8 @@ def select_contact_fit_window(
     if end - start + 1 < min_points:
         raise ForceMechanicsError(
             INSUFFICIENT_FIT_POINTS,
-            f"fit window has {end - start + 1} points < min_points={min_points}")
+            f"fit window has {end - start + 1} points < min_points={min_points}",
+        )
     return FitWindowResult(
         start_index=start,
         end_index=end,
@@ -155,6 +157,9 @@ def select_contact_fit_window(
         included=included,
         excluded_reasons=tuple(reasons),
         n_points=int(idx.size),
-        warnings=(f"excluded {ind.size - idx.size} sample(s) before/outside window",)
-        if idx.size < ind.size else (),
+        warnings=(
+            (f"excluded {ind.size - idx.size} sample(s) before/outside window",)
+            if idx.size < ind.size
+            else ()
+        ),
     )

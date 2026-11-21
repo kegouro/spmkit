@@ -52,7 +52,8 @@ def _validated_data(value: object, *, operation: str) -> np.ndarray:
         raise ValueError(
             f"{operation} rejects xres < 2: the frozen Gwydion source performs "
             f"an out-of-bounds read for xres=1 (documented SOURCE_DEFECT); "
-            f"SPMKit never exposes undefined behaviour")
+            f"SPMKit never exposes undefined behaviour"
+        )
     return np.array(source, dtype=np.float64, order="C", copy=True)
 
 
@@ -60,6 +61,7 @@ def _validated_data(value: object, *, operation: str) -> np.ndarray:
 # Deterministic selection for the trimmed-mean retained block
 # (reconstructed from the audited gwymath-rank.c contract; strict >)
 # ---------------------------------------------------------------------------
+
 
 def _swap_if_greater(items: list[float], base: int, ia: int, ib: int) -> None:
     """Ordering primitive: swap iff left > right (strict)."""
@@ -192,8 +194,7 @@ def _partition_select(items: list[float], base: int, n: int, k: int) -> float:
         _swap_if_greater(items, base, mid, hi)
         _swap_if_greater(items, base, lo, hi)
         _swap_if_greater(items, base, mid, lo)
-        items[base + mid], items[base + lo + 1] = \
-            items[base + lo + 1], items[base + mid]
+        items[base + mid], items[base + lo + 1] = items[base + lo + 1], items[base + mid]
         ll = lo + 1
         hh = hi
         pivot = items[base + lo]
@@ -223,15 +224,13 @@ def _select_two_ranks(items: list[float], rank_low: int, rank_high: int) -> None
     d_high = mid - rank_high if rank_high <= mid else rank_high - mid
     if d_low <= d_high:
         _partition_select(items, 0, n, rank_low)
-        _partition_select(items, rank_low + 1, n - rank_low - 1,
-                          rank_high - rank_low - 1)
+        _partition_select(items, rank_low + 1, n - rank_low - 1, rank_high - rank_low - 1)
     else:
         _partition_select(items, 0, n, rank_high)
         _partition_select(items, 0, rank_high, rank_low)
 
 
-def _trimmed_mean_in_place(items: list[float], trim_low: int,
-                           trim_high: int) -> float:
+def _trimmed_mean_in_place(items: list[float], trim_low: int, trim_high: int) -> float:
     """25%-style trimmed mean with the source selection and sum order."""
     n = len(items)
     if not trim_low:
@@ -255,6 +254,7 @@ def _trimmed_mean_in_place(items: list[float], trim_low: int,
 # ---------------------------------------------------------------------------
 # Step Block pipeline
 # ---------------------------------------------------------------------------
+
 
 @dataclass(frozen=True)
 class _GwydionStepBlockResult:
@@ -433,17 +433,15 @@ def _gwydion_step_block_result(
         if scandir == _LTR:
             _fill_shifts(flat_data, xres, row_base, samples, 0, split)
             row_base -= xres
-            _fill_shifts(flat_data, xres, row_base, samples, split,
-                         xres - split)
+            _fill_shifts(flat_data, xres, row_base, samples, split, xres - split)
         else:
-            _fill_shifts(flat_data, xres, row_base, samples, split,
-                         xres - split)
+            _fill_shifts(flat_data, xres, row_base, samples, split, xres - split)
             row_base -= xres
             _fill_shifts(flat_data, xres, row_base, samples, 0, split)
         raw = list(samples)
         selected = list(samples)
         mean_shift = _trimmed_mean_in_place(selected, trim_low, trim_high)
-        kept = selected[trim_low:trim_low + retained_count]
+        kept = selected[trim_low : trim_low + retained_count]
         kept_sum = 0.0
         for v in kept:
             kept_sum += v
@@ -508,8 +506,7 @@ def _gwydion_step_block_result(
         row_totalsteps=tuple(row_steps),
         row_positions=tuple(positions),
         row_scores=tuple(scores),
-        candidate_boundaries=tuple((int(c[0]), int(c[1]), float(c[2]))
-                                   for c in candidates),
+        candidate_boundaries=tuple((int(c[0]), int(c[1]), float(c[2])) for c in candidates),
         retained_blocks=tuple(blocks),
         sentinel=sentinel,
         shift_samples_raw=tuple(raw_samples),
@@ -527,16 +524,16 @@ def _gwydion_step_block_result(
     )
 
 
-def _fill_shifts(flat: np.ndarray, xres: int, row_base: int,
-                 samples: list[float], start: int, length: int) -> None:
+def _fill_shifts(
+    flat: np.ndarray, xres: int, row_base: int, samples: list[float], start: int, length: int
+) -> None:
     """One boundary shift segment: samples[start+j] = row+1 - row."""
     for j in range(length):
         idx = start + j
         samples[idx] = flat[row_base + xres + idx] - flat[row_base + idx]
 
 
-def _fill_mask(blocks_mask: np.ndarray, mrow_base: int, start: int,
-               length: int, xres: int) -> None:
+def _fill_mask(blocks_mask: np.ndarray, mrow_base: int, start: int, length: int, xres: int) -> None:
     flat = blocks_mask.ravel()
     for j in range(length):
         flat[mrow_base + xres + start + j] = 1.0

@@ -16,17 +16,33 @@ JSON_PATH = FIXTURE_DIR / "step_block_reference.json"
 NPZ_PATH = FIXTURE_DIR / "step_block_reference.npz"
 
 VALID_CASES = [
-    "S01_CONSTANT", "S02_SINGLE_POSITIVE_STEP_LTR", "S03_SINGLE_NEGATIVE_STEP_LTR",
-    "S04_TWO_SEPARATED_STEPS", "S05_ALTERNATING_BLOCK_OFFSETS",
-    "S06_EARLIEST_FULL_WIDTH_BOUNDARY", "S07_LATEST_FULL_WIDTH_BOUNDARY",
-    "S08_MINIMUM_INTERIOR_BLOCK", "S09_EQUAL_COMPETING_CANDIDATES",
-    "S10_SUB_THRESHOLD", "S11_THRESHOLD_EXACT", "S12_NON_SQUARE_WIDE",
-    "S13_NON_SQUARE_TALL", "S14_SIGNED_ZERO", "S15_YRES_ONE",
-    "S16_YRES_TWO_FULL_WIDTH_STEP", "S17_SMALL_XRES_2", "S17_SMALL_XRES_3",
-    "S17_SMALL_XRES_4", "S18_RIGHT_TO_LEFT_SINGLE_STEP",
-    "S19_PARTIAL_WIDTH_STEP_LTR", "S19b_PARTIAL_WIDTH_REJECTED",
-    "S20_PARTIAL_WIDTH_STEP_RTL", "S21_CORRECTION_RECONSTRUCTION",
-    "S22_DY_025", "S22_DY_300", "S23_TRIMMED_MEAN_OUTLIERS",
+    "S01_CONSTANT",
+    "S02_SINGLE_POSITIVE_STEP_LTR",
+    "S03_SINGLE_NEGATIVE_STEP_LTR",
+    "S04_TWO_SEPARATED_STEPS",
+    "S05_ALTERNATING_BLOCK_OFFSETS",
+    "S06_EARLIEST_FULL_WIDTH_BOUNDARY",
+    "S07_LATEST_FULL_WIDTH_BOUNDARY",
+    "S08_MINIMUM_INTERIOR_BLOCK",
+    "S09_EQUAL_COMPETING_CANDIDATES",
+    "S10_SUB_THRESHOLD",
+    "S11_THRESHOLD_EXACT",
+    "S12_NON_SQUARE_WIDE",
+    "S13_NON_SQUARE_TALL",
+    "S14_SIGNED_ZERO",
+    "S15_YRES_ONE",
+    "S16_YRES_TWO_FULL_WIDTH_STEP",
+    "S17_SMALL_XRES_2",
+    "S17_SMALL_XRES_3",
+    "S17_SMALL_XRES_4",
+    "S18_RIGHT_TO_LEFT_SINGLE_STEP",
+    "S19_PARTIAL_WIDTH_STEP_LTR",
+    "S19b_PARTIAL_WIDTH_REJECTED",
+    "S20_PARTIAL_WIDTH_STEP_RTL",
+    "S21_CORRECTION_RECONSTRUCTION",
+    "S22_DY_025",
+    "S22_DY_300",
+    "S23_TRIMMED_MEAN_OUTLIERS",
     "S24_TRIMMED_MEAN_TIES",
 ]
 PROFILE = "COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION"
@@ -60,8 +76,7 @@ def test_hashes_inventory_and_arrays() -> None:
     assert manifest["schema_version"] == 1
     assert manifest["capability"] == "gwydion_step_block_correction"
     assert manifest["evidence_profile"] == PROFILE
-    assert manifest["case_inventory"] == {"total": 29, "numerical_parity": 28,
-                                          "source_defect": 1}
+    assert manifest["case_inventory"] == {"total": 29, "numerical_parity": 28, "source_defect": 1}
     identifiers = [c["case_identifier"] for c in manifest["cases"]]
     assert identifiers == VALID_CASES
     for case in manifest["cases"]:
@@ -87,11 +102,14 @@ def test_no_defect_numerical_arrays() -> None:
     assert manifest["source_defect"]["normal_output_undefined"]
     assert not manifest["source_defect"]["parity_claim"]
     assert manifest["source_defect"]["dimensions"] == {"xres": 1, "yres": 8}
-    assert any(f["function"] == "process_one_step_segment"
-               and f["line"] == 395
-               for f in manifest["source_defect"]["source_stack"])
-    assert any(f["function"] == "construct_blocks" and f["line"] == 475
-               for f in manifest["source_defect"]["source_stack"])
+    assert any(
+        f["function"] == "process_one_step_segment" and f["line"] == 395
+        for f in manifest["source_defect"]["source_stack"]
+    )
+    assert any(
+        f["function"] == "construct_blocks" and f["line"] == 475
+        for f in manifest["source_defect"]["source_stack"]
+    )
     assert "reject xres < 2" in manifest["source_defect"]["required_future_guard"]
     for key in arrays:
         assert "S17_SMALL_XRES_1" not in key, f"defect numerical array frozen: {key}"
@@ -102,18 +120,20 @@ def test_no_defect_numerical_arrays() -> None:
 def test_profile_and_sanitizer_scope() -> None:
     manifest, _ = _load()
     assert manifest["gui_not_invoked"] is True
-    assert "not rebuilt with sanitizer instrumentation" in \
-        manifest["sanitizer_scope"]
-    assert "not invoked" in str(manifest.get("gui_not_invoked")) or \
-        manifest["gui_not_invoked"] is True
+    assert "not rebuilt with sanitizer instrumentation" in manifest["sanitizer_scope"]
+    assert (
+        "not invoked" in str(manifest.get("gui_not_invoked")) or manifest["gui_not_invoked"] is True
+    )
     joined = " ".join(manifest["non_claims"]).lower()
-    for fragment in ["no parity with xres=1 undefined behavior",
-                     "future spmkit production must reject xres < 2",
-                     "no universal gwyd" + "dion version/build equivalence",
-                     "no installed-gui black-box execution",
-                     "not sanitizer-instrumented",
-                     "no physical or experimental validation",
-                     "no universal numerical tolerance frozen"]:
+    for fragment in [
+        "no parity with xres=1 undefined behavior",
+        "future spmkit production must reject xres < 2",
+        "no universal gwyd" + "dion version/build equivalence",
+        "no installed-gui black-box execution",
+        "not sanitizer-instrumented",
+        "no physical or experimental validation",
+        "no universal numerical tolerance frozen",
+    ]:
         assert fragment in joined, fragment
 
 
@@ -135,6 +155,4 @@ def test_binary_preview_masks_and_reconstruction() -> None:
             # the sign; the reconstruction identity holds as values only
             assert np.array_equal(corrected, inp + delta), cid
             continue
-        assert np.array_equal(
-            corrected.view(np.uint64),
-            (inp + delta).view(np.uint64)), cid
+        assert np.array_equal(corrected.view(np.uint64), (inp + delta).view(np.uint64)), cid

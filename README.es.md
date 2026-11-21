@@ -197,3 +197,7 @@ aceptado, redistribuible o científicamente adecuado.
 ---
 
 Licencia MIT © 2026 José Labarca Baeza
+
+
+Install from a clean clone on macOS/Linux: [portable setup](docs/getting-started/macos.md).
+Recovered capabilities and scoped verification: [consolidation report](docs/ecosystem/consolidation-20261121.md).

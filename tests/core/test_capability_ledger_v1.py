@@ -19,13 +19,34 @@ LEDGER_MD = REPO_ROOT / "docs" / "parity" / "CAPABILITY_LEDGER.md"
 GENERATOR = REPO_ROOT / "scripts" / "generate_capability_ledger.py"
 
 REQUIRED_FIELDS = {
-    "capability_id", "operation_id", "family", "public_name", "public_import",
-    "aliases", "reference", "contract", "parameters", "result_type", "units",
-    "mask_semantics", "roi_support", "nan_policy", "border_policy",
-    "mutation_policy", "status", "maturity", "evidence", "known_deviations",
+    "capability_id",
+    "operation_id",
+    "family",
+    "public_name",
+    "public_import",
+    "aliases",
+    "reference",
+    "contract",
+    "parameters",
+    "result_type",
+    "units",
+    "mask_semantics",
+    "roi_support",
+    "nan_policy",
+    "border_policy",
+    "mutation_policy",
+    "status",
+    "maturity",
+    "evidence",
+    "known_deviations",
 }
-MATURITY = {"SPECIFIED", "SOFTWARE_VERIFIED", "NUMERICALLY_VERIFIED",
-            "CROSS_VALIDATED", "PHYSICALLY_VALIDATED"}
+MATURITY = {
+    "SPECIFIED",
+    "SOFTWARE_VERIFIED",
+    "NUMERICALLY_VERIFIED",
+    "CROSS_VALIDATED",
+    "PHYSICALLY_VALIDATED",
+}
 STATUS = {"stable", "experimental", "deprecated"}
 MASK = {"none", "include_exclude_ignore", "mask_input", "mask_output"}
 NAN = {"reject", "propagate", "replace", "not_applicable"}
@@ -63,12 +84,22 @@ def test_exact_derivative_registration_set() -> None:
     data = _load()
     caps = {c["capability_id"] for c in data["capabilities"]}
     ops = {c["operation_id"] for c in data["capabilities"]}
-    assert {"IMG.FILTER.SOBEL_X", "IMG.FILTER.SOBEL_Y", "IMG.FILTER.PREWITT_X",
-            "IMG.FILTER.PREWITT_Y", "IMG.FILTER.GRADIENT_MAGNITUDE",
-            "IMG.FILTER.GRADIENT_DIRECTION"} <= caps
-    assert {"img.filter.sobel_x", "img.filter.sobel_y", "img.filter.prewitt_x",
-            "img.filter.prewitt_y", "img.filter.gradient_magnitude",
-            "img.filter.gradient_direction"} <= ops
+    assert {
+        "IMG.FILTER.SOBEL_X",
+        "IMG.FILTER.SOBEL_Y",
+        "IMG.FILTER.PREWITT_X",
+        "IMG.FILTER.PREWITT_Y",
+        "IMG.FILTER.GRADIENT_MAGNITUDE",
+        "IMG.FILTER.GRADIENT_DIRECTION",
+    } <= caps
+    assert {
+        "img.filter.sobel_x",
+        "img.filter.sobel_y",
+        "img.filter.prewitt_x",
+        "img.filter.prewitt_y",
+        "img.filter.gradient_magnitude",
+        "img.filter.gradient_direction",
+    } <= ops
     # exactly six new capability records joined the original eleven
     assert len(caps) == 74 and len(ops) == 74
 
@@ -124,6 +155,7 @@ def test_all_evidence_paths_exist() -> None:
 
 def test_all_public_imports_resolve() -> None:
     import importlib
+
     for c in _load()["capabilities"]:
         module_name, attr = c["public_import"].split(":", 1)
         module = importlib.import_module(module_name)

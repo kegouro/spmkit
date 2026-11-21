@@ -37,8 +37,7 @@ def _validated_field(value: object) -> FloatArray:
     return values
 
 
-def _validated_existing_mask(value: object,
-                             shape: tuple[int, int]) -> FloatArray:
+def _validated_existing_mask(value: object, shape: tuple[int, int]) -> FloatArray:
     """Validate a private existing mask WITHOUT copying it.
 
     The source operation overwrites the data-browser mask field in place
@@ -75,9 +74,15 @@ def _row_rms(row: FloatArray, mean: float) -> float:
     return float(np.sqrt(total / row.shape[0]))
 
 
-def _adjacent_weight(row_a: FloatArray, mean_a: float, rms_a: float,
-                     row_b: FloatArray, mean_b: float, rms_b: float,
-                     total_rms: float) -> float:
+def _adjacent_weight(
+    row_a: FloatArray,
+    mean_a: float,
+    rms_a: float,
+    row_b: FloatArray,
+    mean_b: float,
+    rms_b: float,
+    total_rms: float,
+) -> float:
     """row_correlation (linecorrect.c:194-207).
 
     The numerator is the sequential sum of (x-mean_a)*(y-mean_b) and is
@@ -94,7 +99,7 @@ def _adjacent_weight(row_a: FloatArray, mean_a: float, rms_a: float,
 class _GwydionMarkInvertedRowsResult:
     """Private immutable result preserving the full source semantics."""
 
-    generated_mask: FloatArray | None      # None when no mask would be created
+    generated_mask: FloatArray | None  # None when no mask would be created
     global_mean: float
     global_rms: float
     guard_triggered: bool
@@ -130,8 +135,9 @@ def _gwydion_mark_inverted_rows_result(
     yres, xres = field.shape
     n = yres * xres
     input_snapshot = field.copy()
-    existing = (None if existing_mask is None
-                else _validated_existing_mask(existing_mask, (yres, xres)))
+    existing = (
+        None if existing_mask is None else _validated_existing_mask(existing_mask, (yres, xres))
+    )
     existing_before = None if existing is None else existing.copy()
 
     # global mean and RMS (stats.c:567-569, 680-705)
@@ -168,17 +174,28 @@ def _gwydion_mark_inverted_rows_result(
         )
 
     # linecorrect.c:237-243 — per-row means and RMS values
-    means = np.array([_row_mean(field[i]) for i in range(yres)],
-                     dtype=np.float64, order="C")
-    rms = np.array([_row_rms(field[i], float(means[i])) for i in range(yres)],
-                   dtype=np.float64, order="C")
+    means = np.array([_row_mean(field[i]) for i in range(yres)], dtype=np.float64, order="C")
+    rms = np.array(
+        [_row_rms(field[i], float(means[i])) for i in range(yres)], dtype=np.float64, order="C"
+    )
 
     # linecorrect.c:246-254 — adjacent-row weights
-    weights = np.array([
-        _adjacent_weight(field[i], float(means[i]), float(rms[i]),
-                         field[i + 1], float(means[i + 1]), float(rms[i + 1]),
-                         global_rms)
-        for i in range(yres - 1)], dtype=np.float64, order="C")
+    weights = np.array(
+        [
+            _adjacent_weight(
+                field[i],
+                float(means[i]),
+                float(rms[i]),
+                field[i + 1],
+                float(means[i + 1]),
+                float(rms[i + 1]),
+                global_rms,
+            )
+            for i in range(yres - 1)
+        ],
+        dtype=np.float64,
+        order="C",
+    )
     has_negative = bool(np.any(weights < 0.0))
 
     # linecorrect.c:255-260 — no-negative early return: no mask created,

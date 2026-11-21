@@ -17,6 +17,8 @@ from typing import Any
 
 import numpy as np
 
+from spmkit.core.export.writers import _to_serializable
+
 
 def _get_git_commit() -> str | None:
     """Intenta recuperar el hash del commit actual de Git, si está disponible limpiamente."""
@@ -82,9 +84,7 @@ class RunManifest:
     schema_version: str = "1.0"
     spmkit_name: str = "SPM-Kit"
     spmkit_version: str = field(
-        default_factory=lambda: (
-            sys.modules.get("spmkit").__version__ if "spmkit" in sys.modules else "unknown"
-        )
+        default_factory=lambda: (getattr(sys.modules.get("spmkit"), "__version__", "unknown"))
     )
     git_commit: str | None = field(default_factory=_get_git_commit)
     timestamp_utc: str = field(
@@ -127,4 +127,4 @@ class RunManifest:
 
     def to_dict(self) -> dict[str, Any]:
         """Devuelve un diccionario listo para JSON."""
-        return asdict(self)
+        return dict(_to_serializable(asdict(self)))

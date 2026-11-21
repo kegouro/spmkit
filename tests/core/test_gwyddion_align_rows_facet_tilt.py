@@ -34,9 +34,7 @@ _ORACLE_PATH = (
 def _import_oracle() -> Any:  # pragma: no cover
     import importlib.util
 
-    spec = importlib.util.spec_from_file_location(
-        "oracle_facet_tilt", str(_ORACLE_PATH)
-    )
+    spec = importlib.util.spec_from_file_location("oracle_facet_tilt", str(_ORACLE_PATH))
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)  # type: ignore[union-attr]
     return module
@@ -53,11 +51,7 @@ def _build_field(yr: int, xr: int, func) -> np.ndarray:
 
 def _base_func(row: int, col: int) -> float:
     return float(
-        2.0
-        + 0.12 * col
-        - 0.07 * row
-        + 0.015 * col * row
-        + 0.03 * math.sin(0.9 * col + 0.4 * row)
+        2.0 + 0.12 * col - 0.07 * row + 0.015 * col * row + 0.03 * math.sin(0.9 * col + 0.4 * row)
     )
 
 
@@ -179,9 +173,7 @@ _CASE_PARAMS: dict[str, dict[str, Any]] = {
         "yres": 5,
         "xres": 7,
         "xreal": 5.6,
-        "func": lambda r, c: 1e10
-        if (r == 2 and c in (1, 2, 6)) or (r == 3 and c == 3)
-        else 0.0,
+        "func": lambda r, c: 1e10 if (r == 2 and c in (1, 2, 6)) or (r == 3 and c == 3) else 0.0,
         "mask_type": "none",
         "masking": "ignore",
         "direction": "horizontal",
@@ -195,7 +187,9 @@ _CASE_PARAMS: dict[str, dict[str, Any]] = {
             0: {0: 0.0, 1: 1.0},
             1: {0: 5.0, 1: 10.0},
             2: {0: -3.0, 1: 7.0},
-        }[r][c],
+        }[
+            r
+        ][c],
         "mask_type": "none",
         "masking": "ignore",
         "direction": "horizontal",
@@ -238,7 +232,9 @@ _CASE_PARAMS: dict[str, dict[str, Any]] = {
         "func": lambda r, c: {
             0: {0: 0.0, 1: 1.0, 2: 2.0},
             1: {0: 5.0, 1: 10.0, 2: 15.0},
-        }[r][c],
+        }[
+            r
+        ][c],
         "mask_type": "none",
         "masking": "ignore",
         "direction": "vertical",
@@ -406,7 +402,7 @@ def _load_probe_shifts(case_name: str) -> np.ndarray | None:
     prefix = f"{case_name}_shifts_"
     for line in lines:
         if line.startswith(prefix):
-            rest = line[len(prefix):]
+            rest = line[len(prefix) :]
             if rest and rest[0].isdigit():
                 idx_str, val_str = rest.split("=", 1)
                 d[int(idx_str)] = float(val_str)
@@ -445,16 +441,14 @@ def test_facet_tilt_oracle_vs_probe(case_name: str) -> None:
     max_diff = _max_numeric_diff(oracle_corr, probe_corr)
     assert _nan_count_match(oracle_corr, probe_corr)
     assert _inf_count_match(oracle_corr, probe_corr)
-    assert max_diff < 1e-14, (
-        f"Oracle vs probe corrected max diff {max_diff:.17g} for {case_name}"
-    )
+    assert max_diff < 1e-14, f"Oracle vs probe corrected max diff {max_diff:.17g} for {case_name}"
 
     if params["do_extract"]:
         probe_bg = _load_probe_background(case_name, yres, xres)
         bg_diff = _max_numeric_diff(oracle_bg, probe_bg)
-        assert bg_diff < 1e-14, (
-            f"Oracle vs probe background max diff {bg_diff:.17g} for {case_name}"
-        )
+        assert (
+            bg_diff < 1e-14
+        ), f"Oracle vs probe background max diff {bg_diff:.17g} for {case_name}"
 
     # Compare shifts: shape AND values against the probe
     probe_shifts = _load_probe_shifts(case_name)
@@ -470,6 +464,7 @@ def test_facet_tilt_oracle_vs_probe(case_name: str) -> None:
 # ---------------------------------------------------------------------------
 # 2.  Oracle vs kernel (bitwise exact)
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.parametrize("case_name", list(_CASE_PARAMS))
 def test_facet_tilt_oracle_vs_kernel(case_name: str) -> None:
@@ -506,6 +501,7 @@ def test_facet_tilt_oracle_vs_kernel(case_name: str) -> None:
 # 3.  Constant-row NaN behaviour
 # ---------------------------------------------------------------------------
 
+
 def test_facet_tilt_constant_row_nan() -> None:
     """A uniformly constant row produces NaN (IEEE 0/0 in sigma2)."""
     data = np.full((3, 5), 7.0, dtype=np.float64)
@@ -521,6 +517,7 @@ def test_facet_tilt_constant_row_nan() -> None:
 # ---------------------------------------------------------------------------
 # 4.  Two-column row mincount guard
 # ---------------------------------------------------------------------------
+
 
 def test_facet_tilt_two_column_row() -> None:
     """A 2-column row has n = 1, which is below mincount = 2, so stays unchanged."""
@@ -538,6 +535,7 @@ def test_facet_tilt_two_column_row() -> None:
 # ---------------------------------------------------------------------------
 # 5.  Exactly linear row behaviour
 # ---------------------------------------------------------------------------
+
 
 def test_facet_tilt_exactly_linear() -> None:
     """A perfectly linear row becomes constant after the first untilt, then NaNs.
@@ -564,6 +562,7 @@ def test_facet_tilt_exactly_linear() -> None:
 # 6.  Convergence cap at 30 iterations
 # ---------------------------------------------------------------------------
 
+
 def test_facet_tilt_convergence_cap() -> None:
     """NaN-producing rows stop at 30 iterations, never infinite."""
     data = np.full((1, 5), 7.0, dtype=np.float64)
@@ -581,6 +580,7 @@ def test_facet_tilt_convergence_cap() -> None:
 # 7.  Input non-mutation
 # ---------------------------------------------------------------------------
 
+
 def test_facet_tilt_nonmutation() -> None:
     """Input data is not modified by processing."""
     data, mask, params = _build_case_data("wide_curved_nomask")
@@ -592,6 +592,7 @@ def test_facet_tilt_nonmutation() -> None:
 # ---------------------------------------------------------------------------
 # 8.  Mask semantics
 # ---------------------------------------------------------------------------
+
 
 def test_facet_tilt_mask_semantics() -> None:
     """EXCLUDE uses ``<= 0.0``, INCLUDE uses ``>= 1.0``, tested via fractional mask."""
@@ -608,6 +609,7 @@ def test_facet_tilt_mask_semantics() -> None:
 # ---------------------------------------------------------------------------
 # 9.  Direction transpose consistency
 # ---------------------------------------------------------------------------
+
 
 def test_facet_tilt_direction_transpose() -> None:
     """HORIZONTAL and VERTICAL produce transpose-consistent corrected outputs."""
@@ -637,6 +639,7 @@ def test_facet_tilt_direction_transpose() -> None:
 # 10.  Background = input - corrected
 # ---------------------------------------------------------------------------
 
+
 def test_facet_tilt_background_identity() -> None:
     """background == input - corrected elementwise in C order."""
     data, mask, params = _build_case_data("wide_curved_nomask")
@@ -652,6 +655,7 @@ def test_facet_tilt_background_identity() -> None:
 # 11.  Shifts are always zero
 # ---------------------------------------------------------------------------
 
+
 def test_facet_tilt_shifts_zero() -> None:
     """shifts output is the zero vector, matching ``gwy_data_line_clear``.
 
@@ -666,15 +670,16 @@ def test_facet_tilt_shifts_zero() -> None:
     # VERTICAL: shifts length = original xres
     data2, mask2, params2 = _build_case_data("vertical_direction")
     result2 = _run_kernel(data2, mask2, params2)
-    assert result2.shifts.size == data2.shape[1], (
-        f"VERTICAL shifts size {result2.shifts.size} != xres {data2.shape[1]}"
-    )
+    assert (
+        result2.shifts.size == data2.shape[1]
+    ), f"VERTICAL shifts size {result2.shifts.size} != xres {data2.shape[1]}"
     assert np.all(result2.shifts == 0.0)
 
 
 # ---------------------------------------------------------------------------
 # 12.  Metamorphic: adding a constant to all rows
 # ---------------------------------------------------------------------------
+
 
 def test_facet_tilt_metamorphic_constant_shift() -> None:
     """Adding a constant C to the entire field shifts corrected by C;
@@ -700,24 +705,19 @@ def test_facet_tilt_metamorphic_constant_shift() -> None:
         extract_background=True,
     )
 
-    corrected_diff = _max_numeric_diff(
-        result_shifted.corrected, result.corrected + c
-    )
+    corrected_diff = _max_numeric_diff(result_shifted.corrected, result.corrected + c)
     # The corrected output should shift by ~C (within a few ULPs)
-    assert corrected_diff < 1e-13, (
-        f"Constant-shift metamorphism failed: diff {corrected_diff:.17g}"
-    )
+    assert corrected_diff < 1e-13, f"Constant-shift metamorphism failed: diff {corrected_diff:.17g}"
 
     # Background should be identical (tilt only, no offset)
     bg_diff = _max_numeric_diff(result_shifted.background, result.background)
-    assert bg_diff < 1e-13, (
-        f"Background should be constant-shift invariant: diff {bg_diff:.17g}"
-    )
+    assert bg_diff < 1e-13, f"Background should be constant-shift invariant: diff {bg_diff:.17g}"
 
 
 # ---------------------------------------------------------------------------
 # 13.  Iteration limit (slow convergence)
 # ---------------------------------------------------------------------------
+
 
 def test_facet_tilt_iteration_limit() -> None:
     """Verify the 30-iteration cap does not loop infinitely."""
@@ -747,6 +747,7 @@ def test_facet_tilt_iteration_limit() -> None:
 # ---------------------------------------------------------------------------
 # 14.  Public API type errors
 # ---------------------------------------------------------------------------
+
 
 def test_facet_tilt_public_api_type_errors() -> None:
     """gwyddion_align_rows_facet_tilt rejects invalid inputs."""

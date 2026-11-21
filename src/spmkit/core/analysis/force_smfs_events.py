@@ -124,7 +124,7 @@ def detect_unfolding_events(
     if min_persistence < 1 or min_event_separation < 1 or boundary_margin < 0:
         raise SmfsError(INVALID_MODEL_PARAMETER, "detection parameters must be positive")
     if noise_sigma is None:
-        noise_sigma = float(np.std(f[-max(3, f.size // 10):])) or 1e-12
+        noise_sigma = float(np.std(f[-max(3, f.size // 10) :])) or 1e-12
     drop_threshold = min_force_drop if min_force_drop is not None else 5.0 * noise_sigma
 
     selected: list[UnfoldingEvent] = []
@@ -155,34 +155,57 @@ def detect_unfolding_events(
         elif peak < boundary_margin or peak > f.size - boundary_margin - 1:
             reason = "event too close to the branch boundary"
         if reason is not None:
-            rejected.append(UnfoldingEvent(
-                event_index=peak, original_index=int(pull[peak]),
-                rupture_force=float(f[peak]), rupture_extension=float(ext[peak]),
-                force_drop=float(drop),
-                pre_window=(0, peak), post_window=(peak, f.size - 1),
-                local_loading_rate=None, is_final_detachment=False, valid=False,
-                rejection_reason=reason))
+            rejected.append(
+                UnfoldingEvent(
+                    event_index=peak,
+                    original_index=int(pull[peak]),
+                    rupture_force=float(f[peak]),
+                    rupture_extension=float(ext[peak]),
+                    force_drop=float(drop),
+                    pre_window=(0, peak),
+                    post_window=(peak, f.size - 1),
+                    local_loading_rate=None,
+                    is_final_detachment=False,
+                    valid=False,
+                    rejection_reason=reason,
+                )
+            )
         else:
             # is it the final detachment? the post-drop force returns to the
             # baseline (|f| <= 3 sigma) and no further significant drop exists
-            tail = f[peak + 1:]
+            tail = f[peak + 1 :]
             final = bool(tail.size and float(np.max(np.abs(tail))) <= 3.0 * noise_sigma)
-            selected.append(UnfoldingEvent(
-                event_index=peak, original_index=int(pull[peak]),
-                rupture_force=float(f[peak]), rupture_extension=float(ext[peak]),
-                force_drop=float(drop),
-                pre_window=(0, peak), post_window=(peak, f.size - 1),
-                local_loading_rate=None, is_final_detachment=final, valid=True))
+            selected.append(
+                UnfoldingEvent(
+                    event_index=peak,
+                    original_index=int(pull[peak]),
+                    rupture_force=float(f[peak]),
+                    rupture_extension=float(ext[peak]),
+                    force_drop=float(drop),
+                    pre_window=(0, peak),
+                    post_window=(peak, f.size - 1),
+                    local_loading_rate=None,
+                    is_final_detachment=final,
+                    valid=True,
+                )
+            )
         i = peak + max(min_event_separation, 1)
     if not selected:
         raise SmfsError(NO_EVENTS, "no unfolding event detected on the retract branch")
     return UnfoldingEventResult(
-        events=tuple(selected), rejected=tuple(rejected), method="sustained_drop",
-        thresholds={"min_force_drop": drop_threshold, "min_persistence": float(min_persistence),
-                    "min_event_separation": float(min_event_separation),
-                    "noise_sigma": float(noise_sigma)},
-        pull_order_indices=pull, warnings=tuple(warnings),
-        provenance={"detector": "sustained_drop"})
+        events=tuple(selected),
+        rejected=tuple(rejected),
+        method="sustained_drop",
+        thresholds={
+            "min_force_drop": drop_threshold,
+            "min_persistence": float(min_persistence),
+            "min_event_separation": float(min_event_separation),
+            "noise_sigma": float(noise_sigma),
+        },
+        pull_order_indices=pull,
+        warnings=tuple(warnings),
+        provenance={"detector": "sustained_drop"},
+    )
 
 
 def quantify_unfolding_events(
@@ -217,28 +240,40 @@ def quantify_unfolding_events(
         rate = None
         if t is not None:
             rate = _local_rate(t, f, peak, window_samples=min(10, peak))
-        updated.append(UnfoldingEvent(
-            event_index=peak, original_index=ev.original_index,
-            rupture_force=ev.rupture_force, rupture_extension=ev.rupture_extension,
-            force_drop=ev.force_drop, pre_window=(pre_start, pre_end),
-            post_window=(post_start, post_end), local_loading_rate=rate,
-            is_final_detachment=ev.is_final_detachment, valid=True))
+        updated.append(
+            UnfoldingEvent(
+                event_index=peak,
+                original_index=ev.original_index,
+                rupture_force=ev.rupture_force,
+                rupture_extension=ev.rupture_extension,
+                force_drop=ev.force_drop,
+                pre_window=(pre_start, pre_end),
+                post_window=(post_start, post_end),
+                local_loading_rate=rate,
+                is_final_detachment=ev.is_final_detachment,
+                valid=True,
+            )
+        )
     return UnfoldingEventResult(
-        events=tuple(updated), rejected=events.rejected, method=events.method,
-        thresholds=events.thresholds, pull_order_indices=pull,
-        warnings=events.warnings, provenance=events.provenance)
+        events=tuple(updated),
+        rejected=events.rejected,
+        method=events.method,
+        thresholds=events.thresholds,
+        pull_order_indices=pull,
+        warnings=events.warnings,
+        provenance=events.provenance,
+    )
 
 
-def _local_rate(t: np.ndarray, f: np.ndarray, peak: int,
-                window_samples: int) -> float | None:
+def _local_rate(t: np.ndarray, f: np.ndarray, peak: int, window_samples: int) -> float | None:
     """Robust local loading rate before the peak (least squares slope)."""
     start = max(0, peak - window_samples)
     if peak - start < 3:
         return None
-    dt = t[start:peak + 1] - t[start]
+    dt = t[start : peak + 1] - t[start]
     if np.any(np.diff(dt) <= 0.0):
         return None
-    slope, _intercept = np.polyfit(dt, f[start:peak + 1], 1)
+    slope, _intercept = np.polyfit(dt, f[start : peak + 1], 1)
     return float(slope)
 
 
@@ -283,22 +318,35 @@ def infer_contour_length_increments(
         # same molecular extension, not a branch-relative coordinate; a
         # branch-relative fit would absorb the event offset into a biased
         # contour length
-        pre_x = ext[pre_start:pre_end + 1]
-        pre_f = f[pre_start:pre_end + 1]
-        post_x = ext[post_start:post_end + 1]
-        post_f = f[post_start:post_end + 1]
+        pre_x = ext[pre_start : pre_end + 1]
+        pre_f = f[pre_start : pre_end + 1]
+        post_x = ext[post_start : post_end + 1]
+        post_f = f[post_start : post_end + 1]
         if pre_x.size < min_points or post_x.size < min_points:
-            out.append(ContourLengthIncrementResult(
-                event_index=peak, pre_fit=None, post_fit=None,  # type: ignore[arg-type]
-                pre_contour_length=float("nan"), post_contour_length=float("nan"),
-                delta_contour_length=float("nan"),
-                delta_sensitivity={"shift_spread": float("nan")}, valid=False,
-                warnings=(f"event {ei}: pre/post window too short",)))
+            out.append(
+                ContourLengthIncrementResult(
+                    event_index=peak,
+                    pre_fit=None,
+                    post_fit=None,  # type: ignore[arg-type]
+                    pre_contour_length=float("nan"),
+                    post_contour_length=float("nan"),
+                    delta_contour_length=float("nan"),
+                    delta_sensitivity={"shift_spread": float("nan")},
+                    valid=False,
+                    warnings=(f"event {ei}: pre/post window too short",),
+                )
+            )
             continue
-        pre_fit = fit_worm_like_chain(pre_x, pre_f, temperature=temperature) \
-            if model == "worm_like_chain" else _fit_named(model, pre_x, pre_f, temperature)
-        post_fit = fit_worm_like_chain(post_x, post_f, temperature=temperature) \
-            if model == "worm_like_chain" else _fit_named(model, post_x, post_f, temperature)
+        pre_fit = (
+            fit_worm_like_chain(pre_x, pre_f, temperature=temperature)
+            if model == "worm_like_chain"
+            else _fit_named(model, pre_x, pre_f, temperature)
+        )
+        post_fit = (
+            fit_worm_like_chain(post_x, post_f, temperature=temperature)
+            if model == "worm_like_chain"
+            else _fit_named(model, post_x, post_f, temperature)
+        )
         lc_pre = pre_fit.parameters["Lc"]
         lc_post = post_fit.parameters["Lc"]
         deltas: list[float] = []
@@ -311,34 +359,46 @@ def infer_contour_length_increments(
                 continue
             pe2 = max(pk - pre_margin, 1)
             ps2 = min(pk + post_margin, f.size - 1)
-            p_x = ext[0:pe2 + 1]
-            p_f = f[0:pe2 + 1]
-            q_x = ext[ps2:post_end + 1]
-            q_f = f[ps2:post_end + 1]
+            p_x = ext[0 : pe2 + 1]
+            p_f = f[0 : pe2 + 1]
+            q_x = ext[ps2 : post_end + 1]
+            q_f = f[ps2 : post_end + 1]
             if p_x.size < min_points or q_x.size < min_points:
                 continue
-            fp = fit_worm_like_chain(p_x, p_f, temperature=temperature) \
-                if model == "worm_like_chain" else _fit_named(model, p_x, p_f, temperature)
-            fq = fit_worm_like_chain(q_x, q_f, temperature=temperature) \
-                if model == "worm_like_chain" else _fit_named(model, q_x, q_f, temperature)
+            fp = (
+                fit_worm_like_chain(p_x, p_f, temperature=temperature)
+                if model == "worm_like_chain"
+                else _fit_named(model, p_x, p_f, temperature)
+            )
+            fq = (
+                fit_worm_like_chain(q_x, q_f, temperature=temperature)
+                if model == "worm_like_chain"
+                else _fit_named(model, q_x, q_f, temperature)
+            )
             deltas.append(fq.parameters["Lc"] - fp.parameters["Lc"])
         spread = float(np.ptp(deltas)) if deltas else float("nan")
-        out.append(ContourLengthIncrementResult(
-            event_index=peak, pre_fit=pre_fit, post_fit=post_fit,
-            pre_contour_length=float(lc_pre), post_contour_length=float(lc_post),
-            delta_contour_length=float(lc_post - lc_pre),
-            delta_sensitivity={"shift_spread": spread, "n_shifts": len(deltas)},
-            valid=True))
+        out.append(
+            ContourLengthIncrementResult(
+                event_index=peak,
+                pre_fit=pre_fit,
+                post_fit=post_fit,
+                pre_contour_length=float(lc_pre),
+                post_contour_length=float(lc_post),
+                delta_contour_length=float(lc_post - lc_pre),
+                delta_sensitivity={"shift_spread": spread, "n_shifts": len(deltas)},
+                valid=True,
+            )
+        )
     return tuple(out)
 
 
-def _fit_named(model: str, x: np.ndarray, f: np.ndarray,
-               temperature: float) -> PolymerFitResult:
+def _fit_named(model: str, x: np.ndarray, f: np.ndarray, temperature: float) -> PolymerFitResult:
     from spmkit.core.analysis.force_smfs_models import (
         fit_extensible_freely_jointed_chain,
         fit_extensible_worm_like_chain,
         fit_freely_jointed_chain,
     )
+
     if model == "extensible_worm_like_chain":
         return fit_extensible_worm_like_chain(x, f, temperature=temperature)
     if model == "freely_jointed_chain":
@@ -365,8 +425,7 @@ def compute_event_loading_rates(
     reported separately when both are supplied (never substituted).
     """
     if extension.time is None:
-        raise SmfsError(NONFINITE_INPUT,
-                        "loading rates require an explicit time axis")
+        raise SmfsError(NONFINITE_INPUT, "loading rates require an explicit time axis")
     pull = events.pull_order_indices
     t = extension.time[pull]
     f = extension.force[pull]
@@ -377,24 +436,38 @@ def compute_event_loading_rates(
         peak = ev.event_index
         start = max(0, peak - window_samples)
         if peak - start < min_samples - 1:
-            out.append(LoadingRateResult(
-                event_index=peak, time_window=(float(t[start]), float(t[peak])),
-                local_slope=float("nan"), robust_slope=float("nan"),
-                n_points=peak - start + 1,
-                warnings=("insufficient pre-event samples for a rate",)))
+            out.append(
+                LoadingRateResult(
+                    event_index=peak,
+                    time_window=(float(t[start]), float(t[peak])),
+                    local_slope=float("nan"),
+                    robust_slope=float("nan"),
+                    n_points=peak - start + 1,
+                    warnings=("insufficient pre-event samples for a rate",),
+                )
+            )
             continue
-        dt = t[start:peak + 1] - t[start]
-        df = f[start:peak + 1]
+        dt = t[start : peak + 1] - t[start]
+        df = f[start : peak + 1]
         slope, _intercept = np.polyfit(dt, df, 1)
-        pairs = [(df[j] - df[i]) / (dt[j] - dt[i])
-                 for i in range(len(dt)) for j in range(i + 1, len(dt))
-                 if dt[j] > dt[i]]
+        pairs = [
+            (df[j] - df[i]) / (dt[j] - dt[i])
+            for i in range(len(dt))
+            for j in range(i + 1, len(dt))
+            if dt[j] > dt[i]
+        ]
         robust = float(np.median(pairs)) if pairs else float(slope)
         theoretical = None
         if pulling_velocity is not None and effective_stiffness is not None:
             theoretical = effective_stiffness * pulling_velocity
-        out.append(LoadingRateResult(
-            event_index=peak, time_window=(float(t[start]), float(t[peak])),
-            local_slope=float(slope), robust_slope=robust,
-            n_points=peak - start + 1, theoretical_rate=theoretical))
+        out.append(
+            LoadingRateResult(
+                event_index=peak,
+                time_window=(float(t[start]), float(t[peak])),
+                local_slope=float(slope),
+                robust_slope=robust,
+                n_points=peak - start + 1,
+                theoretical_rate=theoretical,
+            )
+        )
     return tuple(out)

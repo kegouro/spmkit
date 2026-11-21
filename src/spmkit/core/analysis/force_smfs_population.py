@@ -59,11 +59,22 @@ def _to_float(value: object) -> float:
 
 def _summary(values: np.ndarray) -> dict[str, float]:
     if values.size == 0:
-        return {"n": 0.0, "mean": float("nan"), "median": float("nan"),
-                "std": float("nan"), "min": float("nan"), "max": float("nan")}
-    return {"n": float(values.size), "mean": float(np.mean(values)),
-            "median": float(np.median(values)), "std": float(np.std(values)),
-            "min": float(np.min(values)), "max": float(np.max(values))}
+        return {
+            "n": 0.0,
+            "mean": float("nan"),
+            "median": float("nan"),
+            "std": float("nan"),
+            "min": float("nan"),
+            "max": float("nan"),
+        }
+    return {
+        "n": float(values.size),
+        "mean": float(np.mean(values)),
+        "median": float(np.median(values)),
+        "std": float(np.std(values)),
+        "min": float(np.min(values)),
+        "max": float(np.max(values)),
+    }
 
 
 def analyze_smfs_event_population(
@@ -82,14 +93,10 @@ def analyze_smfs_event_population(
     n = len(event_records)
     if n == 0:
         raise SmfsError(INSUFFICIENT_EVENTS, "no events to aggregate")
-    forces = np.asarray([_to_float(r.get("rupture_force", np.nan))
-                        for r in event_records])
-    dlt = np.asarray([_to_float(r.get("delta_contour_length", np.nan))
-                      for r in event_records])
-    rates = np.asarray([_to_float(r.get("loading_rate", np.nan))
-                        for r in event_records])
-    origins = np.asarray([str(r.get("curve_id", "")) for r in event_records],
-                         dtype=object)
+    forces = np.asarray([_to_float(r.get("rupture_force", np.nan)) for r in event_records])
+    dlt = np.asarray([_to_float(r.get("delta_contour_length", np.nan)) for r in event_records])
+    rates = np.asarray([_to_float(r.get("loading_rate", np.nan)) for r in event_records])
+    origins = np.asarray([str(r.get("curve_id", "")) for r in event_records], dtype=object)
     if group_by == "none":
         assignments = np.zeros(n, dtype=np.int64)
         config: dict[str, object] = {"group_by": "none", "n_groups": 1}
@@ -101,10 +108,13 @@ def analyze_smfs_event_population(
         hi = np.ceil(np.log10(np.max(finite)))
         edges = np.linspace(lo, hi, n_groups + 1)
         assignments = np.clip(
-            np.searchsorted(edges, np.log10(rates), side="right") - 1,
-            0, n_groups - 1)
-        config = {"group_by": "loading_rate_decade", "n_groups": n_groups,
-                  "log10_edges": edges.tolist()}
+            np.searchsorted(edges, np.log10(rates), side="right") - 1, 0, n_groups - 1
+        )
+        config = {
+            "group_by": "loading_rate_decade",
+            "n_groups": n_groups,
+            "log10_edges": edges.tolist(),
+        }
     else:
         raise ValueError(f"unknown group_by {group_by!r}")
     # ambiguity: too few events for any population claim, or groups too
@@ -112,15 +122,23 @@ def analyze_smfs_event_population(
     counts = np.bincount(assignments, minlength=int(np.max(assignments)) + 1)
     ambiguous = bool(n < 5 or np.max(counts) < 2)
     return SMFSPopulationResult(
-        n_events=n, rupture_forces=forces, contour_increments=dlt,
-        loading_rates=rates, curve_origins=origins, group_assignments=assignments,
-        group_config=config, rupture_force_summary=_summary(forces),
+        n_events=n,
+        rupture_forces=forces,
+        contour_increments=dlt,
+        loading_rates=rates,
+        curve_origins=origins,
+        group_assignments=assignments,
+        group_config=config,
+        rupture_force_summary=_summary(forces),
         contour_increment_summary=_summary(dlt[np.isfinite(dlt)]),
         loading_rate_summary=_summary(rates[np.isfinite(rates)]),
         ambiguous=ambiguous,
-        warnings=("population grouping is a descriptive aggregation; no "
-                  "molecular-identity claim is made",),
-        provenance={"group_by": group_by, "n_groups": n_groups})
+        warnings=(
+            "population grouping is a descriptive aggregation; no "
+            "molecular-identity claim is made",
+        ),
+        provenance={"group_by": group_by, "n_groups": n_groups},
+    )
 
 
 def analyze_smfs_batch(
@@ -143,8 +161,9 @@ def analyze_smfs_batch(
     for i, a in enumerate(analyses):
         if not a.get("ok", False):
             idx = a.get("curve_index", i)
-            failed_reasons[int(idx) if isinstance(idx, (int, float)) else i] = \
-                str(a.get("failure", "unknown"))
+            failed_reasons[int(idx) if isinstance(idx, (int, float)) else i] = str(
+                a.get("failure", "unknown")
+            )
     unified: list[dict[str, object]] = []
     for a in ok:
         events = a.get("events", [])
@@ -152,12 +171,22 @@ def analyze_smfs_batch(
             rec = dict(ev)
             rec["curve_id"] = str(a.get("curve_id", ""))
             unified.append(rec)
-    population = analyze_smfs_event_population(
-        unified, group_by=group_by, n_groups=n_groups) if unified else None
+    population = (
+        analyze_smfs_event_population(unified, group_by=group_by, n_groups=n_groups)
+        if unified
+        else None
+    )
     return SMFSBatchResult(
-        n_curves=n_curves, n_ok=len(ok), n_failed=len(failed),
-        per_curve=tuple(analyses), failed_reasons=failed_reasons,
-        unified_event_table=tuple(unified), population=population or None,
-        provenance={"pipeline": ["per-curve SMFS analysis",
-                                 "unified event table", "population"],
-                    "deterministic": True, "n_unified_events": len(unified)})
+        n_curves=n_curves,
+        n_ok=len(ok),
+        n_failed=len(failed),
+        per_curve=tuple(analyses),
+        failed_reasons=failed_reasons,
+        unified_event_table=tuple(unified),
+        population=population or None,
+        provenance={
+            "pipeline": ["per-curve SMFS analysis", "unified event table", "population"],
+            "deterministic": True,
+            "n_unified_events": len(unified),
+        },
+    )

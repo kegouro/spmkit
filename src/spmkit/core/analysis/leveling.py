@@ -412,19 +412,13 @@ def gwyddion_align_rows_facet_tilt(
     if not isinstance(channel, SPMChannel):
         raise TypeError("Gwyddion Align Rows requires an SPMChannel")
     if not isinstance(mask_mode, str) or mask_mode not in _GWYDDION_ALIGN_ROWS_MASK_MODES:
-        raise ValueError(
-            "Gwyddion Align Rows mask_mode must be 'exclude', 'include', or 'ignore'"
-        )
+        raise ValueError("Gwyddion Align Rows mask_mode must be 'exclude', 'include', or 'ignore'")
     if not isinstance(direction, str) or direction not in _GWYDDION_ALIGN_ROWS_DIRECTIONS:
-        raise ValueError(
-            "Gwyddion Align Rows direction must be 'horizontal' or 'vertical'"
-        )
+        raise ValueError("Gwyddion Align Rows direction must be 'horizontal' or 'vertical'")
 
     columns = channel.data.shape[1]
     if columns < 2:
-        raise ValueError(
-            "Gwyddion Align Rows facet_tilt requires at least two columns"
-        )
+        raise ValueError("Gwyddion Align Rows facet_tilt requires at least two columns")
     dx = channel.x_range / float(columns)
 
     result = _gwyddion_align_rows_facet_tilt(

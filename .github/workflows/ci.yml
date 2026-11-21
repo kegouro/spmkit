@@ -16,7 +16,7 @@ jobs:
       - name: Create venv
         run: uv venv --python 3.12
       - name: Install dev deps
-        run: uv pip install -e ".[dev]"
+        run: uv pip install -c requirements-reproducible.txt -e ".[dev]"
       - name: Ruff (lint)
         run: uv run ruff check src tests
       - name: Black (format check)
@@ -25,10 +25,11 @@ jobs:
         run: uv run mypy src
 
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest, macos-latest]
         python-version: ["3.11", "3.12"]
     steps:
       - uses: actions/checkout@v4
@@ -39,7 +40,7 @@ jobs:
       - name: Install package + test deps
         # numpy 2.5.1 = el entorno en que se generó la evidencia de validación
         # (fixtures byte-deterministas: regeneración e inventarios comparan bytes/valores)
-        run: uv pip install -e ".[dev,hdf5,gwy,report,grains,jpk]" numpy==2.5.1
+        run: uv pip install -c requirements-reproducible.txt -e ".[dev,hdf5,gwy,report,jpk]"
       - name: Run tests (core + ciencia; los de GUI se omiten sin Qt)
         run: uv run pytest
 
@@ -57,7 +58,7 @@ jobs:
       - name: Create venv
         run: uv venv --python 3.12
       - name: Install package + GUI + test deps
-        run: uv pip install -e ".[dev,gui,test-gui,grains,report,hdf5,gwy,jpk]"
+        run: uv pip install -c requirements-reproducible.txt -e ".[dev,gui,test-gui,report,hdf5,gwy,jpk]"
       - name: Run GUI tests (offscreen, aislados por archivo)
         env:
           QT_QPA_PLATFORM: offscreen

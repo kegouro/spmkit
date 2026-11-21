@@ -276,6 +276,5 @@ def gwydion_step_block_correction(
     if direction not in ("left_to_right", "right_to_left"):
         raise ValueError("direction must be left_to_right or right_to_left")
     dy = channel.y_range / data.shape[0]
-    result = _gwydion_step_block_result(data, threshold=threshold,
-                                        direction=direction, dy=dy)
+    result = _gwydion_step_block_result(data, threshold=threshold, direction=direction, dy=dy)
     return channel.with_data(result.corrected_field)

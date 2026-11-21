@@ -1,0 +1,110 @@
+[
+  {
+    "directory": "spmkit-data-hunter",
+    "head": "852af89e27585dc2239148a272f41200cbe4b658",
+    "branch": "main",
+    "dirty_entries": 176
+  },
+  {
+    "directory": "spmkit-validation-phase01d",
+    "head": "98b5188be1a27c262657424756b673c1001791a1",
+    "branch": "feat/cumulative-verification-v0.1",
+    "dirty_entries": 0
+  },
+  {
+    "directory": "spmkit-validation-phase01e",
+    "head": "8bccb2f2611023d35e5087765eaf0b767e1456ee",
+    "branch": "feat/gwyddion-cross-validation-v0.1",
+    "dirty_entries": 0
+  },
+  {
+    "directory": "spmkit-validation-phase01c",
+    "head": "adab503423141884f456c8f70cc341ec6939499e",
+    "branch": "feat/synthetic-campaign-v0.1",
+    "dirty_entries": 0
+  },
+  {
+    "directory": "spmkit-sanitize",
+    "head": "11daf8879c9e3e098ce844778592525d4f2bdc53",
+    "branch": "chore/workspace-sanitize",
+    "dirty_entries": 0
+  },
+  {
+    "directory": "spmkit-publish-20260730",
+    "head": "372deee066f629caf74fa4a4657e1d4a73eecbed",
+    "branch": "integration/presentation-freeze-20260730",
+    "dirty_entries": 0
+  },
+  {
+    "directory": "spmkit-validation-phase01a",
+    "head": "948b3b0791474b303596b8e4ef900cf443f11675",
+    "branch": "feat/validation-schema-v0.1",
+    "dirty_entries": 0
+  },
+  {
+    "directory": "spmkit-presentation-docs-20260730",
+    "head": "a6e52c9590faa1f53e26ebc60f0d7e96e67fa2b1",
+    "branch": "docs/presentation-freeze-2026-07-30",
+    "dirty_entries": 0
+  },
+  {
+    "directory": "spmkit-validation-phase01b",
+    "head": "0a1ae8e3623cab0bdb2120b8c5f19e37e08af391",
+    "branch": "feat/bundle-lifecycle-v0.1",
+    "dirty_entries": 0
+  },
+  {
+    "directory": "spmkit-core-first-audit",
+    "head": "149d0e2ddc7e48acdf05daf93dcdce385550902f",
+    "branch": "audit/final-session-integration-20260807",
+    "dirty_entries": 0
+  },
+  {
+    "directory": "spmkit-core-first-audit/.reference/gwyddion-2.71/median-parity/aur-source",
+    "head": "62fc5e29c634c69c5b6cea8238be380269b428e8",
+    "branch": "master",
+    "dirty_entries": 2
+  },
+  {
+    "directory": ".data-hunter-rescue/worktrees/fs-r1a-data-hunter",
+    "head": "e59330f10710e64250a3fb265d7638a186776cf7",
+    "branch": "",
+    "dirty_entries": 0
+  },
+  {
+    "directory": ".spmkit-worktrees/pending-branch-integration-20260804T212640Z",
+    "head": "2e6b91b93d3f73dc70d3517b0cc5e42583177597",
+    "branch": "audit/pending-branch-integration-20260804T212640Z",
+    "dirty_entries": 0
+  },
+  {
+    "directory": "spmkit-validation",
+    "head": "132d00c521c0a873128163d437b8e7003402729f",
+    "branch": "master",
+    "dirty_entries": 101
+  },
+  {
+    "directory": "spmkit",
+    "head": "726045d6ebd784a9bae51e19028dcc0125afa4a5",
+    "branch": "main",
+    "dirty_entries": 26
+  },
+  {
+    "directory": ".worktrees/spmkit-docs-provenance",
+    "head": "a78dacbd608de5ac6a3102704f21f63123377138",
+    "branch": "fix/docs-content-addressed-provenance",
+    "dirty_entries": 0
+  },
+  {
+    "directory": "spmkit-phantoms",
+    "head": "ab994cea1da484247a36c304be03da746fa059df",
+    "branch": "main",
+    "dirty_entries": 37
+  },
+  {
+    "directory": "spmkit-validation-publish-20260730",
+    "head": "f4669869d9c75121b1219edf61f7f39df6ca8590",
+    "branch": "integration/gwyddion-cross-validation-20260730",
+    "dirty_entries": 0
+  }
+]

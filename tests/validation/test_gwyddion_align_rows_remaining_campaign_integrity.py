@@ -21,15 +21,20 @@ EXPECTED_NORMAL = "4509b817cee20de6e5a3df445900702af9ff32a824242c6f4a9add440f872
 EXPECTED_SANITIZED = "e39299128a9f422705af9af5cc7032e76e0f640c1bbac28fc43e525cf9ba46de"
 
 STABLE_FILES = [
-    "SHA256SUMS", "source-identity.txt", "binary-hashes.txt",
-    "case-summary.tsv", "normal-vs-sanitized-summary.tsv",
-    "checker-report.txt", "independent-reconciliation.txt",
+    "SHA256SUMS",
+    "source-identity.txt",
+    "binary-hashes.txt",
+    "case-summary.tsv",
+    "normal-vs-sanitized-summary.tsv",
+    "checker-report.txt",
+    "independent-reconciliation.txt",
     "metrics-report.txt",
 ]
 
 
 def _requires_evidence():
     import pytest
+
     if not EVIDENCE.is_dir():
         pytest.skip("compiled campaign evidence not present")
 
@@ -55,12 +60,13 @@ def test_sanitized_binary_genuinely_instrumented() -> None:
     nm = shutil.which("nm")
     if nm is None:
         import pytest
+
         pytest.skip("nm not available")
     out = subprocess.run([nm, str(san)], capture_output=True, text=True).stdout
-    assert "__asan_init" in out or "__ubsan" in out, \
-        "sanitized binary lacks sanitizer instrumentation symbols"
-    out_n = subprocess.run([nm, str(norm)], capture_output=True,
-                           text=True).stdout
+    assert (
+        "__asan_init" in out or "__ubsan" in out
+    ), "sanitized binary lacks sanitizer instrumentation symbols"
+    out_n = subprocess.run([nm, str(norm)], capture_output=True, text=True).stdout
     assert "__asan_init" not in out_n and "__ubsan" not in out_n
 
 
@@ -69,8 +75,7 @@ def test_sanitizer_flags_in_frozen_runner() -> None:
     ref = Path(__file__).resolve().parents[2] / ".reference"
     runner = None
     for entry in sorted(ref.iterdir()):
-        cand = entry / "align-rows-remaining-parity" / \
-            "run_align_rows_remaining_probe_campaign.sh"
+        cand = entry / "align-rows-remaining-parity" / "run_align_rows_remaining_probe_campaign.sh"
         if cand.is_file():
             runner = cand
             break
@@ -87,8 +92,7 @@ def test_zero_sanitizer_findings() -> None:
     _requires_evidence()
     for stderr in (EVIDENCE / "sanitized").glob("*.stderr"):
         content = stderr.read_text()
-        for marker in ("AddressSanitizer", "runtime error:",
-                       "UndefinedBehaviorSanitizer"):
+        for marker in ("AddressSanitizer", "runtime error:", "UndefinedBehaviorSanitizer"):
             assert marker not in content, (stderr.name, marker)
 
 
@@ -116,6 +120,7 @@ def test_both_clean_campaigns_identical() -> None:
     _requires_evidence()
     if not EVIDENCE2.is_dir():
         import pytest
+
         pytest.skip("second evidence root not present")
     for f in STABLE_FILES:
         a = EVIDENCE / f
@@ -132,10 +137,14 @@ def test_obsolete_identical_binary_state_rejected() -> None:
     import sys
     import tempfile
 
-    gen_path = Path(__file__).resolve().parent / "fixtures" / "gwyddion" / \
-        "align_rows_remaining" / "generate_fixtures.py"
-    spec = importlib.util.spec_from_file_location("ar_gen_campaign",
-                                                  str(gen_path))
+    gen_path = (
+        Path(__file__).resolve().parent
+        / "fixtures"
+        / "gwyddion"
+        / "align_rows_remaining"
+        / "generate_fixtures.py"
+    )
+    spec = importlib.util.spec_from_file_location("ar_gen_campaign", str(gen_path))
     gen = importlib.util.module_from_spec(spec)
     sys.modules["ar_gen_campaign"] = gen
     spec.loader.exec_module(gen)  # type: ignore[union-attr]
@@ -146,8 +155,7 @@ def test_obsolete_identical_binary_state_rejected() -> None:
     lines = bh.read_text().splitlines()
     assert len(lines) == 2
     same = lines[0].split()[0]
-    bh.write_text(f"{same}  bin/align_rows_probe\n"
-                  f"{same}  bin/align_rows_probe.san\n")
+    bh.write_text(f"{same}  bin/align_rows_probe\n" f"{same}  bin/align_rows_probe.san\n")
     problems: list[str] = []
     old = gen.EVIDENCE
     old2 = gen.EVIDENCE2
@@ -165,9 +173,14 @@ def test_obsolete_identical_binary_state_rejected() -> None:
 def test_gui_not_invoked_claims() -> None:
     _requires_evidence()
     manifest = json.loads(
-        (Path(__file__).resolve().parent / "fixtures" / "gwyddion" /
-         "align_rows_remaining" / "align_rows_remaining_reference.json")
-        .read_text())
+        (
+            Path(__file__).resolve().parent
+            / "fixtures"
+            / "gwyddion"
+            / "align_rows_remaining"
+            / "align_rows_remaining_reference.json"
+        ).read_text()
+    )
     assert manifest["gui_not_invoked"]
     text = "\n".join(manifest["non_claims"])
     assert "no GUI black-box execution" in text

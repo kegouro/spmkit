@@ -85,3 +85,7 @@ instrument file. It does not validate your instrument calibration or establish
 physical metrological traceability.
 
 [:material-arrow-right: First analysis](first-analysis.md)
+
+## Current consolidation
+
+See [macOS/Linux setup](macos.md) for clean-clone installation and constrained development.

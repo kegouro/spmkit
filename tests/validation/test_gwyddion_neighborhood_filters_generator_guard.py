@@ -16,13 +16,11 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-FIXTURE_DIR = Path(__file__).resolve().parent / "fixtures" / "gwyddion" / \
-    "neighborhood_filters"
+FIXTURE_DIR = Path(__file__).resolve().parent / "fixtures" / "gwyddion" / "neighborhood_filters"
 GENERATOR_PATH = FIXTURE_DIR / "generate_fixtures.py"
 EVIDENCE = Path("/tmp/spmkit_a2_neighborhood_filters_probe")
 
-spec = importlib.util.spec_from_file_location("nf_gen_under_test",
-                                              str(GENERATOR_PATH))
+spec = importlib.util.spec_from_file_location("nf_gen_under_test", str(GENERATOR_PATH))
 gen = importlib.util.module_from_spec(spec)
 sys.modules["nf_gen_under_test"] = gen
 spec.loader.exec_module(gen)  # type: ignore[union-attr]
@@ -63,15 +61,13 @@ def _parse(case: str, text: str) -> list[str]:
 
 
 def test_missing_element_rejected() -> None:
-    text = _valid_rank_stdout().replace(
-        "R01_CONSTANT_input_80=0x1.8p+1 0x4008000000000000\n", "")
+    text = _valid_rank_stdout().replace("R01_CONSTANT_input_80=0x1.8p+1 0x4008000000000000\n", "")
     problems = _parse("R01_CONSTANT", text)
     assert any("count 81 != 80" in p for p in problems)
 
 
 def test_duplicate_element_rejected() -> None:
-    text = _valid_rank_stdout() + \
-        "R01_CONSTANT_input_0=0x1.8p+1 0x4008000000000000\n"
+    text = _valid_rank_stdout() + "R01_CONSTANT_input_0=0x1.8p+1 0x4008000000000000\n"
     problems = _parse("R01_CONSTANT", text)
     assert any("indices not range" in p for p in problems)
 
@@ -79,7 +75,8 @@ def test_duplicate_element_rejected() -> None:
 def test_hex_bits_disagreement_rejected() -> None:
     text = _valid_rank_stdout().replace(
         "R01_CONSTANT_input_0=0x1.8p+1 0x4008000000000000",
-        "R01_CONSTANT_input_0=0x1.8p+1 0x4008000000000001")
+        "R01_CONSTANT_input_0=0x1.8p+1 0x4008000000000001",
+    )
     problems = _parse("R01_CONSTANT", text)
     assert any("hex/bits" in p for p in problems)
 
@@ -87,14 +84,16 @@ def test_hex_bits_disagreement_rejected() -> None:
 def test_signed_zero_disagreement_rejected() -> None:
     text = _valid_rank_stdout().replace(
         "R01_CONSTANT_input_1=0x1.8p+1 0x4008000000000000",
-        "R01_CONSTANT_input_1=0x0p+0 0x8000000000000000")
+        "R01_CONSTANT_input_1=0x0p+0 0x8000000000000000",
+    )
     problems = _parse("R01_CONSTANT", text)
     assert any("signed-zero" in p for p in problems)
 
 
 def test_footprint_count_mismatch_rejected() -> None:
-    text = _valid_rank_stdout().replace("R01_CONSTANT_footprint_count=21",
-                                        "R01_CONSTANT_footprint_count=20")
+    text = _valid_rank_stdout().replace(
+        "R01_CONSTANT_footprint_count=21", "R01_CONSTANT_footprint_count=20"
+    )
     _parse("R01_CONSTANT", text)
     # count mismatch alone is not caught by parse (counts are read); the
     # verifier's footprint invariant catches it
@@ -112,6 +111,7 @@ def test_median_radius_substitution_rejected() -> None:
 def test_rank_conversion_guard() -> None:
     # percentiles outside [0,1] must be rejected by the source oracle
     from oracle_neighborhood_filters_source import oracle_rank_filter
+
     f = np.zeros((5, 5))
     for bad in (1.5, -0.1):
         with pytest.raises(ValueError):
@@ -120,6 +120,7 @@ def test_rank_conversion_guard() -> None:
 
 def test_gaussian_non_odd_resolution_guard() -> None:
     from oracle_neighborhood_filters_source import oracle_gaussian_filter
+
     f = np.zeros((8, 8))
     g = oracle_gaussian_filter(f, sigma=40.0)
     assert g.res % 2 == 1
@@ -129,6 +130,7 @@ def test_gaussian_non_odd_resolution_guard() -> None:
 
 def _requires_evidence():
     import pytest
+
     if not EVIDENCE.is_dir():
         pytest.skip("compiled campaign evidence not present")
 
@@ -158,7 +160,8 @@ def test_campaign_level_guards() -> None:
     # sanitizer finding
     bad = _copy_evidence()
     (bad / "sanitized" / "R01_CONSTANT.stderr").write_text(
-        "ERROR: AddressSanitizer: heap-buffer-overflow\n")
+        "ERROR: AddressSanitizer: heap-buffer-overflow\n"
+    )
     problems = _run_verify(bad)
     assert any("unexpected stderr" in p for p in problems)
     shutil.rmtree(bad)
@@ -187,8 +190,7 @@ def test_campaign_level_guards() -> None:
     # incomplete SHA256SUMS
     bad = _copy_evidence()
     sums = bad / "SHA256SUMS"
-    keep = [ln for ln in sums.read_text().splitlines()
-            if "normal/R01_CONSTANT." not in ln]
+    keep = [ln for ln in sums.read_text().splitlines() if "normal/R01_CONSTANT." not in ln]
     sums.write_text("\n".join(keep) + "\n")
     problems = _run_verify(bad)
     assert any("SHA256SUMS missing" in p for p in problems)
@@ -205,24 +207,25 @@ def test_deterministic_regeneration() -> None:
     """Regenerate into two temp dirs and compare byte-for-byte."""
     _requires_evidence()
     import hashlib
+
     digests = []
     for _ in range(2):
         with tempfile.TemporaryDirectory() as tmp:
             gen.main(out_dir=Path(tmp))  # type: ignore[attr-defined]
             j = hashlib.sha256(
-                (Path(tmp) / "neighborhood_filters_reference.json")
-                .read_bytes()).hexdigest()
+                (Path(tmp) / "neighborhood_filters_reference.json").read_bytes()
+            ).hexdigest()
             n = hashlib.sha256(
-                (Path(tmp) / "neighborhood_filters_reference.npz")
-                .read_bytes()).hexdigest()
+                (Path(tmp) / "neighborhood_filters_reference.npz").read_bytes()
+            ).hexdigest()
             digests.append((j, n))
     assert digests[0] == digests[1], "regeneration not deterministic"
     old_j = hashlib.sha256(
-        (FIXTURE_DIR / "neighborhood_filters_reference.json")
-        .read_bytes()).hexdigest()
+        (FIXTURE_DIR / "neighborhood_filters_reference.json").read_bytes()
+    ).hexdigest()
     old_n = hashlib.sha256(
-        (FIXTURE_DIR / "neighborhood_filters_reference.npz")
-        .read_bytes()).hexdigest()
+        (FIXTURE_DIR / "neighborhood_filters_reference.npz").read_bytes()
+    ).hexdigest()
     assert digests[0] == (old_j, old_n), "regeneration differs from tracked"
 
 
@@ -230,7 +233,7 @@ def test_no_replay_array_duplication() -> None:
     _requires_evidence()
     with tempfile.TemporaryDirectory() as tmp:
         gen.main(out_dir=Path(tmp))  # type: ignore[attr-defined]
-        arrays = dict(np.load(
-            Path(tmp) / "neighborhood_filters_reference.npz",
-            allow_pickle=False).items())
+        arrays = dict(
+            np.load(Path(tmp) / "neighborhood_filters_reference.npz", allow_pickle=False).items()
+        )
         assert not any("X06_DETERMINISTIC_REPLAY_probe_" in k for k in arrays)

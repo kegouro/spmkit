@@ -18,18 +18,19 @@ import numpy as np
 MANIFEST_SHA256 = "25c9e9cbbe78c93ce36f283923479e976371004451b680cf4667bfb369d82a78"
 NPZ_SHA256 = "ef8dfb2f5ebddc91ee3ef381e747e89e40cbd9c8bae06d95fa7cd59eff03cf8d"
 
-FIXTURE_DIR = Path(__file__).resolve().parent / "fixtures" / "gwyddion" / \
-    "neighborhood_filters"
+FIXTURE_DIR = Path(__file__).resolve().parent / "fixtures" / "gwyddion" / "neighborhood_filters"
 JSON_PATH = FIXTURE_DIR / "neighborhood_filters_reference.json"
 NPZ_PATH = FIXTURE_DIR / "neighborhood_filters_reference.npz"
 
 PROFILE = "COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION"
 
 EXPECTED_BINARY_HASHES = {
-    "bin/neighborhood_filters_probe":
-        "6f4c5bd08283554113949bc7078cf440455595fbab08f9b668717c74b8655fa3",
-    "bin/neighborhood_filters_probe.san":
-        "a82121dafc8a7ff0a5b3f1855d8bc108f26b063a75b37529c954c6b01f093c5a",
+    "bin/neighborhood_filters_probe": (
+        "6f4c5bd08283554113949bc7078cf440455595fbab08f9b668717c74b8655fa3"
+    ),
+    "bin/neighborhood_filters_probe.san": (
+        "a82121dafc8a7ff0a5b3f1855d8bc108f26b063a75b37529c954c6b01f093c5a"
+    ),
 }
 
 
@@ -68,8 +69,13 @@ def test_hashes_inventory_and_arrays() -> None:
     assert inv["physical_executions_per_build"] == 71
     assert inv["total_executions"] == 142
     assert inv["logical_cases"] == 71
-    assert inv["family_counts"] == {"rank": 20, "median": 19, "gaussian": 20,
-                                    "cross": 6, "footprint": 6}
+    assert inv["family_counts"] == {
+        "rank": 20,
+        "median": 19,
+        "gaussian": 20,
+        "cross": 6,
+        "footprint": 6,
+    }
     assert inv["canonical_numerical_cases"] == 59
     assert inv["public_tool_domain_cases"] == 55
     assert inv["library_domain_only_cases"] == 1
@@ -113,12 +119,17 @@ def test_source_and_campaign_hashes() -> None:
     manifest, _ = _load()
     sh = manifest["source_hashes"]
     assert len(sh) == 16
-    for rel in ("modules/process/rank-filter.c", "modules/tools/filter.c",
-                "libprocess/filters-minmax.c", "libprocess/filters-convdeconv.c",
-                "libprocess/elliptic.c", "libprocess/filters.c",
-                "libgwyd" + "dion/gwymath-rank.c",
-                "neighborhood_filters_behavior_probe.c",
-                "run_neighborhood_filters_probe_campaign.sh"):
+    for rel in (
+        "modules/process/rank-filter.c",
+        "modules/tools/filter.c",
+        "libprocess/filters-minmax.c",
+        "libprocess/filters-convdeconv.c",
+        "libprocess/elliptic.c",
+        "libprocess/filters.c",
+        "libgwyd" + "dion/gwymath-rank.c",
+        "neighborhood_filters_behavior_probe.c",
+        "run_neighborhood_filters_probe_campaign.sh",
+    ):
         assert rel in sh, rel
         assert len(sh[rel]) == 64
     ch = manifest["campaign_hashes"]
@@ -135,28 +146,34 @@ def test_no_duplicate_replay_arrays() -> None:
     # the replay witness stores no canonical arrays in the NPZ
     assert not any("X06_DETERMINISTIC_REPLAY_probe_" in k for k in arrays)
     manifest, _ = _load()
-    assert manifest["relations"]["determinism_replay"] == [
-        "X06_DETERMINISTIC_REPLAY"]
+    assert manifest["relations"]["determinism_replay"] == ["X06_DETERMINISTIC_REPLAY"]
 
 
 def test_non_claims_present() -> None:
     manifest, _ = _load()
     text = "\n".join(manifest["non_claims"])
-    for claim in ("no production implementation yet", "no mask support",
-                  "no rectangular selection support", "no Mean capability",
-                  "no public Minimum/Maximum capability",
-                  "no morphology capability", "no frequency-domain filtering",
-                  "no NaN/Inf compatibility", "no GUI black-box validation",
-                  "no universal Gwydion build equivalence",
-                  "dynamically linked helpers not sanitizer-rebuilt",
-                  "no physical validation",
-                  "no production tolerance selected"):
+    for claim in (
+        "no production implementation yet",
+        "no mask support",
+        "no rectangular selection support",
+        "no Mean capability",
+        "no public Minimum/Maximum capability",
+        "no morphology capability",
+        "no frequency-domain filtering",
+        "no NaN/Inf compatibility",
+        "no GUI black-box validation",
+        "no universal Gwydion build equivalence",
+        "dynamically linked helpers not sanitizer-rebuilt",
+        "no physical validation",
+        "no production tolerance selected",
+    ):
         assert claim in text, claim
 
 
 def test_classification_coverage() -> None:
     manifest, _ = _load()
     from collections import Counter
+
     cls = Counter(c["classification"] for c in manifest["cases"])
     assert cls["PUBLIC_TOOL_DOMAIN_CASE"] == 55
     assert cls["LIBRARY_DOMAIN_ONLY_CASE"] == 1
@@ -165,7 +182,6 @@ def test_classification_coverage() -> None:
     assert cls["FOOTPRINT_RELATION_CASE"] == 6
     assert cls["DETERMINISM_WITNESS"] == 1
     # G05 is the library-only sigma=0 case
-    g05 = next(c for c in manifest["cases"]
-               if c["case_identifier"] == "G05_SIGMA_ZERO_LIBRARY")
+    g05 = next(c for c in manifest["cases"] if c["case_identifier"] == "G05_SIGMA_ZERO_LIBRARY")
     assert g05["classification"] == "LIBRARY_DOMAIN_ONLY_CASE"
     assert g05["res"] == 0

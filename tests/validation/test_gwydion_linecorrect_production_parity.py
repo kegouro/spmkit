@@ -45,8 +45,7 @@ def _channel(data: np.ndarray) -> SPMChannel:
 
 
 def _scalar(case_id: str, label: str) -> float:
-    case = next(c for c in _manifest["cases"]
-                if c["case_identifier"] == case_id)
+    case = next(c for c in _manifest["cases"] if c["case_identifier"] == case_id)
     return float.fromhex(case["scalars"][label]["hex"])
 
 
@@ -82,8 +81,7 @@ def test_step_production_bitwise_parity_all_cases() -> None:
         if case["family"] != "step":
             continue
         case_id = case["case_identifier"]
-        trace = _gwydion_step_line_correction_result(
-            _probe(case_id, "input"), trace=True)
+        trace = _gwydion_step_line_correction_result(_probe(case_id, "input"), trace=True)
         for label, attr in _STEP_ARRAY_PAIRS:
             probe = _probe(case_id, label)
             production = np.asarray(getattr(trace, attr), dtype=np.float64)
@@ -94,13 +92,16 @@ def test_step_production_bitwise_parity_all_cases() -> None:
             arrays += 1
             elements += probe.size
             arrays_exact += int(equal)
-            elements_exact += int(np.count_nonzero(
-                _bits(probe) == _bits(production))) if not equal else probe.size
+            elements_exact += (
+                int(np.count_nonzero(_bits(probe) == _bits(production)))
+                if not equal
+                else probe.size
+            )
             assert equal, (case_id, label)
-        assert trace.original_global_mean == _scalar(
-            case_id, "original_global_mean"), case_id
+        assert trace.original_global_mean == _scalar(case_id, "original_global_mean"), case_id
         assert trace.mean_restoration_offset == _scalar(
-            case_id, "final_mean_restoration_offset"), case_id
+            case_id, "final_mean_restoration_offset"
+        ), case_id
     assert arrays == 176, arrays
     assert elements == 5046, elements
     assert arrays_exact == 176
@@ -121,8 +122,7 @@ def test_step_public_api_parity() -> None:
         assert result.unit == "nm"
         assert result.x_range == float(frozen_final.shape[1])
         assert result.y_range == float(frozen_final.shape[0])
-        assert np.array_equal(_bits(channel.data),
-                              _bits(_probe(case_id, "input")))
+        assert np.array_equal(_bits(channel.data), _bits(_probe(case_id, "input")))
 
 
 # ---------------------------------------------------------------------------
@@ -130,8 +130,9 @@ def test_step_public_api_parity() -> None:
 # ---------------------------------------------------------------------------
 
 
-def _compare_mark_array(case_id: str, label: str, production: np.ndarray,
-                       arrays: list[int], elements: list[int]) -> None:
+def _compare_mark_array(
+    case_id: str, label: str, production: np.ndarray, arrays: list[int], elements: list[int]
+) -> None:
     """Compare one production array against the frozen probe array and
     accumulate the campaign-equivalent array/element accounting."""
     probe = _probe(case_id, label)
@@ -142,8 +143,9 @@ def _compare_mark_array(case_id: str, label: str, production: np.ndarray,
     elements[0] += probe.size
 
 
-def _compare_mark_array(case_id: str, label: str, production: np.ndarray,
-                       arrays: list[int], elements: list[int]) -> None:
+def _compare_mark_array(
+    case_id: str, label: str, production: np.ndarray, arrays: list[int], elements: list[int]
+) -> None:
     """Compare one production array against the frozen probe array and
     accumulate the campaign-equivalent array/element accounting."""
     probe = _probe(case_id, label)
@@ -170,53 +172,60 @@ def test_mark_production_bitwise_parity_all_cases() -> None:
         if "existing_mask_before" in case["arrays"]:
             existing = _probe(case_id, "existing_mask_before").copy()
         result = _gwydion_mark_inverted_rows_result(
-            _probe(case_id, "input"), existing_mask=existing)
-        assert result.guard_triggered == (
-            _scalar(case_id, "guard_triggered") != 0.0), case_id
+            _probe(case_id, "input"), existing_mask=existing
+        )
+        assert result.guard_triggered == (_scalar(case_id, "guard_triggered") != 0.0), case_id
         if result.guard_triggered:
             continue
-        for label, attr in (("row_means", "row_means"),
-                            ("row_rms", "row_rms"),
-                            ("raw_correlation_weights", "raw_weights")):
-            _compare_mark_array(case_id, label,
-                                getattr(result, attr), arrays, elements)
+        for label, attr in (
+            ("row_means", "row_means"),
+            ("row_rms", "row_rms"),
+            ("raw_correlation_weights", "raw_weights"),
+        ):
+            _compare_mark_array(case_id, label, getattr(result, attr), arrays, elements)
         assert result.has_negative_weight == (
-            _scalar(case_id, "has_negative_weight") != 0.0), case_id
+            _scalar(case_id, "has_negative_weight") != 0.0
+        ), case_id
         if not result.has_negative_weight:
             # no-negative early return: exactly the three stat arrays
             assert result.generated_mask is None, case_id
             assert result.would_create_mask is False, case_id
             assert result.would_overwrite_existing_mask is False, case_id
             continue
-        _compare_mark_array(case_id, "block_summed_weights",
-                            result.block_summed_weights, arrays, elements)
-        assert result.anchor_index == int(
-            _scalar(case_id, "anchor_index")), case_id
-        assert result.anchor_weight == _scalar(
-            case_id, "anchor_weight"), case_id
+        _compare_mark_array(
+            case_id, "block_summed_weights", result.block_summed_weights, arrays, elements
+        )
+        assert result.anchor_index == int(_scalar(case_id, "anchor_index")), case_id
+        assert result.anchor_weight == _scalar(case_id, "anchor_weight"), case_id
         production = np.asarray(result.generated_mask, dtype=np.float64)
-        _compare_mark_array(case_id, "generated_binary_mask",
-                            production, arrays, elements)
+        _compare_mark_array(case_id, "generated_binary_mask", production, arrays, elements)
 
         def marked(mask: np.ndarray) -> list[int]:
-            return [int(r) for r in range(mask.shape[0])
-                    if np.any(mask[r] == 1.0)]
-        assert marked(_probe(case_id, "generated_binary_mask")
-                      ) == marked(production), case_id
+            return [int(r) for r in range(mask.shape[0]) if np.any(mask[r] == 1.0)]
+
+        assert marked(_probe(case_id, "generated_binary_mask")) == marked(production), case_id
         assert result.mask_max == _scalar(case_id, "mask_max"), case_id
         assert result.would_create_mask == (
-            _scalar(case_id, "would_write_mask_when_no_existing_mask")
-            != 0.0), case_id
+            _scalar(case_id, "would_write_mask_when_no_existing_mask") != 0.0
+        ), case_id
         assert result.would_overwrite_existing_mask == (
-            _scalar(case_id, "would_overwrite_existing_mask") != 0.0), case_id
+            _scalar(case_id, "would_overwrite_existing_mask") != 0.0
+        ), case_id
         if "existing_mask_before" in case["arrays"]:
-            _compare_mark_array(case_id, "existing_mask_before",
-                                result.existing_mask_before, arrays, elements)
+            _compare_mark_array(
+                case_id, "existing_mask_before", result.existing_mask_before, arrays, elements
+            )
             assert result.existing_mask_after is not None, case_id
-            _compare_mark_array(case_id, "existing_mask_after_overwrite",
-                                result.existing_mask_after, arrays, elements)
-        _compare_mark_array(case_id, "input_field_after_operation",
-                            result.input_snapshot, arrays, elements)
+            _compare_mark_array(
+                case_id,
+                "existing_mask_after_overwrite",
+                result.existing_mask_after,
+                arrays,
+                elements,
+            )
+        _compare_mark_array(
+            case_id, "input_field_after_operation", result.input_snapshot, arrays, elements
+        )
         # scalars available on the detection path
         assert result.global_mean == _scalar(case_id, "global_mean"), case_id
         assert result.global_rms == _scalar(case_id, "global_rms"), case_id
@@ -242,5 +251,4 @@ def test_mark_public_api_adaptation() -> None:
         else:
             # public adaptation: all-zero mask when Gwydion would create none
             assert np.all(mask == 0.0), case_id
-        assert np.array_equal(_bits(channel.data),
-                              _bits(_probe(case_id, "input"))), case_id
+        assert np.array_equal(_bits(channel.data), _bits(_probe(case_id, "input"))), case_id

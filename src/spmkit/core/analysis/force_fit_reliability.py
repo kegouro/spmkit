@@ -76,8 +76,9 @@ class ForceFitDiagnosticResult:
     warnings: tuple[str, ...] = ()
 
 
-def _recompute_indentation(prepared: ForcePreparationResult,
-                           contact_offset: int) -> IndentationResult:
+def _recompute_indentation(
+    prepared: ForcePreparationResult, contact_offset: int
+) -> IndentationResult:
     """Recompute indentation with a shifted contact (no curve mutation)."""
     import numpy as np
 
@@ -94,8 +95,11 @@ def _recompute_indentation(prepared: ForcePreparationResult,
     # contact coordinate (the height at the contact)
     ind = sep - zc_shifted
     return IndentationResult(
-        indentation=ind, contact_index=prepared.contact.selected.index + contact_offset,
-        contact_coordinate=zc_shifted, separation=sep, valid=ind >= 0.0,
+        indentation=ind,
+        contact_index=prepared.contact.selected.index + contact_offset,
+        contact_coordinate=zc_shifted,
+        separation=sep,
+        valid=ind >= 0.0,
         provenance={"shifted_contact": True, "offset": contact_offset},
     )
 
@@ -132,25 +136,37 @@ def analyze_force_fit_sensitivity(
             # window variants are FRACTIONS of the indentation range
             bound = float(wfrac) * ind_max
             try:
-                window = select_contact_fit_window(prepared, ind,
-                                                   min_indentation=bound,
-                                                   min_points=10)
-                fit = fit_hertz_sphere(prepared, ind, window,
-                                       tip_radius=tip_radius, poisson=poisson)
-                config = {"contact_offset": off, "window_lower": bound,
-                          "window_lower_fraction": float(wfrac),
-                          "baseline": "linear", "model": "hertz_sphere"}
+                window = select_contact_fit_window(
+                    prepared, ind, min_indentation=bound, min_points=10
+                )
+                fit = fit_hertz_sphere(
+                    prepared, ind, window, tip_radius=tip_radius, poisson=poisson
+                )
+                config = {
+                    "contact_offset": off,
+                    "window_lower": bound,
+                    "window_lower_fraction": float(wfrac),
+                    "baseline": "linear",
+                    "model": "hertz_sphere",
+                }
                 configs.append(config)
                 params_out.append(fit.parameters)
                 keys_out.append((int(off), float(wfrac)))
             except ForceMechanicsError as exc:
-                failures.append(({"contact_offset": off, "window_lower": bound,
-                                  "window_lower_fraction": float(wfrac),
-                                  "baseline": "linear", "model": "hertz_sphere"},
-                                 exc.code))
+                failures.append(
+                    (
+                        {
+                            "contact_offset": off,
+                            "window_lower": bound,
+                            "window_lower_fraction": float(wfrac),
+                            "baseline": "linear",
+                            "model": "hertz_sphere",
+                        },
+                        exc.code,
+                    )
+                )
     if not params_out:
-        raise ForceMechanicsError(CONTACT_SENSITIVITY_HIGH,
-                                  "no multiverse configuration succeeded")
+        raise ForceMechanicsError(CONTACT_SENSITIVITY_HIGH, "no multiverse configuration succeeded")
     e_values = np.array([p["E"] for p in params_out])
     lo, hi = float(np.percentile(e_values, 5)), float(np.percentile(e_values, 95))
     # one-at-a-time sensitivity indices relative to the baseline
@@ -162,10 +178,10 @@ def analyze_force_fit_sensitivity(
     if base:
         contact_E = [by_key[(off, 0.0)] for off in contact_offsets if (off, 0.0) in by_key]
         window_E = [by_key[(0, wf)] for wf in fit_window_variants if (0, wf) in by_key]
-        contact_sens = (float(max(abs(e - base) for e in contact_E)) / abs(base)
-                        if contact_E else 0.0)
-        window_sens = (float(max(abs(e - base) for e in window_E)) / abs(base)
-                       if window_E else 0.0)
+        contact_sens = (
+            float(max(abs(e - base) for e in contact_E)) / abs(base) if contact_E else 0.0
+        )
+        window_sens = float(max(abs(e - base) for e in window_E)) / abs(base) if window_E else 0.0
     else:
         spread = float((np.max(e_values) - np.min(e_values)) / np.median(e_values))
         contact_sens = window_sens = spread
@@ -176,11 +192,15 @@ def analyze_force_fit_sensitivity(
     else:
         dominant = "none"
     return ForceFitSensitivityResult(
-        configurations=tuple(configs), parameter_multiverse=tuple(params_out),
-        failures=tuple(failures), stability_ranges={"E": (lo, hi)},
+        configurations=tuple(configs),
+        parameter_multiverse=tuple(params_out),
+        failures=tuple(failures),
+        stability_ranges={"E": (lo, hi)},
         robust_medians={"E": float(np.median(e_values))},
-        dominant_sensitivity=dominant, n_configurations=len(configs),
-        n_skipped=n_skipped, contact_sensitivity=contact_sens,
+        dominant_sensitivity=dominant,
+        n_configurations=len(configs),
+        n_skipped=n_skipped,
+        contact_sensitivity=contact_sens,
         window_sensitivity=window_sens,
     )
 
@@ -199,8 +219,7 @@ def bootstrap_force_fit(
     if strategy not in ("residual", "block_residual"):
         raise ValueError(f"unknown bootstrap strategy {strategy!r}")
     prepared, ind, window, _model = spec
-    base_fit = fit_hertz_sphere(prepared, ind, window,
-                                tip_radius=tip_radius, poisson=poisson)
+    base_fit = fit_hertz_sphere(prepared, ind, window, tip_radius=tip_radius, poisson=poisson)
     residuals = base_fit.residuals
     rng = np.random.default_rng(seed)
     samples_out: list[dict[str, float]] = []
@@ -235,25 +254,37 @@ def bootstrap_force_fit(
         try:
             from spmkit.core.analysis.contact_mechanics import _fit_one
 
-            boot = _fit_one("hertz_sphere", d, f_boot_full, window.start_index,
-                            window.end_index, {"R": tip_radius, "poisson": poisson},
-                            {"E": base_fit.parameters["E"]})
+            boot = _fit_one(
+                "hertz_sphere",
+                d,
+                f_boot_full,
+                window.start_index,
+                window.end_index,
+                {"R": tip_radius, "poisson": poisson},
+                {"E": base_fit.parameters["E"]},
+            )
             samples_out.append(boot.parameters)
         except ForceMechanicsError:
             continue
     if not 0.0 <= min_success_fraction <= 1.0:
-        raise ForceMechanicsError(BOOTSTRAP_INSUFFICIENT_SUCCESS,
-                                  "min_success_fraction must be in [0, 1]")
+        raise ForceMechanicsError(
+            BOOTSTRAP_INSUFFICIENT_SUCCESS, "min_success_fraction must be in [0, 1]"
+        )
     if len(samples_out) < min_success_fraction * samples:
-        raise ForceMechanicsError(BOOTSTRAP_INSUFFICIENT_SUCCESS,
-                                  f"only {len(samples_out)}/{samples} replicates succeeded")
+        raise ForceMechanicsError(
+            BOOTSTRAP_INSUFFICIENT_SUCCESS,
+            f"only {len(samples_out)}/{samples} replicates succeeded",
+        )
     e_vals = np.array([p["E"] for p in samples_out])
-    intervals = {
-        "E": (float(np.percentile(e_vals, 2.5)), float(np.percentile(e_vals, 97.5)))}
+    intervals = {"E": (float(np.percentile(e_vals, 2.5)), float(np.percentile(e_vals, 97.5)))}
     bias = {"E": float(np.mean(e_vals) - base_fit.parameters["E"])}
     return BootstrapForceFitResult(
-        seed=seed, strategy=strategy, samples=samples, n_success=len(samples_out),
-        parameter_samples=tuple(samples_out), percentile_intervals=intervals,
+        seed=seed,
+        strategy=strategy,
+        samples=samples,
+        n_success=len(samples_out),
+        parameter_samples=tuple(samples_out),
+        percentile_intervals=intervals,
         bias_estimate=bias,
     )
 
@@ -307,15 +338,19 @@ def diagnose_force_fit(
     eligible = not reasons and fit.success
     summary = "ok" if eligible else "review"
     return ForceFitDiagnosticResult(
-        fit_eligible=eligible, residual_rms=rms,
-        residual_autocorrelation_proxy=ac, residual_curvature_proxy=curvature,
-        parameter_bound_hits=bound_hits, condition_metric=condition_metric,
+        fit_eligible=eligible,
+        residual_rms=rms,
+        residual_autocorrelation_proxy=ac,
+        residual_curvature_proxy=curvature,
+        parameter_bound_hits=bound_hits,
+        condition_metric=condition_metric,
         parameter_correlation_max=parameter_correlation_max,
-        contact_sensitivity=(sensitivity.contact_sensitivity
-                             if sensitivity is not None else 0.0),
-        window_sensitivity=(sensitivity.window_sensitivity
-                            if sensitivity is not None else 0.0),
-        bootstrap_success_fraction=(bootstrap.n_success / bootstrap.samples
-                                    if bootstrap is not None else None),
-        model_ambiguous=amb, failure_reasons=tuple(reasons), summary_status=summary,
+        contact_sensitivity=(sensitivity.contact_sensitivity if sensitivity is not None else 0.0),
+        window_sensitivity=(sensitivity.window_sensitivity if sensitivity is not None else 0.0),
+        bootstrap_success_fraction=(
+            bootstrap.n_success / bootstrap.samples if bootstrap is not None else None
+        ),
+        model_ambiguous=amb,
+        failure_reasons=tuple(reasons),
+        summary_status=summary,
     )

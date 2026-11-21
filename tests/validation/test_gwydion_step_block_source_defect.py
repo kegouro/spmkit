@@ -31,8 +31,7 @@ def test_defect_record_present_and_complete() -> None:
 def test_defect_case_has_no_frozen_numerical_output() -> None:
     manifest = json.loads(JSON_PATH.read_text())
     arrays = dict(np.load(NPZ_PATH, allow_pickle=False).items())
-    assert all(c["case_identifier"] != "S17_SMALL_XRES_1"
-               for c in manifest["cases"])
+    assert all(c["case_identifier"] != "S17_SMALL_XRES_1" for c in manifest["cases"])
     assert all("S17_SMALL_XRES_1" not in k for k in arrays)
     # the generator must never store an expected numerical output for the
     # defect case: if a future generator change adds one, this fails

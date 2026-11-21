@@ -57,8 +57,7 @@ def _ieee_divide(numerator: float, denominator: int) -> float:
         return float(np.float64(numerator) / np.float64(denominator))
 
 
-def _align_rows(field: FloatArray, medians: FloatArray,
-                statistic_mean: float) -> FloatArray:
+def _align_rows(field: FloatArray, medians: FloatArray, statistic_mean: float) -> FloatArray:
     """gwy_data_field_subtract_row_shifts (correct.c:1527-1551)."""
     aligned = field.copy()
     yres, xres = field.shape
@@ -69,8 +68,9 @@ def _align_rows(field: FloatArray, medians: FloatArray,
     return aligned
 
 
-def _repair_segment(work: FloatArray, top_index: int, scratch_row: list[float],
-                    start: int, length: int, xres: int) -> None:
+def _repair_segment(
+    work: FloatArray, top_index: int, scratch_row: list[float], start: int, length: int, xres: int
+) -> None:
     """calculate_segment_correction (linecorrect.c:78-100).
 
     drow points at the triplet TOP row; drow[xres+j] and drow[2*xres+j]
@@ -85,15 +85,12 @@ def _repair_segment(work: FloatArray, top_index: int, scratch_row: list[float],
         segment_residual = 0.0
         for k in range(length):
             column = start + k
-            segment_residual += ((top[column] + bottom[column]) / 2.0
-                                 - middle[column])
+            segment_residual += (top[column] + bottom[column]) / 2.0 - middle[column]
         segment_residual /= length
         for k in range(length):
             column = start + k
-            local_residual = ((top[column] + bottom[column]) / 2.0
-                              - middle[column])
-            scratch_row[column] = (3.0 * segment_residual
-                                   + local_residual) / 4.0
+            local_residual = (top[column] + bottom[column]) / 2.0 - middle[column]
+            scratch_row[column] = (3.0 * segment_residual + local_residual) / 4.0
     else:
         for k in range(length):
             scratch_row[start + k] = 0.0
@@ -144,12 +141,10 @@ def _detector_pass(work: FloatArray, scratch: FloatArray) -> None:
                 run_length += 1
             else:
                 if marks[j - 1]:
-                    _repair_segment(work, i, marks, j - run_length,
-                                    run_length, xres)
+                    _repair_segment(work, i, marks, j - run_length, run_length, xres)
                 run_length = 1
         if marks[xres - 1]:
-            _repair_segment(work, i, marks, xres - run_length,
-                            run_length, xres)
+            _repair_segment(work, i, marks, xres - run_length, run_length, xres)
 
     for index in range(yres * xres):
         work.flat[index] = work.flat[index] + scratch.flat[index]
@@ -236,8 +231,9 @@ def _gwydion_step_line_correction_result(
     original_mean = _sequential_sum(field) / n
 
     # linecorrect.c:178 — row statistics and zero-levelled shifts
-    statistics = np.array([_row_upper_median(field[i]) for i in range(yres)],
-                          dtype=np.float64, order="C")
+    statistics = np.array(
+        [_row_upper_median(field[i]) for i in range(yres)], dtype=np.float64, order="C"
+    )
     statistic_total = 0.0
     for value in statistics:
         statistic_total += float(value)
@@ -272,8 +268,7 @@ def _gwydion_step_line_correction_result(
         original_global_mean=original_mean,
         row_statistics=statistics,
         zero_leveled_shifts=shifts,
-        field_after_row_alignment=_align_rows(field, statistics,
-                                              statistic_mean),
+        field_after_row_alignment=_align_rows(field, statistics, statistic_mean),
         scratch_pass1=scratch_pass1,
         field_after_pass1=field_after_pass1,
         scratch_pass2=scratch_pass2,

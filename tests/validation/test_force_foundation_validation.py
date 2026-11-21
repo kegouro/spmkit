@@ -212,8 +212,9 @@ def test_work_level_a_integrator_exact() -> None:
     # the production integrator on the exact domain matches the discrete truth
     from spmkit.core.analysis import ContactPointCandidate
 
-    cand = ContactPointCandidate(method="truth", index=int(np.flatnonzero(z >= zc)[0]),
-                                 coordinate=zc, score=0.0, valid=True)
+    cand = ContactPointCandidate(
+        method="truth", index=int(np.flatnonzero(z >= zc)[0]), coordinate=zc, score=0.0, valid=True
+    )
     curve = _curve_from_phantom("P01", manifest, arrays)
     res = integrate_force_work(curve, cand)
     # A-level error is the discretization of the closed form
@@ -227,13 +228,16 @@ def test_work_level_b_contact_propagation_separate() -> None:
     t = manifest["cases"]["P01"]["truth"]
     z = arrays["P01_approach_height"]
     curve = _curve_from_phantom("P01", manifest, arrays)
-    exact_cand = contact_point_threshold(curve)   # exact on clean data
+    exact_cand = contact_point_threshold(curve)  # exact on clean data
     res_exact = integrate_force_work(curve, exact_cand)
     # perturb the contact by 5 samples and measure the propagated work change
     shifted = ContactPointCandidate(
-        method="shifted", index=exact_cand.index + 5,
+        method="shifted",
+        index=exact_cand.index + 5,
         coordinate=float(z[min(exact_cand.index + 5, z.size - 1)]),
-        score=0.0, valid=True)
+        score=0.0,
+        valid=True,
+    )
     res_shifted = integrate_force_work(curve, shifted)
     propagation = abs(res_shifted.work_approach - res_exact.work_approach)
     assert propagation > 0.0
@@ -366,34 +370,76 @@ def test_calibration_unit_sign_and_state_transitions() -> None:
     meta = manifest["cases"]["P09"]
     za = arrays["P09_approach_height"]
     raw = arrays["P09_approach_force"]  # raw volts
-    seg = ForceSegment(segment_type="extend", direction="forward", raw_height=za,
-                       raw_deflection=raw, time=None, cycle=0, state="raw_v",
-                       deflection=None, force=None, separation=None, metadata={})
+    seg = ForceSegment(
+        segment_type="extend",
+        direction="forward",
+        raw_height=za,
+        raw_deflection=raw,
+        time=None,
+        cycle=0,
+        state="raw_v",
+        deflection=None,
+        force=None,
+        separation=None,
+        metadata={},
+    )
     # negative spring constant rejected
-    curve = ForceCurve(segments=(seg,), calibration=Calibration(
-        invols=meta["invols"], spring_constant=-0.1, method="thermal",
-        temperature=300, provenance={}), position=None, index=0, metadata={})
+    curve = ForceCurve(
+        segments=(seg,),
+        calibration=Calibration(
+            invols=meta["invols"],
+            spring_constant=-0.1,
+            method="thermal",
+            temperature=300,
+            provenance={},
+        ),
+        position=None,
+        index=0,
+        metadata={},
+    )
     with pytest.raises(ForceFoundationError) as ei:
         calibrate_force_curve(curve)
     assert ei.value.code == "INVALID_CALIBRATION"
     # negative invols rejected
-    curve2 = ForceCurve(segments=(seg,), calibration=Calibration(
-        invols=-3e-8, spring_constant=0.1, method="thermal",
-        temperature=300, provenance={}), position=None, index=0, metadata={})
+    curve2 = ForceCurve(
+        segments=(seg,),
+        calibration=Calibration(
+            invols=-3e-8, spring_constant=0.1, method="thermal", temperature=300, provenance={}
+        ),
+        position=None,
+        index=0,
+        metadata={},
+    )
     with pytest.raises(ForceFoundationError):
         calibrate_force_curve(curve2)
     # mixed states: raw_v + force_n together -> calibrated pass-through plus
     # calibration of the raw segment
-    seg2 = ForceSegment(segment_type="retract", direction="backward",
-                        raw_height=arrays["P09_retract_height"],
-                        raw_deflection=raw[::-1].copy(), time=None, cycle=0,
-                        state="force_n", deflection=None,
-                        force=arrays["P09_retract_force"], separation=None,
-                        metadata={})
-    curve3 = ForceCurve(segments=(seg, seg2), calibration=Calibration(
-        invols=meta["invols"], spring_constant=meta["spring_constant"],
-        method="thermal", temperature=300, provenance={}),
-        position=None, index=0, metadata={})
+    seg2 = ForceSegment(
+        segment_type="retract",
+        direction="backward",
+        raw_height=arrays["P09_retract_height"],
+        raw_deflection=raw[::-1].copy(),
+        time=None,
+        cycle=0,
+        state="force_n",
+        deflection=None,
+        force=arrays["P09_retract_force"],
+        separation=None,
+        metadata={},
+    )
+    curve3 = ForceCurve(
+        segments=(seg, seg2),
+        calibration=Calibration(
+            invols=meta["invols"],
+            spring_constant=meta["spring_constant"],
+            method="thermal",
+            temperature=300,
+            provenance={},
+        ),
+        position=None,
+        index=0,
+        metadata={},
+    )
     res = calibrate_force_curve(curve3)
     assert res.curve.segments[0].state == "force_n"
     assert np.array_equal(res.curve.segments[1].force, seg2.force)

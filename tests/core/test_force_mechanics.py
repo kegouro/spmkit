@@ -37,8 +37,9 @@ ZC = 3e-6
 DELTA = np.linspace(0.0, 1e-6, N)
 
 
-def _model_curve(model: str = "hertz_sphere",
-                params: dict | None = None, noise: float = 0.0) -> ForceCurve:
+def _model_curve(
+    model: str = "hertz_sphere", params: dict | None = None, noise: float = 0.0
+) -> ForceCurve:
     if params is None:
         params = {"E": 5e3, "R": 1e-6, "poisson": 0.3}
     rng = np.random.default_rng(0)
@@ -53,21 +54,38 @@ def _model_curve(model: str = "hertz_sphere",
     if noise:
         force = force + rng.normal(0.0, noise, N)
     height = sep + force / K
+
     def seg(t, d, z, f):
-        return ForceSegment(segment_type=t, direction=d, raw_height=z,
-                            raw_deflection=f / K, time=None, cycle=0, state="force_n",
-                            deflection=f / K, force=f, separation=None, metadata={})
+        return ForceSegment(
+            segment_type=t,
+            direction=d,
+            raw_height=z,
+            raw_deflection=f / K,
+            time=None,
+            cycle=0,
+            state="force_n",
+            deflection=f / K,
+            force=f,
+            separation=None,
+            metadata={},
+        )
+
     fr = force[::-1].copy()
-    return ForceCurve(segments=(seg("extend", "forward", height, force),
-                               seg("retract", "backward", height[::-1].copy(), fr)),
-                      calibration=Calibration(invols=3e-8, spring_constant=K,
-                                              method="thermal", temperature=300,
-                                              provenance={}),
-                      position=None, index=0, metadata={})
+    return ForceCurve(
+        segments=(
+            seg("extend", "forward", height, force),
+            seg("retract", "backward", height[::-1].copy(), fr),
+        ),
+        calibration=Calibration(
+            invols=3e-8, spring_constant=K, method="thermal", temperature=300, provenance={}
+        ),
+        position=None,
+        index=0,
+        metadata={},
+    )
 
 
-def _prepared(model: str = "hertz_sphere", noise: float = 0.0,
-              params: dict | None = None):
+def _prepared(model: str = "hertz_sphere", noise: float = 0.0, params: dict | None = None):
     if params is None:
         params = {"E": 5e3, "R": 1e-6, "poisson": 0.3}
     return prepare_force_curve(_model_curve(model, params, noise))
@@ -76,16 +94,21 @@ def _prepared(model: str = "hertz_sphere", noise: float = 0.0,
 def test_forward_equations_match_literature() -> None:
     est = 5e3 / (1 - 0.3**2)
     d = np.array([1e-7, 5e-7, 1e-6])
-    assert np.allclose(forward_model("hertz_sphere", d, {"E": 5e3, "R": 1e-6, "poisson": 0.3}),
-                       (4/3) * est * math.sqrt(1e-6) * d**1.5)
+    assert np.allclose(
+        forward_model("hertz_sphere", d, {"E": 5e3, "R": 1e-6, "poisson": 0.3}),
+        (4 / 3) * est * math.sqrt(1e-6) * d**1.5,
+    )
     assert np.allclose(
         forward_model("sneddon_cone", d, {"E": 5e3, "alpha": math.radians(20), "poisson": 0.3}),
-                       (2 * math.tan(math.radians(20)) / math.pi) * est * d**2)
-    assert np.allclose(forward_model("flat_punch", d, {"E": 5e3, "R": 1e-6, "poisson": 0.3}),
-                       2 * est * 1e-6 * d)
+        (2 * math.tan(math.radians(20)) / math.pi) * est * d**2,
+    )
+    assert np.allclose(
+        forward_model("flat_punch", d, {"E": 5e3, "R": 1e-6, "poisson": 0.3}), 2 * est * 1e-6 * d
+    )
     assert np.allclose(
         forward_model("dmt", d, {"E": 5e3, "R": 1e-6, "poisson": 0.3, "F_adh": 2e-9}),
-                       (4/3) * est * math.sqrt(1e-6) * d**1.5 - 2e-9)
+        (4 / 3) * est * math.sqrt(1e-6) * d**1.5 - 2e-9,
+    )
 
 
 def test_jkr_reduces_to_hertz() -> None:
@@ -110,8 +133,7 @@ def test_compute_indentation_contract() -> None:
 def test_fit_window_contract() -> None:
     prepared = _prepared()
     ind = compute_indentation(prepared)
-    window = select_contact_fit_window(prepared, ind, min_indentation=0.0,
-                                       min_points=10)
+    window = select_contact_fit_window(prepared, ind, min_indentation=0.0, min_points=10)
     assert window.n_points >= 10
     assert window.included.sum() == window.n_points
     with pytest.raises(ForceMechanicsError):
@@ -120,11 +142,14 @@ def test_fit_window_contract() -> None:
         select_contact_fit_window(prepared, ind, min_points=10**6)
 
 
-@pytest.mark.parametrize("model,fit_fn,kwargs,truth_key", [
-    ("hertz_sphere", fit_hertz_sphere, {"tip_radius": 1e-6}, "E"),
-    ("sneddon_cone", fit_sneddon_cone, {"half_angle": math.radians(20.0)}, "E"),
-    ("flat_punch", fit_flat_punch, {"punch_radius": 1e-6}, "E"),
-])
+@pytest.mark.parametrize(
+    "model,fit_fn,kwargs,truth_key",
+    [
+        ("hertz_sphere", fit_hertz_sphere, {"tip_radius": 1e-6}, "E"),
+        ("sneddon_cone", fit_sneddon_cone, {"half_angle": math.radians(20.0)}, "E"),
+        ("flat_punch", fit_flat_punch, {"punch_radius": 1e-6}, "E"),
+    ],
+)
 def test_clean_parameter_recovery(model, fit_fn, kwargs, truth_key) -> None:
     params = {"E": 5e3, "R": 1e-6, "poisson": 0.3, "alpha": math.radians(20.0)}
     if model == "sneddon_cone":
@@ -147,8 +172,7 @@ def test_dmt_clean_recovery() -> None:
     # the window trims the snap-in/pre-contact region: the FS-F1 contact
     # ensemble lands up to ~10 samples off on snap-in curves, which biases
     # adhesive-model parameters (documented limitation of this batch)
-    window = select_contact_fit_window(prepared, ind, min_indentation=1.8e-7,
-                                       min_points=10)
+    window = select_contact_fit_window(prepared, ind, min_indentation=1.8e-7, min_points=10)
     fit = fit_dmt(prepared, ind, window, tip_radius=1e-6)
     assert abs(fit.parameters["E"] - 5e3) / 5e3 < 0.3
     assert abs(fit.parameters["F_adh"] - 2e-9) < 1.5e-9
@@ -159,8 +183,7 @@ def test_jkr_clean_recovery() -> None:
     prepared = _prepared("jkr", 0.0, params)
     ind = compute_indentation(prepared)
     # same snap-in trim as the DMT case (see test_dmt_clean_recovery)
-    window = select_contact_fit_window(prepared, ind, min_indentation=2e-7,
-                                       min_points=10)
+    window = select_contact_fit_window(prepared, ind, min_indentation=2e-7, min_points=10)
     fit = fit_jkr(prepared, ind, window, tip_radius=1e-6)
     assert fit.success
     assert abs(fit.parameters["E"] - 5e3) / 5e3 < 0.2
@@ -228,9 +251,14 @@ def test_comparison_retains_failed_candidate() -> None:
     prepared = _prepared("hertz_sphere", 1e-12)
     ind = compute_indentation(prepared)
     window = select_contact_fit_window(prepared, ind, min_points=10)
-    cmp = compare_contact_models(prepared, ind, window, tip_radius=1e-6,
-                                 models=("hertz_sphere", "sneddon_cone"),
-                                 half_angle=math.pi / 2)
+    cmp = compare_contact_models(
+        prepared,
+        ind,
+        window,
+        tip_radius=1e-6,
+        models=("hertz_sphere", "sneddon_cone"),
+        half_angle=math.pi / 2,
+    )
     assert cmp.n_compared == 1
     assert any("INVALID_ANGLE" in w for w in cmp.warnings)
     assert cmp.recommended_model == "hertz_sphere"
@@ -250,9 +278,12 @@ def test_multiverse_max_configuration_guard() -> None:
     silently dropped or run."""
     prepared = _prepared("hertz_sphere", 1e-12)
     sens = analyze_force_fit_sensitivity(
-        prepared, contact_offsets=tuple(range(-10, 11)),
-        fit_window_variants=(0.0, 0.1, 0.2), max_configurations=8,
-        tip_radius=1e-6)
+        prepared,
+        contact_offsets=tuple(range(-10, 11)),
+        fit_window_variants=(0.0, 0.1, 0.2),
+        max_configurations=8,
+        tip_radius=1e-6,
+    )
     assert sens.n_configurations + len(sens.failures) <= 8
     assert sens.n_skipped > 0
 
@@ -283,15 +314,22 @@ def test_bootstrap_block_residual_robust_window_length() -> None:
     prepared = _prepared("hertz_sphere", 1e-12)
     ind = compute_indentation(prepared)
     # trim so the window length is not a multiple of the block size (5)
-    window = select_contact_fit_window(prepared, ind, min_indentation=5e-8,
-                                       min_points=10)
+    window = select_contact_fit_window(prepared, ind, min_indentation=5e-8, min_points=10)
     assert window.n_points % 5 != 0, "window length must not be a block multiple"
-    a = bootstrap_force_fit((prepared, ind, window, "hertz_sphere"),
-                            samples=12, seed=3, strategy="block_residual",
-                            tip_radius=1e-6)
-    b = bootstrap_force_fit((prepared, ind, window, "hertz_sphere"),
-                            samples=12, seed=3, strategy="block_residual",
-                            tip_radius=1e-6)
+    a = bootstrap_force_fit(
+        (prepared, ind, window, "hertz_sphere"),
+        samples=12,
+        seed=3,
+        strategy="block_residual",
+        tip_radius=1e-6,
+    )
+    b = bootstrap_force_fit(
+        (prepared, ind, window, "hertz_sphere"),
+        samples=12,
+        seed=3,
+        strategy="block_residual",
+        tip_radius=1e-6,
+    )
     assert a.parameter_samples == b.parameter_samples
     assert a.n_success >= 10
 
@@ -301,8 +339,7 @@ def test_diagnose_computes_covariance_metrics() -> None:
     are computed from the fit covariance, not placeholder zeros."""
     prepared = _prepared("hertz_sphere", 1e-12)
     ind = compute_indentation(prepared)
-    window = select_contact_fit_window(prepared, ind, min_indentation=0.0,
-                                       min_points=10)
+    window = select_contact_fit_window(prepared, ind, min_indentation=0.0, min_points=10)
     fit = fit_hertz_sphere(prepared, ind, window, tip_radius=1e-6)
     diag = diagnose_force_fit(fit)
     assert diag.condition_metric > 0.0
@@ -313,10 +350,12 @@ def test_bootstrap_deterministic_replay() -> None:
     prepared = _prepared("hertz_sphere", 1e-12)
     ind = compute_indentation(prepared)
     window = select_contact_fit_window(prepared, ind, min_points=10)
-    a = bootstrap_force_fit((prepared, ind, window, "hertz_sphere"),
-                            samples=50, seed=7, tip_radius=1e-6)
-    b = bootstrap_force_fit((prepared, ind, window, "hertz_sphere"),
-                            samples=50, seed=7, tip_radius=1e-6)
+    a = bootstrap_force_fit(
+        (prepared, ind, window, "hertz_sphere"), samples=50, seed=7, tip_radius=1e-6
+    )
+    b = bootstrap_force_fit(
+        (prepared, ind, window, "hertz_sphere"), samples=50, seed=7, tip_radius=1e-6
+    )
     assert a.parameter_samples == b.parameter_samples
     assert a.percentile_intervals == b.percentile_intervals
 
@@ -327,9 +366,13 @@ def test_bootstrap_insufficient_success() -> None:
     window = select_contact_fit_window(prepared, ind, min_points=10)
     # an impossible success fraction is rejected deterministically
     with pytest.raises(ForceMechanicsError) as ei:
-        bootstrap_force_fit((prepared, ind, window, "hertz_sphere"),
-                            samples=20, seed=0, tip_radius=1e-6,
-                            min_success_fraction=1.5)
+        bootstrap_force_fit(
+            (prepared, ind, window, "hertz_sphere"),
+            samples=20,
+            seed=0,
+            tip_radius=1e-6,
+            min_success_fraction=1.5,
+        )
     assert ei.value.code == "BOOTSTRAP_INSUFFICIENT_SUCCESS"
 
 
@@ -365,7 +408,15 @@ def _unprepared_placeholder(curve):
     q = score_force_curve_quality(curve)
     seg = identify_force_segments(curve)
     return ForcePreparationResult(
-        curve=curve, segmentation=seg, calibration=None,  # type: ignore[arg-type]
-        separation=curve, baseline=None, baseline_corrected=curve,
-        contact=None, events=None, work=None, quality=q, provenance={},
+        curve=curve,
+        segmentation=seg,
+        calibration=None,  # type: ignore[arg-type]
+        separation=curve,
+        baseline=None,
+        baseline_corrected=curve,
+        contact=None,
+        events=None,
+        work=None,
+        quality=q,
+        provenance={},
     )

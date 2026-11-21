@@ -61,17 +61,13 @@ def _validated_field(value: object, *, label: str) -> np.ndarray:
     try:
         source = np.asarray(value)
     except (TypeError, ValueError) as exc:
-        raise TypeError(f"Gwydion neighborhood filter {label} must be "
-                        "array-compatible") from exc
+        raise TypeError(f"Gwydion neighborhood filter {label} must be " "array-compatible") from exc
     if source.ndim != 2:
-        raise ValueError(f"Gwydion neighborhood filter {label} must be "
-                         "two-dimensional")
+        raise ValueError(f"Gwydion neighborhood filter {label} must be " "two-dimensional")
     if 0 in source.shape:
-        raise ValueError(f"Gwydion neighborhood filter {label} must have "
-                         "non-empty dimensions")
+        raise ValueError(f"Gwydion neighborhood filter {label} must have " "non-empty dimensions")
     if not np.issubdtype(source.dtype, np.number) or np.iscomplexobj(source):
-        raise TypeError(f"Gwydion neighborhood filter {label} must contain "
-                        "real numeric values")
+        raise TypeError(f"Gwydion neighborhood filter {label} must contain " "real numeric values")
     values = np.array(source, dtype=np.float64, order="C", copy=True)
     if not np.isfinite(values).all():
         raise ValueError(f"Gwydion neighborhood filter {label} must be finite")
@@ -79,19 +75,20 @@ def _validated_field(value: object, *, label: str) -> np.ndarray:
 
 
 def _validated_radius(value: object) -> int:
-    if isinstance(value, (bool, np.bool_)) or not isinstance(
-            value, (int, np.integer)):
+    if isinstance(value, (bool, np.bool_)) or not isinstance(value, (int, np.integer)):
         raise TypeError("Gwydion rank filter radius must be an integer")
     radius = int(value)
     if not RANK_RADIUS_MIN <= radius <= RANK_RADIUS_MAX:
-        raise ValueError("Gwydion rank filter radius must be in "
-                         f"{RANK_RADIUS_MIN}..{RANK_RADIUS_MAX}")
+        raise ValueError(
+            "Gwydion rank filter radius must be in " f"{RANK_RADIUS_MIN}..{RANK_RADIUS_MAX}"
+        )
     return radius
 
 
 def _validated_percentile(value: object, *, label: str = "percentile") -> float:
     if isinstance(value, (bool, np.bool_)) or not isinstance(
-            value, (int, float, np.integer, np.floating)):
+        value, (int, float, np.integer, np.floating)
+    ):
         raise TypeError(f"Gwydion rank filter {label} must be a real scalar")
     p = float(value)
     if not math.isfinite(p):
@@ -102,30 +99,32 @@ def _validated_percentile(value: object, *, label: str = "percentile") -> float:
 
 
 def _validated_median_size(value: object) -> int:
-    if isinstance(value, (bool, np.bool_)) or not isinstance(
-            value, (int, np.integer)):
+    if isinstance(value, (bool, np.bool_)) or not isinstance(value, (int, np.integer)):
         raise TypeError("Gwydion median filter size must be an integer")
     size = int(value)
     if not MEDIAN_SIZE_MIN <= size <= MEDIAN_SIZE_MAX:
-        raise ValueError("Gwydion median filter size must be in "
-                         f"{MEDIAN_SIZE_MIN}..{MEDIAN_SIZE_MAX}")
+        raise ValueError(
+            "Gwydion median filter size must be in " f"{MEDIAN_SIZE_MIN}..{MEDIAN_SIZE_MAX}"
+        )
     return size
 
 
 def _validated_sigma(value: object, *, public: bool) -> float:
     if isinstance(value, (bool, np.bool_)) or not isinstance(
-            value, (int, float, np.integer, np.floating)):
+        value, (int, float, np.integer, np.floating)
+    ):
         raise TypeError("Gwydion gaussian filter sigma must be a real scalar")
     sigma = float(value)
     if not math.isfinite(sigma):
         raise ValueError("Gwydion gaussian filter sigma must be finite")
     if public:
         if not GAUSSIAN_SIGMA_MIN <= sigma <= GAUSSIAN_SIGMA_MAX:
-            raise ValueError("Gwydion gaussian filter sigma must be in "
-                             f"{GAUSSIAN_SIGMA_MIN}..{GAUSSIAN_SIGMA_MAX}")
+            raise ValueError(
+                "Gwydion gaussian filter sigma must be in "
+                f"{GAUSSIAN_SIGMA_MIN}..{GAUSSIAN_SIGMA_MAX}"
+            )
     elif sigma < 0.0:
-        raise ValueError("Gwydion gaussian filter sigma must be "
-                         "non-negative")
+        raise ValueError("Gwydion gaussian filter sigma must be " "non-negative")
     return sigma
 
 
@@ -142,6 +141,7 @@ def _kth_value(values: Sequence[float], k: int) -> float:
 # ---------------------------------------------------------------------------
 # Elliptic footprint geometry (shared by Rank and Median)
 # ---------------------------------------------------------------------------
+
 
 def _elliptic_spans(width: int, height: int) -> tuple[list[tuple[int | None, int | None]], int]:
     """Exact gwy_data_field_elliptic_area_fill row spans and active count."""
@@ -184,8 +184,9 @@ def _elliptic_offsets(side: int) -> tuple[list[tuple[int, int]], int, int]:
     return offsets, center, count
 
 
-def _extend_gather(field: FloatArray, i: int, j: int,
-                   offsets: Sequence[tuple[int, int]]) -> list[float]:
+def _extend_gather(
+    field: FloatArray, i: int, j: int, offsets: Sequence[tuple[int, int]]
+) -> list[float]:
     """Gather neighborhood values with EXTEND (nearest-constant) borders."""
     yres, xres = field.shape
     values: list[float] = []
@@ -204,8 +205,9 @@ def _extend_gather(field: FloatArray, i: int, j: int,
     return values
 
 
-def _apply_rank_kernel(field: FloatArray, offsets: Sequence[tuple[int, int]],
-                       rank: int) -> np.ndarray:
+def _apply_rank_kernel(
+    field: FloatArray, offsets: Sequence[tuple[int, int]], rank: int
+) -> np.ndarray:
     yres, xres = field.shape
     out = np.empty((yres, xres), dtype=np.float64)
     for i in range(yres):
@@ -218,6 +220,7 @@ def _apply_rank_kernel(field: FloatArray, offsets: Sequence[tuple[int, int]],
 # ---------------------------------------------------------------------------
 # Rank filter
 # ---------------------------------------------------------------------------
+
 
 @dataclass(frozen=True)
 class GwydionRankFilterResult:
@@ -289,12 +292,24 @@ def _gwydion_rank_filter(
             result = diff_result
 
     return GwydionRankFilterResult(
-        input_snapshot=data, xres=xres, yres=yres, radius=radius_v,
-        footprint_side=side, footprint_count=n,
+        input_snapshot=data,
+        xres=xres,
+        yres=yres,
+        radius=radius_v,
+        footprint_side=side,
+        footprint_count=n,
         footprint_spans=tuple(_elliptic_spans(side, side)[0]),
-        percentile1=p1, percentile2=p2, rank1=rank1, rank2=rank2,
-        both=both, difference=difference, result=result, result2=result2,
-        difference_result=diff_result, delta1=delta1, delta2=delta2,
+        percentile1=p1,
+        percentile2=p2,
+        rank1=rank1,
+        rank2=rank2,
+        both=both,
+        difference=difference,
+        result=result,
+        result2=result2,
+        difference_result=diff_result,
+        delta1=delta1,
+        delta2=delta2,
         input_mutation_evidence=True,
     )
 
@@ -302,6 +317,7 @@ def _gwydion_rank_filter(
 # ---------------------------------------------------------------------------
 # Disc median
 # ---------------------------------------------------------------------------
+
 
 @dataclass(frozen=True)
 class GwydionMedianFilterResult:
@@ -333,9 +349,15 @@ def _gwydion_median_filter(field: object, *, size: object) -> GwydionMedianFilte
     rank = n // 2
     result = _apply_rank_kernel(data, offsets, rank)
     return GwydionMedianFilterResult(
-        input_snapshot=data, xres=xres, yres=yres, size=size_v,
-        footprint_count=n, footprint_spans=tuple(_elliptic_spans(size_v, size_v)[0]),
-        rank=rank, result=result, delta=result - data,
+        input_snapshot=data,
+        xres=xres,
+        yres=yres,
+        size=size_v,
+        footprint_count=n,
+        footprint_spans=tuple(_elliptic_spans(size_v, size_v)[0]),
+        rank=rank,
+        result=result,
+        delta=result - data,
         input_mutation_evidence=True,
     )
 
@@ -343,6 +365,7 @@ def _gwydion_median_filter(field: object, *, size: object) -> GwydionMedianFilte
 # ---------------------------------------------------------------------------
 # Gaussian (separable mirror-border, source arithmetic)
 # ---------------------------------------------------------------------------
+
 
 @dataclass(frozen=True)
 class GwydionGaussianFilterResult:
@@ -396,8 +419,9 @@ def _hconvolve_mirror(row: Sequence[float], kernel: Sequence[float]) -> list[flo
     return work
 
 
-def _gwydion_gaussian_filter(field: object, *, sigma: object,
-                             public: bool) -> GwydionGaussianFilterResult:
+def _gwydion_gaussian_filter(
+    field: object, *, sigma: object, public: bool
+) -> GwydionGaussianFilterResult:
     """Private Gaussian kernel.
 
     ``public=True`` enforces the tool sigma range and rejects sigma=0;
@@ -409,11 +433,18 @@ def _gwydion_gaussian_filter(field: object, *, sigma: object,
 
     if sigma_v == 0.0:
         return GwydionGaussianFilterResult(
-            input_snapshot=data, xres=xres, yres=yres, sigma=0.0,
-            res_requested=0, res=0,
-            kernel=np.empty(0, dtype=np.float64), kernel_sum=0.0,
-            horizontal=data.copy(order="C"), result=data.copy(order="C"),
-            delta=np.zeros_like(data), input_mutation_evidence=True,
+            input_snapshot=data,
+            xres=xres,
+            yres=yres,
+            sigma=0.0,
+            res_requested=0,
+            res=0,
+            kernel=np.empty(0, dtype=np.float64),
+            kernel_sum=0.0,
+            horizontal=data.copy(order="C"),
+            result=data.copy(order="C"),
+            delta=np.zeros_like(data),
+            input_mutation_evidence=True,
         )
 
     res = 2 * math.ceil(5.0 * sigma_v) + 1
@@ -451,8 +482,16 @@ def _gwydion_gaussian_filter(field: object, *, sigma: object,
             vertical[i, j] = out[i]
 
     return GwydionGaussianFilterResult(
-        input_snapshot=data, xres=xres, yres=yres, sigma=sigma_v,
-        res_requested=res_requested, res=res, kernel=kernel_arr,
-        kernel_sum=kernel_sum, horizontal=horizontal, result=vertical,
-        delta=vertical - data, input_mutation_evidence=True,
+        input_snapshot=data,
+        xres=xres,
+        yres=yres,
+        sigma=sigma_v,
+        res_requested=res_requested,
+        res=res,
+        kernel=kernel_arr,
+        kernel_sum=kernel_sum,
+        horizontal=horizontal,
+        result=vertical,
+        delta=vertical - data,
+        input_mutation_evidence=True,
     )

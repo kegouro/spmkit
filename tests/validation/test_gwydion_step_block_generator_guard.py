@@ -25,8 +25,9 @@ def _parse(case: str, text: str) -> list[str]:
     return problems
 
 
-def _valid_stdout(case: str = "S01_CONSTANT", xres: int = 16, yres: int = 16,
-                  nblocks: int = 0) -> str:
+def _valid_stdout(
+    case: str = "S01_CONSTANT", xres: int = 16, yres: int = 16, nblocks: int = 0
+) -> str:
     lines = [
         "profile=COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION",
         "gwydion_version=2.71",
@@ -50,15 +51,13 @@ def _valid_stdout(case: str = "S01_CONSTANT", xres: int = 16, yres: int = 16,
 
 
 def test_missing_element_rejected() -> None:
-    text = _valid_stdout().replace(
-        "S01_CONSTANT_input_255=0x0p+0 0x0000000000000000\n", "")
+    text = _valid_stdout().replace("S01_CONSTANT_input_255=0x0p+0 0x0000000000000000\n", "")
     problems = _parse("S01_CONSTANT", text)
     assert any("count 256 != 255 elements" in p for p in problems)
 
 
 def test_duplicate_element_rejected() -> None:
-    text = _valid_stdout() + \
-        "S01_CONSTANT_input_5=0x0p+0 0x0000000000000000\n"
+    text = _valid_stdout() + "S01_CONSTANT_input_5=0x0p+0 0x0000000000000000\n"
     problems = _parse("S01_CONSTANT", text)
     assert any("indices not range(256)" in p for p in problems)
 
@@ -66,7 +65,8 @@ def test_duplicate_element_rejected() -> None:
 def test_hex_bits_disagreement_rejected() -> None:
     text = _valid_stdout().replace(
         "S01_CONSTANT_input_0=0x0p+0 0x0000000000000000",
-        "S01_CONSTANT_input_0=0x1p+0 0x0000000000000000")
+        "S01_CONSTANT_input_0=0x1p+0 0x0000000000000000",
+    )
     problems = _parse("S01_CONSTANT", text)
     assert any("hex/bits disagreement" in p for p in problems)
 
@@ -76,20 +76,21 @@ def test_signed_zero_disagreement_rejected() -> None:
     # bits) is rejected as a hex/bits disagreement
     text = _valid_stdout().replace(
         "S01_CONSTANT_input_1=0x0p+0 0x0000000000000000",
-        "S01_CONSTANT_input_1=-0x0p+0 0x0000000000000000")
+        "S01_CONSTANT_input_1=-0x0p+0 0x0000000000000000",
+    )
     problems = _parse("S01_CONSTANT", text)
     assert any("hex/bits disagreement" in p for p in problems)
     # a consistent -0.0 line (hex and bits both negative zero) is accepted
     text = _valid_stdout().replace(
         "S01_CONSTANT_input_1=0x0p+0 0x0000000000000000",
-        "S01_CONSTANT_input_1=-0x0p+0 0x8000000000000000")
+        "S01_CONSTANT_input_1=-0x0p+0 0x8000000000000000",
+    )
     problems = _parse("S01_CONSTANT", text)
     assert not any("disagreement" in p or "sign" in p for p in problems)
 
 
 def test_scalar_missing_bits_rejected() -> None:
-    text = _valid_stdout().replace(
-        "S01_CONSTANT_effective_threshold_bits=0x0000000000000000\n", "")
+    text = _valid_stdout().replace("S01_CONSTANT_effective_threshold_bits=0x0000000000000000\n", "")
     problems = _parse("S01_CONSTANT", text)
     assert any("missing hex or bits" in p for p in problems)
 
@@ -104,7 +105,8 @@ def test_dimension_count_mismatch_rejected() -> None:
     text = _valid_stdout().replace(
         "S01_CONSTANT_input_255=0x0p+0 0x0000000000000000\n",
         "S01_CONSTANT_input_255=0x0p+0 0x0000000000000000\n"
-        "S01_CONSTANT_input_256=0x0p+0 0x0000000000000000\n")
+        "S01_CONSTANT_input_256=0x0p+0 0x0000000000000000\n",
+    )
     problems = _parse("S01_CONSTANT", text)
     assert any("count 256 != 257 elements" in p for p in problems)
 
@@ -112,11 +114,13 @@ def test_dimension_count_mismatch_rejected() -> None:
 def _requires_evidence():
     if not EVIDENCE.is_dir():
         import pytest
+
         pytest.skip("compiled campaign evidence not present")
 
 
 def _copy_evidence() -> Path:
     import tempfile
+
     tmp = Path(tempfile.mkdtemp(prefix="sb_gen_guard_"))
     shutil.copytree(EVIDENCE, tmp, dirs_exist_ok=True)
     return tmp
@@ -138,7 +142,8 @@ def test_campaign_level_guards() -> None:
     # sanitizer finding on a valid case
     bad = _copy_evidence()
     (bad / "sanitized" / "S02_SINGLE_POSITIVE_STEP_LTR.stderr").write_text(
-        "ERROR: AddressSanitizer: heap-use-after-free\n")
+        "ERROR: AddressSanitizer: heap-use-after-free\n"
+    )
     problems = _run_verify(bad)
     assert any("unexpected stderr" in p for p in problems)
     shutil.rmtree(bad)
@@ -167,8 +172,7 @@ def test_campaign_level_guards() -> None:
     # incomplete SHA256SUMS
     bad = _copy_evidence()
     sums = bad / "SHA256SUMS"
-    keep = [ln for ln in sums.read_text().splitlines()
-            if "normal/S01_CONSTANT." not in ln]
+    keep = [ln for ln in sums.read_text().splitlines() if "normal/S01_CONSTANT." not in ln]
     sums.write_text("\n".join(keep) + "\n")
     problems = _run_verify(bad)
     assert any("SHA256SUMS missing" in p for p in problems)
@@ -180,28 +184,25 @@ def test_deterministic_regeneration() -> None:
     _requires_evidence()
     import hashlib
     import tempfile
+
     digests = []
     for _ in range(2):
         with tempfile.TemporaryDirectory() as tmp:
             gen.main(out_dir=Path(tmp))
-            j = hashlib.sha256(
-                (Path(tmp) / "step_block_reference.json").read_bytes()).hexdigest()
-            n = hashlib.sha256(
-                (Path(tmp) / "step_block_reference.npz").read_bytes()).hexdigest()
+            j = hashlib.sha256((Path(tmp) / "step_block_reference.json").read_bytes()).hexdigest()
+            n = hashlib.sha256((Path(tmp) / "step_block_reference.npz").read_bytes()).hexdigest()
             digests.append((j, n))
     assert digests[0] == digests[1], "regeneration not deterministic"
-    old_j = hashlib.sha256(
-        (FIXTURE_DIR / "step_block_reference.json").read_bytes()).hexdigest()
-    old_n = hashlib.sha256(
-        (FIXTURE_DIR / "step_block_reference.npz").read_bytes()).hexdigest()
+    old_j = hashlib.sha256((FIXTURE_DIR / "step_block_reference.json").read_bytes()).hexdigest()
+    old_n = hashlib.sha256((FIXTURE_DIR / "step_block_reference.npz").read_bytes()).hexdigest()
     assert digests[0] == (old_j, old_n), "regeneration differs from tracked"
 
 
 def test_no_defect_numerical_output_in_generated_fixtures() -> None:
     _requires_evidence()
     import tempfile
+
     with tempfile.TemporaryDirectory() as tmp:
         gen.main(out_dir=Path(tmp))
-        arrays = dict(np.load(
-            Path(tmp) / "step_block_reference.npz", allow_pickle=False).items())
+        arrays = dict(np.load(Path(tmp) / "step_block_reference.npz", allow_pickle=False).items())
         assert all("S17_SMALL_XRES_1" not in k for k in arrays)

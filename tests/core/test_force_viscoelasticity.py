@@ -45,19 +45,32 @@ def _relaxation_response(tau: float = 0.1, n: int = 120, noise: float = 0.0):
     if noise:
         nrm = nrm + rng.normal(0.0, noise, n)
     return RelaxationResponseResult(
-        relative_time=t, indentation=np.full(n, 5e-7), force=1e-6 * nrm,
-        normalized_force=nrm, hold_indices=np.arange(n), hold_start_time=0.0,
-        force_at_hold_start=1e-6, equilibrium_force_estimate=float(nrm[-1]) * 1e-6,
-        warnings=())
+        relative_time=t,
+        indentation=np.full(n, 5e-7),
+        force=1e-6 * nrm,
+        normalized_force=nrm,
+        hold_indices=np.arange(n),
+        hold_start_time=0.0,
+        force_at_hold_start=1e-6,
+        equilibrium_force_estimate=float(nrm[-1]) * 1e-6,
+        warnings=(),
+    )
 
 
 def _creep_response(modulus: float = 5e3, tau: float = 0.1, n: int = 120):
     t = np.linspace(0.0, 1.0, n)
     j_inc = (1.0 / modulus) * (1.0 - np.exp(-t / tau))
     return CreepResponseResult(
-        relative_time=t, force=np.full(n, 1e-6), indentation=1e-6 * j_inc,
-        compliance_proxy=j_inc, hold_indices=np.arange(n), hold_start_time=0.0,
-        force_hold_value=1e-6, indentation_at_hold_start=0.0, warnings=())
+        relative_time=t,
+        force=np.full(n, 1e-6),
+        indentation=1e-6 * j_inc,
+        compliance_proxy=j_inc,
+        hold_indices=np.arange(n),
+        hold_start_time=0.0,
+        force_hold_value=1e-6,
+        indentation_at_hold_start=0.0,
+        warnings=(),
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -122,12 +135,10 @@ def test_sls_conversions_roundtrip() -> None:
 
 def test_prony_duplicate_tau_rejected() -> None:
     with pytest.raises(ViscoelasticityError) as ei:
-        forward_generalized_maxwell_modulus(
-            T, 2e3, np.array([[1e3, 0.01], [1e3, 0.01]]))
+        forward_generalized_maxwell_modulus(T, 2e3, np.array([[1e3, 0.01], [1e3, 0.01]]))
     assert ei.value.code == "PRONY_DUPLICATE_TAU"
     with pytest.raises(ViscoelasticityError):
-        forward_generalized_maxwell_normalized(T, np.array([0.5, 0.5]),
-                                               np.array([0.01, 0.01]))
+        forward_generalized_maxwell_normalized(T, np.array([0.5, 0.5]), np.array([0.01, 0.01]))
 
 
 def test_power_law_singularity_excluded() -> None:
@@ -154,8 +165,7 @@ def test_ting_requires_history() -> None:
     d_u = np.linspace(5e-7, 0.0, 50)
     d_u[10] = 6e-7  # exceeds the loading maximum
     with pytest.raises(ViscoelasticityError) as ei:
-        ting_force(t_l, d_l, t_u, d_u, {"E0": 5e3, "E_inf": 2e3, "tau": 0.1},
-                   1.0, 1e-6, 0.3)
+        ting_force(t_l, d_l, t_u, d_u, {"E0": 5e3, "E_inf": 2e3, "tau": 0.1}, 1.0, 1e-6, 0.3)
     assert ei.value.code == "TING_HISTORY_UNAVAILABLE"
 
 
@@ -166,7 +176,7 @@ def test_lee_radok_elastic_limit() -> None:
     d = 5e-7 * (t / 1.0) ** 0.7
     f = lee_radok_force(t, d, {"E0": 5e3, "E_inf": 5e3, "tau": 1e9}, 1.0, 1e-6, 0.3)
     c = spherical_coefficient(5e3, 1e-6, 0.3)
-    ref = c * d ** 1.5
+    ref = c * d**1.5
     assert np.allclose(f, ref, rtol=1e-6)
 
 
@@ -179,43 +189,69 @@ def test_reduced_modulus_convention() -> None:
 # ---------------------------------------------------------------------------
 
 
-def _ramp_hold_curve(time: np.ndarray, height: np.ndarray, force: np.ndarray,
-                     k: float = 10.0) -> ForceCurve:
+def _ramp_hold_curve(
+    time: np.ndarray, height: np.ndarray, force: np.ndarray, k: float = 10.0
+) -> ForceCurve:
     def seg(st, d, z, f, t):
-        return ForceSegment(segment_type=st, direction=d, raw_height=z,
-                            raw_deflection=f / k, time=t, cycle=0, state="force_n",
-                            deflection=f / k, force=f, separation=None, metadata={})
+        return ForceSegment(
+            segment_type=st,
+            direction=d,
+            raw_height=z,
+            raw_deflection=f / k,
+            time=t,
+            cycle=0,
+            state="force_n",
+            deflection=f / k,
+            force=f,
+            separation=None,
+            metadata={},
+        )
 
     n = time.size
     n_ext = int(n * 0.85)
     return ForceCurve(
-        segments=(seg("extend", "forward", height[:n_ext], force[:n_ext], time[:n_ext]),
-                  seg("retract", "backward", height[n_ext:], force[n_ext:], time[n_ext:])),
-        calibration=Calibration(invols=3e-8, spring_constant=k, method="thermal",
-                                temperature=300, provenance={}),
-        position=None, index=0, metadata={})
+        segments=(
+            seg("extend", "forward", height[:n_ext], force[:n_ext], time[:n_ext]),
+            seg("retract", "backward", height[n_ext:], force[n_ext:], time[n_ext:]),
+        ),
+        calibration=Calibration(
+            invols=3e-8, spring_constant=k, method="thermal", temperature=300, provenance={}
+        ),
+        position=None,
+        index=0,
+        metadata={},
+    )
 
 
 def test_protocol_ramp_hold_classification() -> None:
     """A ramp-hold curve is STRESS_RELAXATION (decaying hold force)."""
     n_ramp, n_hold, n_pre, n_ret = 40, 120, 20, 20  # noqa: F841 (sizes)
     dt = 1e-3
-    t = np.concatenate([
-        np.linspace(-n_pre * dt, -dt, n_pre),
-        np.linspace(0.0, 0.04, n_ramp),
-        0.04 + np.linspace(dt, 0.12, n_hold),
-        np.linspace(0.161, 0.2, n_ret)])
-    h = np.concatenate([
-        np.linspace(1e-6, 3e-6, n_pre),
-        np.linspace(3e-6, 3.5e-6, n_ramp),
-        np.full(n_hold, 3.5e-6),
-        np.linspace(3.5e-6, 1e-6, n_ret)])
+    t = np.concatenate(
+        [
+            np.linspace(-n_pre * dt, -dt, n_pre),
+            np.linspace(0.0, 0.04, n_ramp),
+            0.04 + np.linspace(dt, 0.12, n_hold),
+            np.linspace(0.161, 0.2, n_ret),
+        ]
+    )
+    h = np.concatenate(
+        [
+            np.linspace(1e-6, 3e-6, n_pre),
+            np.linspace(3e-6, 3.5e-6, n_ramp),
+            np.full(n_hold, 3.5e-6),
+            np.linspace(3.5e-6, 1e-6, n_ret),
+        ]
+    )
     f0 = 1e-6
-    f = np.concatenate([
-        np.zeros(n_pre),
-        f0 * np.linspace(0.0, 1.0, n_ramp),
-        f0 * np.exp(-np.linspace(0.0, 0.12, n_hold) / 0.05),
-        np.linspace(f0 * np.exp(-0.12 / 0.05), 0.0, n_ret)])
+    f = np.concatenate(
+        [
+            np.zeros(n_pre),
+            f0 * np.linspace(0.0, 1.0, n_ramp),
+            f0 * np.exp(-np.linspace(0.0, 0.12, n_hold) / 0.05),
+            np.linspace(f0 * np.exp(-0.12 / 0.05), 0.0, n_ret),
+        ]
+    )
     curve = _ramp_hold_curve(t, h, f)
     proto = identify_viscoelastic_protocol(curve)
     assert proto.protocol_type == "STRESS_RELAXATION"
@@ -238,23 +274,46 @@ def test_protocol_missing_time_fails_typed() -> None:
     f = np.linspace(0.0, 1e-6, 100)
     curve = ForceCurve(
         segments=(
-            ForceSegment(segment_type="extend", direction="forward", raw_height=h,
-                         raw_deflection=f / 10.0, time=None, cycle=0, state="force_n",
-                         deflection=f / 10.0, force=f, separation=None, metadata={}),
-            ForceSegment(segment_type="retract", direction="backward", raw_height=h[::-1],
-                         raw_deflection=(f / 10.0)[::-1], time=None, cycle=0,
-                         state="force_n", deflection=(f / 10.0)[::-1], force=f[::-1],
-                         separation=None, metadata={})),
-        calibration=Calibration(invols=3e-8, spring_constant=10.0, method="thermal",
-                                temperature=300, provenance={}),
-        position=None, index=0, metadata={})
+            ForceSegment(
+                segment_type="extend",
+                direction="forward",
+                raw_height=h,
+                raw_deflection=f / 10.0,
+                time=None,
+                cycle=0,
+                state="force_n",
+                deflection=f / 10.0,
+                force=f,
+                separation=None,
+                metadata={},
+            ),
+            ForceSegment(
+                segment_type="retract",
+                direction="backward",
+                raw_height=h[::-1],
+                raw_deflection=(f / 10.0)[::-1],
+                time=None,
+                cycle=0,
+                state="force_n",
+                deflection=(f / 10.0)[::-1],
+                force=f[::-1],
+                separation=None,
+                metadata={},
+            ),
+        ),
+        calibration=Calibration(
+            invols=3e-8, spring_constant=10.0, method="thermal", temperature=300, provenance={}
+        ),
+        position=None,
+        index=0,
+        metadata={},
+    )
     with pytest.raises(ViscoelasticityError) as ei:
         identify_viscoelastic_protocol(curve)
     assert ei.value.code == "MISSING_TIME"
     # explicit reconstructed clock is allowed
     proto = identify_viscoelastic_protocol(curve, assume_uniform_rate=1e-3)
-    assert proto.protocol_type in ("LOADING_RAMP", "TRIANGULAR_LOADING",
-                                   "INSUFFICIENT_PROTOCOL")
+    assert proto.protocol_type in ("LOADING_RAMP", "TRIANGULAR_LOADING", "INSUFFICIENT_PROTOCOL")
 
 
 def test_protocol_duplicate_time_fails_typed() -> None:
@@ -300,10 +359,16 @@ def test_fit_sls_both_representations() -> None:
     t = np.linspace(0.0, 1.0, 120)
     nrm = 1.0 - 0.6 * (1.0 - np.exp(-t / 0.1))
     resp = RelaxationResponseResult(
-        relative_time=t, indentation=np.full(120, 5e-7), force=1e-6 * nrm,
-        normalized_force=nrm, hold_indices=np.arange(120), hold_start_time=0.0,
-        force_at_hold_start=1e-6, equilibrium_force_estimate=float(nrm[-1]) * 1e-6,
-        warnings=())
+        relative_time=t,
+        indentation=np.full(120, 5e-7),
+        force=1e-6 * nrm,
+        normalized_force=nrm,
+        hold_indices=np.arange(120),
+        hold_start_time=0.0,
+        force_at_hold_start=1e-6,
+        equilibrium_force_estimate=float(nrm[-1]) * 1e-6,
+        warnings=(),
+    )
     fit = fit_standard_linear_solid(resp, tip_radius=1e-6)
     assert abs(fit.parameters["a"] - 0.6) < 0.01
     assert abs(fit.parameters["tau_relax"] - 0.1) / 0.1 < 0.01
@@ -312,10 +377,16 @@ def test_fit_sls_both_representations() -> None:
     # is carried by indentation_at_hold_start/F_hold
     j_inc = (1 / 2e3 - 1 / 5e3) * (1.0 - np.exp(-t / (0.1 * 5e3 / 2e3)))
     creep = CreepResponseResult(
-        relative_time=t, force=np.full(120, 1e-6),
+        relative_time=t,
+        force=np.full(120, 1e-6),
         indentation=1e-6 * (1 / 5e3 + j_inc),
-        compliance_proxy=j_inc, hold_indices=np.arange(120), hold_start_time=0.0,
-        force_hold_value=1e-6, indentation_at_hold_start=1e-6 * (1 / 5e3), warnings=())
+        compliance_proxy=j_inc,
+        hold_indices=np.arange(120),
+        hold_start_time=0.0,
+        force_hold_value=1e-6,
+        indentation_at_hold_start=1e-6 * (1 / 5e3),
+        warnings=(),
+    )
     fit2 = fit_standard_linear_solid(creep)
     assert abs(fit2.parameters["E0"] - 5e3) / 5e3 < 0.01
     assert abs(fit2.parameters["E_inf"] - 2e3) / 2e3 < 0.01
@@ -327,10 +398,16 @@ def test_fit_generalized_maxwell_clean_recovery() -> None:
     tau = np.array([0.05, 0.5])
     nrm = forward_generalized_maxwell_normalized(t, alpha, tau)
     resp = RelaxationResponseResult(
-        relative_time=t, indentation=np.full(160, 5e-7), force=1e-6 * nrm,
-        normalized_force=nrm, hold_indices=np.arange(160), hold_start_time=0.0,
-        force_at_hold_start=1e-6, equilibrium_force_estimate=float(nrm[-1]) * 1e-6,
-        warnings=())
+        relative_time=t,
+        indentation=np.full(160, 5e-7),
+        force=1e-6 * nrm,
+        normalized_force=nrm,
+        hold_indices=np.arange(160),
+        hold_start_time=0.0,
+        force_at_hold_start=1e-6,
+        equilibrium_force_estimate=float(nrm[-1]) * 1e-6,
+        warnings=(),
+    )
     fit = fit_generalized_maxwell(resp, n_terms=2)
     assert fit.success
     taus = sorted([fit.parameters["tau_i[0]"], fit.parameters["tau_i[1]"]])
@@ -343,10 +420,16 @@ def test_fit_power_law_clean_recovery() -> None:
     t = np.linspace(0.01, 1.0, 100)
     nrm = (t / 0.01) ** (-0.3)
     resp = RelaxationResponseResult(
-        relative_time=t, indentation=np.full(100, 5e-7), force=1e-6 * nrm,
-        normalized_force=nrm, hold_indices=np.arange(100), hold_start_time=0.0,
-        force_at_hold_start=1e-6, equilibrium_force_estimate=float(nrm[-1]) * 1e-6,
-        warnings=())
+        relative_time=t,
+        indentation=np.full(100, 5e-7),
+        force=1e-6 * nrm,
+        normalized_force=nrm,
+        hold_indices=np.arange(100),
+        hold_start_time=0.0,
+        force_at_hold_start=1e-6,
+        equilibrium_force_estimate=float(nrm[-1]) * 1e-6,
+        warnings=(),
+    )
     fit = fit_power_law_relaxation(resp)
     assert abs(fit.parameters["alpha"] - 0.3) < 0.02
 
@@ -355,10 +438,16 @@ def test_comparison_weights_and_ambiguity() -> None:
     t = np.linspace(0.0, 2.0, 160)
     nrm = np.exp(-t / 0.1)
     resp = RelaxationResponseResult(
-        relative_time=t, indentation=np.full(160, 5e-7), force=1e-6 * nrm,
-        normalized_force=nrm, hold_indices=np.arange(160), hold_start_time=0.0,
-        force_at_hold_start=1e-6, equilibrium_force_estimate=float(nrm[-1]) * 1e-6,
-        warnings=())
+        relative_time=t,
+        indentation=np.full(160, 5e-7),
+        force=1e-6 * nrm,
+        normalized_force=nrm,
+        hold_indices=np.arange(160),
+        hold_start_time=0.0,
+        force_at_hold_start=1e-6,
+        equilibrium_force_estimate=float(nrm[-1]) * 1e-6,
+        warnings=(),
+    )
     cmp = compare_viscoelastic_models(resp, models=("maxwell", "standard_linear_solid"))
     assert cmp.recommended_model == "maxwell"
     assert cmp.weights["maxwell"] > 0.9

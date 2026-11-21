@@ -28,10 +28,14 @@ def test_discrete_state_exact_for_all_valid_cases() -> None:
         cid = case["case_identifier"]
         inp = _probe(cid, "input")
         decl = oracle_step_block_declarative(
-            inp, threshold_param=case["threshold_param"],
-            direction=case["direction"], xreal=case["xreal"], yreal=case["yreal"],
+            inp,
+            threshold_param=case["threshold_param"],
+            direction=case["direction"],
+            xreal=case["xreal"],
+            yreal=case["yreal"],
             compiled_corrected=_probe(cid, "corrected"),
-            compiled_block_shifts=case["block_shifts"])
+            compiled_block_shifts=case["block_shifts"],
+        )
         assert decl.block_count == case["block_count"], cid
         assert decl.split_positions[0] == 0  # row 0 has no computed split
         # block topology: retained boundary rows match the manifest
@@ -42,72 +46,90 @@ def test_discrete_state_exact_for_all_valid_cases() -> None:
         # block shifts for analytical cases (exact integers)
         for k in range(decl.block_count):
             central = decl.trimmed_central_multiset[k]
-            assert abs(sum(central) / len(central) -
-                       case["block_shifts"][k]) < 1e-9, cid
+            assert abs(sum(central) / len(central) - case["block_shifts"][k]) < 1e-9, cid
 
 
 def test_analytical_trimmed_mean_cases() -> None:
     # S23: 4 zeros + 8 fives + 4 tens -> central 8 fives -> mean exactly 5.0
-    case = next(c for c in _manifest["cases"]
-                if c["case_identifier"] == "S23_TRIMMED_MEAN_OUTLIERS")
+    case = next(
+        c for c in _manifest["cases"] if c["case_identifier"] == "S23_TRIMMED_MEAN_OUTLIERS"
+    )
     decl = oracle_step_block_declarative(
         _probe("S23_TRIMMED_MEAN_OUTLIERS", "input"),
-        threshold_param=case["threshold_param"], direction="left_to_right",
-        xreal=case["xreal"], yreal=case["yreal"])
+        threshold_param=case["threshold_param"],
+        direction="left_to_right",
+        xreal=case["xreal"],
+        yreal=case["yreal"],
+    )
     assert decl.trimmed_mean_sorted == (5.0,)
-    assert decl.trimmed_central_multiset == ((5.0, 5.0, 5.0, 5.0, 5.0, 5.0,
-                                              5.0, 5.0),)
+    assert decl.trimmed_central_multiset == ((5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0),)
     # S24: 4 zeros + 12 fives -> central 8 fives -> 5.0
-    case = next(c for c in _manifest["cases"]
-                if c["case_identifier"] == "S24_TRIMMED_MEAN_TIES")
+    case = next(c for c in _manifest["cases"] if c["case_identifier"] == "S24_TRIMMED_MEAN_TIES")
     decl = oracle_step_block_declarative(
         _probe("S24_TRIMMED_MEAN_TIES", "input"),
-        threshold_param=case["threshold_param"], direction="left_to_right",
-        xreal=case["xreal"], yreal=case["yreal"])
+        threshold_param=case["threshold_param"],
+        direction="left_to_right",
+        xreal=case["xreal"],
+        yreal=case["yreal"],
+    )
     assert decl.trimmed_mean_sorted == (5.0,)
 
 
 def test_lt_rtl_relationship() -> None:
-    c2 = next(c for c in _manifest["cases"]
-              if c["case_identifier"] == "S02_SINGLE_POSITIVE_STEP_LTR")
-    c18 = next(c for c in _manifest["cases"]
-               if c["case_identifier"] == "S18_RIGHT_TO_LEFT_SINGLE_STEP")
+    c2 = next(
+        c for c in _manifest["cases"] if c["case_identifier"] == "S02_SINGLE_POSITIVE_STEP_LTR"
+    )
+    c18 = next(
+        c for c in _manifest["cases"] if c["case_identifier"] == "S18_RIGHT_TO_LEFT_SINGLE_STEP"
+    )
     a = oracle_step_block_declarative(
         _probe("S02_SINGLE_POSITIVE_STEP_LTR", "input"),
-        threshold_param=c2["threshold_param"], direction="left_to_right",
-        xreal=c2["xreal"], yreal=c2["yreal"])
+        threshold_param=c2["threshold_param"],
+        direction="left_to_right",
+        xreal=c2["xreal"],
+        yreal=c2["yreal"],
+    )
     b = oracle_step_block_declarative(
         _probe("S18_RIGHT_TO_LEFT_SINGLE_STEP", "input"),
-        threshold_param=c18["threshold_param"], direction="right_to_left",
-        xreal=c18["xreal"], yreal=c18["yreal"])
-    assert np.array_equal(a.corrected_field.view(np.uint64),
-                          b.corrected_field.view(np.uint64))
+        threshold_param=c18["threshold_param"],
+        direction="right_to_left",
+        xreal=c18["xreal"],
+        yreal=c18["yreal"],
+    )
+    assert np.array_equal(a.corrected_field.view(np.uint64), b.corrected_field.view(np.uint64))
 
 
 def test_threshold_exact_behavior() -> None:
-    case = next(c for c in _manifest["cases"]
-                if c["case_identifier"] == "S11_THRESHOLD_EXACT")
+    case = next(c for c in _manifest["cases"] if c["case_identifier"] == "S11_THRESHOLD_EXACT")
     decl = oracle_step_block_declarative(
         _probe("S11_THRESHOLD_EXACT", "input"),
-        threshold_param=case["threshold_param"], direction="left_to_right",
-        xreal=case["xreal"], yreal=case["yreal"])
+        threshold_param=case["threshold_param"],
+        direction="left_to_right",
+        xreal=case["xreal"],
+        yreal=case["yreal"],
+    )
     assert decl.block_count == 0  # strict > : exact-equal jump not detected
 
 
 def test_dy_nonunity_classification() -> None:
-    c25 = next(c for c in _manifest["cases"]
-               if c["case_identifier"] == "S22_DY_025")
-    c30 = next(c for c in _manifest["cases"]
-               if c["case_identifier"] == "S22_DY_300")
+    c25 = next(c for c in _manifest["cases"] if c["case_identifier"] == "S22_DY_025")
+    c30 = next(c for c in _manifest["cases"] if c["case_identifier"] == "S22_DY_300")
     a = oracle_step_block_declarative(
-        _probe("S22_DY_025", "input"), threshold_param=c25["threshold_param"],
-        direction="left_to_right", xreal=c25["xreal"], yreal=c25["yreal"])
+        _probe("S22_DY_025", "input"),
+        threshold_param=c25["threshold_param"],
+        direction="left_to_right",
+        xreal=c25["xreal"],
+        yreal=c25["yreal"],
+    )
     b = oracle_step_block_declarative(
-        _probe("S22_DY_300", "input"), threshold_param=c30["threshold_param"],
-        direction="left_to_right", xreal=c30["xreal"], yreal=c30["yreal"])
+        _probe("S22_DY_300", "input"),
+        threshold_param=c30["threshold_param"],
+        direction="left_to_right",
+        xreal=c30["xreal"],
+        yreal=c30["yreal"],
+    )
     # identical pixels -> identical corrected fields regardless of dy
-    assert np.array_equal(a.corrected_field.view(np.uint64),
-                          b.corrected_field.view(np.uint64))
+    assert np.array_equal(a.corrected_field.view(np.uint64), b.corrected_field.view(np.uint64))
 
 
 def test_correction_identity_and_no_source_import() -> None:
@@ -115,15 +137,20 @@ def test_correction_identity_and_no_source_import() -> None:
         cid = case["case_identifier"]
         inp = _probe(cid, "input")
         decl = oracle_step_block_declarative(
-            inp, threshold_param=case["threshold_param"],
-            direction=case["direction"], xreal=case["xreal"], yreal=case["yreal"])
+            inp,
+            threshold_param=case["threshold_param"],
+            direction=case["direction"],
+            xreal=case["xreal"],
+            yreal=case["yreal"],
+        )
         assert np.array_equal(
-            (inp + decl.correction_field).view(np.uint64),
-            decl.corrected_field.view(np.uint64)), cid
+            (inp + decl.correction_field).view(np.uint64), decl.corrected_field.view(np.uint64)
+        ), cid
     # the declarative oracle must not import or call the source oracle
     import inspect
 
     import oracle_step_block_declarative as d
+
     source = inspect.getsource(d)
     assert "from oracle_step_block_source import" not in source
     assert "import oracle_step_block_source" not in source

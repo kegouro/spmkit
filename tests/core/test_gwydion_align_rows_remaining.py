@@ -17,16 +17,22 @@ from spmkit.core.analysis import (
 )
 from spmkit.core.models.spmdata import SPMChannel
 
-OPS = (gwyddion_align_rows_polynomial, gwyddion_align_rows_modus,
-       gwyddion_align_rows_match)
+OPS = (gwyddion_align_rows_polynomial, gwyddion_align_rows_modus, gwyddion_align_rows_match)
 
 
 def _channel(data: np.ndarray, *, name: str = "test") -> SPMChannel:
     cols = data.shape[1] if data.ndim == 2 else 1
     rows = data.shape[0] if data.ndim >= 1 else 1
-    return SPMChannel(name=name, data=data, unit="nm", x_range=float(cols),
-                      y_range=float(rows), direction="forward",
-                      group="g", metadata={"Dim1Name": "Y"})
+    return SPMChannel(
+        name=name,
+        data=data,
+        unit="nm",
+        x_range=float(cols),
+        y_range=float(rows),
+        direction="forward",
+        group="g",
+        metadata={"Dim1Name": "Y"},
+    )
 
 
 def _bits(a: np.ndarray) -> np.ndarray:
@@ -36,6 +42,7 @@ def _bits(a: np.ndarray) -> np.ndarray:
 # ---------------------------------------------------------------------------
 # COMMON
 # ---------------------------------------------------------------------------
+
 
 def test_invalid_dimension_rejected() -> None:
     for op in OPS:
@@ -72,28 +79,24 @@ def test_include_predicate_gt_zero() -> None:
     # rows with different means; include only the mask > 0 samples
     data = np.array([[0.0, 10.0], [0.0, 10.0], [0.0, 10.0], [0.0, 10.0]])
     mask = np.array([[0.0, 1.0], [0.0, 1.0], [0.0, 1.0], [0.0, 1.0]])
-    out = gwyddion_align_rows_polynomial(_channel(data), degree=0, mask=mask,
-                                        mask_mode="include")
+    out = gwyddion_align_rows_polynomial(_channel(data), degree=0, mask=mask, mask_mode="include")
     # every row's mean is 10 -> shifts zero-level to 0 -> no change
     assert np.array_equal(_bits(out.data), _bits(data))
     # a 0.5-valued mask is NOT included (> 0 strictly)
     mask2 = np.array([[0.0, 0.5], [0.0, 0.5], [0.0, 0.5], [0.0, 0.5]])
-    out2 = gwyddion_align_rows_polynomial(_channel(data), degree=0, mask=mask2,
-                                         mask_mode="include")
+    out2 = gwyddion_align_rows_polynomial(_channel(data), degree=0, mask=mask2, mask_mode="include")
     assert np.array_equal(_bits(out2.data), _bits(data))
 
 
 def test_exclude_predicate_lt_one() -> None:
     data = np.array([[0.0, 10.0], [0.0, 10.0], [0.0, 10.0], [0.0, 10.0]])
     mask = np.array([[0.0, 1.0], [0.0, 1.0], [0.0, 1.0], [0.0, 1.0]])
-    out = gwyddion_align_rows_polynomial(_channel(data), degree=0, mask=mask,
-                                        mask_mode="exclude")
+    out = gwyddion_align_rows_polynomial(_channel(data), degree=0, mask=mask, mask_mode="exclude")
     # every row keeps only the 0-mask sample (0) -> shifts zero -> no change
     assert np.array_equal(_bits(out.data), _bits(data))
     # a 0.5-valued mask IS excluded (< 1 strictly)
     mask2 = np.array([[0.0, 0.5], [0.0, 0.5], [0.0, 0.5], [0.0, 0.5]])
-    out2 = gwyddion_align_rows_polynomial(_channel(data), degree=0, mask=mask2,
-                                         mask_mode="exclude")
+    out2 = gwyddion_align_rows_polynomial(_channel(data), degree=0, mask=mask2, mask_mode="exclude")
     # rows keep 0.0 only -> no change
     assert np.array_equal(_bits(out2.data), _bits(data))
 
@@ -102,8 +105,9 @@ def test_ignore_semantics() -> None:
     data = np.array([[0.0, 10.0], [2.0, 12.0], [4.0, 14.0], [6.0, 16.0]])
     mask = np.zeros_like(data)
     plain = gwyddion_align_rows_polynomial(_channel(data), degree=0)
-    ignored = gwyddion_align_rows_polynomial(_channel(data), degree=0,
-                                            mask=mask, mask_mode="ignore")
+    ignored = gwyddion_align_rows_polynomial(
+        _channel(data), degree=0, mask=mask, mask_mode="ignore"
+    )
     assert np.array_equal(_bits(plain.data), _bits(ignored.data))
 
 
@@ -151,17 +155,18 @@ def test_vertical_direction_transpose_metamorphic() -> None:
     data = rng.normal(size=(7, 9))
     mask = np.zeros_like(data)
     mask[2:5, 3:6] = 1.0
-    for op, kw in ((gwyddion_align_rows_polynomial, {"degree": 0}),
-                   (gwyddion_align_rows_polynomial, {"degree": 1}),
-                   (gwyddion_align_rows_modus, {}),
-                   (gwyddion_align_rows_match, {})):
-        ver = op(_channel(data), direction="vertical", mask=mask,
-                 mask_mode="include", **kw)
-        hor_t = op(_channel(data.T), direction="horizontal", mask=mask.T,
-                   mask_mode="include", **kw).data
+    for op, kw in (
+        (gwyddion_align_rows_polynomial, {"degree": 0}),
+        (gwyddion_align_rows_polynomial, {"degree": 1}),
+        (gwyddion_align_rows_modus, {}),
+        (gwyddion_align_rows_match, {}),
+    ):
+        ver = op(_channel(data), direction="vertical", mask=mask, mask_mode="include", **kw)
+        hor_t = op(
+            _channel(data.T), direction="horizontal", mask=mask.T, mask_mode="include", **kw
+        ).data
         assert ver.data.shape == data.shape
-        assert np.array_equal(_bits(ver.data),
-                              _bits(np.ascontiguousarray(hor_t.T)))
+        assert np.array_equal(_bits(ver.data), _bits(np.ascontiguousarray(hor_t.T)))
 
 
 def test_output_storage_independence() -> None:
@@ -184,6 +189,7 @@ def test_signed_zero_behavior() -> None:
 # ---------------------------------------------------------------------------
 # POLYNOMIAL
 # ---------------------------------------------------------------------------
+
 
 def test_polynomial_degree0_constant_noop() -> None:
     data = np.full((5, 8), 3.0)
@@ -208,8 +214,7 @@ def test_polynomial_degree0_insufficient_fallback() -> None:
     mask = np.zeros_like(data)
     mask[:, 0] = 1.0
     mask[:, 1] = 1.0
-    out = gwyddion_align_rows_polynomial(_channel(data), degree=0, mask=mask,
-                                        mask_mode="include")
+    out = gwyddion_align_rows_polynomial(_channel(data), degree=0, mask=mask, mask_mode="include")
     # all rows fall back to global median 100 -> shifts 0 -> no change
     assert np.array_equal(_bits(out.data), _bits(data))
 
@@ -259,8 +264,7 @@ def test_polynomial_masked_fitting() -> None:
     # mask the right half: fit uses only j < 4, still removes the slope
     mask = np.zeros_like(data)
     mask[:, :4] = 1.0
-    out = gwyddion_align_rows_polynomial(_channel(data), degree=1, mask=mask,
-                                        mask_mode="include")
+    out = gwyddion_align_rows_polynomial(_channel(data), degree=1, mask=mask, mask_mode="include")
     assert np.allclose(out.data[0], out.data[0, 0], rtol=0, atol=1e-9)
 
 
@@ -270,8 +274,7 @@ def test_polynomial_insufficient_valid_samples() -> None:
     data = np.arange(80, dtype=float).reshape(10, 8)
     mask = np.zeros_like(data)
     mask[:, :3] = 1.0
-    out = gwyddion_align_rows_polynomial(_channel(data), degree=3, mask=mask,
-                                        mask_mode="include")
+    out = gwyddion_align_rows_polynomial(_channel(data), degree=3, mask=mask, mask_mode="include")
     avg = float(np.mean(data))
     expected = data + avg  # corrected = input - (-avg)
     assert np.array_equal(_bits(out.data), _bits(expected))
@@ -299,6 +302,7 @@ def test_polynomial_non_square_fields() -> None:
 # ---------------------------------------------------------------------------
 # MODUS
 # ---------------------------------------------------------------------------
+
 
 def test_modus_constant_rows() -> None:
     data = np.full((5, 10), 7.0)
@@ -355,8 +359,7 @@ def test_modus_outlier_resistance() -> None:
 def test_modus_no_valid_sample_fallback() -> None:
     data = np.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]])
     mask = np.zeros_like(data)
-    out = gwyddion_align_rows_modus(_channel(data), mask=mask,
-                                   mask_mode="include")
+    out = gwyddion_align_rows_modus(_channel(data), mask=mask, mask_mode="include")
     # no samples -> global median 0.0 fallback -> shifts 0 -> no change
     assert np.array_equal(_bits(out.data), _bits(data))
 
@@ -366,17 +369,13 @@ def test_modus_masking_mode_discrimination() -> None:
     # 6-sample high population; zero-levelling preserves the different
     # per-row modus estimates of each mask mode
     rows = [
-        np.array([5.0 + 10.0 * i] * 10 + [100.0 + 3.0 * i + j for j in range(6)])
-        for i in range(4)
+        np.array([5.0 + 10.0 * i] * 10 + [100.0 + 3.0 * i + j for j in range(6)]) for i in range(4)
     ]
     data = np.stack(rows)
     mask = (data > 50.0).astype(float)
-    ignore = gwyddion_align_rows_modus(_channel(data), mask=mask,
-                                      mask_mode="ignore")
-    include = gwyddion_align_rows_modus(_channel(data), mask=mask,
-                                       mask_mode="include")
-    exclude = gwyddion_align_rows_modus(_channel(data), mask=mask,
-                                       mask_mode="exclude")
+    ignore = gwyddion_align_rows_modus(_channel(data), mask=mask, mask_mode="ignore")
+    include = gwyddion_align_rows_modus(_channel(data), mask=mask, mask_mode="include")
+    exclude = gwyddion_align_rows_modus(_channel(data), mask=mask, mask_mode="exclude")
     # ignore equals no-mask behaviour; include differs from it here (the
     # masked high population has fewer than 9 samples -> upper median)
     plain = gwyddion_align_rows_modus(_channel(data))
@@ -388,6 +387,7 @@ def test_modus_masking_mode_discrimination() -> None:
 # ---------------------------------------------------------------------------
 # MATCH
 # ---------------------------------------------------------------------------
+
 
 def test_match_identical_rows() -> None:
     data = np.tile(np.arange(16, dtype=float), (5, 1))
@@ -437,8 +437,7 @@ def test_match_endpoint_inclusion() -> None:
     data = np.stack([base, base + 5.0])
     mask = np.ones_like(data)
     mask[:, 1:-1] = 0.0
-    out = gwyddion_align_rows_match(_channel(data), mask=mask,
-                                   mask_mode="include")
+    out = gwyddion_align_rows_match(_channel(data), mask=mask, mask_mode="include")
     assert np.array_equal(_bits(out.data), _bits(data))
 
 
@@ -447,8 +446,7 @@ def test_match_no_valid_overlap_guard() -> None:
     data = np.stack([base, base + 2.0])
     mask = np.zeros_like(data)
     mask[0] = 1.0  # only row 0 masked in -> no valid overlap under include
-    out = gwyddion_align_rows_match(_channel(data), mask=mask,
-                                   mask_mode="include")
+    out = gwyddion_align_rows_match(_channel(data), mask=mask, mask_mode="include")
     assert np.array_equal(_bits(out.data), _bits(data))
 
 
@@ -472,12 +470,9 @@ def test_match_masking_mode_discrimination() -> None:
     data[3, 8] = 9.0
     mask = np.zeros_like(data)
     mask[:, 4:9] = 1.0
-    ignore = gwyddion_align_rows_match(_channel(data), mask=mask,
-                                      mask_mode="ignore")
-    include = gwyddion_align_rows_match(_channel(data), mask=mask,
-                                       mask_mode="include")
-    exclude = gwyddion_align_rows_match(_channel(data), mask=mask,
-                                       mask_mode="exclude")
+    ignore = gwyddion_align_rows_match(_channel(data), mask=mask, mask_mode="ignore")
+    include = gwyddion_align_rows_match(_channel(data), mask=mask, mask_mode="include")
+    exclude = gwyddion_align_rows_match(_channel(data), mask=mask, mask_mode="exclude")
     plain = gwyddion_align_rows_match(_channel(data))
     assert np.array_equal(_bits(ignore.data), _bits(plain.data))
     assert not np.array_equal(_bits(include.data), _bits(plain.data))

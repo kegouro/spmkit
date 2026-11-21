@@ -53,3 +53,9 @@ site/
 *.xdv
 *.synctex.gz
 _minted-*/
+
+# macOS resource forks and local evidence
+._*
+.reference/
+/validation/
+*.pth

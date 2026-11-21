@@ -43,6 +43,7 @@ _COMBINE_TO_ENUM = {
     "intersection": INTERSECTION,
 }
 
+
 def _validated_field(value: object, *, operation: str) -> np.ndarray:
     source = np.asarray(value, dtype=np.float64)
     if source.ndim != 2:
@@ -56,8 +57,9 @@ def _validated_field(value: object, *, operation: str) -> np.ndarray:
     return np.array(source, dtype=np.float64, order="C", copy=True)
 
 
-def _validated_existing_mask(value: object, shape: tuple[int, int],
-                             *, operation: str) -> np.ndarray:
+def _validated_existing_mask(
+    value: object, shape: tuple[int, int], *, operation: str
+) -> np.ndarray:
     mask = _validated_field(value, operation=operation)
     if mask.shape != shape:
         raise ValueError(f"{operation} existing mask shape must match the channel")
@@ -81,9 +83,15 @@ def _vertical_rms(field: np.ndarray) -> float:
     return math.sqrt(total / (xres * yres))
 
 
-def _detector_pass(field: np.ndarray, threshold_low: float,
-                   threshold_high: float, min_len: int, max_width: int,
-                   negative: bool, rms: float) -> np.ndarray:
+def _detector_pass(
+    field: np.ndarray,
+    threshold_low: float,
+    threshold_high: float,
+    min_len: int,
+    max_width: int,
+    negative: bool,
+    rms: float,
+) -> np.ndarray:
     """One gwy_data_field_mark_scars execution (correct.c:1384-1512).
 
     Returns the final binary mask (0.0/1.0).  The initial search detects
@@ -242,9 +250,11 @@ def _gwydion_mark_scars_result(
     if not isinstance(max_width, int) or isinstance(max_width, bool):
         raise TypeError("max_width must be an integer")
 
-    existing = (None if existing_mask is None else
-                _validated_existing_mask(existing_mask, data.shape,
-                                         operation="Mark Scars"))
+    existing = (
+        None
+        if existing_mask is None
+        else _validated_existing_mask(existing_mask, data.shape, operation="Mark Scars")
+    )
 
     # sanitization (module then kernel, both max operations)
     high = max(threshold_high, threshold_low)
@@ -271,11 +281,11 @@ def _gwydion_mark_scars_result(
     neg_mask: FloatArray | None = None
     if guard_reason is None:
         if polarity_enum in (POSITIVE, BOTH):
-            pos_mask = _detector_pass(data, low, high, min_len, max_width_k,
-                                      negative=False, rms=rms)
+            pos_mask = _detector_pass(
+                data, low, high, min_len, max_width_k, negative=False, rms=rms
+            )
         if polarity_enum in (NEGATIVE, BOTH):
-            neg_mask = _detector_pass(data, low, high, min_len, max_width_k,
-                                      negative=True, rms=rms)
+            neg_mask = _detector_pass(data, low, high, min_len, max_width_k, negative=True, rms=rms)
         if polarity_enum == BOTH:
             # scars.c:164-168: two detector executions plus fmax union
             assert pos_mask is not None and neg_mask is not None

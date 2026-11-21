@@ -79,29 +79,41 @@ def _load_arrays():
 
 def _seg(st, d, z, f, t):
     return ForceSegment(
-        segment_type=st, direction=d, raw_height=z, raw_deflection=f / K_SPRING,
-        time=t, cycle=0, state="force_n", deflection=f / K_SPRING, force=f,
-        separation=None, metadata={})
+        segment_type=st,
+        direction=d,
+        raw_height=z,
+        raw_deflection=f / K_SPRING,
+        time=t,
+        cycle=0,
+        state="force_n",
+        deflection=f / K_SPRING,
+        force=f,
+        separation=None,
+        metadata={},
+    )
 
 
 def _curve_from_phantom(case) -> ForceCurve:
     n_a = case.metadata.get("n_approach", 120)
     return ForceCurve(
         segments=(
-            _seg("extend", "forward", case.height[:n_a], case.force[:n_a],
-                 case.time[:n_a]),
-            _seg("retract", "backward", case.height[n_a:], case.force[n_a:],
-                 case.time[n_a:]),
+            _seg("extend", "forward", case.height[:n_a], case.force[:n_a], case.time[:n_a]),
+            _seg("retract", "backward", case.height[n_a:], case.force[n_a:], case.time[n_a:]),
         ),
-        calibration=Calibration(invols=3e-8, spring_constant=K_SPRING,
-                                method="thermal", temperature=300, provenance={}),
-        position=None, index=0, metadata={})
+        calibration=Calibration(
+            invols=3e-8, spring_constant=K_SPRING, method="thermal", temperature=300, provenance={}
+        ),
+        position=None,
+        index=0,
+        metadata={},
+    )
 
 
 def _ext(case):
     prepared = prepare_force_curve(_curve_from_phantom(case))
     return compute_molecular_extension(
-        prepared, reference="offset", reference_value=case.truth["sep_zero"])
+        prepared, reference="offset", reference_value=case.truth["sep_zero"]
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -115,15 +127,14 @@ def test_fixture_regeneration_deterministic() -> None:
     out1.mkdir(parents=True, exist_ok=True)
     out2.mkdir(parents=True, exist_ok=True)
     try:
-        subprocess.run([sys.executable, str(GENERATOR), str(out1)],
-                       check=True, capture_output=True)
-        subprocess.run([sys.executable, str(GENERATOR), str(out2)],
-                       check=True, capture_output=True)
+        subprocess.run([sys.executable, str(GENERATOR), str(out1)], check=True, capture_output=True)
+        subprocess.run([sys.executable, str(GENERATOR), str(out2)], check=True, capture_output=True)
         for name in ("smfs_reference.json", "smfs_reference.npz"):
             assert (out1 / name).read_bytes() == (out2 / name).read_bytes()
             assert (out1 / name).read_bytes() == (FIXTURE_DIR / name).read_bytes()
     finally:
         import shutil
+
         shutil.rmtree(out1, ignore_errors=True)
         shutil.rmtree(out2, ignore_errors=True)
 
@@ -159,19 +170,25 @@ def _json_safe(obj):
 
 def test_polymer_oracle_parity() -> None:
     x = np.linspace(1e-9, 85e-9, 97)
-    assert np.allclose(_smfs.wlc_force(x, 100e-9, 0.5e-9, 298.0),
-                       wlc_force(x, 100e-9, 0.5e-9, 298.0), rtol=1e-12)
+    assert np.allclose(
+        _smfs.wlc_force(x, 100e-9, 0.5e-9, 298.0), wlc_force(x, 100e-9, 0.5e-9, 298.0), rtol=1e-12
+    )
     pe = _smfs.extensible_wlc_force(x, 100e-9, 0.5e-9, 1e-8, 298.0)
     oe = extensible_wlc_force(x, 100e-9, 0.5e-9, 1e-8, 298.0)
     assert np.max(np.abs(pe - oe) / np.maximum(np.abs(oe), 1e-30)) < 1e-6
     f = np.linspace(1e-13, 1e-9, 97)
-    assert np.allclose(_smfs.fjc_extension(f, 100e-9, 1e-9, 298.0),
-                       fjc_extension(f, 100e-9, 1e-9, 298.0), rtol=1e-9)
-    assert np.allclose(extensible_fjc_extension(f, 100e-9, 1e-9, 1e-8, 298.0),
-                       __import__("spmkit.core.analysis.force_smfs",
-                                  fromlist=["extensible_fjc_extension"])
-                       .extensible_fjc_extension(f, 100e-9, 1e-9, 1e-8, 298.0),
-                       rtol=1e-9)
+    assert np.allclose(
+        _smfs.fjc_extension(f, 100e-9, 1e-9, 298.0),
+        fjc_extension(f, 100e-9, 1e-9, 298.0),
+        rtol=1e-9,
+    )
+    assert np.allclose(
+        extensible_fjc_extension(f, 100e-9, 1e-9, 1e-8, 298.0),
+        __import__(
+            "spmkit.core.analysis.force_smfs", fromlist=["extensible_fjc_extension"]
+        ).extensible_fjc_extension(f, 100e-9, 1e-9, 1e-8, 298.0),
+        rtol=1e-9,
+    )
 
 
 def test_declarative_oracle_relations() -> None:
@@ -189,20 +206,27 @@ def test_declarative_oracle_relations() -> None:
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.parametrize("cid,fn,truth,tols", [
-    ("S01", fit_worm_like_chain, {"Lc": 100e-9, "Lp": 0.5e-9},
-     {"Lc": 0.02, "Lp": 0.05}),
-    ("S02", fit_worm_like_chain, {"Lc": 100e-9, "Lp": 0.5e-9},
-     {"Lc": 0.05, "Lp": 0.20}),
-    ("S03", fit_worm_like_chain, {"Lc": 100e-9, "Lp": 0.5e-9},
-     {"Lc": 0.05, "Lp": 0.20}),
-    ("S04", fit_extensible_worm_like_chain, {"Lc": 100e-9, "Lp": 0.5e-9},
-     {"Lc": 0.05, "Lp": 0.20}),
-    ("S05", fit_freely_jointed_chain, {"Lc": 100e-9, "b": 1e-9},
-     {"Lc": 0.02, "b": 0.05}),
-    ("S06", fit_extensible_freely_jointed_chain, {"Lc": 100e-9, "b": 1e-9},
-     {"Lc": 0.02, "b": 0.05}),
-])
+@pytest.mark.parametrize(
+    "cid,fn,truth,tols",
+    [
+        ("S01", fit_worm_like_chain, {"Lc": 100e-9, "Lp": 0.5e-9}, {"Lc": 0.02, "Lp": 0.05}),
+        ("S02", fit_worm_like_chain, {"Lc": 100e-9, "Lp": 0.5e-9}, {"Lc": 0.05, "Lp": 0.20}),
+        ("S03", fit_worm_like_chain, {"Lc": 100e-9, "Lp": 0.5e-9}, {"Lc": 0.05, "Lp": 0.20}),
+        (
+            "S04",
+            fit_extensible_worm_like_chain,
+            {"Lc": 100e-9, "Lp": 0.5e-9},
+            {"Lc": 0.05, "Lp": 0.20},
+        ),
+        ("S05", fit_freely_jointed_chain, {"Lc": 100e-9, "b": 1e-9}, {"Lc": 0.02, "b": 0.05}),
+        (
+            "S06",
+            fit_extensible_freely_jointed_chain,
+            {"Lc": 100e-9, "b": 1e-9},
+            {"Lc": 0.02, "b": 0.05},
+        ),
+    ],
+)
 def test_clean_polymer_recovery(cid, fn, truth, tols) -> None:
     case = generate_phantoms()[cid]
     ext = _ext(case)
@@ -333,6 +357,7 @@ def test_bell_evans_third_independent_integration() -> None:
     force F* = (k_BT/x_beta) ln(r x_beta/(k0 k_BT)) matches the mode of the
     third density."""
     import math as _math
+
     _kb = 1.380649e-23
 
     def _gl(fn, a, b, n=64):
@@ -378,8 +403,7 @@ def test_dhs_domain_censoring_identity() -> None:
         z = 1.0 - nu * F * xb / dg
         if z <= 0.0:
             return float("inf")
-        logk = (_m.log(k0) + (1.0 / nu - 1.0) * _m.log(z)
-                + dg * (1.0 - z ** (1.0 / nu)) / (_kb * T))
+        logk = _m.log(k0) + (1.0 / nu - 1.0) * _m.log(z) + dg * (1.0 - z ** (1.0 / nu)) / (_kb * T)
         return _m.exp(min(logk, 700.0))
 
     def _pf(F):
@@ -446,11 +470,19 @@ def test_contour_increment_three_events_and_heterogeneous() -> None:
             f[i] = float(_owl(np.array([xi]), lc_list[branch], 0.5e-9, 298.0)[0])
     sep = 3.0e-6 + x
     from spmkit.core.analysis.force_smfs import MolecularExtensionResult
+
     ext = MolecularExtensionResult(
-        extension=x, separation=sep, force=f, time=np.linspace(0, 1, n),
-        retract_indices=np.arange(n), reference_policy="offset",
-        reference_coordinate=3.0e-6, reference_index=None,
-        valid=np.ones(n, dtype=bool), provenance={})
+        extension=x,
+        separation=sep,
+        force=f,
+        time=np.linspace(0, 1, n),
+        retract_indices=np.arange(n),
+        reference_policy="offset",
+        reference_coordinate=3.0e-6,
+        reference_index=None,
+        valid=np.ones(n, dtype=bool),
+        provenance={},
+    )
     ev = detect_unfolding_events(ext, noise_sigma=1e-13)
     ev2 = quantify_unfolding_events(ext, ev)
     assert len(ev2.events) == 3
@@ -477,10 +509,17 @@ def test_contour_increment_wrong_zero_and_short_windows() -> None:
 
     def build(offset):
         return MolecularExtensionResult(
-            extension=x + offset, separation=3.0e-6 + x + offset, force=f,
-            time=np.linspace(0, 1, n), retract_indices=np.arange(n),
-            reference_policy="offset", reference_coordinate=3.0e-6,
-            reference_index=None, valid=np.ones(n, dtype=bool), provenance={})
+            extension=x + offset,
+            separation=3.0e-6 + x + offset,
+            force=f,
+            time=np.linspace(0, 1, n),
+            retract_indices=np.arange(n),
+            reference_policy="offset",
+            reference_coordinate=3.0e-6,
+            reference_index=None,
+            valid=np.ones(n, dtype=bool),
+            provenance={},
+        )
 
     ev = detect_unfolding_events(build(0.0), noise_sigma=1e-13)
     ev2 = quantify_unfolding_events(build(0.0), ev)
@@ -554,14 +593,15 @@ def test_batch_end_to_end() -> None:
         inc = infer_contour_length_increments(ext, ev2)
         rates = compute_event_loading_rates(ext, ev2)
         records = [
-            {"rupture_force": e.rupture_force,
-             "delta_contour_length": r.delta_contour_length,
-             "loading_rate": rl.local_slope}
-            for e, r, rl in zip(ev2.events, inc, rates, strict=True)]
-        analyses.append({"curve_id": cid, "curve_index": i, "ok": True,
-                         "events": records})
-    analyses.append({"curve_id": "S12", "curve_index": 3, "ok": False,
-                     "failure": "NO_EVENTS"})
+            {
+                "rupture_force": e.rupture_force,
+                "delta_contour_length": r.delta_contour_length,
+                "loading_rate": rl.local_slope,
+            }
+            for e, r, rl in zip(ev2.events, inc, rates, strict=True)
+        ]
+        analyses.append({"curve_id": cid, "curve_index": i, "ok": True, "events": records})
+    analyses.append({"curve_id": "S12", "curve_index": 3, "ok": False, "failure": "NO_EVENTS"})
     batch = analyze_smfs_batch(analyses, group_by="loading_rate_decade")
     assert batch.n_curves == 4
     assert batch.n_ok == 3

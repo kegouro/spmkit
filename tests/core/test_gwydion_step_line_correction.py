@@ -30,8 +30,9 @@ def _bits(array: np.ndarray) -> np.ndarray:
     return np.ascontiguousarray(array, dtype=np.float64).view(np.uint64)
 
 
-def _make_field(yres: int, xres: int, rows: list[list[float]] | None = None,
-                fill: float = 0.0) -> np.ndarray:
+def _make_field(
+    yres: int, xres: int, rows: list[list[float]] | None = None, fill: float = 0.0
+) -> np.ndarray:
     field = np.full((yres, xres), fill, dtype=np.float64)
     if rows:
         for i, row in enumerate(rows):
@@ -40,8 +41,7 @@ def _make_field(yres: int, xres: int, rows: list[list[float]] | None = None,
 
 
 def test_input_non_mutation_and_context_preservation() -> None:
-    data = _make_field(5, 7, rows=[
-        [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]] * 5)
+    data = _make_field(5, 7, rows=[[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]] * 5)
     channel = _channel(data)
     original = data.copy()
     result = gwydion_step_line_correction(channel)
@@ -171,13 +171,13 @@ def test_pass2_only_change() -> None:
     data[1, 5:11] = 0.5
     trace = _gwydion_step_line_correction_result(data, trace=True)
     changed = np.flatnonzero(
-        _bits(trace.field_after_pass1).ravel() != _bits(trace.field_after_pass2).ravel())
+        _bits(trace.field_after_pass1).ravel() != _bits(trace.field_after_pass2).ravel()
+    )
     assert list(changed) == [21 + c for c in range(5, 11)]
     assert np.all(trace.field_after_pass2[1, 5:11] == 1.0)
 
 
-@pytest.mark.parametrize("shape,fill", [((1, 1), 3.5), ((1, 5), 2.0),
-                                        ((2, 5), 1.0), ((3, 2), 0.0)])
+@pytest.mark.parametrize("shape,fill", [((1, 1), 3.5), ((1, 5), 2.0), ((2, 5), 1.0), ((3, 2), 0.0)])
 def test_degenerate_dimensions(shape, fill) -> None:
     data = _make_field(shape[0], shape[1], fill=fill)
     if shape == (1, 1):
@@ -214,11 +214,14 @@ def test_finite_float64_output() -> None:
     assert np.isfinite(result.data).all()
 
 
-@pytest.mark.parametrize("bad", [
-    np.array([[1.0, np.nan], [2.0, 3.0]]),
-    np.array([[1.0, np.inf], [2.0, 3.0]]),
-    np.array([[1.0, -np.inf], [2.0, 3.0]]),
-])
+@pytest.mark.parametrize(
+    "bad",
+    [
+        np.array([[1.0, np.nan], [2.0, 3.0]]),
+        np.array([[1.0, np.inf], [2.0, 3.0]]),
+        np.array([[1.0, -np.inf], [2.0, 3.0]]),
+    ],
+)
 def test_non_finite_rejection(bad) -> None:
     with pytest.raises(ValueError, match="finite"):
         gwydion_step_line_correction(_channel(bad))
@@ -226,8 +229,10 @@ def test_non_finite_rejection(bad) -> None:
 
 def test_non_2d_and_empty_rejection() -> None:
     with pytest.raises(ValueError, match="two-dimensional"):
-        gwydion_step_line_correction(SPMChannel(
-            name="t", data=np.array([1.0, 2.0, 3.0]), unit="nm",
-            x_range=3.0, y_range=1.0))
+        gwydion_step_line_correction(
+            SPMChannel(
+                name="t", data=np.array([1.0, 2.0, 3.0]), unit="nm", x_range=3.0, y_range=1.0
+            )
+        )
     with pytest.raises(ValueError, match="non-empty"):
         gwydion_step_line_correction(_channel(np.zeros((0, 5))))

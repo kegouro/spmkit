@@ -70,6 +70,7 @@ def test_hand_calculated_witness() -> None:
     # con fuerza constante, W == net displacement exactamente (incl. reversiones)
     assert r.work_total == pytest.approx(r.diagnostics.net_displacement, abs=1e-15)
 
+
 # ---------------------------------------------------------------------------
 # Deterministic path-work cases (1-14) vs oracle
 # ---------------------------------------------------------------------------
@@ -208,14 +209,22 @@ def test_monotonic_path_matches_strict_integrate_force_work() -> None:
     curve = ForceCurve(
         segments=(
             ForceSegment(
-                segment_type="extend", direction="approach",
-                raw_height=z_a, raw_deflection=f_a,
-                deflection=f_a / 0.05, force=f_a, state="force_n",
+                segment_type="extend",
+                direction="approach",
+                raw_height=z_a,
+                raw_deflection=f_a,
+                deflection=f_a / 0.05,
+                force=f_a,
+                state="force_n",
             ),
             ForceSegment(
-                segment_type="retract", direction="retract",
-                raw_height=z_r, raw_deflection=f_r,
-                deflection=f_r / 0.05, force=f_r, state="force_n",
+                segment_type="retract",
+                direction="retract",
+                raw_height=z_r,
+                raw_deflection=f_r,
+                deflection=f_r / 0.05,
+                force=f_r,
+                state="force_n",
             ),
         ),
         metadata={"format": "synthetic"},

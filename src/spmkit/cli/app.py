@@ -228,30 +228,31 @@ def analyze(
 
     args_dict = {
         "channel": channel,
+        "direction": direction,
+        "group": group,
         "cpd_channel": cpd_channel,
+        "cpd_direction": cpd_direction,
+        "cpd_group": cpd_group,
         "level": level,
         "tip_work_function": tip_work_function,
     }
 
-    try:
-        manifest = RunManifest.create(
-            input_path=file,
-            command="analyze",
-            args=args_dict,
-            channel=channel,
-            leveling_method=level,
-            units=ch.unit,
-            results_produced=results_produced,
-            warnings=warnings,
-            status="OK",
-            duration_seconds=duration,
-        )
-        manifest_path = output / f"{stem}_run_manifest.json"
-        with manifest_path.open("w", encoding="utf-8") as f:
-            json.dump(manifest.to_dict(), f, indent=2, ensure_ascii=False)
-        console.print(f"[green]✓[/] Manifiesto → {manifest_path}")
-    except Exception as e:
-        console.print(f"[red]Error al generar manifiesto:[/] {e}")
+    manifest = RunManifest.create(
+        input_path=file,
+        command="analyze",
+        args=args_dict,
+        channel=channel,
+        leveling_method=level,
+        units=ch.unit,
+        results_produced=results_produced,
+        warnings=warnings,
+        status="OK",
+        duration_seconds=duration,
+    )
+    manifest_path = output / f"{stem}_run_manifest.json"
+    with manifest_path.open("w", encoding="utf-8") as f:
+        json.dump(manifest.to_dict(), f, indent=2, ensure_ascii=False)
+    console.print(f"[green]✓[/] Manifiesto → {manifest_path}")
 
 
 @app.command()

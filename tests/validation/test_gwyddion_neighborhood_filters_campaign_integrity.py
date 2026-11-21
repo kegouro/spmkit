@@ -24,15 +24,20 @@ EXPECTED_NORMAL = "6f4c5bd08283554113949bc7078cf440455595fbab08f9b668717c74b8655
 EXPECTED_SANITIZED = "a82121dafc8a7ff0a5b3f1855d8bc108f26b063a75b37529c954c6b01f093c5a"
 
 STABLE_FILES = [
-    "SHA256SUMS", "source-identity.txt", "binary-hashes.txt",
-    "case-summary.tsv", "normal-vs-sanitized-summary.tsv",
-    "checker-report.txt", "independent-reconciliation.txt",
+    "SHA256SUMS",
+    "source-identity.txt",
+    "binary-hashes.txt",
+    "case-summary.tsv",
+    "normal-vs-sanitized-summary.tsv",
+    "checker-report.txt",
+    "independent-reconciliation.txt",
     "metrics-report.txt",
 ]
 
 
 def _requires_evidence():
     import pytest
+
     if not EVIDENCE.is_dir():
         pytest.skip("compiled campaign evidence not present")
 
@@ -68,8 +73,7 @@ def test_sanitizer_flags_in_frozen_runner() -> None:
     _requires_evidence()
     runner = None
     for entry in sorted(Path(".reference").iterdir()):
-        cand = entry / "neighborhood-filters-parity" / \
-            "run_neighborhood_filters_probe_campaign.sh"
+        cand = entry / "neighborhood-filters-parity" / "run_neighborhood_filters_probe_campaign.sh"
         if cand.is_file():
             runner = cand
             break
@@ -86,8 +90,7 @@ def test_zero_warnings_findings() -> None:
         assert "warning" not in (EVIDENCE / f"{tag}.stderr").read_text()
     for stderr in (EVIDENCE / "sanitized").glob("*.stderr"):
         content = stderr.read_text()
-        for marker in ("AddressSanitizer", "runtime error:",
-                       "UndefinedBehaviorSanitizer"):
+        for marker in ("AddressSanitizer", "runtime error:", "UndefinedBehaviorSanitizer"):
             assert marker not in content, (stderr.name, marker)
 
 
@@ -110,6 +113,7 @@ def test_both_clean_campaigns_identical() -> None:
     _requires_evidence()
     if not EVIDENCE2.is_dir():
         import pytest
+
         pytest.skip("second evidence root not present")
     for f in STABLE_FILES:
         a = EVIDENCE / f
@@ -122,10 +126,14 @@ def test_obsolete_identical_binary_state_rejected() -> None:
     """The pre-repair identical-binary state must be rejected by the
     fixture generator's campaign verification."""
     _requires_evidence()
-    gen_path = Path(__file__).resolve().parent / "fixtures" / "gwyddion" / \
-        "neighborhood_filters" / "generate_fixtures.py"
-    spec = importlib.util.spec_from_file_location("nf_gen_campaign",
-                                                  str(gen_path))
+    gen_path = (
+        Path(__file__).resolve().parent
+        / "fixtures"
+        / "gwyddion"
+        / "neighborhood_filters"
+        / "generate_fixtures.py"
+    )
+    spec = importlib.util.spec_from_file_location("nf_gen_campaign", str(gen_path))
     gen = importlib.util.module_from_spec(spec)
     sys.modules["nf_gen_campaign"] = gen
     spec.loader.exec_module(gen)  # type: ignore[union-attr]
@@ -135,8 +143,9 @@ def test_obsolete_identical_binary_state_rejected() -> None:
     bh = tmp / "binary-hashes.txt"
     lines = bh.read_text().splitlines()
     same = lines[0].split()[0]
-    bh.write_text(f"{same}  bin/neighborhood_filters_probe\n"
-                  f"{same}  bin/neighborhood_filters_probe.san\n")
+    bh.write_text(
+        f"{same}  bin/neighborhood_filters_probe\n" f"{same}  bin/neighborhood_filters_probe.san\n"
+    )
     problems: list[str] = []
     old = gen.EVIDENCE
     old2 = gen.EVIDENCE2
@@ -154,9 +163,14 @@ def test_obsolete_identical_binary_state_rejected() -> None:
 def test_gui_not_invoked_claims() -> None:
     _requires_evidence()
     manifest = json.loads(
-        (Path(__file__).resolve().parent / "fixtures" / "gwyddion" /
-         "neighborhood_filters" / "neighborhood_filters_reference.json")
-        .read_text())
+        (
+            Path(__file__).resolve().parent
+            / "fixtures"
+            / "gwyddion"
+            / "neighborhood_filters"
+            / "neighborhood_filters_reference.json"
+        ).read_text()
+    )
     assert manifest["gui_not_invoked"]
     assert manifest["mask_and_selection_excluded"]
     text = "\n".join(manifest["non_claims"])

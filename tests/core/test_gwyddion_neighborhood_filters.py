@@ -27,9 +27,16 @@ OPS = (gwyddion_rank_filter, gwyddion_median_filter, gwyddion_gaussian_filter)
 
 def _channel(data: np.ndarray) -> SPMChannel:
     rows, cols = data.shape
-    return SPMChannel(name="t", data=data, unit="m", x_range=float(cols),
-                      y_range=float(rows), direction="forward", group="g",
-                      metadata={"Dim1Name": "Y"})
+    return SPMChannel(
+        name="t",
+        data=data,
+        unit="m",
+        x_range=float(cols),
+        y_range=float(rows),
+        direction="forward",
+        group="g",
+        metadata={"Dim1Name": "Y"},
+    )
 
 
 def _bits(a: np.ndarray) -> np.ndarray:
@@ -40,21 +47,25 @@ def _bits(a: np.ndarray) -> np.ndarray:
 # COMMON
 # ---------------------------------------------------------------------------
 
+
 def test_invalid_dimension_rejected() -> None:
-    for op, kw in ((gwyddion_rank_filter, {"radius": 1}),
-                   (gwyddion_median_filter, {"size": 3}),
-                   (gwyddion_gaussian_filter, {"sigma": 1.0})):
+    for op, kw in (
+        (gwyddion_rank_filter, {"radius": 1}),
+        (gwyddion_median_filter, {"size": 3}),
+        (gwyddion_gaussian_filter, {"sigma": 1.0}),
+    ):
         with pytest.raises(ValueError, match="two-dimensional"):
-            op(SPMChannel(name="t", data=np.zeros(8), unit="m",
-                         x_range=8.0, y_range=1.0), **kw)
+            op(SPMChannel(name="t", data=np.zeros(8), unit="m", x_range=8.0, y_range=1.0), **kw)
         with pytest.raises(ValueError, match="non-empty"):
             op(_channel(np.zeros((0, 8))), **kw)
 
 
 def test_non_finite_input_rejected() -> None:
-    for op, kw in ((gwyddion_rank_filter, {"radius": 1}),
-                   (gwyddion_median_filter, {"size": 3}),
-                   (gwyddion_gaussian_filter, {"sigma": 1.0})):
+    for op, kw in (
+        (gwyddion_rank_filter, {"radius": 1}),
+        (gwyddion_median_filter, {"size": 3}),
+        (gwyddion_gaussian_filter, {"sigma": 1.0}),
+    ):
         with pytest.raises(ValueError, match="finite"):
             op(_channel(np.array([[1.0, np.inf], [2.0, 3.0]])), **kw)
         with pytest.raises(ValueError, match="finite"):
@@ -62,8 +73,7 @@ def test_non_finite_input_rejected() -> None:
 
 
 def test_complex_input_rejected() -> None:
-    data = (np.arange(24, dtype=float).reshape(4, 6)
-            + 1j * np.arange(24, dtype=float).reshape(4, 6))
+    data = np.arange(24, dtype=float).reshape(4, 6) + 1j * np.arange(24, dtype=float).reshape(4, 6)
     with pytest.raises(TypeError, match="real"):
         gwyddion_rank_filter(_channel(data), radius=1)
 
@@ -91,9 +101,11 @@ def test_output_storage_independence() -> None:
 def test_context_preservation() -> None:
     data = np.arange(36, dtype=float).reshape(6, 6)
     ch = _channel(data)
-    for op, kw in ((gwyddion_rank_filter, {"radius": 1}),
-                   (gwyddion_median_filter, {"size": 3}),
-                   (gwyddion_gaussian_filter, {"sigma": 1.0})):
+    for op, kw in (
+        (gwyddion_rank_filter, {"radius": 1}),
+        (gwyddion_median_filter, {"size": 3}),
+        (gwyddion_gaussian_filter, {"sigma": 1.0}),
+    ):
         out = op(ch, **kw)
         assert out.name == "t" and out.unit == "m"
         assert out.x_range == ch.x_range and out.y_range == ch.y_range
@@ -103,6 +115,7 @@ def test_context_preservation() -> None:
 
 def test_no_mask_or_border_parameters() -> None:
     import inspect
+
     for op in OPS:
         params = inspect.signature(op).parameters
         for forbidden in ("mask", "border", "selection", "direction"):
@@ -112,6 +125,7 @@ def test_no_mask_or_border_parameters() -> None:
 # ---------------------------------------------------------------------------
 # RANK
 # ---------------------------------------------------------------------------
+
 
 def test_rank_parameter_bounds() -> None:
     data = np.zeros((5, 5))
@@ -201,6 +215,7 @@ def test_rank_small_fields() -> None:
 # ---------------------------------------------------------------------------
 # MEDIAN
 # ---------------------------------------------------------------------------
+
 
 def test_median_parameter_bounds() -> None:
     data = np.zeros((5, 5))
@@ -296,6 +311,7 @@ def test_median_not_percentile_routed() -> None:
 # ---------------------------------------------------------------------------
 # GAUSSIAN
 # ---------------------------------------------------------------------------
+
 
 def test_gaussian_parameter_bounds() -> None:
     data = np.zeros((9, 9))
