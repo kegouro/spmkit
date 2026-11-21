@@ -60,7 +60,7 @@ Executed Linux x86_64 verification:
 | mypy 2.3.0 | passed, 186 source files |
 | Wheel and sdist | built; capability resource included; validation fixtures and NSFopen MIT notice in sdist |
 | Clean wheel-only environment | installed; CLI help/version and numerical Sa/Sq/Sz smoke passed without Qt imports |
-| Documentation | sync, visual contract, strict MkDocs build and 8501 internal references across 73 pages passed |
+| Documentation | sync, visual contract, strict MkDocs build and 8506 internal references across 73 pages passed |
 | Phantoms merged tree | 25 passed |
 | Validation merged tree | 260 passed, 11 skipped; Ruff and package builds passed |
 | Black-box ecosystem smoke | six cases executed through public CLI; results remain TODO-SCIENTIFIC-DECISION |
@@ -103,3 +103,10 @@ post-supplement results are recorded separately, without inflating the total.
 Validation's first remote CI run exposed a missing optional campaign dependency
 in its test environment. Its follow-up workflow installs `[campaign]` and keeps
 all tests; none were removed or marked skipped to conceal the failure.
+
+Python 3.11.15 full baseline suite also passed: 2244 passed, 80 skipped,
+24 warnings in 431.23 s. Post-supplement CLI/library/GUI image journeys and
+SMFS regression: 58 passed in 74.41 s. Final wheel-only install imports the
+native IBW reader without a source checkout. GitHub main advanced without
+rewriting history from `3eba2ca` to `d9c8b28` before this verification-record
+commit. Both integration and main branches preserve the original ancestry.
