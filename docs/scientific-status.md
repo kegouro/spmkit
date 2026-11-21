@@ -1066,3 +1066,14 @@ parameter combination. The README does not duplicate this changing number.
 - no endorsement by UTFSM, the SPM Lab, AFM-SPM, AFMReader, TopoStats, or Gwyddion.
 
 When evidence is incomplete, the narrower statement governs.
+
+
+## Derivative math-backend portability correction
+
+The [2026-11-21 investigation](validation/derivative-platform-20261121/README.md)
+reproduces four Ubuntu magnitude-bit-pattern discrepancies with the official
+glibc FMA path. Frozen references and numerical kernels are unchanged.
+Bitwise replay requires actual library/implementation identity; other backends
+retain exact source-runtime comparisons and independent exact rational bracket
+verification over the preserved finite campaign. Separate macOS force-fixture
+regeneration failures remain documented and are not covered by this correction.

@@ -190,15 +190,9 @@ FROZEN_PLATFORM = {
 
 
 def _platform_matches() -> tuple[bool, str]:
-    import platform
+    from tests.validation.derivative_platform import frozen_backend_matches
 
-    arch = platform.machine()
-    libc_name, _version = platform.libc_ver()
-    if arch != FROZEN_PLATFORM["architecture"]:
-        return False, f"architecture {arch} != x86_64"
-    if libc_name != FROZEN_PLATFORM["libc"]:
-        return False, f"libc {libc_name} != glibc"
-    return True, ""
+    return frozen_backend_matches()
 
 
 @pytest.mark.parametrize("cid", ALL_CASES)
@@ -269,7 +263,9 @@ def test_direction_compiled_bit_pattern_characterized() -> None:
     manifest, arrays = _load()
     metrics = manifest["direction_oracle_metrics"]
     assert metrics["maturity_ceiling"] == "NUMERICALLY_VERIFIED"
-    matches, reason = _platform_matches()
+    from tests.validation.derivative_platform import frozen_backend_matches
+
+    matches, reason = frozen_backend_matches("atan2")
     if not matches:
         pytest.skip(f"platform mismatch: {reason}")
     n_mismatch = 0

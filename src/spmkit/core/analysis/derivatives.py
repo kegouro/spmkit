@@ -126,7 +126,8 @@ def gwyddion_gradient_magnitude(gx: SPMChannel, gy: SPMChannel) -> SPMChannel:
 
     Reproduces the frozen the hypot-of-fields orchestration orchestration
     (r[i] = hypot(p[i], q[i])).  Bitwise identity with the compiled glibc
-    hypot@GLIBC_2.35 profile is claimed only within the frozen x86-64/glibc
+    hypot@GLIBC_2.35 profile requires the characterized library build/implementation;
+    the symbol version alone does not identify a matching frozen
     platform profile; no cross-libc or cross-architecture guarantee.  The
     result z-unit equals the component unit.  Components are never mutated.
     """

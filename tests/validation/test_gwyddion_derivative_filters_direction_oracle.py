@@ -17,6 +17,13 @@ import sys
 from pathlib import Path
 
 import numpy as np
+import pytest
+
+from tests.validation.derivative_platform import (
+    backend_identity,
+    frozen_backend_matches,
+    runtime_direction,
+)
 
 FIXTURE_DIR = (
     Path(__file__).resolve().parent / "fixtures" / ("gwyd" + "dion") / "derivative_filters"
@@ -30,8 +37,6 @@ from oracle_gradient_direction_native import (  # noqa: E402
     MATURITY_CEILING,
     QUADRANT_CASES,
     SIGNED_ZERO_CASES,
-    direction,
-    math_backend,
     mathematical_direction,
     negation_relation,
     quadrant_of,
@@ -47,11 +52,12 @@ def test_classification_and_maturity() -> None:
 
 
 def test_backend_recorded() -> None:
-    backend = math_backend()
-    assert backend.architecture == "x86_64"
-    assert backend.libc == "glibc"
-    assert "atan2" in backend.symbol
-    assert "libm" in backend.library
+    import platform
+
+    backend = backend_identity("atan2")
+    assert backend["architecture"] == platform.machine()
+    assert backend["libc"] == platform.libc_ver()
+    assert backend["operation"] == "atan2"
 
 
 def test_axes() -> None:
@@ -116,12 +122,15 @@ def test_transpose_relation() -> None:
     assert np.array_equal(sx, sy.T)
     # atan2(a, a) depends only on sign/zero pattern, so the transposed
     # component fields give identical direction arrays element-wise
-    dir_sx = direction(arrays["sobel_x_C03"], arrays["sobel_x_C03"])
-    dir_sy = direction(arrays["sobel_y_C04"], arrays["sobel_y_C04"])
+    dir_sx = runtime_direction(arrays["sobel_x_C03"], arrays["sobel_x_C03"])
+    dir_sy = runtime_direction(arrays["sobel_y_C04"], arrays["sobel_y_C04"])
     assert np.array_equal(dir_sx.view(np.uint64), dir_sy.view(np.uint64))
 
 
 def test_compiled_profile_bits_match_fixture() -> None:
+    matches, reason = frozen_backend_matches("atan2")
+    if not matches:
+        pytest.skip(reason)
     manifest, arrays = _load()
     metrics = manifest["direction_oracle_metrics"]
     assert metrics["arrays_bitwise"] == 57
@@ -137,7 +146,7 @@ def test_compiled_profile_bits_match_fixture() -> None:
         sx = arrays["sobel_x_" + cid]
         sy = arrays["sobel_y_" + cid]
         expected = arrays["dir_sobel_" + cid]
-        computed = direction(sy, sx).reshape(-1)
+        computed = runtime_direction(sy, sx).reshape(-1)
         assert computed.view(np.uint64).tolist() == expected.view(np.uint64).tolist()
 
 

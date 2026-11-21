@@ -40,7 +40,7 @@ canonical fixture arrays):
   * strict left-to-right accumulation order per output element (no FMA, no
     reassociation), including signed-zero bit patterns;
   * magnitude: r = hypot(gx, gy) through numpy.hypot, which is bitwise
-    identical to the platform C hypot on the frozen x86-64/glibc platform
+    identical on the byte-identified reproduction backend
     (characterized by the production-parity tests); numpy.hypot is
     overflow/underflow-safe and returns +0.0 for (+-0, +-0);
   * direction: atan2(gy, gx) through numpy.arctan2, radians, range
@@ -192,8 +192,8 @@ def gradient_magnitude_fields(gx: FloatArray, gy: FloatArray) -> FloatArray:
     """Point-wise hypot(gx, gy) via numpy.hypot (platform C hypot semantics).
 
     numpy.hypot is overflow/underflow-safe and returns +0.0 for (+-0, +-0).
-    Bitwise identity with the frozen glibc hypot@GLIBC_2.35 profile on
-    x86-64 is characterized by the production-parity tests; no cross-libc or
+    Bitwise identity requires the characterized library build and resolved
+    implementation, not just hypot@GLIBC_2.35; no cross-libc or
     cross-architecture guarantee is made.  The component fields are never
     mutated.
     """

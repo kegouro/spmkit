@@ -26,11 +26,15 @@ sys.path.insert(0, str(FIXTURE_DIR))
 from oracle_derivative_filters_source import (  # noqa: E402
     ORIENTATION_HORIZONTAL,
     ORIENTATION_VERTICAL,
-    glibc_hypot,
     magnitude,
-    platform_fingerprint,
     prewitt,
     sobel,
+)
+
+from tests.validation.derivative_platform import (  # noqa: E402
+    frozen_backend_matches,
+    platform_hypot,
+    runtime_magnitude,
 )
 
 JSON_PATH = FIXTURE_DIR / "derivative_filters_reference.json"
@@ -212,12 +216,15 @@ def test_deterministic_replay_witnesses() -> None:
 
 
 def test_platform_fingerprint_detection() -> None:
-    fp = platform_fingerprint()
-    assert fp.architecture == "x86_64"
-    assert fp.libc_name == "glibc"
-    assert "hypot" in fp.hypot_symbol
-    matches, reason = fp.matches_frozen_profile()
-    assert matches, reason
+    import platform
+
+    from tests.validation.derivative_platform import backend_identity, frozen_backend_matches
+
+    fp = backend_identity()
+    assert fp["architecture"] == platform.machine()
+    assert fp["libc"] == platform.libc_ver()
+    matches, reason = frozen_backend_matches()
+    assert matches or reason
 
 
 def test_platform_mismatch_skip_semantics() -> None:
@@ -237,8 +244,7 @@ def test_platform_mismatch_skip_semantics() -> None:
 
 def test_magnitude_bitwise_glibc_hypot() -> None:
     _, arrays = _load()
-    fp = platform_fingerprint()
-    matches, reason = fp.matches_frozen_profile()
+    matches, reason = frozen_backend_matches()
     if not matches:
         pytest.skip(f"platform mismatch: {reason}")
     for cid in ALL_CASES:
@@ -246,7 +252,7 @@ def test_magnitude_bitwise_glibc_hypot() -> None:
         sy = arrays["sobel_y_" + cid]
         expected = arrays["mag_sobel_" + cid]
         computed = np.array(
-            [glibc_hypot(float(a), float(b)) for a, b in zip(sx, sy, strict=False)],
+            [platform_hypot(float(a), float(b)) for a, b in zip(sx, sy, strict=False)],
             dtype=np.float64,
         )
         assert computed.view(np.uint64).tolist() == expected.view(np.uint64).tolist()
@@ -254,8 +260,7 @@ def test_magnitude_bitwise_glibc_hypot() -> None:
 
 def test_magnitude_oracle_matches_fixture() -> None:
     _, arrays = _load()
-    fp = platform_fingerprint()
-    matches, reason = fp.matches_frozen_profile()
+    matches, reason = frozen_backend_matches()
     if not matches:
         pytest.skip(f"platform mismatch: {reason}")
     for cid in ALL_CASES:
@@ -279,11 +284,8 @@ def test_magnitude_relations() -> None:
     mx = arrays["sobel_x_X05"]
     my = arrays["sobel_y_X05"]
     assert np.array_equal(
-        arrays["mag_sobel_X05"],
-        np.array(
-            [glibc_hypot(float(a), float(b)) for a, b in zip(my, mx, strict=False)],
-            dtype=np.float64,
-        ),
+        runtime_magnitude(mx, my).view(np.uint64),
+        runtime_magnitude(my, mx).view(np.uint64),
     )
     # overflow-safe large components (M05): naive sqrt(x^2+y^2) would overflow
     mag_m05 = arrays["mag_sobel_M05"]
@@ -298,6 +300,6 @@ def test_magnitude_components_unmodified() -> None:
     sx = np.array(arrays["sobel_x_C12"], dtype=np.float64)
     sy = np.array(arrays["sobel_y_C12"], dtype=np.float64)
     sx_copy, sy_copy = sx.copy(), sy.copy()
-    magnitude(sx, sy)
+    runtime_magnitude(sx, sy)
     assert np.array_equal(sx.view(np.uint64), sx_copy.view(np.uint64))
     assert np.array_equal(sy.view(np.uint64), sy_copy.view(np.uint64))

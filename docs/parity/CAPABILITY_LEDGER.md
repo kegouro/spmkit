@@ -2150,7 +2150,7 @@ Source of truth: `src/spmkit/core/capabilities.json` (generated view; do not edi
   - `tests/core/test_gwyddion_derivative_filters.py`
 
 - known deviations:
-  - Bitwise parity is bounded to the frozen platform profile x86-64 / glibc / hypot@GLIBC_2.35; no cross-libc or cross-architecture bitwise guarantee; non-negativity and component-swap symmetry hold relationally on every platform.
+  - Frozen bitwise comparisons require the byte-identified math-library reproduction backend, including the resolved function implementation; x86-64/glibc and hypot@GLIBC_2.35 alone are insufficient because generic and FMA paths differ by one ULP in the preserved campaign. Every host is independently checked against exact rational squared brackets and its runtime C hypot. There is no cross-libc or cross-architecture bitwise guarantee. See docs/validation/derivative-platform-20261121/README.md.
 
 ## IMG.FILTER.MEDIAN
 

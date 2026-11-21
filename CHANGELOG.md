@@ -1,5 +1,9 @@
 # Changelog
 
+## Derivative platform verification (2026-11-21)
+
+Correct frozen-backend eligibility using actual math-library identity. Preserve all frozen fixtures and numerical algorithms. Add exact rational squared-bracket verification and runtime C bitwise comparisons across platforms; document the glibc FMA/generic one-ULP distinction and separate pending macOS force-fixture failures.
+
 ## Ecosystem consolidation (2026-11-21, 0.1.5.dev0)
 
 Correct the NumPy minimum to 2.0 because force/resonance/SMFS code uses np.trapezoid (absent in NumPy 1.x). Python minimum remains 3.11.
