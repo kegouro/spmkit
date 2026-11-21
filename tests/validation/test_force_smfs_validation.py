@@ -12,12 +12,13 @@ survival and per-curve failure retention.
 from __future__ import annotations
 
 import json
-import subprocess
 import sys
 from pathlib import Path
 
 import numpy as np
 import pytest
+
+from tests.validation.force_fixture_parity import assert_fixture_values, regenerate_fixture
 
 FIXTURE_DIR = Path(__file__).resolve().parent / "fixtures" / "force_smfs"
 sys.path.insert(0, str(FIXTURE_DIR))
@@ -72,6 +73,14 @@ MANIFEST = FIXTURE_DIR / "smfs_reference.json"
 ARRAYS = FIXTURE_DIR / "smfs_reference.npz"
 GENERATOR = FIXTURE_DIR / "generate_smfs_phantoms.py"
 
+# DHS quantile interpolation and inverse exponential lifetimes, in binary64.
+TRUTH_ARRAYS = {
+    "S19": ("rupture_forces", "force"),
+    "S21": ("lifetimes", "time"),
+    "S22": ("lifetimes", "time"),
+}
+ARRAY_ULPS = {f"{cid}_{channel}": 1 for cid, (_, channel) in TRUTH_ARRAYS.items()}
+
 
 def _load_arrays():
     return dict(np.load(ARRAYS, allow_pickle=False))
@@ -121,22 +130,16 @@ def _ext(case):
 # ---------------------------------------------------------------------------
 
 
-def test_fixture_regeneration_deterministic() -> None:
-    out1 = Path("/tmp/opencode") / "smfs_gen_a"
-    out2 = Path("/tmp/opencode") / "smfs_gen_b"
-    out1.mkdir(parents=True, exist_ok=True)
-    out2.mkdir(parents=True, exist_ok=True)
-    try:
-        subprocess.run([sys.executable, str(GENERATOR), str(out1)], check=True, capture_output=True)
-        subprocess.run([sys.executable, str(GENERATOR), str(out2)], check=True, capture_output=True)
-        for name in ("smfs_reference.json", "smfs_reference.npz"):
-            assert (out1 / name).read_bytes() == (out2 / name).read_bytes()
-            assert (out1 / name).read_bytes() == (FIXTURE_DIR / name).read_bytes()
-    finally:
-        import shutil
-
-        shutil.rmtree(out1, ignore_errors=True)
-        shutil.rmtree(out2, ignore_errors=True)
+def test_fixture_regeneration_deterministic(tmp_path: Path) -> None:
+    data = regenerate_fixture(GENERATOR, MANIFEST, ARRAYS, tmp_path, ARRAY_ULPS)
+    actual = json.loads(data)
+    frozen = json.loads(MANIFEST.read_bytes())
+    for cid in TRUTH_ARRAYS:
+        actual_case = actual["cases"][cid]
+        actual_case["truth"] = _checked_truth(
+            cid, actual_case["truth"], frozen["cases"][cid]["truth"]
+        )
+    assert json.dumps(actual, indent=2, sort_keys=True) + "\n" == MANIFEST.read_text()
 
 
 def test_fixture_inventory() -> None:
@@ -147,8 +150,20 @@ def test_fixture_inventory() -> None:
     for cid, case in sorted(cases.items()):
         assert np.all(np.isfinite(case.time)), cid
         assert np.all(np.isfinite(case.force)), cid
-        assert np.array_equal(arrays[f"{cid}_time"], case.time), cid
-        assert manifest["cases"][cid]["truth"] == _json_safe(case.truth), cid
+        key = f"{cid}_time"
+        assert_fixture_values(case.time, arrays[key], key, ARRAY_ULPS.get(key, 0))
+        frozen_truth = manifest["cases"][cid]["truth"]
+        assert _checked_truth(cid, _json_safe(case.truth), frozen_truth) == frozen_truth, cid
+
+
+def _checked_truth(cid, actual, frozen):
+    if cid in TRUTH_ARRAYS:
+        field, _ = TRUTH_ARRAYS[cid]
+        for values in (actual[field], frozen[field]):
+            assert isinstance(values, list) and all(type(value) is float for value in values)
+        assert_fixture_values(actual[field], frozen[field], f"{cid}.truth.{field}", 1)
+        return {**actual, field: frozen[field]}
+    return actual
 
 
 def _json_safe(obj):

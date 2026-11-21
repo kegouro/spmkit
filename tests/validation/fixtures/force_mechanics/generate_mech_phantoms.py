@@ -105,8 +105,9 @@ def build(case_id: str, model: str, params: dict, seed: int = DEFAULT_SEED,
     if noise:
         raw = rng.normal(0.0, noise, n)
         if correlated:
-            kernel = np.ones(5) / 5
-            raw = np.convolve(raw, kernel, mode="same")
+            # Fix the rounding order of the five-tap moving average.
+            windows = np.lib.stride_tricks.sliding_window_view(np.pad(raw, 2), 5)
+            raw = np.cumsum(windows * (1.0 / 5.0), axis=1)[:, -1]
         if heteroscedastic:
             raw = raw * (1.0 + delta / max(delta_max, 1e-30))
         f = f + raw

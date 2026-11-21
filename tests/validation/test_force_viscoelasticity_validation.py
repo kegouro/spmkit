@@ -11,12 +11,13 @@ from __future__ import annotations
 
 import contextlib
 import json
-import subprocess
 import sys
 from pathlib import Path
 
 import numpy as np
 import pytest
+
+from tests.validation.force_fixture_parity import assert_fixture_values, regenerate_fixture
 
 FIXTURE_DIR = Path(__file__).resolve().parent / "fixtures" / "force_viscoelasticity"
 VISCO_REF_DIR = (
@@ -88,6 +89,13 @@ from spmkit.core.models import (  # noqa: E402
 MANIFEST = FIXTURE_DIR / "viscoelasticity_reference.json"
 ARRAYS = FIXTURE_DIR / "viscoelasticity_reference.npz"
 GENERATOR = FIXTURE_DIR / "generate_viscoelastic_phantoms.py"
+
+# See docs/validation/force-fixture-platform-20261121.md for the rounding budgets.
+ARRAY_ULPS = {f"V{i:02d}_force": 4 for i in range(1, 24)}
+for _cid in ("V08", "V09"):
+    ARRAY_ULPS[f"{_cid}_force"] = 16  # hereditary integral
+    ARRAY_ULPS[f"{_cid}_height"] = 1
+    ARRAY_ULPS[f"{_cid}_separation"] = 1
 EST = 5e3 / (1.0 - 0.3**2)
 
 
@@ -141,22 +149,26 @@ def _curve_from_phantom(case) -> ForceCurve:
 # ---------------------------------------------------------------------------
 
 
-def test_fixture_regeneration_deterministic() -> None:
-    out1 = Path("/tmp/opencode") / "visco_gen_a"
-    out2 = Path("/tmp/opencode") / "visco_gen_b"
-    out1.mkdir(parents=True, exist_ok=True)
-    out2.mkdir(parents=True, exist_ok=True)
-    try:
-        subprocess.run([sys.executable, str(GENERATOR), str(out1)], check=True, capture_output=True)
-        subprocess.run([sys.executable, str(GENERATOR), str(out2)], check=True, capture_output=True)
-        for name in ("viscoelasticity_reference.json", "viscoelasticity_reference.npz"):
-            assert (out1 / name).read_bytes() == (out2 / name).read_bytes()
-            assert (out1 / name).read_bytes() == (FIXTURE_DIR / name).read_bytes()
-    finally:
-        import shutil
+def test_fixture_regeneration_deterministic(tmp_path: Path) -> None:
+    actual = regenerate_fixture(GENERATOR, MANIFEST, ARRAYS, tmp_path, ARRAY_ULPS)
+    assert actual == MANIFEST.read_bytes()
 
-        shutil.rmtree(out1, ignore_errors=True)
-        shutil.rmtree(out2, ignore_errors=True)
+
+def test_v11_correlated_precontact_force_is_bitwise_reproducible() -> None:
+    case = generate_phantoms()["V11"]
+    n_precontact = np.count_nonzero(case.time < 0)
+    raw = np.random.default_rng(case.metadata["seed"]).normal(
+        0.0, case.metadata["noise"], case.force.size
+    )
+    # Scalar products and additions model the required separate rounding,
+    # including the truncated windows at the start of the acquisition.
+    expected = []
+    for i in range(n_precontact):
+        value = 0.0
+        for sample in raw[max(0, i - 2) : i + 3]:
+            value += float(sample) * 0.2
+        expected.append(value)
+    assert_fixture_values(case.force[:n_precontact], expected, "V11 noise")
 
 
 def test_phantom_geometry_and_time_contract() -> None:
@@ -174,7 +186,8 @@ def test_phantom_geometry_and_time_contract() -> None:
         assert np.all(np.isfinite(case.time)), cid
         assert np.all(np.isfinite(case.force)), cid
         assert np.array_equal(arrays[f"{cid}_time"], case.time), cid
-        assert np.array_equal(arrays[f"{cid}_force"], case.force), cid
+        key = f"{cid}_force"
+        assert_fixture_values(case.force, arrays[key], key, ARRAY_ULPS.get(key, 0))
         assert manifest["cases"][cid]["truth"] == _json_safe(case.truth), cid
     # intentional duplicate-timestamp case
     c = cases["V15"]

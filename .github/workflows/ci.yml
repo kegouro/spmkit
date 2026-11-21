@@ -38,8 +38,7 @@ jobs:
       - name: Create venv (Python ${{ matrix.python-version }})
         run: uv venv --python ${{ matrix.python-version }}
       - name: Install package + test deps
-        # numpy 2.5.1 = el entorno en que se generó la evidencia de validación
-        # (fixtures byte-deterministas: regeneración e inventarios comparan bytes/valores)
+        # Pin the validation stack. Native math kernels can still differ by platform.
         run: uv pip install -c requirements-reproducible.txt -e ".[dev,hdf5,gwy,report,jpk]"
       - name: Characterize derivative math backend and exact numerical brackets
         run: .venv/bin/python -m pytest tests/validation/test_derivative_platform.py -o addopts= -q -s

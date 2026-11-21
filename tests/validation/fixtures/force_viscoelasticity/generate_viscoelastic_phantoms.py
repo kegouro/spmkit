@@ -168,8 +168,9 @@ def build_relaxation(
     if noise:
         raw = rng.normal(0.0, noise, f.size)
         if correlated:
-            kernel = np.ones(5) / 5
-            raw = np.convolve(raw, kernel, mode="same")
+            # Fix the rounding order of the five-tap moving average.
+            windows = np.lib.stride_tricks.sliding_window_view(np.pad(raw, 2), 5)
+            raw = np.cumsum(windows * (1.0 / 5.0), axis=1)[:, -1]
         f = f + raw
     h_hold = sep_hold0 + f_clean[n_pre + n_ramp] / K_SPRING
     sep_hold = h_hold - f_clean[n_pre + n_ramp: n_pre + n_ramp + n_hold_use] / K_SPRING
