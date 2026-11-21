@@ -2426,7 +2426,7 @@ Validation's historical ELF helpers/wheels are evidence, not runtime dependencie
 </tr>
 <tr>
 <td>Documentation</td>
-<td>sync, visual contract, strict MkDocs build and 8501 internal references across 73 pages passed</td>
+<td>sync, visual contract, strict MkDocs build and 8506 internal references across 73 pages passed</td>
 </tr>
 <tr>
 <td>Phantoms merged tree</td>
@@ -2474,6 +2474,12 @@ post-supplement results are recorded separately, without inflating the total.</p
 <p>Validation's first remote CI run exposed a missing optional campaign dependency
 in its test environment. Its follow-up workflow installs <code>[campaign]</code> and keeps
 all tests; none were removed or marked skipped to conceal the failure.</p>
+<p>Python 3.11.15 full baseline suite also passed: 2244 passed, 80 skipped,
+24 warnings in 431.23 s. Post-supplement CLI/library/GUI image journeys and
+SMFS regression: 58 passed in 74.41 s. Final wheel-only install imports the
+native IBW reader without a source checkout. GitHub main advanced without
+rewriting history from <code>3eba2ca</code> to <code>d9c8b28</code> before this verification-record
+commit. Both integration and main branches preserve the original ancestry.</p>
 
 
 
