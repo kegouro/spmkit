@@ -1966,6 +1966,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#native-limited-igor-binary-wave-reader" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Native limited Igor Binary Wave reader
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2400,8 +2411,8 @@ that dependency coverage is not mistaken for a native implementation.</p>
 <td style="text-align: right;">No</td>
 <td><code>core/io/jpk.py</code></td>
 <td>None</td>
-<td>Implemented with synthetic fixtures</td>
-<td>Vendor variants and calibration metadata need more redistributable fixtures</td>
+<td>Two profiles: direct scaling (legacy) and ForceScan 2.0 <code>lcd-info</code> indirection; synthetic fixtures + 10 real CC0 files (figshare 11637675.v3, campaign green); see <code>examples/jpk_forcescan2_reader_golden_path.md</code></td>
+<td>Other JPK metadata layouts (XML-era variants beyond the demonstrated set) unassessed; time not reconstructed</td>
 </tr>
 <tr>
 <td>TIFF detected by JPK private tags</td>
@@ -2478,6 +2489,12 @@ should state the format and instrument family, acquisition mode, expected
 channels and orientation, physical units, file checksum, redistribution license,
 and whether sample identity may remain private. See the
 <a href="https://github.com/kegouro/spmkit/issues/new?template=file_format_fixture.yml">fixture contribution template</a>.</p>
+<h2 id="native-limited-igor-binary-wave-reader">Native limited Igor Binary Wave reader<a class="headerlink" href="#native-limited-igor-binary-wave-reader" title="Permanent link">&para;</a></h2>
+<p><code>spmkit.core.io.load_igor_ibw(path)</code> supports observed little-endian IBW v5
+FP32 2D image stacks. It verifies header checksum, byte budgets, channel labels,
+units and orientation. Unsupported versions, big-endian waves and other sample
+types are rejected; an optional registered reader may handle those variants.
+This is scoped format support with synthetic coverage, not universal Igor support.</p>
 
 
 

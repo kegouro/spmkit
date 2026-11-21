@@ -1,0 +1,5737 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Open numerical analysis, interactive workflows, theory, and inspectable validation evidence for AFM, KPFM, and force spectroscopy">
+      
+      
+        <meta name="author" content="José Labarca Baeza">
+      
+      
+        <link rel="canonical" href="https://kegouro.github.io/spmkit/parity/CAPABILITY_LEDGER/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/brand/pharos.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>SPMKit Capability Ledger - SPM-Kit ecosystem</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/tokens.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/shell.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/components.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/scientific.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/responsive.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  
+  
+  
+  
+  <meta name="author" content="José Labarca Baeza">
+  <meta name="theme-color" content="#0a0908" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f4f0e7" media="(prefers-color-scheme: light)">
+  <meta name="keywords" content="AFM, SPM, KPFM, force spectroscopy, nanomechanics, scientific Python, reproducible microscopy">
+  <link rel="preload" href="../../assets/vendor/fonts/inter-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../../assets/vendor/fonts/fraunces-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SPM-Kit ecosystem">
+  <meta property="og:title" content="SPMKit Capability Ledger · SPM-Kit ecosystem">
+  <meta property="og:description" content="Open numerical analysis, interactive workflows, theory, and inspectable validation evidence for AFM, KPFM, and force spectroscopy">
+  <meta property="og:url" content="https://kegouro.github.io/spmkit/parity/CAPABILITY_LEDGER/">
+  <meta property="og:image" content="https://kegouro.github.io/spmkit/assets/ecosystem/core/banner.png">
+  <meta property="og:image:alt" content="SPM-Kit open AFM and SPM numerical engine">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SPMKit Capability Ledger · SPM-Kit ecosystem">
+  <meta name="twitter:description" content="Open numerical analysis, interactive workflows, theory, and inspectable validation evidence for AFM, KPFM, and force spectroscopy">
+  <meta name="twitter:image" content="https://kegouro.github.io/spmkit/assets/ecosystem/core/banner.png">
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#spmkit-capability-ledger" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="SPM-Kit ecosystem" class="md-header__button md-logo" aria-label="SPM-Kit ecosystem home" data-md-component="logo">
+      <img src="../../assets/brand/pharos.svg" alt="" width="64" height="64">
+    </a>
+    <label class="md-header__button md-icon" for="__drawer" aria-label="Open navigation">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="spm-header-lockup">
+        <span class="spm-header-parent">Pharos Project · Instrumentation</span>
+        <span class="spm-header-name">SPM-Kit ecosystem</span>
+      </div>
+    </div>
+    <a class="spm-parent-link" href="https://kegouro.github.io/" aria-label="Return to the Pharos Project home">
+      <span>← Pharos Project</span>
+    </a>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search" aria-label="Open search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/kegouro/spmkit" class="md-source" title="Open the SPM-Kit source repository">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">kegouro/spmkit</div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Getting started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../theory/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Theory
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../manual/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  User manual
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../ecosystem/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Ecosystem
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../scientific-status/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Scientific evidence
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../ARCHITECTURE/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CONTRIBUTING/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Contributing
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CITATION/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Citation
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SPM-Kit ecosystem" class="md-nav__button md-logo" aria-label="SPM-Kit ecosystem" data-md-component="logo">
+      <img src="../../assets/brand/pharos.svg" alt="" width="64" height="64">
+    </a>
+    SPM-Kit ecosystem
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/kegouro/spmkit" class="md-source" title="Open the SPM-Kit source repository">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">kegouro/spmkit</div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../ecosystem/workflows/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/first-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    First analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/fathom-quick-start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fathom quick start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../theory/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Theory
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Theory
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/afm-principles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AFM principles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/operating-modes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operating modes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/force-distance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Force-distance curves
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/contact-mechanics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact mechanics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/kpfm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    KPFM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/roughness/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roughness
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/spectral-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/resonance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resonance & mass sensing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/spmkit-workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../manual/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User manual
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    User manual
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Full guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../manual/reader/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PDF reader
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../manual/downloads/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Downloads
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../ecosystem/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ecosystem
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ecosystem
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/choose/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Choose a component
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Install matrix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Artifact contracts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Example workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/spmkit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SPM-Kit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/fathom/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fathom
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/data-hunter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Hunter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/phantoms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Phantoms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/pharos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pharos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/brand/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Brand governance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../validation/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific evidence
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Scientific evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scientific-status/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scientific status
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../TRACEABILITY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Traceability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../FILE_FORMATS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Format maturity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../KNOWN_LIMITATIONS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Known limitations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecosystem/workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Example workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ARCHITECTURE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../extending/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extending
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ROADMAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../BRAND/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Brand
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ACKNOWLEDGEMENTS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Acknowledgements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CONTRIBUTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CITATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Citation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="spmkit-capability-ledger">SPMKit Capability Ledger<a class="headerlink" href="#spmkit-capability-ledger" title="Permanent link">&para;</a></h1>
+<p>Stable scientific capabilities registered by the Operation Registry v1.</p>
+<ul>
+<li>schema_version: 1</li>
+<li>operations: 74</li>
+</ul>
+<p>Source of truth: <code>src/spmkit/core/capabilities.json</code> (generated view; do not edit by hand).</p>
+<h2 id="forcebaselinecorrect">FORCE.BASELINE.CORRECT<a class="headerlink" href="#forcebaselinecorrect" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.baseline.correct</code></li>
+<li>public_name: <code>correct_force_baseline</code></li>
+<li>public_import: <code>spmkit.core.analysis:correct_force_baseline</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Force baseline correction)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Subtract the fitted baseline (offset + slope over height) with scope all/baseline/approach; slope correction changes the data (documented).</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: N</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>curve</code> (positional, required) — Force curve.</li>
+<li><code>baseline</code> (positional, required) — Fitted baseline.</li>
+<li>
+<p><code>scope</code> (keyword_only, 'all' values=['all', 'baseline', 'approach']) — Correction scope.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.npz</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_foundation_reference.json</code></li>
+<li><code>tests/validation/test_force_foundation_validation.py</code></li>
+<li><code>tests/core/test_force_foundation.py</code></li>
+</ul>
+<h2 id="forcebaselinefit">FORCE.BASELINE.FIT<a class="headerlink" href="#forcebaselinefit" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.baseline.fit</code></li>
+<li>public_name: <code>fit_force_baseline</code></li>
+<li>public_import: <code>spmkit.core.analysis:fit_force_baseline</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Force baseline fit)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Fit the pre-contact baseline (first 10% of approach): linear offset + slope via polyfit; optional deterministic Huber-IRLS robust fit; residual RMS and robust scale; BASELINE_TOO_SHORT for too few points.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: N</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>curve</code> (positional, required) — Force curve.</li>
+<li><code>region</code> (keyword_only, 'pre_contact' values=['pre_contact']) — Baseline region.</li>
+<li><code>model</code> (keyword_only, 'linear' values=['linear']) — Baseline model.</li>
+<li>
+<p><code>robust</code> (keyword_only, False) — Robust IRLS fit.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.npz</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_foundation_reference.json</code></li>
+<li><code>tests/validation/test_force_foundation_validation.py</code></li>
+<li><code>tests/core/test_force_foundation.py</code></li>
+</ul>
+<h2 id="forcecalibrationapply">FORCE.CALIBRATION.APPLY<a class="headerlink" href="#forcecalibrationapply" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.calibration.apply</code></li>
+<li>public_name: <code>calibrate_force_curve</code></li>
+<li>public_import: <code>spmkit.core.analysis:calibrate_force_curve</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Force calibration application)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: raw deflection voltage (V) -&gt; deflection (m) via InVOLS (m/V) -&gt; force (N) via spring constant (N/m); already-calibrated pass-through; double calibration rejected (INVALID_CALIBRATION); missing calibration raises MISSING_CALIBRATION.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: N</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>curve</code> (positional, required) — Force curve to calibrate.</li>
+<li>
+<p><code>calibration</code> (keyword_only, required) — Explicit calibration.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.npz</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_foundation_reference.json</code></li>
+<li><code>tests/validation/test_force_foundation_validation.py</code></li>
+<li><code>tests/core/test_force_foundation.py</code></li>
+</ul>
+<h2 id="forcecontactensemble">FORCE.CONTACT.ENSEMBLE<a class="headerlink" href="#forcecontactensemble" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.contact.ensemble</code></li>
+<li>public_name: <code>contact_point_ensemble</code></li>
+<li>public_import: <code>spmkit.core.analysis:contact_point_ensemble</code></li>
+<li>family: FORCE</li>
+<li>maturity: SOFTWARE_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Contact point (ensemble))</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Combine threshold/ROV/piecewise; robust location = median of valid candidate indices; explicit disagreement and spread; deterministic bootstrap only when requested; CONTACT_METHOD_DISAGREEMENT when fewer than two methods agree.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: m</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>curve</code> (positional, required) — Force curve.</li>
+<li><code>methods</code> (keyword_only, ['threshold', 'ratio_of_variances', 'piecewise']) — Contact methods.</li>
+<li>
+<p><code>bootstrap_samples</code> (keyword_only, 0) — Bootstrap samples.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.npz</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_foundation_reference.json</code></li>
+<li><code>tests/validation/test_force_foundation_validation.py</code></li>
+<li>
+<p><code>tests/core/test_force_foundation.py</code></p>
+</li>
+<li>
+<p>known deviations:</p>
+</li>
+<li>method spread does not constitute an uncertainty guarantee</li>
+<li>maturity downgraded at independent audit: NUMERICALLY_VERIFIED -&gt; SOFTWARE_VERIFIED</li>
+</ul>
+<h2 id="forcecontactpiecewise">FORCE.CONTACT.PIECEWISE<a class="headerlink" href="#forcecontactpiecewise" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.contact.piecewise</code></li>
+<li>public_name: <code>contact_point_piecewise</code></li>
+<li>public_import: <code>spmkit.core.analysis:contact_point_piecewise</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Contact point (piecewise))</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Value-continuous piecewise baseline/contact polynomial fit over the search grid; requires a genuine residual improvement over a single whole-curve polynomial (flat curves fail).</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: m</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>curve</code> (positional, required) — Force curve.</li>
+<li><code>baseline_order</code> (keyword_only, 1) — Baseline order.</li>
+<li>
+<p><code>contact_order</code> (keyword_only, 2) — Contact order.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.npz</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_foundation_reference.json</code></li>
+<li><code>tests/validation/test_force_foundation_validation.py</code></li>
+<li><code>tests/core/test_force_foundation.py</code></li>
+</ul>
+<h2 id="forcecontactratio_of_variances">FORCE.CONTACT.RATIO_OF_VARIANCES<a class="headerlink" href="#forcecontactratio_of_variances" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.contact.ratio_of_variances</code></li>
+<li>public_name: <code>contact_point_ratio_of_variances</code></li>
+<li>public_import: <code>spmkit.core.analysis:contact_point_ratio_of_variances</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Contact point (ratio of variances))</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Gavara 2016 ratio-of-variances contact: argmax of variance-after / variance-before over the window grid; requires a genuine variance jump (ratio &gt;= 2) and sufficient length.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: m</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>curve</code> (positional, required) — Force curve.</li>
+<li>
+<p><code>window</code> (keyword_only, 20) — Variance window.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.npz</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_foundation_reference.json</code></li>
+<li><code>tests/validation/test_force_foundation_validation.py</code></li>
+<li><code>tests/core/test_force_foundation.py</code></li>
+</ul>
+<h2 id="forcecontactthreshold">FORCE.CONTACT.THRESHOLD<a class="headerlink" href="#forcecontactthreshold" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.contact.threshold</code></li>
+<li>public_name: <code>contact_point_threshold</code></li>
+<li>public_import: <code>spmkit.core.analysis:contact_point_threshold</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: nanite 4.2.3 (Contact point (nanite deviation_from_baseline profile))</li>
+<li>
+<p>evidence profile: <code>COMPILED_NANITE_4_2_3_EXTERNAL_REFERENCE_FROZEN_PROFILE</code></p>
+</li>
+<li>
+<p>contract: Baseline-relative threshold contact: first crossing of mean + k*sigma with persistence 3; validated against the frozen nanite 4.2.3 deviation_from_baseline contact index on the shared noiseless cases.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: m</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>curve</code> (positional, required) — Force curve.</li>
+<li>
+<p><code>threshold_sigma</code> (keyword_only, 5.0) — Threshold in sigma.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.npz</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_foundation_reference.json</code></li>
+<li><code>tests/validation/test_force_foundation_validation.py</code></li>
+<li><code>tests/core/test_force_foundation.py</code></li>
+<li>
+<p><code>tests/validation/fixtures/force_foundation/force_foundation_external.npz</code></p>
+</li>
+<li>
+<p>known deviations:</p>
+</li>
+<li>production threshold agrees with nanite deviation_from_baseline on clean flat-baseline cases (0..2 samples) but diverges on sloped/noisy baselines (up to 13 samples across the 17-case persisted matrix); NOT cross-validated as equivalent</li>
+<li>sloped noiseless baselines degrade threshold recovery (characterized)</li>
+</ul>
+<h2 id="forceeventsextract">FORCE.EVENTS.EXTRACT<a class="headerlink" href="#forceeventsextract" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.events.extract</code></li>
+<li>public_name: <code>extract_force_events</code></li>
+<li>public_import: <code>spmkit.core.analysis:extract_force_events</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Force events (snap-in / pull-off))</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Snap-in = minimum force before contact on approach (baseline-relative below mean - 3*sigma); pull-off = minimum force after contact on retract; physical windows; no event when the relevant segment is absent (EVENT_NOT_FOUND).</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: N</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>curve</code> (positional, required) — Force curve.</li>
+<li><code>contact</code> (positional, required) — Contact point result.</li>
+<li><code>snap_in_window</code> (keyword_only, None) — Snap-in window (coordinate).</li>
+<li>
+<p><code>pull_off_window</code> (keyword_only, None) — Pull-off window (coordinate).</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.npz</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_foundation_reference.json</code></li>
+<li><code>tests/validation/test_force_foundation_validation.py</code></li>
+<li><code>tests/core/test_force_foundation.py</code></li>
+</ul>
+<h2 id="forcefit_windowselect">FORCE.FIT_WINDOW.SELECT<a class="headerlink" href="#forcefit_windowselect" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.fit_window.select</code></li>
+<li>public_name: <code>select_contact_fit_window</code></li>
+<li>public_import: <code>spmkit.core.analysis:select_contact_fit_window</code></li>
+<li>family: FORCE</li>
+<li>maturity: SOFTWARE_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Contact fit window selection)</li>
+<li>
+<p>evidence profile: <code>NATIVE_SPMKIT_DESIGNED_HEURISTIC</code></p>
+</li>
+<li>
+<p>contract: Contiguous contact fit window from the contact index, optionally trimmed by min/max indentation and min/max force; fewer than min_points raises EMPTY_FIT_WINDOW / INSUFFICIENT_FIT_POINTS; included mask consistent with n_points; non-mutating.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: not_applicable</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>prepared</code> (positional, required) — Prepared curve.</li>
+<li><code>indentation</code> (positional, required) — IndentationResult.</li>
+<li><code>min_indentation</code> (keyword_only, None) — Lower indentation bound (m).</li>
+<li><code>max_indentation</code> (keyword_only, None) — Upper indentation bound (m).</li>
+<li><code>min_force</code> (keyword_only, None) — Lower force bound (N).</li>
+<li><code>max_force</code> (keyword_only, None) — Upper force bound (N).</li>
+<li>
+<p><code>min_points</code> (keyword_only, 20) — Minimum window size.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz</code></li>
+<li><code>tests/validation/test_force_mechanics_validation.py</code></li>
+<li><code>tests/core/test_force_mechanics.py</code></li>
+</ul>
+<h2 id="forceindentationcompute">FORCE.INDENTATION.COMPUTE<a class="headerlink" href="#forceindentationcompute" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.indentation.compute</code></li>
+<li>public_name: <code>compute_indentation</code></li>
+<li>public_import: <code>spmkit.core.analysis:compute_indentation</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Indentation from separation and contact)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Indentation = approach separation minus the FS-F1 contact coordinate; zero at the contact and positive into the sample; pre-contact samples excluded by the valid mask; requires a fit-eligible prepared curve (CURVE_NOT_FIT_ELIGIBLE typed failure); NONFINITE_INPUT typed failure; units m; non-mutating.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: m</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li>
+<p><code>prepared</code> (positional, required) — FS-F1 prepared curve.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz</code></li>
+<li><code>tests/validation/test_force_mechanics_validation.py</code></li>
+<li><code>tests/core/test_force_mechanics.py</code></li>
+</ul>
+<h2 id="forcemodelcompare">FORCE.MODEL.COMPARE<a class="headerlink" href="#forcemodelcompare" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.model.compare</code></li>
+<li>public_name: <code>compare_contact_models</code></li>
+<li>public_import: <code>spmkit.core.analysis:compare_contact_models</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (AICc model comparison)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Model-relative comparison over the identical data subset; AICc weights normalized to 1; recommended model is the AICc minimum unless the runner-up retains considerable support (Delta AICc &lt; 4 -&gt; ambiguous, no recommendation); no physical-truth claim; misspecified fits detected (cone data -&gt; sneddon weight &gt; 0.9); unknown model raises ValueError.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: not_applicable</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>prepared</code> (positional, required) — Prepared curve.</li>
+<li><code>indentation</code> (positional, required) — IndentationResult.</li>
+<li><code>window</code> (positional, required) — FitWindowResult.</li>
+<li><code>models</code> (keyword_only, ['hertz_sphere', 'sneddon_cone', 'flat_punch', 'dmt']) — Candidate models.</li>
+<li><code>tip_radius</code> (keyword_only, required) — Tip radius (m).</li>
+<li><code>half_angle</code> (keyword_only, 0.3490658503988659) — Cone half-angle (rad).</li>
+<li><code>punch_radius</code> (keyword_only, None) — Punch radius (m).</li>
+<li>
+<p><code>poisson</code> (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz</code></li>
+<li><code>tests/validation/test_force_mechanics_validation.py</code></li>
+<li><code>tests/core/test_force_mechanics.py</code></li>
+</ul>
+<h2 id="forcemodelfit_dmt">FORCE.MODEL.FIT_DMT<a class="headerlink" href="#forcemodelfit_dmt" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.model.fit_dmt</code></li>
+<li>public_name: <code>fit_dmt</code></li>
+<li>public_import: <code>spmkit.core.analysis:fit_dmt</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (DMT fit)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Two-parameter fit of E and F_adh over the window trimmed past the snap-in region; on snap-in phantoms E within 30% and F_adh within 1.5e-9 N (FS-F1 contact ensemble is unstable on snap-in curves, up to ~10 samples off); typed failures INVALID_RADIUS, INVALID_POISSON_RATIO, INVALID_ADHESION_PARAMETER, OPTIMIZATION_FAILED.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: Pa</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>prepared</code> (positional, required) — Prepared curve.</li>
+<li><code>indentation</code> (positional, required) — IndentationResult.</li>
+<li><code>window</code> (positional, required) — FitWindowResult.</li>
+<li><code>tip_radius</code> (keyword_only, required) — Tip radius (m).</li>
+<li><code>poisson</code> (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.</li>
+<li><code>E_initial</code> (keyword_only, 1000000000.0) — Optimizer start (Pa).</li>
+<li>
+<p><code>F_adh_initial</code> (keyword_only, 1e-09) — Adhesion start (N).</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz</code></li>
+<li><code>tests/validation/test_force_mechanics_validation.py</code></li>
+<li>
+<p><code>tests/core/test_force_mechanics.py</code></p>
+</li>
+<li>
+<p>known deviations:</p>
+</li>
+<li>snap-in curves: FS-F1 contact ensemble unstable (up to ~10 samples off); dedicated snap-in contact detection is future work</li>
+</ul>
+<h2 id="forcemodelfit_flat_punch">FORCE.MODEL.FIT_FLAT_PUNCH<a class="headerlink" href="#forcemodelfit_flat_punch" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.model.fit_flat_punch</code></li>
+<li>public_name: <code>fit_flat_punch</code></li>
+<li>public_import: <code>spmkit.core.analysis:fit_flat_punch</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Flat punch fit)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Linear-modulus least-squares fit of E with punch radius and poisson ratio fixed; E within 5% on clean phantoms; typed failures INVALID_RADIUS, INVALID_POISSON_RATIO, OPTIMIZATION_FAILED, NONFINITE_INPUT; same result contract as fit_hertz_sphere.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: Pa</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>prepared</code> (positional, required) — Prepared curve.</li>
+<li><code>indentation</code> (positional, required) — IndentationResult.</li>
+<li><code>window</code> (positional, required) — FitWindowResult.</li>
+<li><code>punch_radius</code> (keyword_only, required) — Punch radius (m).</li>
+<li><code>poisson</code> (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.</li>
+<li>
+<p><code>E_initial</code> (keyword_only, 1000000000.0) — Optimizer start (Pa).</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz</code></li>
+<li><code>tests/validation/test_force_mechanics_validation.py</code></li>
+<li><code>tests/core/test_force_mechanics.py</code></li>
+</ul>
+<h2 id="forcemodelfit_hertz">FORCE.MODEL.FIT_HERTZ<a class="headerlink" href="#forcemodelfit_hertz" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.model.fit_hertz</code></li>
+<li>public_name: <code>fit_hertz_sphere</code></li>
+<li>public_import: <code>spmkit.core.analysis:fit_hertz_sphere</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Hertz sphere fit)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Nonlinear least-squares fit of E over the fit window with tip radius and poisson ratio fixed; E within 5% on clean phantoms (contact-precision limited); typed failures INVALID_RADIUS, INVALID_POISSON_RATIO, OPTIMIZATION_FAILED, NONFINITE_INPUT; result carries parameters, covariance, residuals, AIC/AICc/BIC, rmse and window provenance.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: Pa</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>prepared</code> (positional, required) — Prepared curve.</li>
+<li><code>indentation</code> (positional, required) — IndentationResult.</li>
+<li><code>window</code> (positional, required) — FitWindowResult.</li>
+<li><code>tip_radius</code> (keyword_only, required) — Tip radius (m).</li>
+<li><code>poisson</code> (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.</li>
+<li>
+<p><code>E_initial</code> (keyword_only, 1000000000.0) — Optimizer start (Pa).</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz</code></li>
+<li><code>tests/validation/test_force_mechanics_validation.py</code></li>
+<li><code>tests/core/test_force_mechanics.py</code></li>
+</ul>
+<h2 id="forcemodelfit_jkr">FORCE.MODEL.FIT_JKR<a class="headerlink" href="#forcemodelfit_jkr" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.model.fit_jkr</code></li>
+<li>public_name: <code>fit_jkr</code></li>
+<li>public_import: <code>spmkit.core.analysis:fit_jkr</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (JKR fit)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Two-parameter fit of E and w over the window trimmed past the snap-in region; loading curve parametrized by the contact radius (monotone for a &gt;= a0, range derived from data); w=0 reduces to hertz; on snap-in phantoms E within 20% and w within 30%; typed failures INVALID_RADIUS, INVALID_POISSON_RATIO, INVALID_ADHESION_PARAMETER, OPTIMIZATION_FAILED.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: Pa</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>prepared</code> (positional, required) — Prepared curve.</li>
+<li><code>indentation</code> (positional, required) — IndentationResult.</li>
+<li><code>window</code> (positional, required) — FitWindowResult.</li>
+<li><code>tip_radius</code> (keyword_only, required) — Tip radius (m).</li>
+<li><code>poisson</code> (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.</li>
+<li><code>E_initial</code> (keyword_only, 1000000000.0) — Optimizer start (Pa).</li>
+<li>
+<p><code>w_initial</code> (keyword_only, 0.001) — Work-of-adhesion start (J/m^2).</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz</code></li>
+<li><code>tests/validation/test_force_mechanics_validation.py</code></li>
+<li>
+<p><code>tests/core/test_force_mechanics.py</code></p>
+</li>
+<li>
+<p>known deviations:</p>
+</li>
+<li>snap-in curves: same contact-ensemble limitation as fit_dmt</li>
+</ul>
+<h2 id="forcemodelfit_sneddon">FORCE.MODEL.FIT_SNEDDON<a class="headerlink" href="#forcemodelfit_sneddon" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.model.fit_sneddon</code></li>
+<li>public_name: <code>fit_sneddon_cone</code></li>
+<li>public_import: <code>spmkit.core.analysis:fit_sneddon_cone</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Sneddon cone fit)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Nonlinear least-squares fit of E with cone half-angle and poisson ratio fixed; E within 5% on clean phantoms; typed failures INVALID_ANGLE, INVALID_POISSON_RATIO, OPTIMIZATION_FAILED, NONFINITE_INPUT; same result contract as fit_hertz_sphere.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: Pa</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>prepared</code> (positional, required) — Prepared curve.</li>
+<li><code>indentation</code> (positional, required) — IndentationResult.</li>
+<li><code>window</code> (positional, required) — FitWindowResult.</li>
+<li><code>half_angle</code> (keyword_only, required) — Cone half-angle (rad).</li>
+<li><code>poisson</code> (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.</li>
+<li>
+<p><code>E_initial</code> (keyword_only, 1000000000.0) — Optimizer start (Pa).</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz</code></li>
+<li><code>tests/validation/test_force_mechanics_validation.py</code></li>
+<li><code>tests/core/test_force_mechanics.py</code></li>
+</ul>
+<h2 id="forcemodelforward">FORCE.MODEL.FORWARD<a class="headerlink" href="#forcemodelforward" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.model.forward</code></li>
+<li>public_name: <code>forward_model</code></li>
+<li>public_import: <code>spmkit.core.analysis:forward_model</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Contact-model forward equations)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Frozen closed-form loading equations with reduced modulus E* = E/(1-nu^2): hertz F = (4/3) E* sqrt(R) d^1.5; sneddon F = (2 tan(alpha)/pi) E* d^2; flat punch F = 2 E* R d; dmt F = hertz - F_adh; jkr parametric contact-radius loading curve (monotone, derived range, w=0 reduces to hertz); SI units N; unknown model raises ValueError.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: N</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>model</code> (positional, required) — Model name.</li>
+<li><code>delta</code> (positional, required) — Indentation array (m).</li>
+<li>
+<p><code>params</code> (positional, required) — Model parameters.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz</code></li>
+<li><code>tests/validation/test_force_mechanics_validation.py</code></li>
+<li><code>tests/core/test_force_mechanics.py</code></li>
+</ul>
+<h2 id="forceprepare">FORCE.PREPARE<a class="headerlink" href="#forceprepare" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.prepare</code></li>
+<li>public_name: <code>prepare_force_curve</code></li>
+<li>public_import: <code>spmkit.core.analysis:prepare_force_curve</code></li>
+<li>family: FORCE</li>
+<li>maturity: SOFTWARE_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Force curve preparation pipeline)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Explicit orchestration over the 12 public primitives: segments -&gt; calibration -&gt; tip-sample separation -&gt; baseline fit/correction -&gt; contact ensemble -&gt; events -&gt; work -&gt; quality; provenance names every decision; contact detection runs on the calibrated curve.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: not_applicable</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>curve</code> (positional, required) — Force curve.</li>
+<li><code>calibration</code> (keyword_only, None) — Explicit calibration.</li>
+<li><code>baseline_model</code> (keyword_only, 'linear' values=['linear']) — Baseline model.</li>
+<li><code>contact_methods</code> (keyword_only, ['threshold', 'ratio_of_variances', 'piecewise']) — Contact methods.</li>
+<li>
+<p><code>bootstrap_samples</code> (keyword_only, 0) — Bootstrap samples.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.npz</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_foundation_reference.json</code></li>
+<li><code>tests/validation/test_force_foundation_validation.py</code></li>
+<li>
+<p><code>tests/core/test_force_foundation.py</code></p>
+</li>
+<li>
+<p>known deviations:</p>
+</li>
+<li>orchestration maturity is bounded by its weakest material component (contact ensemble and quality score are SOFTWARE_VERIFIED heuristics)</li>
+</ul>
+<h2 id="forcequalityscore">FORCE.QUALITY.SCORE<a class="headerlink" href="#forcequalityscore" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.quality.score</code></li>
+<li>public_name: <code>score_force_curve_quality</code></li>
+<li>public_import: <code>spmkit.core.analysis:score_force_curve_quality</code></li>
+<li>family: FORCE</li>
+<li>maturity: SOFTWARE_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Force curve quality scoring)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Typed failure reasons (14 codes) beside a summary score; component diagnostics always explicit; eligibility for contact-model fitting.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: not_applicable</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>curve</code> (positional, required) — Force curve.</li>
+<li><code>segmentation</code> (keyword_only, None) — Segmentation result.</li>
+<li><code>baseline</code> (keyword_only, None) — Baseline result.</li>
+<li><code>contact</code> (keyword_only, None) — Contact result.</li>
+<li>
+<p><code>events</code> (keyword_only, None) — Events result.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.npz</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_foundation_reference.json</code></li>
+<li><code>tests/validation/test_force_foundation_validation.py</code></li>
+<li>
+<p><code>tests/core/test_force_foundation.py</code></p>
+</li>
+<li>
+<p>known deviations:</p>
+</li>
+<li>the aggregate summary score is a designed heuristic; it is not an externally validated scientific quality probability</li>
+</ul>
+<h2 id="forcereliabilitybootstrap">FORCE.RELIABILITY.BOOTSTRAP<a class="headerlink" href="#forcereliabilitybootstrap" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.reliability.bootstrap</code></li>
+<li>public_name: <code>bootstrap_force_fit</code></li>
+<li>public_import: <code>spmkit.core.analysis:bootstrap_force_fit</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Residual bootstrap)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Deterministic residual (or block-residual) bootstrap of the hertz fit; percentile intervals and bias estimate over E; replicate failures counted, never masked; success fraction below min_success_fraction (or outside [0,1]) raises BOOTSTRAP_INSUFFICIENT_SUCCESS; same seed reproduces identical samples.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: not_applicable</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>spec</code> (positional, required) — (prepared, indentation, window, model) tuple.</li>
+<li><code>samples</code> (keyword_only, 500) — Replicate count.</li>
+<li><code>seed</code> (keyword_only, 0) — RNG seed.</li>
+<li><code>strategy</code> (keyword_only, 'residual' values=['residual', 'block_residual']) — Resampling strategy.</li>
+<li><code>tip_radius</code> (keyword_only, 1e-08) — Tip radius (m).</li>
+<li><code>poisson</code> (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.</li>
+<li>
+<p><code>min_success_fraction</code> (keyword_only, 0.5) — Minimum success fraction.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz</code></li>
+<li><code>tests/validation/test_force_mechanics_validation.py</code></li>
+<li><code>tests/core/test_force_mechanics.py</code></li>
+</ul>
+<h2 id="forcereliabilitydiagnose">FORCE.RELIABILITY.DIAGNOSE<a class="headerlink" href="#forcereliabilitydiagnose" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.reliability.diagnose</code></li>
+<li>public_name: <code>diagnose_force_fit</code></li>
+<li>public_import: <code>spmkit.core.analysis:diagnose_force_fit</code></li>
+<li>family: FORCE</li>
+<li>maturity: SOFTWARE_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Fit diagnostics policy)</li>
+<li>
+<p>evidence profile: <code>NATIVE_SPMKIT_DESIGNED_HEURISTIC</code></p>
+</li>
+<li>
+<p>contract: Explicit diagnostics: residual RMS, autocorrelation and curvature proxies, covariance condition number and max parameter correlation, one-at-a-time contact/window sensitivity, bootstrap success fraction, model-ambiguity flag; the summary status is a policy (ok/review), never a probability; failure reasons listed explicitly.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: not_applicable</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>fit</code> (positional, required) — Fit result.</li>
+<li><code>sensitivity</code> (keyword_only, None) — Sensitivity result.</li>
+<li>
+<p><code>bootstrap</code> (keyword_only, None) — Bootstrap result.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz</code></li>
+<li><code>tests/validation/test_force_mechanics_validation.py</code></li>
+<li><code>tests/core/test_force_mechanics.py</code></li>
+</ul>
+<h2 id="forcereliabilitysensitivity">FORCE.RELIABILITY.SENSITIVITY<a class="headerlink" href="#forcereliabilitysensitivity" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.reliability.sensitivity</code></li>
+<li>public_name: <code>analyze_force_fit_sensitivity</code></li>
+<li>public_import: <code>spmkit.core.analysis:analyze_force_fit_sensitivity</code></li>
+<li>family: FORCE</li>
+<li>maturity: SOFTWARE_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Contact/window sensitivity multiverse)</li>
+<li>
+<p>evidence profile: <code>NATIVE_SPMKIT_DESIGNED_HEURISTIC</code></p>
+</li>
+<li>
+<p>contract: Deterministic multiverse over contact offsets and fit-window lower-bound fractions (bounded at max_configurations=512); one-at-a-time contact and window sensitivity indices relative to the baseline configuration; E stability ranges and robust medians; dominant sensitivity classified as contact, window or none (relative index &gt; 20%); failed configurations recorded, never dropped; CONTACT_SENSITIVITY_HIGH when no configuration succeeds.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: not_applicable</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>prepared</code> (positional, required) — Prepared curve.</li>
+<li><code>contact_offsets</code> (keyword_only, [-3, -1, 0, 1, 3]) — Contact offsets (samples).</li>
+<li><code>fit_window_variants</code> (keyword_only, [0.0, 0.05]) — Window lower-bound fractions.</li>
+<li><code>baseline_variants</code> (keyword_only, ['linear']) — Baseline models.</li>
+<li><code>models</code> (keyword_only, ['hertz_sphere']) — Models.</li>
+<li><code>max_configurations</code> (keyword_only, 512) — Multiverse bound.</li>
+<li><code>tip_radius</code> (keyword_only, 1e-08) — Tip radius (m).</li>
+<li>
+<p><code>poisson</code> (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz</code></li>
+<li><code>tests/validation/test_force_mechanics_validation.py</code></li>
+<li><code>tests/core/test_force_mechanics.py</code></li>
+</ul>
+<h2 id="forcesegmentidentify">FORCE.SEGMENT.IDENTIFY<a class="headerlink" href="#forcesegmentidentify" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.segment.identify</code></li>
+<li>public_name: <code>identify_force_segments</code></li>
+<li>public_import: <code>spmkit.core.analysis:identify_force_segments</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Force segment identification)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Identify approach/retract sample indices of a ForceCurve; instrument labels trusted when both segments exist, else turning point = height extremum; no sample reordering.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: not_applicable</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li>
+<p><code>curve</code> (positional, required) — Force curve to segment.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.npz</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_foundation_reference.json</code></li>
+<li><code>tests/validation/test_force_foundation_validation.py</code></li>
+<li>
+<p><code>tests/core/test_force_foundation.py</code></p>
+</li>
+<li>
+<p>known deviations:</p>
+</li>
+<li>single-segment inference may misplace the turning point on flat turning points</li>
+</ul>
+<h2 id="forceseparationtip_sample">FORCE.SEPARATION.TIP_SAMPLE<a class="headerlink" href="#forceseparationtip_sample" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.separation.tip_sample</code></li>
+<li>public_name: <code>compute_tip_sample_separation</code></li>
+<li>public_import: <code>spmkit.core.analysis:compute_tip_sample_separation</code></li>
+<li>family: FORCE</li>
+<li>maturity: CROSS_VALIDATED</li>
+<li>status: stable</li>
+<li>reference: nanite 4.2.3 (Tip-sample separation (nanite tip-position profile))</li>
+<li>
+<p>evidence profile: <code>COMPILED_NANITE_4_2_3_EXTERNAL_REFERENCE_FROZEN_PROFILE</code></p>
+</li>
+<li>
+<p>contract: Tip-sample separation = height - deflection per segment; no contact offset applied; validated against the frozen nanite 4.2.3 tip-position convention (tip = height + force/k + offset).</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: m</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li>
+<p><code>curve</code> (positional, required) — Force curve.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.npz</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_foundation_reference.json</code></li>
+<li><code>tests/validation/test_force_foundation_validation.py</code></li>
+<li><code>tests/core/test_force_foundation.py</code></li>
+<li>
+<p><code>tests/validation/fixtures/force_foundation/force_foundation_external.npz</code></p>
+</li>
+<li>
+<p>known deviations:</p>
+</li>
+<li>bitwise external identity not claimed; convention validated numerically on the frozen nanite profile</li>
+</ul>
+<h2 id="forcesmfsbatch">FORCE.SMFS.BATCH<a class="headerlink" href="#forcesmfsbatch" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.smfs.batch</code></li>
+<li>public_name: <code>analyze_smfs_batch</code></li>
+<li>public_import: <code>spmkit.core.analysis:analyze_smfs_batch</code></li>
+<li>family: FORCE</li>
+<li>maturity: SOFTWARE_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Deterministic batch orchestration over per-curve analyses: e)</li>
+<li>
+<p>evidence profile: <code>NATIVE_SPMKIT_DESIGNED_HEURISTIC</code></p>
+</li>
+<li>
+<p>contract: Deterministic batch orchestration over per-curve analyses: every result retained, failed curves retained with reasons, unified event table with curve origins, population aggregation, stable ordering and replay; nothing silently dropped; the orchestration policy is SOFTWARE_VERIFIED.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: not_applicable</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>analyses</code> (positional, required) — Per-curve analyses.</li>
+<li><code>group_by</code> (keyword_only, 'loading_rate_decade' values=['none', 'loading_rate_decade']) — Grouping policy.</li>
+<li>
+<p><code>n_groups</code> (keyword_only, 4) — Number of groups.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.npz</code></li>
+<li><code>tests/validation/test_force_smfs_validation.py</code></li>
+<li><code>tests/core/test_force_smfs.py</code></li>
+</ul>
+<h2 id="forcesmfscontour_increment">FORCE.SMFS.CONTOUR_INCREMENT<a class="headerlink" href="#forcesmfscontour_increment" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.smfs.contour_increment</code></li>
+<li>public_name: <code>infer_contour_length_increments</code></li>
+<li>public_import: <code>spmkit.core.analysis:infer_contour_length_increments</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Delta contour length per event from independent pre/post WLC)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Delta contour length per event from independent pre/post WLC fits on the ABSOLUTE molecular extension (a section-relative fit would absorb the event offset into a biased contour); event-index sensitivity characterized by explicit shifts; within 10% on the doubling-contour phantoms.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: m</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>extension</code> (positional, required) — Extension result.</li>
+<li><code>events</code> (positional, required) — Quantified events.</li>
+<li><code>model</code> (keyword_only, 'worm_like_chain') — Polymer model.</li>
+<li><code>temperature</code> (keyword_only, 298.0) — Temperature (K).</li>
+<li><code>pre_margin</code> (keyword_only, 2) — Pre-event margin (samples).</li>
+<li><code>post_margin</code> (keyword_only, 2) — Post-event margin (samples).</li>
+<li><code>min_points</code> (keyword_only, 8) — Minimum window points.</li>
+<li>
+<p><code>sensitivity_shifts</code> (keyword_only, [0]) — Event-index shifts.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.npz</code></li>
+<li><code>tests/validation/test_force_smfs_validation.py</code></li>
+<li><code>tests/core/test_force_smfs.py</code></li>
+</ul>
+<h2 id="forcesmfseventsdetect">FORCE.SMFS.EVENTS.DETECT<a class="headerlink" href="#forcesmfseventsdetect" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.smfs.events.detect</code></li>
+<li>public_name: <code>detect_unfolding_events</code></li>
+<li>public_import: <code>spmkit.core.analysis:detect_unfolding_events</code></li>
+<li>family: FORCE</li>
+<li>maturity: SOFTWARE_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Unfolding-event detection on the pull-ordered retract segment)</li>
+<li>
+<p>evidence profile: <code>NATIVE_SPMKIT_DESIGNED_HEURISTIC</code></p>
+</li>
+<li>
+<p>contract: Unfolding-event detection on the pull-ordered retract section: sustained force drops with public thresholds (drop magnitude, persistence, minimum separation, boundary margin); rejected candidates retained with reasons; the final detachment is distinguished from internal unfolding; sub-threshold drops raise NO_EVENTS typed.  The detector is a documented heuristic (SOFTWARE_VERIFIED) evaluated with true/false positives on deterministic phantoms.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: N</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>extension</code> (positional, required) — Extension result.</li>
+<li><code>min_force_drop</code> (keyword_only, None) — Minimum drop (N).</li>
+<li><code>min_persistence</code> (keyword_only, 3) — Sustained-drop samples.</li>
+<li><code>min_event_separation</code> (keyword_only, 3) — Minimum separation (samples).</li>
+<li><code>noise_sigma</code> (keyword_only, None) — Noise scale (N).</li>
+<li>
+<p><code>boundary_margin</code> (keyword_only, 2) — Boundary margin (samples).</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.npz</code></li>
+<li><code>tests/validation/test_force_smfs_validation.py</code></li>
+<li><code>tests/core/test_force_smfs.py</code></li>
+</ul>
+<h2 id="forcesmfseventsquantify">FORCE.SMFS.EVENTS.QUANTIFY<a class="headerlink" href="#forcesmfseventsquantify" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.smfs.events.quantify</code></li>
+<li>public_name: <code>quantify_unfolding_events</code></li>
+<li>public_import: <code>spmkit.core.analysis:quantify_unfolding_events</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Assign explicit pre/post windows and local loading rates to )</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Assign explicit pre/post windows and local loading rates to every selected event; the pre window spans the polymer section between the previous event (or the tether zero) and the event; the post window spans the section to the next event (or the section end).</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: N / m</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>extension</code> (positional, required) — Extension result.</li>
+<li><code>events</code> (positional, required) — Detected events.</li>
+<li><code>pre_margin</code> (keyword_only, 2) — Pre-event margin (samples).</li>
+<li><code>post_margin</code> (keyword_only, 2) — Post-event margin (samples).</li>
+<li>
+<p><code>min_points</code> (keyword_only, 8) — Minimum window points.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.npz</code></li>
+<li><code>tests/validation/test_force_smfs_validation.py</code></li>
+<li><code>tests/core/test_force_smfs.py</code></li>
+</ul>
+<h2 id="forcesmfsextensioncompute">FORCE.SMFS.EXTENSION.COMPUTE<a class="headerlink" href="#forcesmfsextensioncompute" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.smfs.extension.compute</code></li>
+<li>public_name: <code>compute_molecular_extension</code></li>
+<li>public_import: <code>spmkit.core.analysis:compute_molecular_extension</code></li>
+<li>family: FORCE</li>
+<li>maturity: SOFTWARE_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Molecular extension of the retract segment with an explicit t)</li>
+<li>
+<p>evidence profile: <code>NATIVE_SPMKIT_DESIGNED_HEURISTIC</code></p>
+</li>
+<li>
+<p>contract: Molecular extension of the retract section with an explicit tether-zero policy: offset (physical m), index, pre_event (caller section start), or the estimator (retract zero-force crossing with its own diagnostics); the zero is never inferred silently from the contact; UNRESOLVED_TETHER_ZERO and INVALID_REFERENCE_POLICY typed; the estimator policy is a documented heuristic making the complete operation SOFTWARE_VERIFIED; the JPK/NID readers do not populate segment time (the SMFS retract section requires an explicit time axis where used).</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: m</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>prepared</code> (positional, required) — FS-F1 prepared curve.</li>
+<li><code>reference</code> (keyword_only, 'index' values=['offset', 'index', 'pre_event', 'estimator']) — Tether-zero reference policy.</li>
+<li><code>reference_value</code> (keyword_only, None) — Offset (m) or index.</li>
+<li><code>segment</code> (keyword_only, 'retract') — Segment (retract only).</li>
+<li>
+<p><code>estimator_noise_sigma</code> (keyword_only, None) — Estimator noise scale.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.npz</code></li>
+<li><code>tests/validation/test_force_smfs_validation.py</code></li>
+<li><code>tests/core/test_force_smfs.py</code></li>
+</ul>
+<h2 id="forcesmfsforce_clampsurvival">FORCE.SMFS.FORCE_CLAMP.SURVIVAL<a class="headerlink" href="#forcesmfsforce_clampsurvival" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.smfs.force_clamp.survival</code></li>
+<li>public_name: <code>estimate_force_clamp_survival</code></li>
+<li>public_import: <code>spmkit.core.analysis:estimate_force_clamp_survival</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Kaplan-Meier survival with right censoring over explicit lif)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Kaplan-Meier survival with right censoring over explicit lifetimes and flags: events before censors at ties, events leave the risk set, censored observations never discarded; the median lifetime is typed UNDEFINED_MEDIAN when unreachable; the exponential rate is the censoring-aware MLE n_events/sum(times); matches the independent oracle exactly.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: s</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>lifetimes</code> (positional, required) — Lifetimes (s).</li>
+<li><code>censored</code> (positional, required) — Censoring flags (0 event, 1 censored).</li>
+<li><code>force_level</code> (keyword_only, required) — Clamp force level (N).</li>
+<li><code>temperature</code> (keyword_only, 298.0) — Temperature (K).</li>
+<li>
+<p><code>fit_exponential_rate</code> (keyword_only, True) — Fit the MLE rate.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.npz</code></li>
+<li><code>tests/validation/test_force_smfs_validation.py</code></li>
+<li><code>tests/core/test_force_smfs.py</code></li>
+</ul>
+<h2 id="forcesmfskineticsbell_evans">FORCE.SMFS.KINETICS.BELL_EVANS<a class="headerlink" href="#forcesmfskineticsbell_evans" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.smfs.kinetics.bell_evans</code></li>
+<li>public_name: <code>fit_bell_evans</code></li>
+<li>public_import: <code>spmkit.core.analysis:fit_bell_evans</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Bell-Evans fit over (loading rate, rupture force) series: th)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Bell-Evans fit over (loading rate, rupture force) series: the primary estimator is the frozen most-probable-force regression F* = (k_B T/x_beta) ln(r x_beta/(k0 k_B T)) with the survival convention S(F) = exp(-k0 k_B T/(r x_beta)(exp(F x_beta/k_B T) - 1)); a bounded likelihood runs as a secondary with an identifiability diagnosis (the BE likelihood is degenerate toward x_beta -&gt; 0, documented); narrow-rate ranges carry an IDENTIFIABILITY_LIMITED warning; x_beta recovered within 10% on the phantoms.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: m / 1/s</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>loading_rates</code> (positional, required) — Loading rates (N/s).</li>
+<li><code>rupture_forces</code> (positional, required) — Rupture forces (N).</li>
+<li><code>temperature</code> (keyword_only, 298.0) — Temperature (K).</li>
+<li><code>k0_initial</code> (keyword_only, 1.0) — Zero-force rate start (1/s).</li>
+<li>
+<p><code>x_beta_initial</code> (keyword_only, 1e-09) — Transition distance start (m).</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.npz</code></li>
+<li><code>tests/validation/test_force_smfs_validation.py</code></li>
+<li><code>tests/core/test_force_smfs.py</code></li>
+</ul>
+<h2 id="forcesmfskineticsdhs">FORCE.SMFS.KINETICS.DHS<a class="headerlink" href="#forcesmfskineticsdhs" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.smfs.kinetics.dhs</code></li>
+<li>public_name: <code>fit_dudko_hummer_szabo</code></li>
+<li>public_import: <code>spmkit.core.analysis:fit_dudko_hummer_szabo</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Dudko-Hummer-Szabo likelihood fit (k0, x_beta, dG) with the )</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Dudko-Hummer-Szabo likelihood fit (k0, x_beta, dG) with the frozen shape convention nu in {1/2, 2/3}, log-space evaluation with a consistent rate cap, the domain 1 - nu F x_beta/dG &gt; 0 enforced; the Bell limit nu -&gt; 0 recovers the BE rate; the fitted energy landscape is not claimed to be physically unique; parameters recovered within the documented wide bounds with the response reconstruction verified.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: m / 1/s / J</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>loading_rates</code> (positional, required) — Loading rates (N/s).</li>
+<li><code>rupture_forces</code> (positional, required) — Rupture forces (N).</li>
+<li><code>nu</code> (keyword_only, 0.6666666666666666) — Potential shape (1/2 cusp, 2/3 linear-cubic).</li>
+<li><code>temperature</code> (keyword_only, 298.0) — Temperature (K).</li>
+<li><code>k0_initial</code> (keyword_only, 1.0) — Zero-force rate start (1/s).</li>
+<li><code>x_beta_initial</code> (keyword_only, 1e-09) — Transition distance start (m).</li>
+<li>
+<p><code>dg_initial</code> (keyword_only, 1e-19) — Barrier height start (J).</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.npz</code></li>
+<li><code>tests/validation/test_force_smfs_validation.py</code></li>
+<li><code>tests/core/test_force_smfs.py</code></li>
+</ul>
+<h2 id="forcesmfsloading_rate">FORCE.SMFS.LOADING_RATE<a class="headerlink" href="#forcesmfsloading_rate" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.smfs.loading_rate</code></li>
+<li>public_name: <code>compute_event_loading_rates</code></li>
+<li>public_import: <code>spmkit.core.analysis:compute_event_loading_rates</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Local loading rate per event: the least-squares slope of for)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Local loading rate per event: the least-squares slope of force vs time over the pre-event window plus the robust median-of-pairs slope (N/s); the theoretical rate (effective stiffness x pulling velocity) is reported separately when both are supplied, never substituted; requires an explicit time axis.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: N/s</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>extension</code> (positional, required) — Extension result.</li>
+<li><code>events</code> (positional, required) — Quantified events.</li>
+<li><code>window_samples</code> (keyword_only, 10) — Pre-event window (samples).</li>
+<li><code>min_samples</code> (keyword_only, 3) — Minimum samples.</li>
+<li><code>pulling_velocity</code> (keyword_only, None) — Pulling velocity (m/s).</li>
+<li>
+<p><code>effective_stiffness</code> (keyword_only, None) — Stiffness (N/m).</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.npz</code></li>
+<li><code>tests/validation/test_force_smfs_validation.py</code></li>
+<li><code>tests/core/test_force_smfs.py</code></li>
+</ul>
+<h2 id="forcesmfsmodelcompare">FORCE.SMFS.MODEL.COMPARE<a class="headerlink" href="#forcesmfsmodelcompare" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.smfs.model.compare</code></li>
+<li>public_name: <code>compare_polymer_models</code></li>
+<li>public_import: <code>spmkit.core.analysis:compare_polymer_models</code></li>
+<li>family: FORCE</li>
+<li>maturity: SOFTWARE_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (AICc comparison of the polymer models over the identical obs)</li>
+<li>
+<p>evidence profile: <code>NATIVE_SPMKIT_DESIGNED_HEURISTIC</code></p>
+</li>
+<li>
+<p>contract: AICc comparison of the polymer models over the identical observation set with relative weights only; Delta AICc &lt; 4 ambiguity; failed models retained as warnings; no molecular-truth claim; the recommendation policy is SOFTWARE_VERIFIED.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: not_applicable</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>extension</code> (positional, required) — Molecular extension (m).</li>
+<li><code>force</code> (positional, required) — Retract force (N).</li>
+<li><code>models</code> (keyword_only, ['worm_like_chain', 'extensible_worm_like_chain', 'freely_jointed_chain', 'extensible_freely_jointed_chain']) — Candidate models.</li>
+<li>
+<p><code>temperature</code> (keyword_only, 298.0) — Temperature (K).</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.npz</code></li>
+<li><code>tests/validation/test_force_smfs_validation.py</code></li>
+<li><code>tests/core/test_force_smfs.py</code></li>
+</ul>
+<h2 id="forcesmfsmodelextensible_fjc">FORCE.SMFS.MODEL.EXTENSIBLE_FJC<a class="headerlink" href="#forcesmfsmodelextensible_fjc" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.smfs.model.extensible_fjc</code></li>
+<li>public_name: <code>fit_extensible_freely_jointed_chain</code></li>
+<li>public_import: <code>spmkit.core.analysis:fit_extensible_freely_jointed_chain</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Extensible FJC fit (Lc, b, Sk) in the extension space x/Lc =)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Extensible FJC fit (Lc, b, Sk) in the extension space x/Lc = L(y) + F/Sk with Sk the segment stretch force (N); Sk -&gt; inf reduces to the FJC; Lc/b within 2%/5% on clean phantoms; the stretch scale is weakly identifiable from a single section (documented).</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: m</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>extension</code> (positional, required) — Molecular extension (m).</li>
+<li><code>force</code> (positional, required) — Retract force (N).</li>
+<li><code>temperature</code> (keyword_only, 298.0) — Temperature (K).</li>
+<li><code>Lc_initial</code> (keyword_only, None) — Contour start (m).</li>
+<li><code>b_initial</code> (keyword_only, None) — Kuhn length start (m).</li>
+<li>
+<p><code>Sk_initial</code> (keyword_only, None) — Stretch force start (N).</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.npz</code></li>
+<li><code>tests/validation/test_force_smfs_validation.py</code></li>
+<li><code>tests/core/test_force_smfs.py</code></li>
+</ul>
+<h2 id="forcesmfsmodelextensible_wlc">FORCE.SMFS.MODEL.EXTENSIBLE_WLC<a class="headerlink" href="#forcesmfsmodelextensible_wlc" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.smfs.model.extensible_wlc</code></li>
+<li>public_name: <code>fit_extensible_worm_like_chain</code></li>
+<li>public_import: <code>spmkit.core.analysis:fit_extensible_worm_like_chain</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Implicit extensible WLC fit (Lc, Lp, S) with the Odijk-style)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Implicit extensible WLC fit (Lc, Lp, S) with the Odijk-style convention F = (k_BT/Lp)[1/(4(1-x/Lc+F/S)^2) - 1/4 + x/Lc - F/S], solved per point by brentq with a force-scale xtol; S -&gt; inf reduces to the WLC; Lc within 5% and Lp within 20% on clean phantoms; the stretch modulus is weakly identifiable from a single section (documented).</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: m</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>extension</code> (positional, required) — Molecular extension (m).</li>
+<li><code>force</code> (positional, required) — Retract force (N).</li>
+<li><code>temperature</code> (keyword_only, 298.0) — Temperature (K).</li>
+<li><code>Lc_initial</code> (keyword_only, None) — Contour start (m).</li>
+<li><code>Lp_initial</code> (keyword_only, None) — Persistence start (m).</li>
+<li>
+<p><code>S_initial</code> (keyword_only, None) — Stretch modulus start (N).</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.npz</code></li>
+<li><code>tests/validation/test_force_smfs_validation.py</code></li>
+<li><code>tests/core/test_force_smfs.py</code></li>
+</ul>
+<h2 id="forcesmfsmodelfjc">FORCE.SMFS.MODEL.FJC<a class="headerlink" href="#forcesmfsmodelfjc" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.smfs.model.fjc</code></li>
+<li>public_name: <code>fit_freely_jointed_chain</code></li>
+<li>public_import: <code>spmkit.core.analysis:fit_freely_jointed_chain</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (FJC fit (Lc, b) in the extension space x/Lc = coth(y) - 1/y )</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: FJC fit (Lc, b) in the extension space x/Lc = coth(y) - 1/y with y = F b/k_BT (stable Langevin), separable closed-form Lc per candidate b; Lc/b within 2%/5% on clean phantoms; the persistence length is reported as Lp = b/2.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: m</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>extension</code> (positional, required) — Molecular extension (m).</li>
+<li><code>force</code> (positional, required) — Retract force (N).</li>
+<li><code>temperature</code> (keyword_only, 298.0) — Temperature (K).</li>
+<li><code>Lc_initial</code> (keyword_only, None) — Contour start (m).</li>
+<li>
+<p><code>b_initial</code> (keyword_only, None) — Kuhn length start (m).</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.npz</code></li>
+<li><code>tests/validation/test_force_smfs_validation.py</code></li>
+<li><code>tests/core/test_force_smfs.py</code></li>
+</ul>
+<h2 id="forcesmfsmodelwlc">FORCE.SMFS.MODEL.WLC<a class="headerlink" href="#forcesmfsmodelwlc" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.smfs.model.wlc</code></li>
+<li>public_name: <code>fit_worm_like_chain</code></li>
+<li>public_import: <code>spmkit.core.analysis:fit_worm_like_chain</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (WLC fit (Lc, Lp) by the Marko-Siggia loading relation F = (k)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: WLC fit (Lc, Lp) by the Marko-Siggia loading relation F = (k_BT/Lp)[1/(4(1-x/Lc)^2) - 1/4 + x/Lc] with a separable closed-form Lp per candidate Lc (deterministic 1-D search); Lc/Lp within 2%/5% on clean phantoms; the singular domain (x &gt;= Lc) is typed POLYMER_SINGULARITY.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: m</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>extension</code> (positional, required) — Molecular extension (m).</li>
+<li><code>force</code> (positional, required) — Retract force (N).</li>
+<li><code>temperature</code> (keyword_only, 298.0) — Temperature (K).</li>
+<li><code>Lc_initial</code> (keyword_only, None) — Contour start (m).</li>
+<li>
+<p><code>Lp_initial</code> (keyword_only, None) — Persistence start (m).</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.npz</code></li>
+<li><code>tests/validation/test_force_smfs_validation.py</code></li>
+<li><code>tests/core/test_force_smfs.py</code></li>
+</ul>
+<h2 id="forcesmfspopulation">FORCE.SMFS.POPULATION<a class="headerlink" href="#forcesmfspopulation" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.smfs.population</code></li>
+<li>public_name: <code>analyze_smfs_event_population</code></li>
+<li>public_import: <code>spmkit.core.analysis:analyze_smfs_event_population</code></li>
+<li>family: FORCE</li>
+<li>maturity: SOFTWARE_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Aggregate event records into a population: rupture-force, co)</li>
+<li>
+<p>evidence profile: <code>NATIVE_SPMKIT_DESIGNED_HEURISTIC</code></p>
+</li>
+<li>
+<p>contract: Aggregate event records into a population: rupture-force, contour-increment and loading-rate summaries; deterministic grouping (none or loading_rate_decade) with raw assignments exposed; ambiguity retained for small populations; no molecular-identity claim; the grouping policy is SOFTWARE_VERIFIED.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: not_applicable</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>event_records</code> (positional, required) — Event records.</li>
+<li><code>group_by</code> (keyword_only, 'loading_rate_decade' values=['none', 'loading_rate_decade']) — Grouping policy.</li>
+<li><code>n_groups</code> (keyword_only, 4) — Number of groups.</li>
+<li>
+<p><code>force_levels</code> (keyword_only, None) — Force levels (N).</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.npz</code></li>
+<li><code>tests/validation/test_force_smfs_validation.py</code></li>
+<li><code>tests/core/test_force_smfs.py</code></li>
+</ul>
+<h2 id="forcesmfswindowselect">FORCE.SMFS.WINDOW.SELECT<a class="headerlink" href="#forcesmfswindowselect" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.smfs.window.select</code></li>
+<li>public_name: <code>select_smfs_fit_windows</code></li>
+<li>public_import: <code>spmkit.core.analysis:select_smfs_fit_windows</code></li>
+<li>family: FORCE</li>
+<li>maturity: SOFTWARE_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Explicit polymer fit window on the molecular extension axis:)</li>
+<li>
+<p>evidence profile: <code>NATIVE_SPMKIT_DESIGNED_HEURISTIC</code></p>
+</li>
+<li>
+<p>contract: Explicit polymer fit window on the molecular extension axis: negative extensions always excluded (the polymer domain starts at the tether zero), extension/force bounds, minimum points; EMPTY_WINDOW and INSUFFICIENT_POINTS typed; the window policy is SOFTWARE_VERIFIED.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: m / N</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>extension</code> (positional, required) — Molecular extension (m).</li>
+<li><code>force</code> (positional, required) — Retract force (N).</li>
+<li><code>min_extension</code> (keyword_only, None) — Lower extension bound (m).</li>
+<li><code>max_extension</code> (keyword_only, None) — Upper extension bound (m).</li>
+<li><code>min_force</code> (keyword_only, None) — Lower force bound (N).</li>
+<li><code>max_force</code> (keyword_only, None) — Upper force bound (N).</li>
+<li><code>min_points</code> (keyword_only, 10) — Minimum window size.</li>
+<li>
+<p><code>window_label</code> (keyword_only, None) — Window identifier.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_smfs/smfs_reference.npz</code></li>
+<li><code>tests/validation/test_force_smfs_validation.py</code></li>
+<li><code>tests/core/test_force_smfs.py</code></li>
+</ul>
+<h2 id="forceviscocontactlee_radok">FORCE.VISCO.CONTACT.LEE_RADOK<a class="headerlink" href="#forceviscocontactlee_radok" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.visco.contact.lee_radok</code></li>
+<li>public_name: <code>fit_lee_radok_sphere</code></li>
+<li>public_import: <code>spmkit.core.analysis:fit_lee_radok_sphere</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Fits the SLS relaxation modulus through the Lee-Radok spheri)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Fits the SLS relaxation modulus through the Lee-Radok spherical hereditary integral on the monotonic loading region: F(t) = c int_0^t E(t - t') d/dt' delta(t')^1.5 dt'; the contact radius must not decrease (LEE_RADOK_NONMONOTONIC typed); loading-only validity; the loading history is trimmed to the contact (indentation &gt;= 0, documented); recovery within ~40% E0/E_inf and ~50% tau on clean phantoms (the loading curve carries less information than a hold).</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: Pa</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>prepared</code> (positional, required) — FS-F1 prepared curve.</li>
+<li><code>protocol</code> (positional, required) — Protocol result.</li>
+<li><code>tip_radius</code> (keyword_only, required) — Tip radius (m).</li>
+<li><code>poisson</code> (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.</li>
+<li><code>E0_initial</code> (keyword_only, 1000000.0) — Modulus start (Pa).</li>
+<li><code>E_inf_initial</code> (keyword_only, 500000.0) — Equilibrium modulus start (Pa).</li>
+<li>
+<p><code>tau_initial</code> (keyword_only, 1.0) — Relaxation time start (s).</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz</code></li>
+<li><code>tests/validation/test_force_viscoelasticity_validation.py</code></li>
+<li><code>tests/core/test_force_viscoelasticity.py</code></li>
+</ul>
+<h2 id="forceviscocontactting">FORCE.VISCO.CONTACT.TING<a class="headerlink" href="#forceviscocontactting" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.visco.contact.ting</code></li>
+<li>public_name: <code>fit_ting_sphere</code></li>
+<li>public_import: <code>spmkit.core.analysis:fit_ting_sphere</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Fits the SLS relaxation modulus through the Ting spherical i)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Fits the SLS relaxation modulus through the Ting spherical integral with contact-time memory: loading = Lee-Radok; unloading F(t) = c int_0^{t1(t)} E(t - t') d/dt' delta(t')^1.5 dt' with delta(t1(t)) = delta(t) on the monotone loading portion; the loading history is trimmed to the contact and the unloading history truncated at the contact (documented); TING_HISTORY_UNAVAILABLE typed when the history cannot be reconstructed; the production quadrature is the first-order increment rule (parity with the substep oracle 0.5%).</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: Pa</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>prepared</code> (positional, required) — FS-F1 prepared curve.</li>
+<li><code>protocol</code> (positional, required) — Protocol result.</li>
+<li><code>tip_radius</code> (keyword_only, required) — Tip radius (m).</li>
+<li><code>poisson</code> (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.</li>
+<li><code>E0_initial</code> (keyword_only, 1000000.0) — Modulus start (Pa).</li>
+<li><code>E_inf_initial</code> (keyword_only, 500000.0) — Equilibrium modulus start (Pa).</li>
+<li>
+<p><code>tau_initial</code> (keyword_only, 1.0) — Relaxation time start (s).</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz</code></li>
+<li><code>tests/validation/test_force_viscoelasticity_validation.py</code></li>
+<li><code>tests/core/test_force_viscoelasticity.py</code></li>
+</ul>
+<h2 id="forceviscocreepextract">FORCE.VISCO.CREEP.EXTRACT<a class="headerlink" href="#forceviscocreepextract" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.visco.creep.extract</code></li>
+<li>public_name: <code>extract_creep_compliance</code></li>
+<li>public_import: <code>spmkit.core.analysis:extract_creep_compliance</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Extracts the creep compliance increment of a force hold: (in)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Extracts the creep compliance increment of a force hold: (indentation(t) - indentation(0))/F_hold on the relative hold time; the increment is robust to the contact-coordinate precision (the absolute level is carried in indentation_at_hold_start); missing hold raises EMPTY_REGION; zero held force raises INVALID_RESPONSE.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: s / N / m</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>prepared</code> (positional, required) — FS-F1 prepared curve.</li>
+<li><code>protocol</code> (positional, required) — Protocol result.</li>
+<li><code>segment</code> (keyword_only, 'extend') — Segment name.</li>
+<li><code>hold_kind</code> (keyword_only, 'hold_force') — Hold region kind.</li>
+<li>
+<p><code>hold_force_median</code> (keyword_only, True) — Median (vs mean) held force.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz</code></li>
+<li><code>tests/validation/test_force_viscoelasticity_validation.py</code></li>
+<li><code>tests/core/test_force_viscoelasticity.py</code></li>
+</ul>
+<h2 id="forceviscomodelcompare">FORCE.VISCO.MODEL.COMPARE<a class="headerlink" href="#forceviscomodelcompare" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.visco.model.compare</code></li>
+<li>public_name: <code>compare_viscoelastic_models</code></li>
+<li>public_import: <code>spmkit.core.analysis:compare_viscoelastic_models</code></li>
+<li>family: FORCE</li>
+<li>maturity: SOFTWARE_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Model-relative AICc comparison over identical observations w)</li>
+<li>
+<p>evidence profile: <code>NATIVE_SPMKIT_DESIGNED_HEURISTIC</code></p>
+</li>
+<li>
+<p>contract: Model-relative AICc comparison over identical observations with the finite-sample correction; Delta AICc &lt; 4 ambiguity; failed candidates retained as warnings; weights are relative support, never a probability of physical correctness; the recommendation policy is SOFTWARE_VERIFIED.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: not_applicable</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>response</code> (positional, required) — Relaxation or creep response.</li>
+<li><code>models</code> (keyword_only, None) — Candidate models.</li>
+<li><code>tip_radius</code> (keyword_only, None) — Tip radius (m).</li>
+<li><code>poisson</code> (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.</li>
+<li><code>n_terms</code> (keyword_only, 2) — Prony terms for the generalized Maxwell.</li>
+<li>
+<p><code>t_ref</code> (keyword_only, None) — Reference time for the power law.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz</code></li>
+<li><code>tests/validation/test_force_viscoelasticity_validation.py</code></li>
+<li><code>tests/core/test_force_viscoelasticity.py</code></li>
+</ul>
+<h2 id="forceviscomodelgeneralized_maxwell">FORCE.VISCO.MODEL.GENERALIZED_MAXWELL<a class="headerlink" href="#forceviscomodelgeneralized_maxwell" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.visco.model.generalized_maxwell</code></li>
+<li>public_name: <code>fit_generalized_maxwell</code></li>
+<li>public_import: <code>spmkit.core.analysis:fit_generalized_maxwell</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Prony normalized relaxation fit n(t) = 1 - sum(alpha) + sum()</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Prony normalized relaxation fit n(t) = 1 - sum(alpha) + sum(alpha_i exp(-t/tau_i)) with alpha_i &gt;= 0, sum(alpha) &lt;= 1, tau_i &gt; 0, deterministic ordering by ascending tau; duplicate relaxation times are rejected typed (PRONY_DUPLICATE_TAU); no claim that the recovered spectrum is unique; nearly equal time constants carry a bounded-identifiability warning.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: s</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>response</code> (positional, required) — Relaxation response.</li>
+<li><code>n_terms</code> (keyword_only, 2 bounds=[1, 8]) — Number of Prony terms.</li>
+<li><code>tip_radius</code> (keyword_only, None) — Tip radius (m).</li>
+<li>
+<p><code>poisson</code> (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz</code></li>
+<li><code>tests/validation/test_force_viscoelasticity_validation.py</code></li>
+<li><code>tests/core/test_force_viscoelasticity.py</code></li>
+</ul>
+<h2 id="forceviscomodelkelvin_voigt">FORCE.VISCO.MODEL.KELVIN_VOIGT<a class="headerlink" href="#forceviscomodelkelvin_voigt" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.visco.model.kelvin_voigt</code></li>
+<li>public_name: <code>fit_kelvin_voigt</code></li>
+<li>public_import: <code>spmkit.core.analysis:fit_kelvin_voigt</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Kelvin-Voigt creep fit J(t) = (1/E)(1 - exp(-t/tau)), tau = )</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Kelvin-Voigt creep fit J(t) = (1/E)(1 - exp(-t/tau)), tau = eta/E (retardation time); requires a CreepResponseResult (PROTOCOL_MODEL_MISMATCH typed otherwise); deterministic multi-start least squares; E within 10% and tau within 10% on clean phantoms; the model cannot represent instantaneous stress relaxation (documented).</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: Pa</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>response</code> (positional, required) — Creep response.</li>
+<li><code>E_initial</code> (keyword_only, None) — Modulus start (Pa).</li>
+<li>
+<p><code>tau_initial</code> (keyword_only, None) — Retardation time start (s).</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz</code></li>
+<li><code>tests/validation/test_force_viscoelasticity_validation.py</code></li>
+<li><code>tests/core/test_force_viscoelasticity.py</code></li>
+</ul>
+<h2 id="forceviscomodelmaxwell">FORCE.VISCO.MODEL.MAXWELL<a class="headerlink" href="#forceviscomodelmaxwell" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.visco.model.maxwell</code></li>
+<li>public_name: <code>fit_maxwell</code></li>
+<li>public_import: <code>spmkit.core.analysis:fit_maxwell</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Maxwell relaxation fit n(t) = exp(-t/tau), tau = eta/E; the )</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Maxwell relaxation fit n(t) = exp(-t/tau), tau = eta/E; the modulus E is recovered only when the tip radius is provided (spherical contact proportionality, documented); tau recovered within 2% on clean phantoms; the model cannot represent bounded solid creep (documented).</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: s / Pa</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>response</code> (positional, required) — Relaxation response.</li>
+<li><code>tip_radius</code> (keyword_only, None) — Tip radius (m); enables E.</li>
+<li>
+<p><code>poisson</code> (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz</code></li>
+<li><code>tests/validation/test_force_viscoelasticity_validation.py</code></li>
+<li><code>tests/core/test_force_viscoelasticity.py</code></li>
+</ul>
+<h2 id="forceviscomodelpower_law">FORCE.VISCO.MODEL.POWER_LAW<a class="headerlink" href="#forceviscomodelpower_law" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.visco.model.power_law</code></li>
+<li>public_name: <code>fit_power_law_relaxation</code></li>
+<li>public_import: <code>spmkit.core.analysis:fit_power_law_relaxation</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Power-law relaxation fit n(t) = (t/t_ref)^(-alpha) with 0 &lt; )</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Power-law relaxation fit n(t) = (t/t_ref)^(-alpha) with 0 &lt; alpha &lt; 1 and an optional equilibrium offset; t = 0 excluded (singularity); t_ref defaults to the first positive hold time and the fit uses t &gt;= t_ref when t_ref is given.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: s</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>response</code> (positional, required) — Relaxation response.</li>
+<li><code>t_ref</code> (keyword_only, None) — Reference time (s).</li>
+<li><code>with_equilibrium</code> (keyword_only, False) — Add the equilibrium offset.</li>
+<li><code>tip_radius</code> (keyword_only, None) — Tip radius (m).</li>
+<li>
+<p><code>poisson</code> (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz</code></li>
+<li><code>tests/validation/test_force_viscoelasticity_validation.py</code></li>
+<li><code>tests/core/test_force_viscoelasticity.py</code></li>
+</ul>
+<h2 id="forceviscomodelsls">FORCE.VISCO.MODEL.SLS<a class="headerlink" href="#forceviscomodelsls" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.visco.model.sls</code></li>
+<li>public_name: <code>fit_standard_linear_solid</code></li>
+<li>public_import: <code>spmkit.core.analysis:fit_standard_linear_solid</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Standard linear solid fit on a relaxation response n(t) = 1 )</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Standard linear solid fit on a relaxation response n(t) = 1 - a(1 - exp(-t/tau_relax)) or a creep response increment (dJ)(1 - exp(-t/tau_retard)); both representations are reported with the conversions J0 = 1/E0, J_inf = 1/E_inf, tau_retard = tau_relax * E0/E_inf; absolute moduli need the tip radius for the relaxation form; the creep absolute level is contact-coordinate limited (recovery reported on the increment).</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: Pa / m/N / s</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>response</code> (positional, required) — Relaxation or creep response.</li>
+<li><code>tip_radius</code> (keyword_only, None) — Tip radius (m).</li>
+<li><code>poisson</code> (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.</li>
+<li>
+<p><code>tau_initial</code> (keyword_only, None) — Time-constant start (s).</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz</code></li>
+<li><code>tests/validation/test_force_viscoelasticity_validation.py</code></li>
+<li><code>tests/core/test_force_viscoelasticity.py</code></li>
+</ul>
+<h2 id="forceviscoprotocolidentify">FORCE.VISCO.PROTOCOL.IDENTIFY<a class="headerlink" href="#forceviscoprotocolidentify" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.visco.protocol.identify</code></li>
+<li>public_name: <code>identify_viscoelastic_protocol</code></li>
+<li>public_import: <code>spmkit.core.analysis:identify_viscoelastic_protocol</code></li>
+<li>family: FORCE</li>
+<li>maturity: SOFTWARE_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Identifies the viscoelastic protocol of a force curve: rate-)</li>
+<li>
+<p>evidence profile: <code>NATIVE_SPMKIT_DESIGNED_HEURISTIC</code></p>
+</li>
+<li>
+<p>contract: Identifies the viscoelastic protocol of a force curve: rate-region classification (median-of-nonzero-rate thresholds) into LOADING_RAMP, UNLOADING_RAMP, DISPLACEMENT_HOLD, FORCE_HOLD, CREEP, STRESS_RELAXATION, TRIANGULAR_LOADING, INSUFFICIENT_PROTOCOL, AMBIGUOUS_PROTOCOL; trusted instrument labels in curve.metadata take precedence; a displacement hold with a decaying force is STRESS_RELAXATION, a force hold with a drifting displacement is CREEP; missing time raises MISSING_TIME (reconstructed clock only via assume_uniform_rate); duplicate time samples raise DUPLICATE_TIMESTAMPS; the JPK/NID readers do not populate segment time, so time-domain analysis requires an explicit time axis or an explicitly requested known-rate reconstruction (no automatic general reader time-domain analysis is claimed).</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: not_applicable</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>curve</code> (positional, required) — Force curve.</li>
+<li><code>contact_index</code> (keyword_only, None) — Contact index (height axis).</li>
+<li><code>contact_coordinate</code> (keyword_only, None) — Contact coordinate (m).</li>
+<li><code>rate_threshold</code> (keyword_only, 0.05) — Relative rate threshold.</li>
+<li><code>min_hold_points</code> (keyword_only, 5) — Minimum hold run length.</li>
+<li><code>min_hold_fraction</code> (keyword_only, 0.05) — Minimum hold fraction.</li>
+<li><code>assume_uniform_rate</code> (keyword_only, None) — Reconstructed clock (s/sample).</li>
+<li>
+<p><code>force_threshold_fraction</code> (keyword_only, 0.1) — Relaxation decay threshold.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz</code></li>
+<li><code>tests/validation/test_force_viscoelasticity_validation.py</code></li>
+<li>
+<p><code>tests/core/test_force_viscoelasticity.py</code></p>
+</li>
+<li>
+<p>known deviations:</p>
+</li>
+<li>the protocol recommendation and ambiguity policy is SOFTWARE_VERIFIED</li>
+</ul>
+<h2 id="forceviscorateindentation">FORCE.VISCO.RATE.INDENTATION<a class="headerlink" href="#forceviscorateindentation" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.visco.rate.indentation</code></li>
+<li>public_name: <code>compute_indentation_rate</code></li>
+<li>public_import: <code>spmkit.core.analysis:compute_indentation_rate</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Robust indentation and force rate of one protocol region: me)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Robust indentation and force rate of one protocol region: median of the local finite-difference rates with the 25-75 percentile spread; region located via the protocol result; missing region raises EMPTY_REGION; requires a valid time axis (the JPK/NID readers do not populate segment time; provide one or use an explicitly requested known-rate reconstruction); units m/s and N/s.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: m/s</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>prepared</code> (positional, required) — FS-F1 prepared curve.</li>
+<li><code>protocol</code> (positional, required) — Protocol result.</li>
+<li><code>region</code> (keyword_only, 'loading') — Region kind.</li>
+<li>
+<p><code>segment</code> (keyword_only, 'extend') — Segment name.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz</code></li>
+<li><code>tests/validation/test_force_viscoelasticity_validation.py</code></li>
+<li><code>tests/core/test_force_viscoelasticity.py</code></li>
+</ul>
+<h2 id="forceviscorelaxationextract">FORCE.VISCO.RELAXATION.EXTRACT<a class="headerlink" href="#forceviscorelaxationextract" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.visco.relaxation.extract</code></li>
+<li>public_name: <code>extract_stress_relaxation</code></li>
+<li>public_import: <code>spmkit.core.analysis:extract_stress_relaxation</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Extracts the normalized stress-relaxation response of a disp)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Extracts the normalized stress-relaxation response of a displacement hold: F(t)/F(t0) on the relative hold time with the hold indentation and force histories; equilibrium-force estimate = mean of the last tail fraction (documented estimate, not a guaranteed equilibrium); missing hold raises EMPTY_REGION; zero hold-start force raises INVALID_RESPONSE.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: s / m / N</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>prepared</code> (positional, required) — FS-F1 prepared curve.</li>
+<li><code>protocol</code> (positional, required) — Protocol result.</li>
+<li><code>segment</code> (keyword_only, 'extend') — Segment name.</li>
+<li><code>hold_kind</code> (keyword_only, 'hold_displacement') — Hold region kind.</li>
+<li>
+<p><code>equilibrium_tail_fraction</code> (keyword_only, 0.1) — Equilibrium tail fraction.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz</code></li>
+<li><code>tests/validation/test_force_viscoelasticity_validation.py</code></li>
+<li><code>tests/core/test_force_viscoelasticity.py</code></li>
+</ul>
+<h2 id="forceviscosensitivity">FORCE.VISCO.SENSITIVITY<a class="headerlink" href="#forceviscosensitivity" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.visco.sensitivity</code></li>
+<li>public_name: <code>analyze_viscoelastic_sensitivity</code></li>
+<li>public_import: <code>spmkit.core.analysis:analyze_viscoelastic_sensitivity</code></li>
+<li>family: FORCE</li>
+<li>maturity: SOFTWARE_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Deterministic multiverse over contact offsets, hold-boundary)</li>
+<li>
+<p>evidence profile: <code>NATIVE_SPMKIT_DESIGNED_HEURISTIC</code></p>
+</li>
+<li>
+<p>contract: Deterministic multiverse over contact offsets, hold-boundary offsets and equilibrium-tail fractions (bounded at max_configurations) for the SLS fit on the extracted response; one-at-a-time contact/boundary/window indices relative to the baseline configuration and a dominant-source classification (contact / boundary / window / none at the 20% threshold); raw configurations and failures exposed; the interpretation is SOFTWARE_VERIFIED.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: not_applicable</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>curve</code> (positional, required) — Force curve.</li>
+<li><code>prepared</code> (positional, required) — FS-F1 prepared curve.</li>
+<li><code>protocol</code> (keyword_only, None) — Protocol result.</li>
+<li><code>contact_offsets</code> (keyword_only, [-2, 0, 2]) — Contact offsets (samples).</li>
+<li><code>boundary_offsets</code> (keyword_only, [-3, 0, 3]) — Hold-boundary offsets.</li>
+<li><code>equilibrium_tail_fractions</code> (keyword_only, [0.05, 0.1, 0.2]) — Equilibrium tail fractions.</li>
+<li><code>max_configurations</code> (keyword_only, 96) — Multiverse bound.</li>
+<li><code>tip_radius</code> (keyword_only, None) — Tip radius (m).</li>
+<li>
+<p><code>poisson</code> (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz</code></li>
+<li><code>tests/validation/test_force_viscoelasticity_validation.py</code></li>
+<li><code>tests/core/test_force_viscoelasticity.py</code></li>
+</ul>
+<h2 id="forceviscovolume">FORCE.VISCO.VOLUME<a class="headerlink" href="#forceviscovolume" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.visco.volume</code></li>
+<li>public_name: <code>fit_force_volume_viscoelasticity</code></li>
+<li>public_import: <code>spmkit.core.analysis:fit_force_volume_viscoelasticity</code></li>
+<li>family: FORCE</li>
+<li>maturity: SOFTWARE_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Per-curve identify -&gt; prepare -&gt; extract -&gt; SLS mapping over)</li>
+<li>
+<p>evidence profile: <code>NATIVE_SPMKIT_DESIGNED_HEURISTIC</code></p>
+</li>
+<li>
+<p>contract: Per-curve identify -&gt; prepare -&gt; extract -&gt; SLS mapping over a ForceVolume: modulus_0/modulus_inf/viscosity/relaxation-time maps, model/ambiguity/sensitivity/protocol maps and an explicit failed mask with per-index reasons (nothing silently dropped); deterministic replay; viscosity = E0 * a * tau_relax (SLS dashpot estimate, documented model quantity).</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: Pa / Pa*s / s</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>volume</code> (positional, required) — Force volume.</li>
+<li><code>tip_radius</code> (keyword_only, None) — Tip radius (m).</li>
+<li><code>poisson</code> (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.</li>
+<li>
+<p><code>min_hold_points</code> (keyword_only, 5) — Minimum hold run length.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_viscoelasticity/viscoelasticity_reference.npz</code></li>
+<li><code>tests/validation/test_force_viscoelasticity_validation.py</code></li>
+<li><code>tests/core/test_force_viscoelasticity.py</code></li>
+</ul>
+<h2 id="forcevolumemechanics">FORCE.VOLUME.MECHANICS<a class="headerlink" href="#forcevolumemechanics" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.volume.mechanics</code></li>
+<li>public_name: <code>fit_force_volume_mechanics</code></li>
+<li>public_import: <code>spmkit.core.analysis:fit_force_volume_mechanics</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Per-curve mechanics mapping)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Applies prepare -&gt; indentation -&gt; window -&gt; model comparison to every curve of a ForceVolume; modulus/adhesion maps, chosen model map, quality map; failed curves explicitly masked (failed_mask + provenance reasons), never silently dropped; deterministic replay; units Pa / N.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: Pa</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>volume</code> (positional, required) — Force volume.</li>
+<li><code>tip_radius</code> (keyword_only, 1e-08) — Tip radius (m).</li>
+<li><code>poisson</code> (keyword_only, 0.3 bounds=[0.0, 0.5]) — Poisson ratio.</li>
+<li><code>half_angle</code> (keyword_only, 0.3490658503988659) — Cone half-angle (rad).</li>
+<li><code>models</code> (keyword_only, ['hertz_sphere', 'dmt']) — Candidate models.</li>
+<li>
+<p><code>min_points</code> (keyword_only, 20) — Minimum window size per curve.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_mechanics/force_mechanics_reference.npz</code></li>
+<li><code>tests/validation/test_force_mechanics_validation.py</code></li>
+<li><code>tests/core/test_force_mechanics.py</code></li>
+</ul>
+<h2 id="forceworkintegrate">FORCE.WORK.INTEGRATE<a class="headerlink" href="#forceworkintegrate" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.work.integrate</code></li>
+<li>public_name: <code>integrate_force_work</code></li>
+<li>public_import: <code>spmkit.core.analysis:integrate_force_work</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Force work integration)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Force integrated over tip-sample separation on the common overlap domain (contact to min of maxima); monotone interpolation; trapezoidal arithmetic; work of adhesion = retract integral; hysteresis = approach - retract; units J; INSUFFICIENT_OVERLAP and NONMONOTONIC_COORDINATE typed failures.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: J</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>curve</code> (positional, required) — Force curve.</li>
+<li><code>contact</code> (positional, required) — Contact point result.</li>
+<li>
+<p><code>domain</code> (keyword_only, 'tip_position' values=['tip_position', 'height']) — Integration domain.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.json</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_phantoms_reference.npz</code></li>
+<li><code>tests/validation/fixtures/force_foundation/force_foundation_reference.json</code></li>
+<li><code>tests/validation/test_force_foundation_validation.py</code></li>
+<li>
+<p><code>tests/core/test_force_foundation.py</code></p>
+</li>
+<li>
+<p>known deviations:</p>
+</li>
+<li>real tip-sample separation is often non-monotone; the operation raises NONMONOTONIC_COORDINATE instead of fabricating a value</li>
+</ul>
+<h2 id="forceworkpath_integrate">FORCE.WORK.PATH_INTEGRATE<a class="headerlink" href="#forceworkpath_integrate" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>force.work.path_integrate</code></li>
+<li>public_name: <code>integrate_force_path_work</code></li>
+<li>public_import: <code>spmkit.core.analysis:integrate_force_path_work</code></li>
+<li>family: FORCE</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Acquisition-path force work)</li>
+<li>
+<p>evidence profile: <code>NUMERICALLY_VERIFIED_NATIVE_PHANTOM_ORACLE</code></p>
+</li>
+<li>
+<p>contract: Signed path work over a single trajectory in acquisition order: W = sum_i 0.5<em>(F_i+F_{i+1})</em>(z_{i+1}-z_i) with deterministic float64 accumulation; signed dz retained (local reversals and closed loops contribute their signed path work; repeated coordinates contribute zero; translation-invariant; acquisition reversal flips sign); no sorting, no abs(), no smoothing, no point deletion; complete CoordinatePathDiagnostics; classification_tolerance only classifies (direction, reversal counts), never alters the integral; NONFINITE_DATA, LENGTH_MISMATCH, INSUFFICIENT_SAMPLES, MISSING_COORDINATE typed failures.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: object</li>
+<li>
+<p>units: J</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>coordinate</code> (positional, required) — Coordinate axis (e.g. tip-sample separation) in acquisition order.</li>
+<li><code>force</code> (positional, required) — Calibrated force samples (same length as coordinate).</li>
+<li><code>coordinate_unit</code> (keyword_only, 'm') — Coordinate unit label.</li>
+<li><code>force_unit</code> (keyword_only, 'N') — Force unit label.</li>
+<li><code>classification_tolerance</code> (keyword_only, '0.0') — Classification-only tolerance in SI coordinate units (never used to alter the integral).</li>
+<li>
+<p><code>provenance</code> (keyword_only, None) — Provenance metadata.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li>
+<p><code>tests/core/test_force_path_work.py</code></p>
+</li>
+<li>
+<p>known deviations:</p>
+</li>
+<li>path work is a path integral, not thermodynamic work; closed/ambiguous paths warn and split forward/backward contributions by step sign</li>
+<li>absolute_accumulated_work is not dissipation energy</li>
+</ul>
+<h2 id="imgfiltergaussian">IMG.FILTER.GAUSSIAN<a class="headerlink" href="#imgfiltergaussian" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>img.filter.gaussian</code></li>
+<li>public_name: <code>gwyddion_gaussian_filter</code></li>
+<li>public_import: <code>spmkit.core.analysis:gwyddion_gaussian_filter</code></li>
+<li>family: IMG.FILTER</li>
+<li>maturity: CROSS_VALIDATED</li>
+<li>status: stable</li>
+<li>reference: Gwydion 2.71 (Gaussian Filter)</li>
+<li>
+<p>evidence profile: <code>COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION</code></p>
+</li>
+<li>
+<p>contract: Separable Gaussian smoothing with sigma in pixels; kernel resolution 2<em>ceil(5</em>sigma)+1 capped at 3*min(xres,yres) and forced odd; mirror borders; horizontal-then-vertical passes; sequential-sum reciprocal normalization (not forced to exactly 1.0).</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: mirror</li>
+<li>mutation: returns_new</li>
+<li>result: SPMChannel</li>
+<li>
+<p>units: preserved</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>channel</code> (positional, required) — Finite two-dimensional input channel.</li>
+<li>
+<p><code>sigma</code> (keyword_only, 5.0 bounds=[0.01, 40.0]) — Gaussian standard deviation in pixels.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/gwyddion/neighborhood_filters/neighborhood_filters_reference.json</code></li>
+<li><code>tests/validation/fixtures/gwyddion/neighborhood_filters/neighborhood_filters_reference.npz</code></li>
+<li><code>tests/validation/test_gwyddion_neighborhood_filters_production_parity.py</code></li>
+<li>
+<p><code>tests/core/test_gwyddion_neighborhood_filters.py</code></p>
+</li>
+<li>
+<p>known deviations:</p>
+</li>
+<li>Gaussian constant-field preservation is not bitwise guaranteed; kernel-normalization rounding (~1e-15) is preserved.</li>
+</ul>
+<h2 id="imgfiltergradient_direction">IMG.FILTER.GRADIENT_DIRECTION<a class="headerlink" href="#imgfiltergradient_direction" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>img.filter.gradient_direction</code></li>
+<li>public_name: <code>gradient_direction</code></li>
+<li>public_import: <code>spmkit.core.analysis:gradient_direction</code></li>
+<li>family: IMG.FILTER</li>
+<li>maturity: NUMERICALLY_VERIFIED</li>
+<li>status: stable</li>
+<li>reference: SPMKit native (Gradient Direction (native analytical composite))</li>
+<li>
+<p>evidence profile: <code>NATIVE_SPMKIT_ANALYTICAL_COMPOSITE</code></p>
+</li>
+<li>
+<p>contract: Native gradient direction atan2(gy, gx) over explicit required component fields; radians; range (-pi, pi]; C99 signed-zero axes; zero vector -&gt; +0.0; output unit rad; native analytical composite, not a Gwydion parity target; components never mutated.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: clipped</li>
+<li>mutation: returns_new</li>
+<li>result: SPMChannel</li>
+<li>
+<p>units: rad</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>gx</code> (positional, required) — Horizontal derivative component field (finite 2D SPMChannel).</li>
+<li>
+<p><code>gy</code> (positional, required) — Vertical derivative component field (finite 2D SPMChannel).</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.json</code></li>
+<li><code>tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.npz</code></li>
+<li><code>tests/validation/fixtures/gwyddion/derivative_filters/oracle_gradient_direction_native.py</code></li>
+<li><code>tests/validation/test_gwyddion_derivative_filters_production_parity.py</code></li>
+<li>
+<p><code>tests/core/test_gwyddion_derivative_filters.py</code></p>
+</li>
+<li>
+<p>known deviations:</p>
+</li>
+<li>numpy.arctan2 may differ from the compiled C atan2 profile by up to ~1 ULP on some inputs; characterized by parity tests, not bitwise parity.</li>
+</ul>
+<h2 id="imgfiltergradient_magnitude">IMG.FILTER.GRADIENT_MAGNITUDE<a class="headerlink" href="#imgfiltergradient_magnitude" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>img.filter.gradient_magnitude</code></li>
+<li>public_name: <code>gwyddion_gradient_magnitude</code></li>
+<li>public_import: <code>spmkit.core.analysis:gwyddion_gradient_magnitude</code></li>
+<li>family: IMG.FILTER</li>
+<li>maturity: CROSS_VALIDATED</li>
+<li>status: stable</li>
+<li>reference: Gwydion 2.71 (Gradient Magnitude (hypot of component fields))</li>
+<li>
+<p>evidence profile: <code>COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_DERIVATIVE_KERNEL_PROFILE</code></p>
+</li>
+<li>
+<p>contract: Gradient magnitude hypot(gx, gy) over explicit required component fields; reproduces the frozen hypot-of-fields orchestration; overflow/underflow-safe; +0.0 for all signed-zero component combinations; component unit retained; components never mutated.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: clipped</li>
+<li>mutation: returns_new</li>
+<li>result: SPMChannel</li>
+<li>
+<p>units: preserved</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>gx</code> (positional, required) — Horizontal derivative component field (finite 2D SPMChannel).</li>
+<li>
+<p><code>gy</code> (positional, required) — Vertical derivative component field (finite 2D SPMChannel).</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.json</code></li>
+<li><code>tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.npz</code></li>
+<li><code>tests/validation/test_gwyddion_derivative_filters_production_parity.py</code></li>
+<li>
+<p><code>tests/core/test_gwyddion_derivative_filters.py</code></p>
+</li>
+<li>
+<p>known deviations:</p>
+</li>
+<li>Bitwise parity is bounded to the frozen platform profile x86-64 / glibc / hypot@GLIBC_2.35; no cross-libc or cross-architecture bitwise guarantee; non-negativity and component-swap symmetry hold relationally on every platform.</li>
+</ul>
+<h2 id="imgfiltermedian">IMG.FILTER.MEDIAN<a class="headerlink" href="#imgfiltermedian" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>img.filter.median</code></li>
+<li>public_name: <code>gwyddion_median_filter</code></li>
+<li>public_import: <code>spmkit.core.analysis:gwyddion_median_filter</code></li>
+<li>family: IMG.FILTER</li>
+<li>maturity: CROSS_VALIDATED</li>
+<li>status: stable</li>
+<li>reference: Gwydion 2.71 (disc Median Filter)</li>
+<li>
+<p>evidence profile: <code>COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION</code></p>
+</li>
+<li>
+<p>contract: Disc median filter with footprint side <code>size</code> (2..31, even sizes valid); ellipse-inscribed footprint; upper median rank n//2; EXTEND nearest-constant borders.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: extend</li>
+<li>mutation: returns_new</li>
+<li>result: SPMChannel</li>
+<li>
+<p>units: preserved</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>channel</code> (positional, required) — Finite two-dimensional input channel.</li>
+<li>
+<p><code>size</code> (keyword_only, 5 bounds=[2, 31]) — Footprint side length (not a radius).</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/gwyddion/neighborhood_filters/neighborhood_filters_reference.json</code></li>
+<li><code>tests/validation/fixtures/gwyddion/neighborhood_filters/neighborhood_filters_reference.npz</code></li>
+<li><code>tests/validation/test_gwyddion_neighborhood_filters_production_parity.py</code></li>
+<li><code>tests/core/test_gwyddion_neighborhood_filters.py</code></li>
+</ul>
+<h2 id="imgfilterprewitt_x">IMG.FILTER.PREWITT_X<a class="headerlink" href="#imgfilterprewitt_x" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>img.filter.prewitt_x</code></li>
+<li>public_name: <code>gwyddion_prewitt_x</code></li>
+<li>public_import: <code>spmkit.core.analysis:gwyddion_prewitt_x</code></li>
+<li>family: IMG.FILTER</li>
+<li>maturity: CROSS_VALIDATED</li>
+<li>status: stable</li>
+<li>reference: Gwydion 2.71 (Prewitt X Filter)</li>
+<li>
+<p>evidence profile: <code>COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_DERIVATIVE_KERNEL_PROFILE</code></p>
+</li>
+<li>
+<p>contract: Prewitt X (horizontal) pixel-space derivative with the frozen 1/3 coefficients {1/3, 0, -1/3; 1/3, 0, -1/3; 1/3, 0, -1/3}; CLIPPED borders; frozen source sign and orientation; z-unit preserved; finite 2D inputs only; no masks or ROI.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: clipped</li>
+<li>mutation: returns_new</li>
+<li>result: SPMChannel</li>
+<li>
+<p>units: preserved</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li>
+<p><code>channel</code> (positional, required) — Finite two-dimensional input channel.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.json</code></li>
+<li><code>tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.npz</code></li>
+<li><code>tests/validation/fixtures/gwyddion/derivative_filters/oracle_derivative_filters_source.py</code></li>
+<li><code>tests/validation/test_gwyddion_derivative_filters_production_parity.py</code></li>
+<li><code>tests/core/test_gwyddion_derivative_filters.py</code></li>
+</ul>
+<h2 id="imgfilterprewitt_y">IMG.FILTER.PREWITT_Y<a class="headerlink" href="#imgfilterprewitt_y" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>img.filter.prewitt_y</code></li>
+<li>public_name: <code>gwyddion_prewitt_y</code></li>
+<li>public_import: <code>spmkit.core.analysis:gwyddion_prewitt_y</code></li>
+<li>family: IMG.FILTER</li>
+<li>maturity: CROSS_VALIDATED</li>
+<li>status: stable</li>
+<li>reference: Gwydion 2.71 (Prewitt Y Filter)</li>
+<li>
+<p>evidence profile: <code>COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_DERIVATIVE_KERNEL_PROFILE</code></p>
+</li>
+<li>
+<p>contract: Prewitt Y (vertical) pixel-space derivative with the frozen 1/3 coefficients {1/3, 1/3, 1/3; 0, 0, 0; -1/3, -1/3, -1/3}; CLIPPED borders; frozen source sign and orientation; z-unit preserved; finite 2D inputs only; no masks or ROI.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: clipped</li>
+<li>mutation: returns_new</li>
+<li>result: SPMChannel</li>
+<li>
+<p>units: preserved</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li>
+<p><code>channel</code> (positional, required) — Finite two-dimensional input channel.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.json</code></li>
+<li><code>tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.npz</code></li>
+<li><code>tests/validation/fixtures/gwyddion/derivative_filters/oracle_derivative_filters_source.py</code></li>
+<li><code>tests/validation/test_gwyddion_derivative_filters_production_parity.py</code></li>
+<li><code>tests/core/test_gwyddion_derivative_filters.py</code></li>
+</ul>
+<h2 id="imgfilterrank">IMG.FILTER.RANK<a class="headerlink" href="#imgfilterrank" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>img.filter.rank</code></li>
+<li>public_name: <code>gwyddion_rank_filter</code></li>
+<li>public_import: <code>spmkit.core.analysis:gwyddion_rank_filter</code></li>
+<li>family: IMG.FILTER</li>
+<li>maturity: CROSS_VALIDATED</li>
+<li>status: stable</li>
+<li>reference: Gwydion 2.71 (Rank Filter)</li>
+<li>
+<p>evidence profile: <code>COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION</code></p>
+</li>
+<li>
+<p>contract: Rank filter with pixel radius (1..1024); ellipse-inscribed footprint in a 2<em>radius+1 square; rank GWY_ROUND(percentile</em>(n-1)); k=0/k=n-1 minimum/maximum endpoint dispatch; EXTEND borders. Public v1 exposes the primary percentile result only.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: extend</li>
+<li>mutation: returns_new</li>
+<li>result: SPMChannel</li>
+<li>
+<p>units: preserved</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>channel</code> (positional, required) — Finite two-dimensional input channel.</li>
+<li><code>radius</code> (keyword_only, 20 bounds=[1, 1024]) — Pixel radius of the footprint.</li>
+<li>
+<p><code>percentile</code> (keyword_only, 0.75 bounds=[0.0, 1.0]) — Percentile selecting the rank.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/gwyddion/neighborhood_filters/neighborhood_filters_reference.json</code></li>
+<li><code>tests/validation/fixtures/gwyddion/neighborhood_filters/neighborhood_filters_reference.npz</code></li>
+<li><code>tests/validation/test_gwyddion_neighborhood_filters_production_parity.py</code></li>
+<li>
+<p><code>tests/core/test_gwyddion_neighborhood_filters.py</code></p>
+</li>
+<li>
+<p>known deviations:</p>
+</li>
+<li>Private secondary/both/difference Rank output modes are retained in diagnostics but not exposed publicly in v1.</li>
+</ul>
+<h2 id="imgfiltersobel_x">IMG.FILTER.SOBEL_X<a class="headerlink" href="#imgfiltersobel_x" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>img.filter.sobel_x</code></li>
+<li>public_name: <code>gwyddion_sobel_x</code></li>
+<li>public_import: <code>spmkit.core.analysis:gwyddion_sobel_x</code></li>
+<li>family: IMG.FILTER</li>
+<li>maturity: CROSS_VALIDATED</li>
+<li>status: stable</li>
+<li>reference: Gwydion 2.71 (Sobel X Filter)</li>
+<li>
+<p>evidence profile: <code>COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_DERIVATIVE_KERNEL_PROFILE</code></p>
+</li>
+<li>
+<p>contract: Sobel X (horizontal) pixel-space derivative: kernel {0.25, 0, -0.25; 0.5, 0, -0.5; 0.25, 0, -0.25}; CLIPPED borders; frozen source sign (increasing-right X ramp gives negative response), orientation and accumulation order; z-unit preserved; finite 2D inputs only; no masks or ROI.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: clipped</li>
+<li>mutation: returns_new</li>
+<li>result: SPMChannel</li>
+<li>
+<p>units: preserved</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li>
+<p><code>channel</code> (positional, required) — Finite two-dimensional input channel.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.json</code></li>
+<li><code>tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.npz</code></li>
+<li><code>tests/validation/fixtures/gwyddion/derivative_filters/oracle_derivative_filters_source.py</code></li>
+<li><code>tests/validation/test_gwyddion_derivative_filters_production_parity.py</code></li>
+<li><code>tests/core/test_gwyddion_derivative_filters.py</code></li>
+</ul>
+<h2 id="imgfiltersobel_y">IMG.FILTER.SOBEL_Y<a class="headerlink" href="#imgfiltersobel_y" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>img.filter.sobel_y</code></li>
+<li>public_name: <code>gwyddion_sobel_y</code></li>
+<li>public_import: <code>spmkit.core.analysis:gwyddion_sobel_y</code></li>
+<li>family: IMG.FILTER</li>
+<li>maturity: CROSS_VALIDATED</li>
+<li>status: stable</li>
+<li>reference: Gwydion 2.71 (Sobel Y Filter)</li>
+<li>
+<p>evidence profile: <code>COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_DERIVATIVE_KERNEL_PROFILE</code></p>
+</li>
+<li>
+<p>contract: Sobel Y (vertical) pixel-space derivative: kernel {0.25, 0.5, 0.25; 0, 0, 0; -0.25, -0.5, -0.25}; CLIPPED borders; frozen source sign (increasing-down Y ramp gives negative response), orientation and accumulation order; z-unit preserved; finite 2D inputs only; no masks or ROI.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: clipped</li>
+<li>mutation: returns_new</li>
+<li>result: SPMChannel</li>
+<li>
+<p>units: preserved</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li>
+<p><code>channel</code> (positional, required) — Finite two-dimensional input channel.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.json</code></li>
+<li><code>tests/validation/fixtures/gwyddion/derivative_filters/derivative_filters_reference.npz</code></li>
+<li><code>tests/validation/fixtures/gwyddion/derivative_filters/oracle_derivative_filters_source.py</code></li>
+<li><code>tests/validation/test_gwyddion_derivative_filters_production_parity.py</code></li>
+<li><code>tests/core/test_gwyddion_derivative_filters.py</code></li>
+</ul>
+<h2 id="imginterpolationlaplace_under_mask">IMG.INTERPOLATION.LAPLACE_UNDER_MASK<a class="headerlink" href="#imginterpolationlaplace_under_mask" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>img.interpolation.laplace_under_mask</code></li>
+<li>public_name: <code>gwydion_interpolate_data_under_mask</code></li>
+<li>public_import: <code>spmkit.core.analysis:gwydion_interpolate_data_under_mask</code></li>
+<li>family: IMG.INTERPOLATION</li>
+<li>maturity: CROSS_VALIDATED</li>
+<li>status: stable</li>
+<li>reference: Gwydion 2.71 (Interpolate Data Under Mask (Laplace))</li>
+<li>
+<p>evidence profile: <code>COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION</code></p>
+</li>
+<li>
+<p>contract: Laplace-based interpolation of masked regions; the mask selects pixels to replace; finite two-dimensional input.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: mask_input</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: SPMChannel</li>
+<li>
+<p>units: preserved</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>channel</code> (positional, required) — Finite two-dimensional input channel.</li>
+<li>
+<p><code>mask</code> (positional, required) — Mask array selecting pixels to interpolate.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/gwydion/scars_laplace/scars_laplace_reference.json</code></li>
+<li><code>tests/validation/fixtures/gwydion/scars_laplace/scars_laplace_reference.npz</code></li>
+<li><code>tests/validation/test_gwydion_laplace_production_parity.py</code></li>
+</ul>
+<h2 id="imglevelalign_rows_match">IMG.LEVEL.ALIGN_ROWS_MATCH<a class="headerlink" href="#imglevelalign_rows_match" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>img.level.align_rows_match</code></li>
+<li>public_name: <code>gwyddion_align_rows_match</code></li>
+<li>public_import: <code>spmkit.core.analysis:gwyddion_align_rows_match</code></li>
+<li>family: IMG.LEVEL</li>
+<li>maturity: CROSS_VALIDATED</li>
+<li>status: stable</li>
+<li>reference: Gwydion 2.71 (Align Rows Match)</li>
+<li>
+<p>evidence profile: <code>COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION</code></p>
+</li>
+<li>
+<p>contract: Align Rows Match: adjacent-row shape matching with Gaussian-weighted differences of row differences, cumulative zero-levelled shifts, zero-weight guard (pure vertical offsets may remain uncorrected).</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: include_exclude_ignore</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: SPMChannel</li>
+<li>
+<p>units: preserved</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>channel</code> (positional, required) — Finite two-dimensional input channel.</li>
+<li><code>mask</code> (keyword_only, None) — Optional mask matching the channel shape.</li>
+<li><code>mask_mode</code> (keyword_only, 'ignore' values=['exclude', 'include', 'ignore']) — Masking mode.</li>
+<li>
+<p><code>direction</code> (keyword_only, 'horizontal' values=['horizontal', 'vertical']) — Row direction.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/gwyddion/align_rows_remaining/align_rows_remaining_reference.json</code></li>
+<li><code>tests/validation/fixtures/gwyddion/align_rows_remaining/align_rows_remaining_reference.npz</code></li>
+<li><code>tests/validation/test_gwydion_align_rows_remaining_production_parity.py</code></li>
+</ul>
+<h2 id="imglevelalign_rows_modus">IMG.LEVEL.ALIGN_ROWS_MODUS<a class="headerlink" href="#imglevelalign_rows_modus" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>img.level.align_rows_modus</code></li>
+<li>public_name: <code>gwyddion_align_rows_modus</code></li>
+<li>public_import: <code>spmkit.core.analysis:gwyddion_align_rows_modus</code></li>
+<li>family: IMG.LEVEL</li>
+<li>maturity: CROSS_VALIDATED</li>
+<li>status: stable</li>
+<li>reference: Gwydion 2.71 (Align Rows Modus)</li>
+<li>
+<p>evidence profile: <code>COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION</code></p>
+</li>
+<li>
+<p>contract: Align Rows Modus: robust row-centre statistic (global masked-median fallback, upper median for fewer than nine retained samples, narrowest sqrt-count range window otherwise), zero-levelled shifts.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: include_exclude_ignore</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: SPMChannel</li>
+<li>
+<p>units: preserved</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>channel</code> (positional, required) — Finite two-dimensional input channel.</li>
+<li><code>mask</code> (keyword_only, None) — Optional mask matching the channel shape.</li>
+<li><code>mask_mode</code> (keyword_only, 'ignore' values=['exclude', 'include', 'ignore']) — Masking mode.</li>
+<li>
+<p><code>direction</code> (keyword_only, 'horizontal' values=['horizontal', 'vertical']) — Row direction.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/gwyddion/align_rows_remaining/align_rows_remaining_reference.json</code></li>
+<li><code>tests/validation/fixtures/gwyddion/align_rows_remaining/align_rows_remaining_reference.npz</code></li>
+<li><code>tests/validation/test_gwydion_align_rows_remaining_production_parity.py</code></li>
+</ul>
+<h2 id="imglevelalign_rows_polynomial">IMG.LEVEL.ALIGN_ROWS_POLYNOMIAL<a class="headerlink" href="#imglevelalign_rows_polynomial" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>img.level.align_rows_polynomial</code></li>
+<li>public_name: <code>gwyddion_align_rows_polynomial</code></li>
+<li>public_import: <code>spmkit.core.analysis:gwyddion_align_rows_polynomial</code></li>
+<li>family: IMG.LEVEL</li>
+<li>maturity: CROSS_VALIDATED</li>
+<li>status: stable</li>
+<li>reference: Gwydion 2.71 (Align Rows Polynomial)</li>
+<li>
+<p>evidence profile: <code>COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION</code></p>
+</li>
+<li>
+<p>contract: Align Rows Polynomial: degree 0 uses the trim-fraction-zero row-shift path; degree &gt;=1 fits each row independently on centred x with a packed Cholesky solve and full-field mean anchoring.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: include_exclude_ignore</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: SPMChannel</li>
+<li>
+<p>units: preserved</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>channel</code> (positional, required) — Finite two-dimensional input channel.</li>
+<li><code>degree</code> (keyword_only, 1 bounds=[0, 5]) — Polynomial degree.</li>
+<li><code>mask</code> (keyword_only, None) — Optional mask matching the channel shape.</li>
+<li><code>mask_mode</code> (keyword_only, 'ignore' values=['exclude', 'include', 'ignore']) — Masking mode.</li>
+<li>
+<p><code>direction</code> (keyword_only, 'horizontal' values=['horizontal', 'vertical']) — Row direction.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/gwyddion/align_rows_remaining/align_rows_remaining_reference.json</code></li>
+<li><code>tests/validation/fixtures/gwyddion/align_rows_remaining/align_rows_remaining_reference.npz</code></li>
+<li><code>tests/validation/test_gwydion_align_rows_remaining_production_parity.py</code></li>
+</ul>
+<h2 id="imgscanlinemark_scars">IMG.SCANLINE.MARK_SCARS<a class="headerlink" href="#imgscanlinemark_scars" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>img.scanline.mark_scars</code></li>
+<li>public_name: <code>gwydion_mark_scars</code></li>
+<li>public_import: <code>spmkit.core.analysis:gwydion_mark_scars</code></li>
+<li>family: IMG.SCANLINE</li>
+<li>maturity: CROSS_VALIDATED</li>
+<li>status: stable</li>
+<li>reference: Gwydion 2.71 (Mark Scars)</li>
+<li>
+<p>evidence profile: <code>COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION</code></p>
+</li>
+<li>
+<p>contract: Detect and mark scan-line scars, returning a mask array; threshold and geometry parameters follow the frozen Gwydion contract.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: mask_output</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: ndarray</li>
+<li>
+<p>units: mask</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>channel</code> (positional, required) — Finite two-dimensional input channel.</li>
+<li><code>threshold_high</code> (keyword_only, 0.666) — High threshold.</li>
+<li><code>threshold_low</code> (keyword_only, 0.25) — Low threshold.</li>
+<li><code>min_length</code> (keyword_only, 16) — Minimum scar length.</li>
+<li><code>max_width</code> (keyword_only, 4) — Maximum scar width.</li>
+<li><code>polarity</code> (keyword_only, 'both' values=['positive', 'negative', 'both']) — Scar polarity.</li>
+<li><code>existing_mask</code> (keyword_only, None) — Optional existing mask.</li>
+<li>
+<p><code>combine</code> (keyword_only, 'replace' values=['replace', 'union', 'intersection']) — Mask combination mode.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/gwydion/scars_laplace/scars_laplace_reference.json</code></li>
+<li><code>tests/validation/fixtures/gwydion/scars_laplace/scars_laplace_reference.npz</code></li>
+<li><code>tests/validation/test_gwydion_mark_scars_production_parity.py</code></li>
+</ul>
+<h2 id="imgscanlineremove_scars">IMG.SCANLINE.REMOVE_SCARS<a class="headerlink" href="#imgscanlineremove_scars" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>img.scanline.remove_scars</code></li>
+<li>public_name: <code>gwydion_remove_scars</code></li>
+<li>public_import: <code>spmkit.core.analysis:gwydion_remove_scars</code></li>
+<li>family: IMG.SCANLINE</li>
+<li>maturity: CROSS_VALIDATED</li>
+<li>status: stable</li>
+<li>reference: Gwydion 2.71 (Remove Scars)</li>
+<li>
+<p>evidence profile: <code>COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION</code></p>
+</li>
+<li>
+<p>contract: Detect and remove scan-line scars, returning a corrected channel; threshold and geometry parameters follow the frozen Gwydion contract.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: SPMChannel</li>
+<li>
+<p>units: preserved</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>channel</code> (positional, required) — Finite two-dimensional input channel.</li>
+<li><code>threshold_high</code> (keyword_only, 0.666) — High threshold.</li>
+<li><code>threshold_low</code> (keyword_only, 0.25) — Low threshold.</li>
+<li><code>min_length</code> (keyword_only, 16) — Minimum scar length.</li>
+<li><code>max_width</code> (keyword_only, 4) — Maximum scar width.</li>
+<li>
+<p><code>polarity</code> (keyword_only, 'both' values=['positive', 'negative', 'both']) — Scar polarity.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/gwydion/scars_laplace/scars_laplace_reference.json</code></li>
+<li><code>tests/validation/fixtures/gwydion/scars_laplace/scars_laplace_reference.npz</code></li>
+<li><code>tests/validation/test_gwydion_remove_scars_production_parity.py</code></li>
+</ul>
+<h2 id="imgscanlinestep_block_correction">IMG.SCANLINE.STEP_BLOCK_CORRECTION<a class="headerlink" href="#imgscanlinestep_block_correction" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>img.scanline.step_block_correction</code></li>
+<li>public_name: <code>gwydion_step_block_correction</code></li>
+<li>public_import: <code>spmkit.core.analysis:gwydion_step_block_correction</code></li>
+<li>family: IMG.SCANLINE</li>
+<li>maturity: CROSS_VALIDATED</li>
+<li>status: stable</li>
+<li>reference: Gwydion 2.71 (Step Block Correction)</li>
+<li>
+<p>evidence profile: <code>COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION</code></p>
+</li>
+<li>
+<p>contract: Correct step-block artefacts in scan lines; threshold and direction parameters follow the frozen Gwydion contract.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: SPMChannel</li>
+<li>
+<p>units: preserved</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li><code>channel</code> (positional, required) — Finite two-dimensional input channel.</li>
+<li><code>threshold</code> (keyword_only, 2.0) — Step detection threshold.</li>
+<li>
+<p><code>direction</code> (keyword_only, 'left_to_right' values=['left_to_right', 'right_to_left']) — Scan direction.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/gwydion/step_block/step_block_reference.json</code></li>
+<li><code>tests/validation/fixtures/gwydion/step_block/step_block_reference.npz</code></li>
+<li><code>tests/validation/test_gwydion_step_block_production_parity.py</code></li>
+</ul>
+<h2 id="imgscanlinestep_line_correction">IMG.SCANLINE.STEP_LINE_CORRECTION<a class="headerlink" href="#imgscanlinestep_line_correction" title="Permanent link">&para;</a></h2>
+<ul>
+<li>operation_id: <code>img.scanline.step_line_correction</code></li>
+<li>public_name: <code>gwydion_step_line_correction</code></li>
+<li>public_import: <code>spmkit.core.analysis:gwydion_step_line_correction</code></li>
+<li>family: IMG.SCANLINE</li>
+<li>maturity: CROSS_VALIDATED</li>
+<li>status: stable</li>
+<li>reference: Gwydion 2.71 (Step Line Correction)</li>
+<li>
+<p>evidence profile: <code>COMPILED_GWYDDION_2_71_SOURCE_INCLUDED_KERNEL_WITH_SOURCE_PINNED_ORCHESTRATION</code></p>
+</li>
+<li>
+<p>contract: Correct step-line artefacts in scan lines; no parameters beyond the input channel.</p>
+</li>
+<li>
+<p>semantics:</p>
+</li>
+<li>mask: none</li>
+<li>ROI: no</li>
+<li>NaN policy: reject</li>
+<li>border: not_applicable</li>
+<li>mutation: returns_new</li>
+<li>result: SPMChannel</li>
+<li>
+<p>units: preserved</p>
+</li>
+<li>
+<p>parameters:</p>
+</li>
+<li>
+<p><code>channel</code> (positional, required) — Finite two-dimensional input channel.</p>
+</li>
+<li>
+<p>evidence:</p>
+</li>
+<li><code>tests/validation/fixtures/gwydion/linecorrect/linecorrect_reference.json</code></li>
+<li><code>tests/validation/fixtures/gwydion/linecorrect/linecorrect_reference.npz</code></li>
+<li><code>tests/validation/test_gwydion_linecorrect_production_parity.py</code></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  <div class="spm-footer-signature" aria-label="Pharos Project signature">
+    <span class="spm-footer-rule">┌─</span>
+    <strong>│ Pharos Project</strong>
+    <span>│ José Labarca Baeza</span>
+    <span>└─ USM · Valparaíso · Chile</span>
+  </div>
+  
+    <div class="md-copyright__highlight">Copyright © José Labarca Baeza · MIT-licensed software and documentation</div>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/kegouro/spmkit" target="_blank" rel="noopener" title="SPM-Kit on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://kegouro.github.io" target="_blank" rel="noopener" title="Pharos Project" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8 10V8h1V4H8V3l4-2 4 2v1h-1v4h1v2h-1.26l-6.3 3.64L9 10zm5-2V4h-2v4zM7 23l.04-.24 9.11-5.26.52 3.38L13 23zm1.05-6.83L15.31 12l.52 3.37-8.4 4.85z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.indexes", "navigation.top", "navigation.footer", "toc.integrate", "search.suggest", "search.highlight", "content.code.copy", "content.code.select", "content.tabs.link", "content.tooltips"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="../../javascripts/accessibility.js"></script>
+      
+    
+  </body>
+</html>

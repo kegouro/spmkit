@@ -2486,7 +2486,7 @@ of reach. Replace example paths with files you are authorized to use.</p>
 <h2 id="workflow-a-analyze-an-experimental-file">Workflow A: analyze an experimental file<a class="headerlink" href="#workflow-a-analyze-an-experimental-file" title="Permanent link">&para;</a></h2>
 <p><strong>Components:</strong> SPM-Kit Core + Fathom
 <strong>Prerequisite:</strong> a supported file with known source, rights, channel semantics and calibration context.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;spmkit[gui] @ git+https://github.com/kegouro/spmkit@main&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"spmkit[gui] @ git+https://github.com/kegouro/spmkit@main"</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>spmkit<span class="w"> </span>info<span class="w"> </span>scan.nid
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>spmkit<span class="w"> </span>analyze<span class="w"> </span>scan.nid<span class="w"> </span>--channel<span class="w"> </span>Z-Axis<span class="w"> </span>--level<span class="w"> </span>plane<span class="w"> </span>--output<span class="w"> </span>results/
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>spmkit<span class="w"> </span>gui<span class="w"> </span>scan.nid
@@ -2514,7 +2514,7 @@ project/figure/report depending on the selected route.
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>spmkit-validation<span class="w"> </span>campaign<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span>spmkit-validation/campaigns/smoke_v0.1.yaml<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span>validation-runs/<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span>--spmkit<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">command</span><span class="w"> </span>-v<span class="w"> </span>spmkit<span class="k">)</span><span class="s2">&quot;</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span>--spmkit<span class="w"> </span><span class="s2">"</span><span class="k">$(</span><span class="nb">command</span><span class="w"> </span>-v<span class="w"> </span>spmkit<span class="k">)</span><span class="s2">"</span>
 </span></code></pre></div>
 <ol>
 <li>Record the analytical surface and expected clean Sa/Sq/Sz.</li>

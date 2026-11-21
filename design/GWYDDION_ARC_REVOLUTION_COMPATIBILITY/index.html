@@ -2489,7 +2489,7 @@ before writing the corrected field.</p>
     channel: SPMChannel,
     radius_px: float = 20.0,
     *,
-    direction: GwyddionArcDirection = &quot;horizontal&quot;,
+    direction: GwyddionArcDirection = "horizontal",
     inverted: bool = False,
 ) -&gt; SPMChannel
 
@@ -2497,7 +2497,7 @@ remove_gwyddion_arc_revolution_background(
     channel: SPMChannel,
     radius_px: float = 20.0,
     *,
-    direction: GwyddionArcDirection = &quot;horizontal&quot;,
+    direction: GwyddionArcDirection = "horizontal",
     inverted: bool = False,
 ) -&gt; SPMChannel
 
@@ -2505,7 +2505,7 @@ analyze_gwyddion_arc_revolution_background(
     channel: SPMChannel,
     radius_px: float = 20.0,
     *,
-    direction: GwyddionArcDirection = &quot;horizontal&quot;,
+    direction: GwyddionArcDirection = "horizontal",
     inverted: bool = False,
 ) -&gt; BackgroundResult
 </code></pre></div>
@@ -2548,13 +2548,13 @@ background.</p>
 <li>non-mutating.</li>
 </ul>
 <p>Structured results use:</p>
-<div class="language-text highlight"><pre><span></span><code>method = &quot;gwyddion_arc_revolution&quot;
+<div class="language-text highlight"><pre><span></span><code>method = "gwyddion_arc_revolution"
 </code></pre></div>
 <p>and record effective runtime parameters only:</p>
 <div class="language-text highlight"><pre><span></span><code>{
-    &quot;radius_px&quot;: 20.0,
-    &quot;direction&quot;: &quot;horizontal&quot;,
-    &quot;inverted&quot;: False,
+    "radius_px": 20.0,
+    "direction": "horizontal",
+    "inverted": False,
 }
 </code></pre></div>
 <p>Reference versions, hashes, defects, tolerances and maturity remain in
