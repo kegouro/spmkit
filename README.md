@@ -20,7 +20,7 @@
 
 > **Validación externa:** Sa, Sq y Sz fueron contrastados mediante un protocolo congelado contra Gwyddion 2.71: 18/18 comparaciones conformes sobre seis superficies sintéticas. Alcance limitado, `LEVEL 3 CROSS_VALIDATED`. Véase el [registro canónico de la campaña](https://github.com/kegouro/spmkit-validation/blob/2a3d6c780722a79cb19c079cec0476969267b10b/evidence/phase01e-gwyddion/gate-results.json).
 >
-> **Cobertura de verificación:** 741 tests automatizados únicos, además de 18 comparaciones cruzadas externas de Sa, Sq y Sz contra Gwyddion 2.71.
+> **Cobertura de verificación:** véase el [registro fechado de consolidación](docs/ecosystem/consolidation-20261121.md): 2244 pruebas no gráficas aprobadas en la base integrada, verificaciones posteriores focalizadas y una suite GUI separada. Las comparaciones externas tienen alcance y tolerancias propios; no constituyen validación física general.
 
 [Sinopsis](#sinopsis) · [Características](#características) · [Perspectivas](#galería-de-perspectivas) · [Instalación](#instalación) · [Tutoriales](#tutoriales) · [Arquitectura](#arquitectura) · [Extender](#extensibilidad) · [Validación](#validación-científica)
 
@@ -483,7 +483,7 @@ Al instalar tu plugin, la perspectiva aparece en la barra de Fathom **sin modifi
 
 ## Validación científica
 
-La rigurosidad es el pilar del proyecto. Cada modelo físico pasa un ***gate* de recuperación numérica**: se generan datos sintéticos con parámetros conocidos y ruido controlado, y el ajuste debe recuperarlos dentro de tolerancia **o no entra al repositorio** ([`tests/validation/test_recovery.py`](tests/validation/test_recovery.py)).
+Los modelos cuentan con pruebas de recuperación numérica de alcance específico: se generan datos sintéticos con parámetros conocidos y ruido controlado, y se comparan los ajustes dentro de tolerancias declaradas. El nivel de evidencia de cada capacidad se registra por separado ([`tests/validation/test_recovery.py`](tests/validation/test_recovery.py)).
 
 | Modelo / análisis | Se recupera | Tolerancia |
 |-------------------|-------------|-----------|
@@ -541,7 +541,7 @@ corresponde al parser Nanoscope general. Véase el
 
 ```bash
 make dev        # instalación editable con extras dev + gui + hdf5 y hooks de pre-commit
-make check      # lint + tipos + pruebas — exactamente lo que corre CI
+make check      # lint + tipos + pruebas; CI añade formato, GUI y documentación
 make gui        # lanza Fathom
 ```
 
