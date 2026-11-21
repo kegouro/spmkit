@@ -50,3 +50,10 @@ provenance, not instrument calibration or physical validation.
 Companion packages stay independent. Frozen Gwyddion executable campaigns need
 their own platform-specific reference build; archived Linux ELF helpers cannot
 run on macOS. See [consolidation](../ecosystem/consolidation-20261121.md).
+
+
+NumPy minimum correction: the recovered and existing force, SMFS, simulation
+and resonance paths use `numpy.trapezoid`, introduced in NumPy 2.0. Metadata
+now requires NumPy >=2.0 instead of advertising the incompatible >=1.24 lower
+bound. Python >=3.11 remains unchanged. This is an API-availability requirement,
+not a numerical validation claim for every NumPy release.

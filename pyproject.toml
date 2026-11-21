@@ -24,7 +24,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Image Processing",
 ]
 dependencies = [
-    "numpy>=1.24",
+    "numpy>=2.0",  # np.trapezoid is used by force/resonance/SMFS integration
     "scipy>=1.14",
     "typer>=0.12",
     "rich>=13.0",

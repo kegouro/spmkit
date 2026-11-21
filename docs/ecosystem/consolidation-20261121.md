@@ -110,3 +110,10 @@ SMFS regression: 58 passed in 74.41 s. Final wheel-only install imports the
 native IBW reader without a source checkout. GitHub main advanced without
 rewriting history from `3eba2ca` to `d9c8b28` before this verification-record
 commit. Both integration and main branches preserve the original ancestry.
+
+
+NumPy minimum correction: the recovered and existing force, SMFS, simulation
+and resonance paths use `numpy.trapezoid`, introduced in NumPy 2.0. Metadata
+now requires NumPy >=2.0 instead of advertising the incompatible >=1.24 lower
+bound. Python >=3.11 remains unchanged. This is an API-availability requirement,
+not a numerical validation claim for every NumPy release.

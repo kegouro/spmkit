@@ -2,6 +2,8 @@
 
 ## Ecosystem consolidation (2026-11-21, 0.1.5.dev0)
 
+Correct the NumPy minimum to 2.0 because force/resonance/SMFS code uses np.trapezoid (absent in NumPy 1.x). Python minimum remains 3.11.
+
 Recovered the limited native IBW v5 image reader and KPFM/NHF input guards. Recovered Gwyddion leveling/filter capabilities, force foundation/mechanics/viscoelasticity/SMFS/acquisition work and JPK ForceScan 2 calibration from the local integration history. Restored CLI execution manifests with synthetic coverage and public-fixture licensing. Added portable installation guidance and reproducible development constraints. No general physical validation claim.
 
 Todos los cambios notables de este proyecto se documentan aquí.
