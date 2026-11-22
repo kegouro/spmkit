@@ -21,9 +21,12 @@ from PyQt6.QtWidgets import (
     QDockWidget,
     QLabel,
     QMainWindow,
+    QMenu,
     QSizePolicy,
     QStackedWidget,
+    QTabWidget,
     QToolBar,
+    QToolButton,
     QVBoxLayout,
     QWidget,
 )
@@ -94,7 +97,7 @@ class Workspace(QMainWindow):
     def __init__(
         self,
         panels: dict[str, Panel] | None = None,
-        mode: str = "dark",
+        mode: str = "light",
         extra_commands: list[Command] | None = None,
         persist: bool = False,
         perspectives: tuple[PerspectiveSpec, ...] = PERSPECTIVES,
@@ -116,7 +119,7 @@ class Workspace(QMainWindow):
         # Persistencia opt-in (los tests construyen sin persistir para no contaminar QSettings).
         self._settings: QSettings | None = QSettings("spmkit", "spmkit") if persist else None
         self._appearance = (
-            load_appearance(self._settings)
+            load_appearance(self._settings, default_mode=mode)
             if self._settings is not None
             else Appearance(theme=mode)
         )
@@ -139,6 +142,15 @@ class Workspace(QMainWindow):
         self._build_perspective_bar()
         self._guide = WorkspaceGuide(self)
         self._build_panels()
+        self.setTabPosition(Qt.DockWidgetArea.RightDockWidgetArea, QTabWidget.TabPosition.North)
+        rail = [
+            self._docks[k]
+            for k in ("inspector", "pipeline", "navigator")
+            if k in self._docks
+            and self.dockWidgetArea(self._docks[k]) == Qt.DockWidgetArea.RightDockWidgetArea
+        ]
+        for dock in rail[1:]:
+            self.tabifyDockWidget(rail[0], dock)
         self._commands = self._default_commands()
         self._install_shortcuts()
 
@@ -196,10 +208,26 @@ class Workspace(QMainWindow):
         wordmark.setObjectName("wordmark")
         self._file_bar.addWidget(wordmark)
         self._file_bar.addSeparator()
+        self._view_button = QToolButton()
+        self._view_button.setObjectName("viewSelector")
+        self._view_button.setAccessibleName("Vista de análisis")
+        self._view_button.setToolTip("Cambiar vista de análisis")
+        self._view_button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
+        self._view_menu = QMenu(self._view_button)
+        self._view_button.setMenu(self._view_menu)
+        self._file_bar.addWidget(self._view_button)
+        self._file_bar.addSeparator()
         spacer = QWidget()
         spacer.setObjectName("toolbarSpacer")
         spacer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         self._file_insert = self._file_bar.addWidget(spacer)
+        self._focus_action = self._file_bar.addAction("Solo lienzo")
+        self._focus_action.setCheckable(True)
+        self._focus_action.setShortcut(QKeySequence("F8"))
+        self._focus_action.setToolTip("Ocultar o recuperar los paneles laterales (F8)")
+        self._restore_docks: set[str] = set()
+        self._raised_docks: list[str] = []
+        self._focus_action.toggled.connect(self._toggle_focus)
         self._search_action = self._file_bar.addAction("Comandos", self.open_command_palette)
         self._appearance_action = self._file_bar.addAction("Apariencia", self.open_appearance)
         self._guide_action = self._file_bar.addAction("Guía", self.open_guide)
@@ -207,18 +235,12 @@ class Workspace(QMainWindow):
         self._appearance_action.setShortcut(QKeySequence("Ctrl+Shift+A"))
         self._search_action.setShortcut(QKeySequence("Ctrl+K"))
         self._open_action: QAction | None = None
-        self.addToolBarBreak()
-        bar = QToolBar("Perspectivas")
-        bar.setObjectName("perspectives")
-        bar.setMovable(False)
-        self.addToolBar(Qt.ToolBarArea.TopToolBarArea, bar)
-        self._persp_bar = bar
         self._persp_actions: dict[str, QAction] = {}
         for persp in self._perspectives:
             action = QAction(persp.label, self)
             action.setCheckable(True)
             action.triggered.connect(lambda _checked=False, k=persp.key: self.set_perspective(k))
-            bar.addAction(action)
+            self._view_menu.addAction(action)
             self._persp_actions[persp.key] = action
 
     def add_toolbar_action(
@@ -254,7 +276,7 @@ class Workspace(QMainWindow):
         steps.extend(
             [
                 (
-                    self._persp_bar,
+                    self._view_button,
                     "Elige una vista",
                     "Abre «Curva de fuerza» para una adquisición o «Batch» para una carpeta.",
                 ),
@@ -303,6 +325,7 @@ class Workspace(QMainWindow):
         commands.append(Command("Tema: alternar claro/oscuro", self.toggle_theme, "Ctrl+Shift+L"))
         commands.append(Command("Personalizar apariencia…", self.open_appearance, "Ctrl+Shift+A"))
         commands.append(Command("Guía de Fathom", self.open_guide, "F1"))
+        commands.append(Command("Alternar solo lienzo", self._focus_action.trigger, "F8"))
         commands.extend(self._extra_commands)
         return commands
 
@@ -329,8 +352,11 @@ class Workspace(QMainWindow):
             central = self._panels.get(central_key)
             if central is not None:
                 central.refresh_safe()
+        if self._focus_action.isChecked() and key != self._active:
+            self._restore_docks = set(persp.panels) & self._docks.keys()
+            self._raised_docks = ["inspector"] if "inspector" in self._restore_docks else []
         for panel_key, dock in self._docks.items():
-            visible = panel_key in persp.panels
+            visible = panel_key in persp.panels and not self._focus_action.isChecked()
             dock.setVisible(visible)
             if visible:  # re-sincroniza el dock con el estado actual del VM (evita "olvidar"
                 panel = self._panels.get(panel_key)  # datos ya cargados al cambiar de perspectiva)
@@ -338,8 +364,26 @@ class Workspace(QMainWindow):
                     panel.refresh_safe()
         for panel_key, action in self._persp_actions.items():
             action.setChecked(panel_key == key)
+        if key == "force" and self._active != key and "inspector" in self._docks:
+            self._docks["inspector"].raise_()
+        self._view_button.setText(persp.label)
         self._active = key
         self._persist("perspective", key)
+
+    def _toggle_focus(self, enabled: bool) -> None:
+        if enabled:
+            self._restore_docks = self.visible_docks()
+            self._raised_docks = [
+                k for k in self._restore_docks if not self._docks[k].visibleRegion().isEmpty()
+            ]
+            for key in self._restore_docks:
+                self._docks[key].hide()
+        else:
+            for key in self._restore_docks:
+                self._docks[key].show()
+                self._panels[key].refresh_safe()
+            for key in self._raised_docks:
+                self._docks[key].raise_()
 
     @property
     def active_perspective(self) -> str:

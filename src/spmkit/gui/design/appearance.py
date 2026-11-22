@@ -43,9 +43,9 @@ def apply_appearance(app: Any, appearance: Appearance) -> None:
     theme.apply(app, a.theme, a.accent, a.font_px)
 
 
-def load_appearance(settings: Any) -> Appearance:
+def load_appearance(settings: Any, default_mode: str = "light") -> Appearance:
     """Lee la apariencia de ``QSettings`` (tolerante a ausencias)."""
-    theme_key = str(settings.value("theme", "dark") or "dark")
+    theme_key = str(settings.value("theme", default_mode) or default_mode)
     accent = settings.value("accent", "") or ""
     accent_val = str(accent) if str(accent).startswith("#") else None
     try:

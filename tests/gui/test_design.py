@@ -19,10 +19,8 @@ def test_colors_invalid_mode_raises() -> None:
         tokens.colors("banana")
 
 
-def test_trace_hierarchy_v2() -> None:
-    # Jerarquía v2 + marca Fathom: ajuste = teal, punto de contacto = oro (accent_2),
-    # datos crudos neutrales (no teal).
-    assert tokens.TRACES["fit"] == "#2DD4BF"
+def test_trace_hierarchy() -> None:
+    assert tokens.TRACES["fit"] == tokens.colors("dark")["accent"]
     assert tokens.TRACES["contact"] == tokens.colors("dark")["accent_2"]
     assert tokens.TRACES["contact"] != tokens.TRACES["fit"]
     assert tokens.TRACES["extend"] != tokens.TRACES["fit"]

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import math
 
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QGridLayout, QLabel, QVBoxLayout, QWidget
 
 from spmkit.gui.panels.base import Panel
@@ -66,22 +67,41 @@ class InspectorPanel(Panel):
     def build(self) -> QWidget:
         root = QWidget()
         lay = QVBoxLayout(root)
-        heading = QLabel("Resultados del ajuste")
-        heading.setProperty("role", "title")
-        lay.addWidget(heading)
+        lay.setContentsMargins(16, 16, 16, 16)
+        lay.addWidget(QLabel("Módulo de Young"))
+        young = QLabel(_EMPTY)
+        young.setProperty("role", "metric")
+        young.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+        self._values["young"] = young
+        lay.addWidget(young)
 
         grid = QGridLayout()
-        grid.setColumnStretch(1, 1)
+        grid.setColumnStretch(0, 1)
         grid.setHorizontalSpacing(16)
-        grid.setVerticalSpacing(6)
-        for r, (key, label) in enumerate(_ROWS):
+        grid.setVerticalSpacing(7)
+        groups = {
+            "r_squared": "Ajuste",
+            "adhesion": "Respuesta mecánica",
+            "model": "Parámetros del ajuste",
+            "spring_constant": "Calibración",
+        }
+        row = 0
+        for key, label in _ROWS[1:]:
+            if key in groups:
+                heading = QLabel(groups[key])
+                heading.setProperty("role", "groupTitle")
+                grid.addWidget(heading, row, 0, 1, 2)
+                row += 1
             name = QLabel(label)
             name.setProperty("role", "muted")
             value = QLabel(_EMPTY)
             value.setProperty("role", "readout")
-            grid.addWidget(name, r, 0)
-            grid.addWidget(value, r, 1)
+            value.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+            value.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+            grid.addWidget(name, row, 0)
+            grid.addWidget(value, row, 1)
             self._values[key] = value
+            row += 1
         lay.addLayout(grid)
         lay.addStretch(1)
         return root

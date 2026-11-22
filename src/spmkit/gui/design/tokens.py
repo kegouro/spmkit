@@ -1,56 +1,47 @@
-"""Sistema de tokens de diseño — fuente única para QSS, pyqtgraph y matplotlib.
-
-Estética "Instrumento": grafito de precisión con señal teal. Un solo token alimenta
-los tres destinos de render (ver :mod:`spmkit.gui.design.theme`), de modo que los
-gráficos se sienten nativos del tema y no incrustados.
-
-Jerarquía de color de trazas (v2): **gris = dato crudo, teal = modelo/ajuste**. El
-teal se reserva para el ajuste y la traza activa; los datos crudos van en neutrales
-fríos para evitar *halation* (halo que difumina el trazo sobre fondo oscuro).
-"""
+"""Paletas semánticas y estilos de traza del espacio de análisis Fathom."""
 
 from __future__ import annotations
 
 #: Paletas por modo. Claves con guion_bajo para compatibilidad con string.Template.
 _COLORS: dict[str, dict[str, str]] = {
     "dark": {
-        "bg": "#141B22",  # grafito
-        "surface": "#19222C",  # paneles
-        "surface_2": "#202B36",  # controles / barras / dock headers
-        "elevated": "#2B3845",  # hover / menús / popovers
+        "bg": "#1C2029",
+        "surface": "#212631",
+        "surface_2": "#292F3B",
+        "elevated": "#333A48",
         "overlay": "rgba(6, 9, 13, 0.66)",  # modales / backdrop
-        "text": "#E8EEF5",
-        "text_muted": "#93A0AE",
-        "text_faint": "#919CA8",
-        "border": "#232C38",
-        "border_strong": "#33404F",
-        "accent": "#2DD4BF",  # teal de señal
-        "accent_press": "#14B8A6",
-        "accent_soft": "#0F3A37",
-        "on_accent": "#04342C",
-        "accent_2": "#E8A94B",  # oro cálido de marca (Fathom): complementa el teal
-        "accent_2_soft": "#33280F",
+        "text": "#E4E8F0",
+        "text_muted": "#B2BAC9",
+        "text_faint": "#959FB1",
+        "border": "#353C4B",
+        "border_strong": "#515B6C",
+        "accent": "#AAC0FF",
+        "accent_press": "#849FED",
+        "accent_soft": "#2D395B",
+        "on_accent": "#172541",
+        "accent_2": "#E7A27D",
+        "accent_2_soft": "#48352F",
         "success": "#4ADE80",
         "warning": "#FBBF24",
         "danger": "#F87171",
     },
     "light": {
-        "bg": "#F4F2EC",  # papel cálido
+        "bg": "#F2F4F8",
         "surface": "#FFFFFF",
-        "surface_2": "#ECE8DF",
-        "elevated": "#E4DFD4",
+        "surface_2": "#EBEEF3",
+        "elevated": "#E1E6EF",
         "overlay": "rgba(20, 18, 12, 0.42)",
-        "text": "#181C22",
-        "text_muted": "#5A626B",
-        "text_faint": "#8A8F98",
-        "border": "#DBD6CB",
-        "border_strong": "#C4BEB0",
-        "accent": "#086D64",
-        "accent_press": "#0B7C72",
-        "accent_soft": "#CFEEE9",
+        "text": "#192335",
+        "text_muted": "#4E5B6F",
+        "text_faint": "#59677C",
+        "border": "#D8DDE6",
+        "border_strong": "#ADB7C7",
+        "accent": "#364E9A",
+        "accent_press": "#283E80",
+        "accent_soft": "#E5EAF7",
         "on_accent": "#FFFFFF",
-        "accent_2": "#B26A1E",  # oro cálido de marca en modo claro
-        "accent_2_soft": "#F1E4CE",
+        "accent_2": "#984D32",
+        "accent_2_soft": "#F5E7E1",
         "success": "#15803D",
         "warning": "#B45309",
         "danger": "#B91C1C",
@@ -185,8 +176,8 @@ _COLORS: dict[str, dict[str, str]] = {
 
 #: Temas disponibles (clave, etiqueta), en orden para el selector de apariencia.
 THEMES: tuple[tuple[str, str], ...] = (
-    ("dark", "Grafito (oscuro)"),
-    ("light", "Papel (claro)"),
+    ("dark", "Carbono (oscuro)"),
+    ("light", "Porcelana (claro)"),
     ("nanosurf", "NanoSurf oro"),
     ("nord", "Nord"),
     ("dracula", "Dracula"),
@@ -195,26 +186,24 @@ THEMES: tuple[tuple[str, str], ...] = (
     ("gruvbox", "Gruvbox"),
 )
 
-#: Colores de trazas de datos. Jerarquía v2: crudos neutrales, ajuste en teal.
-TRACES: dict[str, str] = {
-    "extend": "#C9D3DE",  # dato crudo (neutral frío)
-    "retract": "#B49A6E",  # dato crudo (ámbar apagado)
-    "fit": "#2DD4BF",  # ajuste = teal (héroe visual)
-    "contact": "#E8A94B",  # punto de contacto = oro de marca (como el logo Fathom)
-    "residual": "#33404F",  # residuos (silenciados)
+#: Tintas científicas para las ramas crudas, el modelo y las referencias.
+TRACES = {
+    "extend": "#D5DCE9",
+    "retract": "#E6AC93",
+    "fit": "#AAC0FF",
+    "contact": "#E7A27D",
+    "residual": "#738198",
 }
 
-#: Tintas para mantener las ramas y el ajuste legibles sobre fondos claros.
 LIGHT_TRACES = {
-    "extend": "#384E63",
-    "retract": "#855716",
-    "fit": "#00796E",
-    "contact": "#93570B",
-    "residual": "#72818B",
+    "extend": "#24344A",
+    "retract": "#A25639",
+    "fit": "#405DB3",
+    "contact": "#984D32",
+    "residual": "#697993",
 }
 
-#: Paleta categórica (trazas secundarias), colorblind-safe en ambos modos.
-CATEGORICAL: tuple[str, ...] = ("#2DD4BF", "#F59E0B", "#A78BFA", "#FB7185")
+CATEGORICAL: tuple[str, ...] = ("#506BBC", "#AB634A", "#638475", "#896BA0")
 
 #: Stacks de fuente nativos refinados.
 FONT_UI = '-apple-system, "SF Pro Text", "Segoe UI Variable", "Inter Tight", system-ui, sans-serif'

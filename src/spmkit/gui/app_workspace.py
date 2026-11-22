@@ -19,8 +19,10 @@ from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication, QFileDialog, QMessageBox
 
 from spmkit.core.plugins.contracts import DatasetInfo, Kind
-from spmkit.gui.design import brand
+from spmkit.gui.design import brand, theme
+from spmkit.gui.design.appearance import load_appearance
 from spmkit.gui.extensions import ModuleContext, assemble, iter_modules
+from spmkit.gui.panels.force_canvas import ForceCanvasPanel
 from spmkit.gui.shell.command_palette import Command
 from spmkit.gui.shell.workspace import Workspace
 from spmkit.gui.viewmodels import (
@@ -32,7 +34,7 @@ from spmkit.gui.viewmodels import (
 
 
 def build_workspace(
-    mode: str = "dark", open_path: str | Path | None = None, persist: bool = False
+    mode: str = "light", open_path: str | Path | None = None, persist: bool = False
 ) -> Workspace:
     """Construye el workspace con las perspectivas de curva, mapa y batch cableadas.
 
@@ -48,6 +50,9 @@ def build_workspace(
 
     # La app se ensambla desde los módulos (fábrica + descubiertos por entry-point): añadir
     # un módulo aporta sus paneles y perspectivas sin tocar la shell (ver gui/extensions.py).
+    # pyqtgraph widgets snapshot their default canvas colors when constructed.
+    start_mode = load_appearance(QSettings("spmkit", "spmkit"), mode).theme if persist else mode
+    theme.apply_pyqtgraph(start_mode)
     modules = iter_modules()
     layout = assemble(modules, ctx)
     ws = Workspace(
@@ -105,6 +110,7 @@ def build_workspace(
         ws.add_toolbar_action("Abrir…", lambda: _open_dialog(ws, vm, image_vm, session))
     )
     ws.add_toolbar_action("Guardar proyecto…", lambda: _save_project(ws, vm, session))
+    force_canvas.openRequested.connect(lambda: _open_dialog(ws, vm, image_vm, session))
     if not force_canvas.errored:
         ws.appearancePreviewed.connect(force_canvas.set_plot_theme)
         force_canvas.set_plot_theme(ws.mode)
@@ -162,6 +168,9 @@ def _load_into(
         session["path"], session["kind"] = str(path), kind
     if kind == "force":
         vm.set_volume(data)
+        canvas = ws.panel("force_canvas")
+        if isinstance(canvas, ForceCanvasPanel) and not canvas.errored:
+            canvas.set_source_name(name)
         ws.set_perspective("force")
         ws.show_status(f"{name} — {vm.n_curves} curva(s)")
     else:

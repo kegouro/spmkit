@@ -11,13 +11,14 @@ arrastrarlo sólo se re-renderiza (barato); el ajuste va con debounce en el
 from __future__ import annotations
 
 import numpy as np
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QCheckBox,
     QComboBox,
     QHBoxLayout,
     QLabel,
     QPushButton,
+    QSizePolicy,
     QSlider,
     QVBoxLayout,
     QWidget,
@@ -64,6 +65,8 @@ class ForceCanvasPanel(Panel):
 
     title = "Curva de fuerza"
 
+    openRequested = pyqtSignal()
+
     _PINNED_MAX = 6
 
     def __init__(self, vm: ForceViewModel, parent: QWidget | None = None) -> None:
@@ -73,6 +76,7 @@ class ForceCanvasPanel(Panel):
         self._last_ctx: dict = {}
         self._pinned: list = []  # trazas fijadas para comparar
         super().__init__(parent)
+        vm.volumeChanged.connect(lambda _: self.set_source_name(""))
         vm.curveChanged.connect(self._on_curve_changed)
         vm.resultsChanged.connect(self._on_results)
 
@@ -85,15 +89,45 @@ class ForceCanvasPanel(Panel):
         lay.setContentsMargins(0, 0, 0, 0)
         lay.setSpacing(tokens.SPACE["2"])
 
+        self._header = QWidget()
+        self._header.setObjectName("plotHeader")
+        header = QVBoxLayout(self._header)
+        header.setContentsMargins(18, 12, 16, 6)
+        title = QLabel("Fuerza–distancia")
+        title.setProperty("role", "plotTitle")
+        self._source = QLabel()
+        self._source.setProperty("role", "muted")
+        self._source.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
+        header.addWidget(title)
+        header.addWidget(self._source)
+        lay.addWidget(self._header)
+
+        self._empty = QWidget()
+        self._empty.setObjectName("emptyCanvas")
+        empty = QVBoxLayout(self._empty)
+        empty.addStretch()
+        intro = QLabel("Abrir una adquisición")
+        intro.setProperty("role", "plotTitle")
+        empty.addWidget(intro, alignment=Qt.AlignmentFlag.AlignHCenter)
+        hint = QLabel("Arrastra un archivo de AFM o selecciónalo en el disco.")
+        hint.setProperty("role", "muted")
+        empty.addWidget(hint, alignment=Qt.AlignmentFlag.AlignHCenter)
+        button = QPushButton("Seleccionar archivo…")
+        button.setProperty("primary", True)
+        button.clicked.connect(self.openRequested)
+        empty.addWidget(button, alignment=Qt.AlignmentFlag.AlignHCenter)
+        empty.addStretch()
+        lay.addWidget(self._empty, 1)
         glw = pg.GraphicsLayoutWidget()
         self._graphics = glw
         self._plot = glw.addPlot(row=0, col=0)
-        self._plot.showGrid(x=True, y=True, alpha=0.15)
+        self._plot.showGrid(x=False, y=True, alpha=0.13)
         self._plot.setLabel("left", "Fuerza", units="nN")
+        self._plot.getAxis("bottom").setStyle(showValues=False)
         self._legend = self._plot.addLegend(offset=(-10, 10))
         self._resid = glw.addPlot(row=1, col=0)
         self._resid.setMaximumHeight(110)
-        self._resid.showGrid(x=True, y=True, alpha=0.12)
+        self._resid.showGrid(x=False, y=True, alpha=0.09)
         self._resid.setLabel("left", "Residuo", units="nN")
         self._resid.setXLink(self._plot)
         # Los datos ya vienen escalados a nN/nm; sin esto pyqtgraph re-aplica su prefijo SI y
@@ -143,7 +177,8 @@ class ForceCanvasPanel(Panel):
         )
 
         # Controles: modo de eje + scrubber + contador.
-        controls = QWidget()
+        self._controls = controls = QWidget()
+        controls.setObjectName("curveTools")
         crow = QHBoxLayout(controls)
         crow.setContentsMargins(tokens.SPACE["1"], 0, tokens.SPACE["1"], 0)
         self._axis_mode = QComboBox()
@@ -160,6 +195,9 @@ class ForceCanvasPanel(Panel):
         self._scrubber.valueChanged.connect(self._vm.set_curve)
         self._counter = QLabel("—")
         self._counter.setProperty("role", "readout")
+        self._fit_view = QPushButton("Reencuadrar")
+        self._fit_view.setToolTip("Volver a mostrar la curva y sus residuos completos")
+        self._fit_view.clicked.connect(self._reset_view)
         self._export_btn = QPushButton("Exportar curva…")
         self._export_btn.setToolTip(
             "CSV científico: ajuste (con unidades) + datos separación/fuerza"
@@ -169,6 +207,7 @@ class ForceCanvasPanel(Panel):
         crow.addWidget(self._region_check)
         crow.addWidget(self._scrubber, 1)
         crow.addWidget(self._counter)
+        crow.addWidget(self._fit_view)
         crow.addWidget(self._export_btn)
 
         lay.addWidget(glw, 1)
@@ -179,11 +218,27 @@ class ForceCanvasPanel(Panel):
         self._on_curve_changed(self._vm.index)
         return root
 
+    def _reset_view(self) -> None:
+        self._plot.autoRange()
+        self._resid.enableAutoRange(axis=self._pg.ViewBox.YAxis)
+
+    def set_source_name(self, name: str) -> None:
+        self._source.setTextFormat(Qt.TextFormat.PlainText)
+        self._source.setText(name)
+        self._source.setToolTip(name)
+        self._source.setVisible(bool(name))
+
     def set_plot_theme(self, mode: str) -> None:
         """Actualiza el lienzo abierto conservando datos, zoom y ventana de ajuste."""
         palette = tokens.colors(mode)
         ink = tokens.TRACES if tokens.is_dark(mode) else tokens.LIGHT_TRACES
-        self._graphics.setBackground(palette["bg"])
+        self._graphics.setBackground(palette["surface"])
+        # Both ViewBoxes must have the same pixel origin, including after a font change.
+        axis_width = (
+            self.fontMetrics().horizontalAdvance("−0.00e−00") + 2 * self.fontMetrics().height()
+        )
+        for plot in (self._plot, self._resid):
+            plot.getAxis("left").setWidth(axis_width)
         for plot in (self._plot, self._resid):
             for side in ("bottom", "left"):
                 axis = plot.getAxis(side)
@@ -242,7 +297,9 @@ class ForceCanvasPanel(Panel):
             self._scrubber.setValue(index)
         n = self._vm.n_curves
         self._counter.setText(f"{index + 1:>4} / {n}" if n else "—")
-        self._plot.setTitle(None if n else "Abre una curva de fuerza · ⌘O o arrástrala aquí")
+        self._empty.setVisible(not n)
+        for widget in (self._graphics, self._controls, self._header):
+            widget.setVisible(bool(n))
         self._fit_item.setData([], [])
         self._resid_item.setData([], [])
         self._contact_line.setVisible(False)

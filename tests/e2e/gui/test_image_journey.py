@@ -139,7 +139,7 @@ def test_real_gwy_gui_image_journey(
         assert "Φ muestra" in readout
 
         figure_action = next(
-            action for action in ws._persp_bar.actions() if action.text() == "Figura"
+            action for action in ws._view_menu.actions() if action.text() == "Figura"
         )
         figure_action.trigger()
         qtbot.wait(0)

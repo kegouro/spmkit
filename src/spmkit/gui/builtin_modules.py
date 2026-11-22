@@ -173,8 +173,8 @@ def _wire_image(ws, ctx: ModuleContext) -> None:  # type: ignore[no-untyped-def]
 _CORE = ModuleSpec(
     name="core",
     panels=(
-        PanelSpec("navigator", "Datos", _navigator, area="left"),
-        PanelSpec("inspector", "Inspector", _inspector, area="right"),
+        PanelSpec("navigator", "Datos", _navigator, area="right"),
+        PanelSpec("inspector", "Resultados", _inspector, area="right"),
         PanelSpec("log", "Log", _log, area="bottom"),
     ),
 )
@@ -203,7 +203,7 @@ _FORCE = ModuleSpec(
     name="force",
     panels=(
         PanelSpec("force_canvas", "Curva de fuerza", _force_canvas),
-        PanelSpec("pipeline", "Pipeline", _pipeline, area="bottom"),
+        PanelSpec("pipeline", "Parámetros", _pipeline, area="right"),
         PanelSpec("smfs_canvas", "SMFS", _smfs),
         PanelSpec("map_canvas", "Mapa", _map_canvas),
         PanelSpec("histogram", "Histograma", _histogram, area="right"),

@@ -112,11 +112,9 @@ class PipelinePanel(Panel):
 
         cal = QLabel("Calibración (0 = usar metadatos del archivo)")
         cal.setProperty("role", "muted")
-        fields = QHBoxLayout()
-        fields.setSpacing(24)
-        fields.addLayout(form, 1)
-        fields.addLayout(signal_form, 1)
-        fit.addLayout(fields)
+        fit.addLayout(form)
+        fit.addSpacing(8)
+        fit.addLayout(signal_form)
         fit.addStretch()
         calibration.addWidget(cal)
 

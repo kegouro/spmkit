@@ -39,7 +39,7 @@ def test_builtin_modules_expose_all_perspectives() -> None:
     perspectives, labels, areas, central = spec_metadata(BUILTIN_MODULES)
     assert {p.key for p in perspectives} == _ALL_PERSPECTIVES
     assert "image_canvas" in central and "navigator" not in central  # central vs dock
-    assert areas["navigator"] == "left" and areas["pipeline"] == "bottom"
+    assert areas["navigator"] == areas["pipeline"] == areas["inspector"] == "right"
     assert labels["grains_canvas"] == "Granos"
 
 

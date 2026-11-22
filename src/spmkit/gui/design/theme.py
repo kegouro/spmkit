@@ -23,18 +23,24 @@ QMainWindow, QDialog { background: $bg; }
 QWidget { background: $bg; color: $text; }
 QToolTip { background: $elevated; color: $text; border: 1px solid $border; padding: 4px 8px; }
 
-QToolBar { background: $surface_2; border: none; border-bottom: 1px solid $border; padding: 6px 10px; spacing: 8px; }
-QToolBar QToolButton { background: transparent; color: $text; padding: 6px 12px; border-radius: 6px; border: 1px solid transparent; }
+QToolBar { background: $surface_2; border: none; border-bottom: 1px solid $border; padding: 5px 10px; spacing: 4px; }
+QToolBar QToolButton { background: transparent; color: $text; padding: 6px 12px; border-radius: 3px; border: 1px solid transparent; }
 QToolBar QToolButton:hover { background: $elevated; }
 QToolBar QToolButton:checked { background: $accent_soft; color: $text; border-bottom: 2px solid $accent; }
 QWidget#toolbarSpacer { background: transparent; }
 QToolBar#workspaceTools { background: $surface; }
-QToolBar#perspectives { background: $bg; padding: 3px 10px; spacing: 2px; }
+QToolButton#viewSelector { background: $surface_2; border: 1px solid $border; padding: 5px 16px 5px 10px; }
+QToolButton#viewSelector::menu-indicator { subcontrol-position: right center; }
+QLabel[role="plotTitle"] { font-size: ${plot_title_px}px; font-weight: 600; }
+QLabel[role="metric"] { color: $text; font-family: $mono; font-size: ${metric_px}px; }
+QLabel[role="groupTitle"] { color: $text; font-weight: 600; padding: 10px 0 4px 0; }
+QWidget#plotHeader, QWidget#curveTools, QWidget#emptyCanvas { background: $surface; }
+QDockWidget::title { font-weight: 600; }
 QLabel#wordmark { color: $text; font-weight: 600; font-size: ${heading_px}px; padding: 2px 12px 2px 4px; }
 QFrame#workspaceGuide { background: $surface; border: 1px solid $border_strong; border-radius: 10px; }
-QFrame#guideTarget { background: transparent; border: 2px solid $accent; border-radius: 6px; }
+QFrame#guideTarget { background: transparent; border: 2px solid $accent; border-radius: 3px; }
 
-QPushButton { background: $surface_2; color: $text; border: 1px solid $border_strong; border-radius: 6px; padding: 6px 14px; }
+QPushButton { background: $surface_2; color: $text; border: 1px solid $border_strong; border-radius: 3px; padding: 6px 14px; }
 QPushButton:hover { background: $elevated; }
 QPushButton:pressed { background: $surface; }
 QPushButton[primary="true"] { background: $accent; color: $on_accent; border: none; font-weight: 500; }
@@ -43,7 +49,7 @@ QPushButton:focus, QToolBar QToolButton:focus { border: 1px solid $accent; }
 QPushButton:disabled { color: $text_faint; border-color: $border; }
 
 QLineEdit, QComboBox, QSpinBox, QDoubleSpinBox, QPlainTextEdit, QTextEdit {
-    background: $surface; color: $text; border: 1px solid $border; border-radius: 6px; padding: 5px 8px;
+    background: $surface; color: $text; border: 1px solid $border; border-radius: 3px; padding: 5px 8px;
     selection-background-color: $accent_soft; selection-color: $text;
 }
 QLineEdit:focus, QComboBox:focus, QSpinBox:focus, QDoubleSpinBox:focus { border: 1px solid $accent; }
@@ -55,11 +61,11 @@ QLabel[role="title"] { font-size: 15px; font-weight: 500; }
 QLabel[role="muted"] { color: $text_muted; }
 QLabel[role="readout"] { font-family: $mono; color: $text; }
 
-QTreeView, QListView, QTableView { background: $surface; color: $text; border: 1px solid $border; border-radius: 8px; alternate-background-color: $surface_2; }
+QTreeView, QListView, QTableView { background: $surface; color: $text; border: 1px solid $border; border-radius: 3px; alternate-background-color: $surface_2; }
 QTreeView::item:selected, QListView::item:selected { background: $accent_soft; color: $accent; }
 QHeaderView::section { background: $surface_2; color: $text_muted; border: none; border-bottom: 1px solid $border; padding: 5px 8px; }
 
-QTabWidget::pane { border: 1px solid $border; border-radius: 8px; top: -1px; }
+QTabWidget::pane { border: 1px solid $border; border-radius: 3px; top: -1px; }
 QTabBar::tab { background: transparent; color: $text_muted; padding: 8px 14px; border: none; }
 QTabBar::tab:selected { color: $accent; border-bottom: 2px solid $accent; }
 QTabBar::tab:hover { color: $text; }
@@ -102,6 +108,8 @@ def build_qss(mode: str = "dark", accent: str | None = None, font_px: int = 13) 
         mono=tokens.FONT_MONO,
         font_px=int(font_px),
         heading_px=int(font_px) + 4,
+        plot_title_px=int(font_px) + 6,
+        metric_px=int(font_px) + 9,
         **palette,
     )
 

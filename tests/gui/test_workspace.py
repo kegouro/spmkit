@@ -127,7 +127,7 @@ def test_guide_tracks_controls_and_can_be_replayed(qtbot):
     target = ws._file_bar.widgetForAction(ws._open_action)
     assert guide._outline.geometry().topLeft() == target.mapTo(ws, QPoint())
     guide._next.click()
-    assert guide._outline.size() == ws._persp_bar.size()
+    assert guide._outline.size() == ws._view_button.size()
     guide._back.click()
     assert guide._title.text() == "Abre una adquisición"
     for _ in range(4):
@@ -154,3 +154,24 @@ def test_force_theme_preserves_axis_units_and_view(qtbot):
     assert (axis.labelText, axis.labelUnits) == ("Separación", "nm")
     assert canvas._plot.viewRange()[0] == before
     assert canvas._extend_item.opts["pen"].color().name().upper() == tokens.LIGHT_TRACES["extend"]
+
+
+def test_focus_restores_the_selected_panel_and_tracks_view_changes(qtbot):
+    from spmkit.gui.app_workspace import build_workspace
+
+    ws = build_workspace()
+    qtbot.addWidget(ws)
+    ws.show()
+    qtbot.waitExposed(ws)
+    params = ws._docks["pipeline"]
+    params.raise_()
+    qtbot.waitUntil(lambda: not params.visibleRegion().isEmpty())
+    ws._focus_action.trigger()
+    assert not ws.visible_docks()
+    ws._focus_action.trigger()
+    qtbot.waitUntil(lambda: not params.visibleRegion().isEmpty())
+    ws._focus_action.trigger()
+    ws.set_perspective("batch")
+    assert not ws.visible_docks()
+    ws._focus_action.trigger()
+    assert ws.visible_docks() == {"navigator", "log"}
