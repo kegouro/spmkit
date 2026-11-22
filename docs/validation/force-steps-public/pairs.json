@@ -1,0 +1,82 @@
+[
+  {
+    "member": "beads with brush/1/1kPa/bead1-2019.06.09-14.40.33.719.jpk-force",
+    "bytes": 159838,
+    "sha256": "8d65f0512e05efcf76e6c60759daa1fdb7a74c4c01f77e6bdc7bfb9af6d27fd4"
+  },
+  {
+    "member": "beads with brush/1/1kPa/bead1-2019.06.09-14.40.33.719.txt",
+    "bytes": 821534,
+    "sha256": "1426b3e3be03a7e5440dd211538ed9909f01ed6ffb87145551f3f4809686ff5c"
+  },
+  {
+    "member": "beads with brush/2/1kPa/substrate5-2019.06.10-16.52.07.003.jpk-force",
+    "bytes": 155339,
+    "sha256": "9eaec5d9654363a83e52148d5537821385747a199501725621f4914a6dbf7329"
+  },
+  {
+    "member": "beads with brush/2/1kPa/substrate5-2019.06.10-16.52.07.003.txt",
+    "bytes": 844628,
+    "sha256": "711f9d5f5e1e53b5b0f586f3f5491fb00b03078db46a46ab9bf64e1e2ecd3c46"
+  },
+  {
+    "member": "beads/1/100Pa/bead1-2018.03.06-15.07.23.747.jpk-force",
+    "bytes": 82134,
+    "sha256": "2452020d13a08e1105a2015cccd4f04db9a8427719dbea68794ff2f1c60e3bc4"
+  },
+  {
+    "member": "beads/1/100Pa/bead1-2018.03.06-15.07.23.747.txt",
+    "bytes": 423850,
+    "sha256": "dd7bf53df76ca3c7b57b44017153749bf215ca68ed6017592f2afa1d0643476f"
+  },
+  {
+    "member": "beads/2/1kPa/substrate5-2018.03.07-17.22.14.660.jpk-force",
+    "bytes": 157758,
+    "sha256": "b702b6d158fcff8b65840c351d991c72f6828f32196b2fa1a652cbefd38d1894"
+  },
+  {
+    "member": "beads/2/1kPa/substrate5-2018.03.07-17.22.14.660.txt",
+    "bytes": 819641,
+    "sha256": "7cb9e869831c29e855b86ba519016902ae31ae9182791fddaeb3bdb1b600eba4"
+  },
+  {
+    "member": "fibroblasts/1/100Pa/cell1-2018.07.31-18.19.17.745.jpk-force",
+    "bytes": 94209,
+    "sha256": "ca9af75e0d85f3874f9fb0642ac7d96ce0da12e30538acdd4c35aaf7a28d571c"
+  },
+  {
+    "member": "fibroblasts/1/100Pa/cell1-2018.07.31-18.19.17.745.txt",
+    "bytes": 495652,
+    "sha256": "f30218d5d351fa44ad8110d4a72fd3d65ddbd4eb2aa45e52b6f40f9fb024a54c"
+  },
+  {
+    "member": "fibroblasts/4/50Pa/substrate9-2018.08.03-00.33.11.354.jpk-force",
+    "bytes": 81113,
+    "sha256": "5a9eed21333b33bd61c2e9a5a9068c4821e3f1f04961f9853bd00f76a8e406cb"
+  },
+  {
+    "member": "fibroblasts/4/50Pa/substrate9-2018.08.03-00.33.11.354.txt",
+    "bytes": 422445,
+    "sha256": "b593dc7009340982997b512f7e2454e73e6082a8433135639ee8d4af1882fa86"
+  },
+  {
+    "member": "microglia/1/100Pa/cell1-2016.08.26-13.42.54.405.jpk-force",
+    "bytes": 91670,
+    "sha256": "15a9a003c6bf0b67e11a14323226252e742f7e31ea522e8c91e31aec97544dc8"
+  },
+  {
+    "member": "microglia/1/100Pa/cell1-2016.08.26-13.42.54.405.txt",
+    "bytes": 483694,
+    "sha256": "bcdb371928a2faf06e6f031ba16821d9b98c386b68029488e72ab2aafe6de848"
+  },
+  {
+    "member": "microglia/9/50Pa/blebb/cell3_blebb-2019.06.08-15.24.30.088.jpk-force",
+    "bytes": 155950,
+    "sha256": "de2b62db3deb8e48ee24dfc094073360582a44beca46f0251d60b4d9b17a02d4"
+  },
+  {
+    "member": "microglia/9/50Pa/blebb/cell3_blebb-2019.06.08-15.24.30.088.txt",
+    "bytes": 842379,
+    "sha256": "a5d4934a8d66d7b8574ceaac93e999623415178b176b9e8873abaa1511d1ce9e"
+  }
+]

@@ -275,7 +275,11 @@ def load_nid_force(path: str | Path) -> ForceVolume:
             force=force,
             separation=separation,
             state="force_n",
-            metadata={"num_points": int(height.size)},
+            metadata={
+                "num_points": int(height.size),
+                "height_channel": z_ch.name,
+                "height_input_unit": z_ch.unit,
+            },
         )
 
     def _load_curve(i: int) -> ForceCurve:

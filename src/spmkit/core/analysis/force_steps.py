@@ -56,3 +56,17 @@ def measure_force_step(segment: ForceSegment, boundary: int, window: int) -> For
     if not np.isfinite(jump):
         raise ValueError("Salto fuera del rango numérico")
     return ForceStep(float(midpoint), jump, left, right, rms_l, rms_r)
+
+
+def boundary_sensitivity(
+    segment: ForceSegment, boundary: int, window: int
+) -> list[dict[str, int | float | str]]:
+    """Repeat the same fit one acquisition sample before and after the annotation."""
+    trials: list[dict[str, int | float | str]] = []
+    for offset in (-1, 1):
+        try:
+            fit = measure_force_step(segment, boundary + offset, window)
+            trials.append({"offset_samples": offset, "delta_force_n": fit.delta_force_n})
+        except (ValueError, FloatingPointError) as exc:
+            trials.append({"offset_samples": offset, "reason": str(exc)})
+    return trials

@@ -63,6 +63,11 @@ def test_cli_single_and_batch_share_measurements(tmp_path):
     first = json.loads(single.output)
     assert first["delta_force_n"] == pytest.approx(2e-9, abs=1e-22)
     assert first["height_m"] == pytest.approx(5.5e-9, abs=1e-22)
+    trials = first["boundary_sensitivity"]
+    assert [t["offset_samples"] for t in trials] == [-1, 1]
+    np.testing.assert_allclose([t["delta_force_n"] for t in trials], 0.3e-9, rtol=1e-12, atol=0)
+    assert first["height_channel"] == "Z-Axis Sensor"
+    assert first["height_input_unit"] == "nm"
     assert first["source_sha256"] == hashlib.sha256(source.read_bytes()).hexdigest()
     table.write_text(header + selected + "two.nid,1,retract,0,6,4\ntwo.nid,0,extend,0,6,4\n")
     batch = runner.invoke(app, ["force-steps", str(table)])
@@ -138,3 +143,31 @@ def test_step_rejects_unusable_annotation(bad):
     )
     with pytest.raises(ValueError):
         measure_force_step(seg, 1 if bad == "boundary" else 6, 2 if bad == "window" else 4)
+
+
+def test_jpk_step_reports_applied_height_slot(tmp_path):
+    from tests.core.test_cli_force import _make_jpk_force
+
+    _make_jpk_force(tmp_path / "single.jpk-force")
+    table = tmp_path / "annotations.csv"
+    table.write_text(
+        "source,curve,branch,cycle,boundary,window\nsingle.jpk-force,0,extend,0,100,4\n"
+    )
+    result = CliRunner().invoke(app, ["force-steps", str(table)])
+    assert result.exit_code == 0, result.output
+    record = json.loads(result.output)
+    assert record["height_channel"] == "height"
+    assert record["height_conversion_slots"] == ["calibrated"]
+
+
+def test_boundary_sensitivity_retains_valid_central_fit_at_edge(tmp_path):
+    write_spectrum(tmp_path / "two.nid", "nN")
+    table = tmp_path / "annotations.csv"
+    table.write_text("source,curve,branch,cycle,boundary,window\ntwo.nid,1,extend,0,4,4\n")
+    result = CliRunner().invoke(app, ["force-steps", str(table)])
+    assert result.exit_code == 0, result.output
+    record = json.loads(result.output)
+    assert record["status"] == "measured"
+    left, right = record["boundary_sensitivity"]
+    assert left["offset_samples"] == -1 and "reason" in left
+    assert right["offset_samples"] == 1 and "delta_force_n" in right

@@ -170,3 +170,19 @@ también importa al evaluar detectores de escalones.
    originales permitidos, controles, anotaciones, exclusiones, receta y salidas.
    Citar el commit usado y el DOI de la versión archivada correspondiente.
    El DOI de una versión anterior describe esa versión.
+
+### Contrastes con datos públicos y efecto de la frontera
+
+`force-steps` exporta en `boundary_sensitivity` dos ajustes adicionales al mover
+la frontera una muestra en cada dirección. Un vecino inviable conserva su
+motivo de rechazo. La altura se identifica por el canal y los slots de
+conversión o la unidad de entrada que expone el lector. En el phantom de +2 nN,
+con ocho muestras por lado, mover la frontera una muestra dio un sesgo de
+aproximadamente −0,91 nN. El lote conserva la medición central para poder
+inspeccionar esa dependencia.
+
+En la comparación pública de PAAm, el módulo de Hertz del gel rígido dependió
+fuertemente de usar el canal de altura del piezo o una posición de punta
+construida desde el sensor. Para interpretar módulos absolutos hace falta
+verificar el eje y el protocolo de ajuste del instrumento. [Datos, métodos y resultados](validation/force-steps-public/README.md).
+[Plan de validación, rendimiento e interfaz](design/force-validation-performance-fathom.md).

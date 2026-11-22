@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any, Literal, cast
 
 from spmkit import __version__
-from spmkit.core.analysis.force_steps import measure_force_step
+from spmkit.core.analysis.force_steps import boundary_sensitivity, measure_force_step
 from spmkit.core.export.manifest import file_sha256, get_git_commit
 from spmkit.core.io import load_any
 from spmkit.core.models import ForceVolume
@@ -55,8 +55,13 @@ def analyze_step_annotations(table: Path) -> Iterator[dict[str, Any]]:
                 )
                 if segment is None:
                     raise ValueError("Segmento o ciclo ausente")
+                for key in ("height_channel", "height_conversion_slots", "height_input_unit"):
+                    if key in segment.metadata:
+                        record[key] = segment.metadata[key]
                 record.update(
-                    asdict(measure_force_step(segment, boundary, window)), status="measured"
+                    asdict(measure_force_step(segment, boundary, window)),
+                    boundary_sensitivity=boundary_sensitivity(segment, boundary, window),
+                    status="measured",
                 )
             except Exception as exc:  # one rejected annotation must not remove other observations
                 record.update(status="rejected", reason=f"{type(exc).__name__}: {exc}")

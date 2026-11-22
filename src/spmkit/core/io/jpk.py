@@ -452,7 +452,11 @@ def _load_jpk_force(path: Path) -> ForceCurve:
                 spring_k = _slot_multiplier(v_scaling, "force")
                 state = "force_n"
 
-            meta: dict = {"num_points": int(raw_h.size)}
+            meta: dict = {
+                "num_points": int(raw_h.size),
+                "height_channel": "height",
+                "height_conversion_slots": [slot[0] for slot in h_scaling.slots],
+            }
             if h_scaling.lcd_info is not None or v_scaling.lcd_info is not None:
                 meta["lcd_info"] = {"height": h_scaling.lcd_info, "vDeflection": v_scaling.lcd_info}
 
