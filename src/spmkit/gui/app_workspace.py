@@ -112,8 +112,16 @@ def build_workspace(
     ws.add_toolbar_action("Guardar proyecto…", lambda: _save_project(ws, vm, session))
     force_canvas.openRequested.connect(lambda: _open_dialog(ws, vm, image_vm, session))
     if not force_canvas.errored:
-        ws.appearancePreviewed.connect(force_canvas.set_plot_theme)
-        force_canvas.set_plot_theme(ws.mode)
+        ws.chartStyleChanged.connect(force_canvas.set_plot_appearance)
+        force_canvas.set_plot_appearance(ws.appearance)
+    try:
+        from spmkit.gui.design.trace_plot import TracePlot
+    except ImportError:  # Panels already show their missing plotting dependency.
+        pass
+    else:
+        for chart in ws.findChildren(TracePlot):
+            ws.chartStyleChanged.connect(chart.set_appearance)
+            chart.set_appearance(ws.appearance)
     if open_path is not None:
         _load_into(ws, vm, image_vm, open_path, session)
     return ws

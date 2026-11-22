@@ -93,6 +93,7 @@ class Workspace(QMainWindow):
     #: Se emite con la ruta de un archivo soltado sobre la ventana (drag & drop).
     fileDropped = pyqtSignal(str)
     appearancePreviewed = pyqtSignal(str)
+    chartStyleChanged = pyqtSignal(object)
 
     def __init__(
         self,
@@ -422,6 +423,7 @@ class Workspace(QMainWindow):
         if app is not None:
             apply_appearance(app, self._appearance)
             self.appearancePreviewed.emit(self._appearance.theme)
+            self.chartStyleChanged.emit(self._appearance)
         if self._settings is not None:
             save_appearance(self._settings, self._appearance)
 
@@ -443,6 +445,7 @@ class Workspace(QMainWindow):
         if app is not None:
             apply_appearance(app, appearance.normalized())
             self.appearancePreviewed.emit(appearance.normalized().theme)
+            self.chartStyleChanged.emit(appearance.normalized())
 
     @property
     def appearance(self) -> Appearance:

@@ -72,7 +72,8 @@ class ImageAnalysisPanel(Panel):
         vm.channelChanged.connect(lambda _n: self._refresh_readout())
 
     def build(self) -> QWidget:
-        import pyqtgraph as pg
+
+        from spmkit.gui.design.trace_plot import TracePlot
 
         root = QWidget()
         lay = QVBoxLayout(root)
@@ -96,7 +97,7 @@ class ImageAnalysisPanel(Panel):
         lay.addLayout(wf_row)
 
         lay.addWidget(QLabel("Perfil de línea (arrastra los extremos sobre la imagen)"))
-        self._plot = pg.PlotWidget()
+        self._plot = TracePlot()
         # Unidades deterministas: escalamos nosotros (nm/µm/mm) y desactivamos el auto-prefijo SI
         # de pyqtgraph (que mostraba 'km' sobre valores grandes).
         self._plot.getAxis("bottom").enableAutoSIPrefix(False)
@@ -115,7 +116,6 @@ class ImageAnalysisPanel(Panel):
 
     # ---- reacciones ----
     def _on_profile(self, prof: Profile | None) -> None:
-        import pyqtgraph as pg
 
         self._plot.clear()
         if prof is None:
@@ -125,7 +125,7 @@ class ImageAnalysisPanel(Panel):
         dscale, dunit = _length_scale(float(dist.max()) if dist.size else 0.0)
         # Altura: si el canal está en m (topografía) la mostramos en nm; si no, tal cual.
         hscale, hunit = (1e9, "nm") if prof.unit == "m" else (1.0, prof.unit)
-        self._plot.plot(dist * dscale, height * hscale, pen=pg.mkPen("#ffb454", width=2))
+        self._plot.series(dist * dscale, height * hscale, width=2)
         self._plot.setLabel("bottom", "Distancia", units=dunit)
         self._plot.setLabel("left", "Altura", units=hunit)
 

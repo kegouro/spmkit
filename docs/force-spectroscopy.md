@@ -186,3 +186,13 @@ fuertemente de usar el canal de altura del piezo o una posición de punta
 construida desde el sensor. Para interpretar módulos absolutos hace falta
 verificar el eje y el protocolo de ajuste del instrumento. [Datos, métodos y resultados](validation/force-steps-public/README.md).
 [Plan de validación, rendimiento e interfaz](design/force-validation-performance-fathom.md).
+
+### Inspección interactiva en Fathom
+
+Sobre el gráfico de fuerza, **Desplazar** mueve la vista y la rueda amplía alrededor del puntero. En **Zoom rectangular**, arrastrar un rectángulo amplía esos límites. **Reencuadrar** vuelve a mostrar la curva completa. La casilla **Ventana de ajuste** delimita por separado las muestras que se usan al ajustar el modelo.
+
+En **Inspeccionar**, acercar el puntero a una traza muestra su nombre, índice (desde cero) y coordenadas. Puedes elegir una rama cuando las dos se superponen, o seleccionar el ajuste para leer sus puntos calculados. Un clic fija una referencia y el puntero muestra ΔX y ΔY con respecto a ella. La lectura corresponde a puntos de la traza que se visualiza en el eje seleccionado.
+
+En **Ejes**, introduce mínimos y máximos, ajusta Y a las muestras del intervalo X visible o cambia las unidades de presentación. Las fuerzas se pueden leer en pN, nN o µN y las distancias en nm o µm. Para una señal de tensión se ofrecen mV y V. Cambiar unidades conserva el encuadre físico y los parámetros de la receta.
+
+En **Apariencia**, elige la paleta de trazas y, si quieres, un fondo personalizado para los gráficos interactivos de líneas. Las escalas de color de las imágenes y mapas tienen sus propios controles.

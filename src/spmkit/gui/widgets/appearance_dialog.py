@@ -22,7 +22,7 @@ from PyQt6.QtWidgets import (
 )
 
 from spmkit.gui.design import tokens
-from spmkit.gui.design.appearance import FONT_SCALES, Appearance
+from spmkit.gui.design.appearance import FONT_SCALES, TRACE_PALETTES, Appearance
 from spmkit.gui.widgets.annotation_dialog import ColorButton
 
 
@@ -136,6 +136,29 @@ class AppearanceDialog(QDialog):
         font_row.addStretch(1)
         root.addLayout(font_row)
 
+        plot_row = QHBoxLayout()
+        self._palette = QComboBox()
+        self._palette.setAccessibleName("Paleta de trazas")
+        for key, (name, _, _) in TRACE_PALETTES.items():
+            self._palette.addItem(name, key)
+        self._palette.setCurrentIndex(self._palette.findData(current.trace_palette))
+        plot_row.addWidget(QLabel("Paleta de trazas"))
+        plot_row.addWidget(self._palette)
+        self._background_check = QCheckBox("Fondo de gráfico personalizado")
+        self._background_check.setChecked(current.plot_background is not None)
+        self._background = ColorButton(
+            current.plot_background or tokens.colors(current.theme)["surface"]
+        )
+        self._background.setAccessibleName("Elegir color del fondo del gráfico")
+        self._background.setEnabled(self._background_check.isChecked())
+        plot_row.addWidget(self._background_check)
+        plot_row.addWidget(self._background)
+        root.addLayout(plot_row)
+        self._palette.currentIndexChanged.connect(self._emit)
+        self._background_check.toggled.connect(self._background.setEnabled)
+        self._background_check.toggled.connect(self._emit)
+        self._background.clicked.connect(self._emit)
+
         buttons = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
         )
@@ -149,6 +172,8 @@ class AppearanceDialog(QDialog):
     # ---- interacción ----
     def _pick_theme(self, key: str) -> None:
         self._theme = key
+        if not self._background_check.isChecked():
+            self._background.set_color(tokens.colors(key)["surface"])
         if not self._accent_chk.isChecked():  # el botón muestra el acento del tema
             self._accent_btn.set_color(tokens.colors(key)["accent"])
         self._sync_cards()
@@ -169,4 +194,12 @@ class AppearanceDialog(QDialog):
 
     def appearance(self) -> Appearance:
         accent = self._accent_btn.color() if self._accent_chk.isChecked() else None
-        return Appearance(theme=self._theme, accent=accent, font_px=int(self._font.currentData()))
+        return Appearance(
+            theme=self._theme,
+            accent=accent,
+            font_px=int(self._font.currentData()),
+            trace_palette=self._palette.currentData(),
+            plot_background=(
+                self._background.color() if self._background_check.isChecked() else None
+            ),
+        )

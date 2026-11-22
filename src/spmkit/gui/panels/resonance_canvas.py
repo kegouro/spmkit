@@ -50,6 +50,8 @@ class ResonanceCanvasPanel(Panel):
     def build(self) -> QWidget:
         import pyqtgraph as pg
 
+        from spmkit.gui.design.trace_plot import TracePlot
+
         root = QWidget()
         lay = QVBoxLayout(root)
         lay.setContentsMargins(6, 6, 6, 6)
@@ -95,12 +97,13 @@ class ResonanceCanvasPanel(Panel):
         krow.addStretch(1)
         lay.addLayout(krow)
 
-        self._plot = pg.PlotWidget()
+        self._plot = TracePlot()
         self._plot.setLabel("bottom", "Frecuencia", units="Hz")
         self._plot.setLabel("left", "PSD", units="m/√Hz")
         self._plot.showGrid(x=True, y=True, alpha=0.3)
         self._f0_line = pg.InfiniteLine(angle=90, pen=pg.mkPen(tokens.TRACES["contact"], width=1.5))
         self._plot.addItem(self._f0_line)
+        self._plot.style_item(self._f0_line, "contact", 1.5)
         self._f0_line.hide()
         lay.addWidget(self._plot, 1)
         return root
@@ -123,18 +126,19 @@ class ResonanceCanvasPanel(Panel):
         self._k_readout.setText(f"k = {k:.3g} N/m" if k is not None else "—")
 
     def _on_result(self, result: ResonanceResult | None) -> None:
-        import pyqtgraph as pg
 
         self._plot.clear()
         self._plot.addItem(self._f0_line)
+        self._plot.style_item(self._f0_line, "contact", 1.5)
         self._readout.setText(_readout_html(result))
         if result is None:
             self._f0_line.hide()
             return
-        self._plot.plot(
+        self._plot.series(
             np.asarray(result.frequency),
             np.asarray(result.psd),
-            pen=pg.mkPen(tokens.TRACES["fit"], width=1.6),
+            role="fit",
+            width=1.6,
         )
         self._f0_line.setValue(result.peak.f0)
         self._f0_line.show()

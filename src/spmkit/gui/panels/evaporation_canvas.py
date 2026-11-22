@@ -18,7 +18,6 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from spmkit.gui.design import tokens
 from spmkit.gui.panels.base import Panel
 from spmkit.gui.viewmodels.evaporation_vm import EvaporationResult, EvaporationViewModel
 
@@ -65,7 +64,8 @@ class EvaporationCanvasPanel(Panel):
         self._on_result(vm.result)
 
     def build(self) -> QWidget:
-        import pyqtgraph as pg
+
+        from spmkit.gui.design.trace_plot import TracePlot
 
         root = QWidget()
         lay = QVBoxLayout(root)
@@ -112,14 +112,14 @@ class EvaporationCanvasPanel(Panel):
         bar.addStretch(1)
         lay.addLayout(bar)
 
-        self._plot_f = pg.PlotWidget()
+        self._plot_f = TracePlot()
         self._plot_f.setLabel("bottom", "Tiempo (h)")
         self._plot_f.setLabel("left", "f (kHz)")
         self._plot_f.showGrid(x=True, y=True, alpha=0.3)
         _no_si_prefix(self._plot_f)
         lay.addWidget(self._plot_f, 1)
 
-        self._plot_m = pg.PlotWidget()
+        self._plot_m = TracePlot()
         self._plot_m.setLabel("bottom", "Tiempo (h)")
         self._plot_m.setLabel("left", "Δm (ng)")
         self._plot_m.showGrid(x=True, y=True, alpha=0.3)
@@ -143,7 +143,6 @@ class EvaporationCanvasPanel(Panel):
 
     # ---- reacciones ----
     def _on_result(self, result: EvaporationResult | None) -> None:
-        import pyqtgraph as pg
 
         self._plot_f.clear()
         self._plot_m.clear()
@@ -153,19 +152,19 @@ class EvaporationCanvasPanel(Panel):
             return
         s = result.series
         t_h = np.asarray(s.time) * _H
-        self._plot_f.plot(
+        self._plot_f.series(
             t_h,
             np.asarray(s.frequency) * _KHZ,
-            pen=pg.mkPen(tokens.TRACES["fit"], width=1.8),
+            role="fit",
+            width=1.8,
             symbol="o",
             symbolSize=5,
-            symbolBrush=tokens.TRACES["fit"],
         )
-        self._plot_m.plot(
+        self._plot_m.series(
             t_h,
             np.asarray(s.added_mass) * _NG,
-            pen=pg.mkPen(tokens.TRACES["contact"], width=1.8),
+            role="contact",
+            width=1.8,
             symbol="o",
             symbolSize=5,
-            symbolBrush=tokens.TRACES["contact"],
         )

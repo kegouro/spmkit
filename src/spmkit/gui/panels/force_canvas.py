@@ -1,12 +1,4 @@
-"""Lienzo de la curva de fuerza — el corazón visual de la perspectiva.
-
-Dibuja la curva activa (approach en gris, retract en ámbar), superpone la línea de
-ajuste (teal), marca el contacto y muestra una **tira de residuos** debajo (lo que
-ANA/JPK no dan de un vistazo). El eje se conmuta entre **separación** e **indentación
-δ** (contacto en el origen). Un *scrubber* recorre las curvas del force-volume: al
-arrastrarlo sólo se re-renderiza (barato); el ajuste va con debounce en el
-:class:`ForceViewModel`. Jerarquía de color v2: **dato = neutral, ajuste = teal**.
-"""
+"""Curva de fuerza y residuos con inspección y navegación en coordenadas de visualización."""
 
 from __future__ import annotations
 
@@ -27,6 +19,7 @@ from PyQt6.QtWidgets import (
 from spmkit.core.analysis.forcecurve import display_axis
 from spmkit.core.models import ForceCurve, ForceSegment
 from spmkit.gui.design import tokens
+from spmkit.gui.design.appearance import Appearance
 from spmkit.gui.panels.base import Panel
 from spmkit.gui.viewmodels import ForceViewModel
 
@@ -34,17 +27,15 @@ _NM = 1e9  # m → nm
 _NN = 1e9  # N → nN
 
 
-def _segment_xy(seg: ForceSegment) -> tuple[np.ndarray, np.ndarray, bool]:
-    """Devuelve ``(eje_m, y_display, calibrado)`` de un segmento para dibujar.
-
-    Si el segmento está calibrado usa fuerza (nN) vs eje (m); si no, la deflexión
-    cruda vs eje. El flag ``calibrado`` decide las etiquetas. El eje se deja en metros
-    (el shift de indentación y la escala a nm los aplica el panel).
-    """
-    axis = display_axis(seg.separation, seg.raw_height)
+def _segment_xy(seg: ForceSegment) -> tuple[np.ndarray, np.ndarray, str, str]:
+    separation = None if seg.separation is None else np.asarray(seg.separation, dtype=np.float64)
+    axis = display_axis(separation, seg.raw_height)
+    x_name = "Separación" if separation is not None and axis is separation else "Altura"
     if seg.force is not None:
-        return axis, np.asarray(seg.force, dtype=np.float64) * _NN, True
-    return axis, np.asarray(seg.raw_deflection, dtype=np.float64), False
+        return axis, np.asarray(seg.force) * _NN, "nN", x_name
+    if seg.deflection is not None:
+        return axis, np.asarray(seg.deflection) * _NM, "nm", x_name
+    return axis, np.asarray(seg.raw_deflection), "V", x_name
 
 
 class _blocked:
@@ -74,6 +65,7 @@ class ForceCanvasPanel(Panel):
         self._offset = 0.0  # shift del eje (m): contacto en modo indentación
         self._contact: float | None = None
         self._last_ctx: dict = {}
+        self._pinned_color = tokens.TRACES["residual"]
         self._pinned: list = []  # trazas fijadas para comparar
         super().__init__(parent)
         vm.volumeChanged.connect(lambda _: self.set_source_name(""))
@@ -82,6 +74,8 @@ class ForceCanvasPanel(Panel):
 
     def build(self) -> QWidget:
         import pyqtgraph as pg  # extra opcional: si falta, el sandbox muestra Error Card
+
+        from spmkit.gui.widgets.curve_view_tools import CurveViewTools
 
         self._pg = pg
         root = QWidget()
@@ -186,7 +180,7 @@ class ForceCanvasPanel(Panel):
         self._axis_mode.addItem("Separación", "sep")
         self._axis_mode.addItem("Indentación δ", "ind")
         self._axis_mode.currentIndexChanged.connect(self._on_axis_mode)
-        self._region_check = QCheckBox("Región")
+        self._region_check = QCheckBox("Ventana de ajuste")
         self._region_check.setToolTip("Ajustar sólo dentro de una ventana manual del eje")
         self._region_check.toggled.connect(self._on_region_toggle)
         self._scrubber = QSlider(Qt.Orientation.Horizontal)
@@ -210,6 +204,22 @@ class ForceCanvasPanel(Panel):
         crow.addWidget(self._fit_view)
         crow.addWidget(self._export_btn)
 
+        self._tools = CurveViewTools(
+            self._plot,
+            self._resid,
+            glw,
+            [
+                ("Aproximación", self._extend_item),
+                ("Retracción", self._retract_item),
+                ("Ajuste", self._fit_item),
+            ],
+        )
+        self._tools.mode.currentIndexChanged.connect(
+            lambda: self._region.setMovable(self._tools.mode.currentData() == "pan")
+        )
+        lay.addWidget(self._tools)
+        self._x_name, self._y_name, self._y_unit = "Separación", "Fuerza", "nN"
+        self._pin_unit = self._y_unit
         lay.addWidget(glw, 1)
         lay.addWidget(controls)
 
@@ -230,9 +240,15 @@ class ForceCanvasPanel(Panel):
 
     def set_plot_theme(self, mode: str) -> None:
         """Actualiza el lienzo abierto conservando datos, zoom y ventana de ajuste."""
-        palette = tokens.colors(mode)
-        ink = tokens.TRACES if tokens.is_dark(mode) else tokens.LIGHT_TRACES
-        self._graphics.setBackground(palette["surface"])
+        self.set_plot_appearance(Appearance(theme=mode))
+
+    def set_plot_appearance(self, style: Appearance) -> None:
+        bg, fg, ink = style.chart_colors()
+        self._tools.set_ink(fg)
+        self._graphics.setBackground(bg)
+        self._pinned_color = ink["residual"]
+        for item in self._pinned:
+            item.setPen(self._pg.mkPen(self._pinned_color, width=1))
         # Both ViewBoxes must have the same pixel origin, including after a font change.
         axis_width = (
             self.fontMetrics().horizontalAdvance("−0.00e−00") + 2 * self.fontMetrics().height()
@@ -242,14 +258,12 @@ class ForceCanvasPanel(Panel):
         for plot in (self._plot, self._resid):
             for side in ("bottom", "left"):
                 axis = plot.getAxis(side)
-                axis.setPen(palette["text_muted"])
-                axis.setTextPen(palette["text_muted"])
-                axis.setLabel(
-                    text=axis.labelText, units=axis.labelUnits, color=palette["text_muted"]
-                )
-        self._legend.setLabelTextColor(palette["text"])
+                axis.setPen(fg)
+                axis.setTextPen(fg)
+                axis.setLabel(text=axis.labelText, units=axis.labelUnits, color=fg)
+        self._legend.setLabelTextColor(fg)
         for _, label in self._legend.items:
-            label.setText(label.text, color=palette["text"])
+            label.setText(label.text, color=fg)
         self._extend_item.setPen(self._pg.mkPen(ink["extend"], width=1.6))
         self._retract_item.setPen(
             self._pg.mkPen(ink["retract"], width=1.4, style=Qt.PenStyle.DashLine)
@@ -298,7 +312,8 @@ class ForceCanvasPanel(Panel):
         n = self._vm.n_curves
         self._counter.setText(f"{index + 1:>4} / {n}" if n else "—")
         self._empty.setVisible(not n)
-        for widget in (self._graphics, self._controls, self._header):
+        self._tools.clear_probe()
+        for widget in (self._graphics, self._controls, self._header, self._tools):
             widget.setVisible(bool(n))
         self._fit_item.setData([], [])
         self._resid_item.setData([], [])
@@ -347,7 +362,7 @@ class ForceCanvasPanel(Panel):
         x, y = self._extend_item.getData()
         if x is None or len(x) == 0:
             return
-        item = self._plot.plot(x, y, pen=self._pg.mkPen("#5C6875", width=1.0))
+        item = self._plot.plot(x, y, pen=self._pg.mkPen(self._pinned_color, width=1.0))
         item.setZValue(-10)
         self._pinned.append(item)
         if len(self._pinned) > self._PINNED_MAX:
@@ -365,7 +380,7 @@ class ForceCanvasPanel(Panel):
             with _blocked(self._axis_mode):
                 self._axis_mode.setCurrentIndex(self._axis_mode.findData("sep"))
             self._axis_mode.setEnabled(False)
-            self._update_axis_label()
+            self._on_axis_mode(self._axis_mode.currentIndex())
             self._init_region_bounds()
             self._region.setVisible(True)
             self._on_region_changed()
@@ -400,25 +415,36 @@ class ForceCanvasPanel(Panel):
         self._offset = self._contact if (indent and self._contact is not None) else 0.0
 
     def _draw_data(self, curve: ForceCurve) -> None:
-        calibrated = False
-        if curve.extend is not None:
-            axis, y, calibrated = _segment_xy(curve.extend)
-            self._extend_item.setData(self._x(axis), y)
-        else:
-            self._extend_item.setData([], [])
-        if curve.retract is not None:
-            axis_r, yr, _ = _segment_xy(curve.retract)
-            self._retract_item.setData(self._x(axis_r), yr)
-        else:
-            self._retract_item.setData([], [])
-        label, units = ("Fuerza", "nN") if calibrated else ("Deflexión", "")
-        self._plot.setLabel("left", label, units=units)
+        branches = [
+            (item, _segment_xy(seg) if seg is not None else None)
+            for item, seg in (
+                (self._extend_item, curve.extend),
+                (self._retract_item, curve.retract),
+            )
+        ]
+        units = [data[2] for _, data in branches if data is not None]
+        self._y_unit = next((u for u in ("nN", "nm", "V") if u in units), "V")
+        self._y_name = "Fuerza" if self._y_unit == "nN" else "Deflexión"
+        if self._pin_unit != self._y_unit:
+            self.clear_pinned()
+        self._pin_unit = self._y_unit
+        labels = set()
+        for item, data in branches:
+            if data is None or data[2] != self._y_unit:
+                item.setData([], [])
+            else:
+                axis, y, _, label = data
+                labels.add(label)
+                item.setData(self._x(axis), y)
+        self._x_name = " / ".join(sorted(labels)) or "Altura"
+        self._update_axis_label()
+        if len(set(units)) > 1:
+            self._tools.readout.setText(f"Ramas con unidades distintas · mostrando {self._y_unit}")
 
     def _update_axis_label(self) -> None:
-        if self._axis_mode.currentData() == "ind":
-            self._resid.setLabel("bottom", "Indentación δ", units="nm")
-        else:
-            self._resid.setLabel("bottom", "Separación", units="nm")
+        indent = self._axis_mode.currentData() == "ind"
+        label = "Indentación δ" if indent and self._contact is not None else self._x_name
+        self._tools.set_units(label, self._y_name, self._y_unit)
 
     def _sync_scrubber_range(self) -> None:
         n = self._vm.n_curves

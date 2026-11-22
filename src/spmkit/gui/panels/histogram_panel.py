@@ -36,7 +36,8 @@ class HistogramPanel(Panel):
         map_vm.keyChanged.connect(lambda _k: self._refresh())
 
     def build(self) -> QWidget:
-        import pyqtgraph as pg
+
+        from spmkit.gui.design.trace_plot import TracePlot
 
         root = QWidget()
         lay = QVBoxLayout(root)
@@ -47,19 +48,18 @@ class HistogramPanel(Panel):
         self._stats.setWordWrap(True)
         lay.addWidget(self._stats)
 
-        self._plot = pg.PlotWidget()
+        self._plot = TracePlot()
         self._plot.showGrid(x=True, y=True, alpha=0.15)
         self._plot.setLabel("left", "cuentas")
         # Los bordes ya vienen escalados a la unidad de PROPERTIES (kPa, nN…) → sin re-prefijo
         # SI de pyqtgraph (evita "MkPa" para módulos de GPa).
         self._plot.getAxis("bottom").enableAutoSIPrefix(False)
-        self._bars = self._plot.plot(
+        self._bars = self._plot.series(
             [],
             [],
             stepMode="center",
             fillLevel=0,
-            brush=(45, 212, 191, 90),
-            pen=pg.mkPen("#2DD4BF"),
+            width=1,
         )
         lay.addWidget(self._plot, 1)
         return root

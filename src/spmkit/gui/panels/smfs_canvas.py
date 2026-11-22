@@ -23,7 +23,6 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from spmkit.gui.design import tokens
 from spmkit.gui.panels.base import Panel
 from spmkit.gui.viewmodels.smfs_vm import SmfsResult, SmfsViewModel
 
@@ -43,7 +42,8 @@ class SmfsCanvasPanel(Panel):
         self._on_result(vm.result)
 
     def build(self) -> QWidget:
-        import pyqtgraph as pg
+
+        from spmkit.gui.design.trace_plot import TracePlot
 
         root = QWidget()
         lay = QVBoxLayout(root)
@@ -101,7 +101,7 @@ class SmfsCanvasPanel(Panel):
         lay.addWidget(params)
         self._update_wlc_enabled()
 
-        self._plot = pg.PlotWidget()
+        self._plot = TracePlot()
         self._plot.setLabel("bottom", "Separación", units="nm")
         self._plot.setLabel("left", "Fuerza", units="nN")
         # Datos ya escalados a nm/nN → sin re-prefijo SI de pyqtgraph (evita "knm"/"knN").
@@ -128,7 +128,7 @@ class SmfsCanvasPanel(Panel):
         actions.addStretch(1)
         lay.addLayout(actions)
 
-        self._hist = pg.PlotWidget()
+        self._hist = TracePlot()
         self._hist.setLabel("bottom", "Contorno", units="nm")
         self._hist.setLabel("left", "Eventos")
         self._hist.getAxis("bottom").enableAutoSIPrefix(False)  # contorno ya en nm
@@ -143,9 +143,7 @@ class SmfsCanvasPanel(Panel):
             return
         bins = min(30, max(5, contours.size // 3))
         counts, edges = np.histogram(contours, bins=bins)
-        self._hist.plot(
-            edges, counts, stepMode="center", fillLevel=0, brush=tokens.TRACES["fit"] + "60"
-        )
+        self._hist.series(edges, counts, stepMode="center", fillLevel=0)
 
     def _export_csv(self) -> None:
         path, _ = QFileDialog.getSaveFileName(
@@ -190,7 +188,6 @@ class SmfsCanvasPanel(Panel):
         return box
 
     def _on_result(self, result: SmfsResult | None) -> None:
-        import pyqtgraph as pg
 
         self._plot.clear()
         self._table.setRowCount(0)
@@ -198,26 +195,28 @@ class SmfsCanvasPanel(Panel):
             self._readout.setText("<i>Sin eventos (carga una curva de fuerza)</i>")
             return
 
-        self._plot.plot(
+        self._plot.series(
             result.separation * _NM,
             result.force * _NN,
-            pen=pg.mkPen(tokens.TRACES["retract"], width=1.2),
+            role="retract",
+            width=1.2,
         )
         for osep, oforce in result.overlays:
-            self._plot.plot(
+            self._plot.series(
                 np.asarray(osep) * _NM,
                 np.asarray(oforce) * _NN,
-                pen=pg.mkPen(tokens.TRACES["fit"], width=2.2),
+                role="fit",
+                width=2.2,
             )
         if result.events:
-            peaks = pg.ScatterPlotItem(
+            self._plot.series(
                 [ef.event.separation * _NM for ef in result.events],
                 [ef.event.force * _NN for ef in result.events],
-                size=11,
-                brush=tokens.TRACES["contact"],
-                pen=pg.mkPen("#1b2430", width=1.0),
+                symbol="o",
+                symbolSize=11,
+                role="contact",
+                width=0,
             )
-            self._plot.addItem(peaks)
 
         n = len(result.events)
         plural = "s" if n != 1 else ""

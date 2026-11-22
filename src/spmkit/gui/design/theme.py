@@ -29,8 +29,8 @@ QToolBar QToolButton:hover { background: $elevated; }
 QToolBar QToolButton:checked { background: $accent_soft; color: $text; border-bottom: 2px solid $accent; }
 QWidget#toolbarSpacer { background: transparent; }
 QToolBar#workspaceTools { background: $surface; }
-QToolButton#viewSelector { background: $surface_2; border: 1px solid $border; padding: 5px 16px 5px 10px; }
-QToolButton#viewSelector::menu-indicator { subcontrol-position: right center; }
+QToolButton#axisTools, QToolButton#viewSelector { background: $surface_2; border: 1px solid $border; padding: 5px 16px 5px 10px; }
+QToolButton#axisTools::menu-indicator, QToolButton#viewSelector::menu-indicator { subcontrol-position: right center; }
 QLabel[role="plotTitle"] { font-size: ${plot_title_px}px; font-weight: 600; }
 QLabel[role="metric"] { color: $text; font-family: $mono; font-size: ${metric_px}px; }
 QLabel[role="groupTitle"] { color: $text; font-weight: 600; padding: 10px 0 4px 0; }

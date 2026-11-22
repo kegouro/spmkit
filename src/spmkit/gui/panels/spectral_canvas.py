@@ -54,7 +54,8 @@ class SpectralCanvasPanel(Panel):
         self._on_result(self._vm.result)
 
     def build(self) -> QWidget:
-        import pyqtgraph as pg
+
+        from spmkit.gui.design.trace_plot import TracePlot
 
         root = QWidget()
         lay = QVBoxLayout(root)
@@ -76,7 +77,7 @@ class SpectralCanvasPanel(Panel):
         qrow.addStretch(1)
         lay.addLayout(qrow)
 
-        self._plot = pg.PlotWidget()
+        self._plot = TracePlot()
         self._plot.setLogMode(x=True, y=True)  # PSD en ley de potencia → recta en log-log
         self._plot.setLabel("bottom", "q (1/m)")
         self._plot.setLabel("left", "PSD (m⁴)")
@@ -98,7 +99,6 @@ class SpectralCanvasPanel(Panel):
         self._vm.set_q_range(qmin, qmax)
 
     def _on_result(self, result: SpectralResult | None) -> None:
-        import pyqtgraph as pg
 
         self._plot.clear()
         self._readout.setText(_readout_html(result))
@@ -108,4 +108,4 @@ class SpectralCanvasPanel(Panel):
         psd = np.asarray(result.psd.psd)
         mask = (q > 0) & (psd > 0)  # log-log: descarta el bin DC y ceros
         if mask.any():
-            self._plot.plot(q[mask], psd[mask], pen=pg.mkPen("#4ea1ff", width=2))
+            self._plot.series(q[mask], psd[mask], width=2)
