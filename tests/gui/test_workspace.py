@@ -95,10 +95,10 @@ def test_add_toolbar_action_visible(qtbot) -> None:  # type: ignore[no-untyped-d
     qtbot.addWidget(ws)
     hits: list[int] = []
     ws.add_toolbar_action("📂  Abrir…", lambda: hits.append(1))
-    labels = [a.text() for a in ws._persp_bar.actions() if a.text()]
+    labels = [a.text() for a in ws._file_bar.actions() if a.text()]
     assert "📂  Abrir…" in labels
-    assert labels.index("📂  Abrir…") < labels.index("Imagen")  # a la izquierda de perspectivas
-    next(a for a in ws._persp_bar.actions() if a.text() == "📂  Abrir…").trigger()
+    assert labels.index("📂  Abrir…") < labels.index("Comandos")
+    next(a for a in ws._file_bar.actions() if a.text() == "📂  Abrir…").trigger()
     assert hits == [1]  # el botón dispara el callback
 
 
@@ -107,5 +107,50 @@ def test_build_workspace_has_open_button(qtbot) -> None:  # type: ignore[no-unty
 
     ws = build_workspace()
     qtbot.addWidget(ws)
-    labels = [a.text() for a in ws._persp_bar.actions() if a.text()]
+    labels = [a.text() for a in ws._file_bar.actions() if a.text()]
     assert any("Abrir" in t for t in labels) and any("Guardar" in t for t in labels)
+
+
+def test_guide_tracks_controls_and_can_be_replayed(qtbot):
+    from PyQt6.QtCore import QPoint, Qt
+
+    from spmkit.gui.app_workspace import build_workspace
+
+    ws = build_workspace()
+    qtbot.addWidget(ws)
+    ws.resize(1024, 768)
+    ws.show()
+    qtbot.waitExposed(ws)
+    ws._guide_action.trigger()
+    guide = ws._guide
+    assert guide.isVisible()
+    target = ws._file_bar.widgetForAction(ws._open_action)
+    assert guide._outline.geometry().topLeft() == target.mapTo(ws, QPoint())
+    guide._next.click()
+    assert guide._outline.size() == ws._persp_bar.size()
+    guide._back.click()
+    assert guide._title.text() == "Abre una adquisición"
+    for _ in range(4):
+        guide._next.click()
+    assert not guide.isVisible() and not guide._outline.isVisible()
+    ws.open_guide()
+    qtbot.keyClick(guide._next, Qt.Key.Key_Escape)
+    assert not guide.isVisible()
+    assert ws.active_perspective == "force"
+
+
+def test_force_theme_preserves_axis_units_and_view(qtbot):
+    from spmkit.gui.app_workspace import build_workspace
+    from spmkit.gui.design import tokens
+    from spmkit.gui.design.appearance import Appearance
+
+    ws = build_workspace()
+    qtbot.addWidget(ws)
+    canvas = ws.panel("force_canvas")
+    canvas._plot.setXRange(10, 20, padding=0)
+    before = canvas._plot.viewRange()[0]
+    ws.set_appearance(Appearance(theme="light"))
+    axis = canvas._resid.getAxis("bottom")
+    assert (axis.labelText, axis.labelUnits) == ("Separación", "nm")
+    assert canvas._plot.viewRange()[0] == before
+    assert canvas._extend_item.opts["pen"].color().name().upper() == tokens.LIGHT_TRACES["extend"]

@@ -14,14 +14,14 @@ from __future__ import annotations
 #: Paletas por modo. Claves con guion_bajo para compatibilidad con string.Template.
 _COLORS: dict[str, dict[str, str]] = {
     "dark": {
-        "bg": "#0B0E13",  # grafito casi negro
-        "surface": "#121821",  # paneles
-        "surface_2": "#171F2A",  # controles / barras / dock headers
-        "elevated": "#1E2733",  # hover / menús / popovers
+        "bg": "#141B22",  # grafito
+        "surface": "#19222C",  # paneles
+        "surface_2": "#202B36",  # controles / barras / dock headers
+        "elevated": "#2B3845",  # hover / menús / popovers
         "overlay": "rgba(6, 9, 13, 0.66)",  # modales / backdrop
         "text": "#E8EEF5",
         "text_muted": "#93A0AE",
-        "text_faint": "#5C6875",
+        "text_faint": "#919CA8",
         "border": "#232C38",
         "border_strong": "#33404F",
         "accent": "#2DD4BF",  # teal de señal
@@ -45,7 +45,7 @@ _COLORS: dict[str, dict[str, str]] = {
         "text_faint": "#8A8F98",
         "border": "#DBD6CB",
         "border_strong": "#C4BEB0",
-        "accent": "#0E9488",
+        "accent": "#086D64",
         "accent_press": "#0B7C72",
         "accent_soft": "#CFEEE9",
         "on_accent": "#FFFFFF",
@@ -202,6 +202,15 @@ TRACES: dict[str, str] = {
     "fit": "#2DD4BF",  # ajuste = teal (héroe visual)
     "contact": "#E8A94B",  # punto de contacto = oro de marca (como el logo Fathom)
     "residual": "#33404F",  # residuos (silenciados)
+}
+
+#: Tintas para mantener las ramas y el ajuste legibles sobre fondos claros.
+LIGHT_TRACES = {
+    "extend": "#384E63",
+    "retract": "#855716",
+    "fit": "#00796E",
+    "contact": "#93570B",
+    "residual": "#72818B",
 }
 
 #: Paleta categórica (trazas secundarias), colorblind-safe en ambos modos.

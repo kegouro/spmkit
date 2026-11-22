@@ -21,12 +21,14 @@ from PyQt6.QtWidgets import (
     QDockWidget,
     QLabel,
     QMainWindow,
+    QSizePolicy,
     QStackedWidget,
     QToolBar,
     QVBoxLayout,
     QWidget,
 )
 
+from spmkit.gui.design import brand
 from spmkit.gui.design.appearance import (
     Appearance,
     apply_appearance,
@@ -43,6 +45,7 @@ from spmkit.gui.shell.perspectives import (
     PERSPECTIVES,
 )
 from spmkit.gui.shell.status_bar import ProgressStatusBar
+from spmkit.gui.widgets.workspace_guide import WorkspaceGuide
 
 #: Traducción de las áreas de dock (string, agnósticas de toolkit) a las de Qt.
 _AREA_MAP = {
@@ -86,6 +89,7 @@ class Workspace(QMainWindow):
 
     #: Se emite con la ruta de un archivo soltado sobre la ventana (drag & drop).
     fileDropped = pyqtSignal(str)
+    appearancePreviewed = pyqtSignal(str)
 
     def __init__(
         self,
@@ -133,6 +137,7 @@ class Workspace(QMainWindow):
         self._central_index: dict[str, int] = {}
 
         self._build_perspective_bar()
+        self._guide = WorkspaceGuide(self)
         self._build_panels()
         self._commands = self._default_commands()
         self._install_shortcuts()
@@ -183,19 +188,37 @@ class Workspace(QMainWindow):
 
     # ---- construcción ----
     def _build_perspective_bar(self) -> None:
-        bar = QToolBar("Barra principal")
+        self._file_bar = QToolBar("Archivo y herramientas")
+        self._file_bar.setObjectName("workspaceTools")
+        self._file_bar.setMovable(False)
+        self.addToolBar(self._file_bar)
+        wordmark = QLabel(brand.PRODUCT_NAME)
+        wordmark.setObjectName("wordmark")
+        self._file_bar.addWidget(wordmark)
+        self._file_bar.addSeparator()
+        spacer = QWidget()
+        spacer.setObjectName("toolbarSpacer")
+        spacer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        self._file_insert = self._file_bar.addWidget(spacer)
+        self._search_action = self._file_bar.addAction("Comandos", self.open_command_palette)
+        self._appearance_action = self._file_bar.addAction("Apariencia", self.open_appearance)
+        self._guide_action = self._file_bar.addAction("Guía", self.open_guide)
+        self._guide_action.setShortcut(QKeySequence("F1"))
+        self._appearance_action.setShortcut(QKeySequence("Ctrl+Shift+A"))
+        self._search_action.setShortcut(QKeySequence("Ctrl+K"))
+        self._open_action: QAction | None = None
+        self.addToolBarBreak()
+        bar = QToolBar("Perspectivas")
+        bar.setObjectName("perspectives")
         bar.setMovable(False)
         self.addToolBar(Qt.ToolBarArea.TopToolBarArea, bar)
         self._persp_bar = bar
-        self._first_persp_action: QAction | None = None
         self._persp_actions: dict[str, QAction] = {}
         for persp in self._perspectives:
             action = QAction(persp.label, self)
             action.setCheckable(True)
             action.triggered.connect(lambda _checked=False, k=persp.key: self.set_perspective(k))
             bar.addAction(action)
-            if self._first_persp_action is None:
-                self._first_persp_action = action
             self._persp_actions[persp.key] = action
 
     def add_toolbar_action(
@@ -209,16 +232,47 @@ class Workspace(QMainWindow):
         if shortcut:
             action.setShortcut(QKeySequence(shortcut))
         action.triggered.connect(lambda _checked=False: callback())  # type: ignore[operator]
-        if self._first_persp_action is not None:
-            self._persp_bar.insertAction(self._first_persp_action, action)
-        else:
-            self._persp_bar.addAction(action)
+        self._file_bar.insertAction(self._file_insert, action)
         return action
 
+    def set_open_action(self, action: QAction) -> None:
+        self._open_action = action
+
     def add_toolbar_separator(self) -> None:
-        """Separador visual entre los botones de archivo y las perspectivas."""
-        if self._first_persp_action is not None:
-            self._persp_bar.insertSeparator(self._first_persp_action)
+        self._file_bar.insertSeparator(self._file_insert)
+
+    def open_guide(self) -> None:
+        steps = []
+        if self._open_action is not None:
+            steps.append(
+                (
+                    self._file_bar.widgetForAction(self._open_action),
+                    "Abre una adquisición",
+                    "Elige una curva o imagen. También puedes arrastrar el archivo a la ventana.",
+                )
+            )
+        steps.extend(
+            [
+                (
+                    self._persp_bar,
+                    "Elige una vista",
+                    "Abre «Curva de fuerza» para una adquisición o «Batch» para una carpeta.",
+                ),
+                (
+                    self._file_bar.widgetForAction(self._search_action),
+                    "Encuentra una acción",
+                    "Busca «exportar» y pulsa Intro para ejecutar el comando seleccionado.",
+                ),
+                (
+                    self._file_bar.widgetForAction(self._appearance_action),
+                    "Ajusta tu espacio de trabajo",
+                    "Prueba el tema con la luz del laboratorio y ajusta el tamaño de letra.",
+                ),
+            ]
+        )
+        self._guide.start(
+            [(widget, title, body) for widget, title, body in steps if widget is not None]
+        )
 
     def _build_panels(self) -> None:
         for key, panel in self._panels.items():
@@ -236,11 +290,6 @@ class Workspace(QMainWindow):
                 self._docks[key] = dock
 
     def _install_shortcuts(self) -> None:
-        palette = QAction("Paleta de comandos", self)
-        palette.setShortcut(QKeySequence("Ctrl+K"))
-        palette.triggered.connect(self.open_command_palette)
-        self.addAction(palette)
-
         toggle = QAction("Alternar tema", self)
         toggle.setShortcut(QKeySequence("Ctrl+Shift+L"))
         toggle.triggered.connect(self.toggle_theme)
@@ -253,6 +302,7 @@ class Workspace(QMainWindow):
         ]
         commands.append(Command("Tema: alternar claro/oscuro", self.toggle_theme, "Ctrl+Shift+L"))
         commands.append(Command("Personalizar apariencia…", self.open_appearance, "Ctrl+Shift+A"))
+        commands.append(Command("Guía de Fathom", self.open_guide, "F1"))
         commands.extend(self._extra_commands)
         return commands
 
@@ -327,6 +377,7 @@ class Workspace(QMainWindow):
         app = QApplication.instance()
         if app is not None:
             apply_appearance(app, self._appearance)
+            self.appearancePreviewed.emit(self._appearance.theme)
         if self._settings is not None:
             save_appearance(self._settings, self._appearance)
 
@@ -347,6 +398,7 @@ class Workspace(QMainWindow):
         app = QApplication.instance()
         if app is not None:
             apply_appearance(app, appearance.normalized())
+            self.appearancePreviewed.emit(appearance.normalized().theme)
 
     @property
     def appearance(self) -> Appearance:

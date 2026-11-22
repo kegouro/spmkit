@@ -25,7 +25,7 @@ def test_corrupt_gwy_via_open_action_keeps_gui_alive(
     qtbot.wait(0)
 
     try:
-        open_action = next(action for action in ws._persp_bar.actions() if "Abrir" in action.text())
+        open_action = next(action for action in ws._file_bar.actions() if "Abrir" in action.text())
         open_action.trigger()
         qtbot.wait(0)
 
@@ -59,7 +59,7 @@ def test_real_gwy_gui_image_journey(
     qtbot.wait(0)
 
     try:
-        open_action = next(action for action in ws._persp_bar.actions() if "Abrir" in action.text())
+        open_action = next(action for action in ws._file_bar.actions() if "Abrir" in action.text())
         open_action.trigger()
         qtbot.wait(0)
 

@@ -86,14 +86,15 @@ class ForceCanvasPanel(Panel):
         lay.setSpacing(tokens.SPACE["2"])
 
         glw = pg.GraphicsLayoutWidget()
+        self._graphics = glw
         self._plot = glw.addPlot(row=0, col=0)
         self._plot.showGrid(x=True, y=True, alpha=0.15)
         self._plot.setLabel("left", "Fuerza", units="nN")
-        self._plot.addLegend(offset=(-10, 10))
+        self._legend = self._plot.addLegend(offset=(-10, 10))
         self._resid = glw.addPlot(row=1, col=0)
         self._resid.setMaximumHeight(110)
         self._resid.showGrid(x=True, y=True, alpha=0.12)
-        self._resid.setLabel("left", "resid", units="nN")
+        self._resid.setLabel("left", "Residuo", units="nN")
         self._resid.setXLink(self._plot)
         # Los datos ya vienen escalados a nN/nm; sin esto pyqtgraph re-aplica su prefijo SI y
         # muestra unidades absurdas (p. ej. "knN" para fuerzas de µN, "knm" para µm).
@@ -106,13 +107,13 @@ class ForceCanvasPanel(Panel):
             _ax.enableAutoSIPrefix(False)
 
         self._extend_item = self._plot.plot(
-            [], [], pen=pg.mkPen(tokens.TRACES["extend"], width=1.6), name="approach"
+            [], [], pen=pg.mkPen(tokens.TRACES["extend"], width=1.6), name="Aproximación"
         )
         self._retract_item = self._plot.plot(
-            [], [], pen=pg.mkPen(tokens.TRACES["retract"], width=1.4), name="retract"
+            [], [], pen=pg.mkPen(tokens.TRACES["retract"], width=1.4), name="Retracción"
         )
         self._fit_item = self._plot.plot(
-            [], [], pen=pg.mkPen(tokens.TRACES["fit"], width=2.2), name="ajuste"
+            [], [], pen=pg.mkPen(tokens.TRACES["fit"], width=2.2), name="Ajuste"
         )
         self._contact_line = pg.InfiniteLine(
             angle=90,
@@ -128,9 +129,17 @@ class ForceCanvasPanel(Panel):
         self._region.setVisible(False)
         self._region.sigRegionChangeFinished.connect(self._on_region_changed)
         self._plot.addItem(self._region)
-        self._resid.addLine(y=0, pen=pg.mkPen(tokens.TRACES["residual"], width=1.0))
+        self._zero_line = self._resid.addLine(
+            y=0, pen=pg.mkPen(tokens.TRACES["residual"], width=1.0)
+        )
         self._resid_item = self._resid.plot(
-            [], [], pen=None, symbol="o", symbolSize=3, symbolBrush=tokens.TRACES["fit"]
+            [],
+            [],
+            pen=None,
+            symbol="o",
+            symbolSize=3,
+            symbolBrush=tokens.TRACES["fit"],
+            symbolPen=None,
         )
 
         # Controles: modo de eje + scrubber + contador.
@@ -138,6 +147,7 @@ class ForceCanvasPanel(Panel):
         crow = QHBoxLayout(controls)
         crow.setContentsMargins(tokens.SPACE["1"], 0, tokens.SPACE["1"], 0)
         self._axis_mode = QComboBox()
+        self._axis_mode.setAccessibleName("Eje horizontal de la curva")
         self._axis_mode.addItem("Separación", "sep")
         self._axis_mode.addItem("Indentación δ", "ind")
         self._axis_mode.currentIndexChanged.connect(self._on_axis_mode)
@@ -145,6 +155,7 @@ class ForceCanvasPanel(Panel):
         self._region_check.setToolTip("Ajustar sólo dentro de una ventana manual del eje")
         self._region_check.toggled.connect(self._on_region_toggle)
         self._scrubber = QSlider(Qt.Orientation.Horizontal)
+        self._scrubber.setAccessibleName("Curva del volumen")
         self._scrubber.setMinimum(0)
         self._scrubber.valueChanged.connect(self._vm.set_curve)
         self._counter = QLabel("—")
@@ -167,6 +178,36 @@ class ForceCanvasPanel(Panel):
         self._sync_scrubber_range()
         self._on_curve_changed(self._vm.index)
         return root
+
+    def set_plot_theme(self, mode: str) -> None:
+        """Actualiza el lienzo abierto conservando datos, zoom y ventana de ajuste."""
+        palette = tokens.colors(mode)
+        ink = tokens.TRACES if tokens.is_dark(mode) else tokens.LIGHT_TRACES
+        self._graphics.setBackground(palette["bg"])
+        for plot in (self._plot, self._resid):
+            for side in ("bottom", "left"):
+                axis = plot.getAxis(side)
+                axis.setPen(palette["text_muted"])
+                axis.setTextPen(palette["text_muted"])
+                axis.setLabel(
+                    text=axis.labelText, units=axis.labelUnits, color=palette["text_muted"]
+                )
+        self._legend.setLabelTextColor(palette["text"])
+        for _, label in self._legend.items:
+            label.setText(label.text, color=palette["text"])
+        self._extend_item.setPen(self._pg.mkPen(ink["extend"], width=1.6))
+        self._retract_item.setPen(
+            self._pg.mkPen(ink["retract"], width=1.4, style=Qt.PenStyle.DashLine)
+        )
+        self._fit_item.setPen(self._pg.mkPen(ink["fit"], width=2.2))
+        self._contact_line.setPen(self._pg.mkPen(ink["contact"], style=Qt.PenStyle.DashLine))
+        self._zero_line.setPen(ink["residual"])
+        self._resid_item.setSymbolBrush(ink["fit"])
+        tint = self._pg.mkColor(ink["fit"])
+        tint.setAlpha(25)
+        self._region.setBrush(tint)
+        for line in self._region.lines:
+            line.setPen(ink["fit"])
 
     def _export(self) -> None:
         """Exporta la curva calibrada activa a un CSV científico (ajuste + datos)."""

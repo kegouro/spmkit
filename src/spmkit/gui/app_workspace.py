@@ -101,9 +101,13 @@ def build_workspace(
     ws.register_command(Command(f"Acerca de {brand.PRODUCT_NAME}", lambda: _about(ws)))
     # Botones visibles de archivo (el drag & drop es incómodo en laptops; el explorador de
     # archivos permite escribir/pegar una ruta). Sin atajo aquí: los comandos ya tienen Ctrl+O/S.
-    ws.add_toolbar_action("📂  Abrir…", lambda: _open_dialog(ws, vm, image_vm, session))
-    ws.add_toolbar_action("💾  Guardar…", lambda: _save_project(ws, vm, session))
-    ws.add_toolbar_separator()
+    ws.set_open_action(
+        ws.add_toolbar_action("Abrir…", lambda: _open_dialog(ws, vm, image_vm, session))
+    )
+    ws.add_toolbar_action("Guardar proyecto…", lambda: _save_project(ws, vm, session))
+    if not force_canvas.errored:
+        ws.appearancePreviewed.connect(force_canvas.set_plot_theme)
+        force_canvas.set_plot_theme(ws.mode)
     if open_path is not None:
         _load_into(ws, vm, image_vm, open_path, session)
     return ws

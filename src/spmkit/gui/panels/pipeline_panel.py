@@ -18,7 +18,9 @@ from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QPushButton,
+    QScrollArea,
     QSpinBox,
+    QTabWidget,
     QVBoxLayout,
     QWidget,
 )
@@ -54,13 +56,24 @@ class PipelinePanel(Panel):
         self._building = False
 
     def build(self) -> QWidget:
-        root = QWidget()
-        outer = QVBoxLayout(root)
-        heading = QLabel("Pipeline de ajuste")
-        heading.setProperty("role", "title")
-        outer.addWidget(heading)
+        tabs = QTabWidget()
 
+        def page(title: str) -> QVBoxLayout:
+            content = QWidget()
+            layout = QVBoxLayout(content)
+            scroll = QScrollArea()
+            scroll.setWidgetResizable(True)
+            scroll.setWidget(content)
+            tabs.addTab(scroll, title)
+            return layout
+
+        fit = page("Ajuste")
+        calibration = page("Calibración")
+        uncertainty = page("Incertidumbre")
         form = QFormLayout()
+        signal_form = QFormLayout()
+        self._signal_form = signal_form
+        self._fit_form = form
         form.setHorizontalSpacing(16)
         form.setVerticalSpacing(8)
 
@@ -81,7 +94,7 @@ class PipelinePanel(Panel):
 
         self._smooth = self._spin(0.0, 99.0, 0.0, " pts", 0, step=2.0)
         self._smooth.setToolTip("Suavizado Savitzky-Golay antes del ajuste (0 = ninguno)")
-        form.addRow("Suavizado", self._smooth)
+        signal_form.addRow("Suavizado", self._smooth)
 
         self._contact = QComboBox()
         for value, label in _CONTACT_METHODS:
@@ -90,17 +103,22 @@ class PipelinePanel(Panel):
             "Detección del punto de contacto. 'Conjunto' es inmune al sesgo de módulo (~+30%)\n"
             "que el umbral introduce bajo ruido."
         )
-        self._contact.currentIndexChanged.connect(self._apply)
-        form.addRow("Contacto", self._contact)
+        self._contact.currentIndexChanged.connect(self._on_model_changed)
+        signal_form.addRow("Contacto", self._contact)
 
         self._ksigma = self._spin(1.0, 15.0, 5.0, " σ", 1, step=0.5)
         self._ksigma.setToolTip("Umbral de ruido de la detección de contacto (múltiplos de σ)")
-        form.addRow("k·σ (umbral)", self._ksigma)
+        signal_form.addRow("k·σ (umbral)", self._ksigma)
 
         cal = QLabel("Calibración (0 = usar metadatos del archivo)")
         cal.setProperty("role", "muted")
-        outer.addLayout(form)
-        outer.addWidget(cal)
+        fields = QHBoxLayout()
+        fields.setSpacing(24)
+        fields.addLayout(form, 1)
+        fields.addLayout(signal_form, 1)
+        fit.addLayout(fields)
+        fit.addStretch()
+        calibration.addWidget(cal)
 
         cal_form = QFormLayout()
         cal_form.setHorizontalSpacing(16)
@@ -116,12 +134,13 @@ class PipelinePanel(Panel):
         cal_form.addRow("InVOLS", invols_row)
         self._k = self._spin(0.0, 1000.0, 0.0, " N/m", 3)
         cal_form.addRow("k resorte", self._k)
-        outer.addLayout(cal_form)
+        calibration.addLayout(cal_form)
+        calibration.addStretch()
 
         self._mc = QCheckBox("Incertidumbre Monte Carlo (± módulo)")
         self._mc.setToolTip("Propaga los errores relativos de InVOLS y k al módulo de Young.")
         self._mc.toggled.connect(self._on_mc_toggled)
-        outer.addWidget(self._mc)
+        uncertainty.addWidget(self._mc)
 
         mc_form = QFormLayout()
         mc_form.setHorizontalSpacing(16)
@@ -140,12 +159,12 @@ class PipelinePanel(Panel):
         self._mc_seed.setToolTip("Semilla del Monte Carlo (reproducibilidad)")
         self._mc_seed.valueChanged.connect(self._apply)
         mc_form.addRow("Semilla MC", self._mc_seed)
-        outer.addLayout(mc_form)
-        outer.addStretch(1)
+        uncertainty.addLayout(mc_form)
+        uncertainty.addStretch(1)
 
         self._update_enabled()
         self._on_mc_toggled(False)
-        return root
+        return tabs
 
     def _spin(
         self,
@@ -184,6 +203,9 @@ class PipelinePanel(Panel):
 
     def _update_enabled(self) -> None:
         is_cone = self._model.currentData() == "cone"
+        self._fit_form.setRowVisible(self._angle, is_cone)
+        self._fit_form.setRowVisible(self._radius, not is_cone)
+        self._signal_form.setRowVisible(self._ksigma, self._contact.currentData() == "threshold")
         self._angle.setEnabled(is_cone)
         self._radius.setEnabled(not is_cone)
 

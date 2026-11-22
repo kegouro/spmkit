@@ -26,13 +26,20 @@ QToolTip { background: $elevated; color: $text; border: 1px solid $border; paddi
 QToolBar { background: $surface_2; border: none; border-bottom: 1px solid $border; padding: 6px 10px; spacing: 8px; }
 QToolBar QToolButton { background: transparent; color: $text; padding: 6px 12px; border-radius: 6px; border: 1px solid transparent; }
 QToolBar QToolButton:hover { background: $elevated; }
-QToolBar QToolButton:checked { background: $accent_soft; color: $accent; }
+QToolBar QToolButton:checked { background: $accent_soft; color: $text; border-bottom: 2px solid $accent; }
+QWidget#toolbarSpacer { background: transparent; }
+QToolBar#workspaceTools { background: $surface; }
+QToolBar#perspectives { background: $bg; padding: 3px 10px; spacing: 2px; }
+QLabel#wordmark { color: $text; font-weight: 600; font-size: ${heading_px}px; padding: 2px 12px 2px 4px; }
+QFrame#workspaceGuide { background: $surface; border: 1px solid $border_strong; border-radius: 10px; }
+QFrame#guideTarget { background: transparent; border: 2px solid $accent; border-radius: 6px; }
 
 QPushButton { background: $surface_2; color: $text; border: 1px solid $border_strong; border-radius: 6px; padding: 6px 14px; }
 QPushButton:hover { background: $elevated; }
 QPushButton:pressed { background: $surface; }
 QPushButton[primary="true"] { background: $accent; color: $on_accent; border: none; font-weight: 500; }
 QPushButton[primary="true"]:hover { background: $accent_press; }
+QPushButton:focus, QToolBar QToolButton:focus { border: 1px solid $accent; }
 QPushButton:disabled { color: $text_faint; border-color: $border; }
 
 QLineEdit, QComboBox, QSpinBox, QDoubleSpinBox, QPlainTextEdit, QTextEdit {
@@ -91,7 +98,11 @@ def build_qss(mode: str = "dark", accent: str | None = None, font_px: int = 13) 
     """
     palette = tokens.colors(mode, accent)
     return _QSS.substitute(
-        ui_font=tokens.FONT_UI, mono=tokens.FONT_MONO, font_px=int(font_px), **palette
+        ui_font=tokens.FONT_UI,
+        mono=tokens.FONT_MONO,
+        font_px=int(font_px),
+        heading_px=int(font_px) + 4,
+        **palette,
     )
 
 
