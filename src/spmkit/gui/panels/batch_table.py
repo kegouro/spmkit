@@ -99,6 +99,9 @@ class BatchTablePanel(Panel):
         self._windows_btn = QPushButton("Ventanas automáticas…")
         self._windows_btn.clicked.connect(self._open_windows)
         bar.addWidget(self._windows_btn)
+        self._adhesion_btn = QPushButton("Adhesión por curva…")
+        self._adhesion_btn.clicked.connect(lambda: self.open_adhesion())
+        bar.addWidget(self._adhesion_btn)
         bar.addStretch(1)
         bar.addWidget(self._status)
         lay.addLayout(bar)
@@ -116,6 +119,21 @@ class BatchTablePanel(Panel):
         return root
 
     # ---- acciones ----
+    def open_adhesion(self, source: str | None = None) -> None:
+        from spmkit.gui.widgets.adhesion_review import AdhesionDialog
+
+        if not hasattr(self, "_adhesion_dialog"):
+            self._adhesion_dialog = AdhesionDialog(self)
+        dlg = self._adhesion_dialog
+        if source and not dlg.task:
+            path = Path(source)
+            index = next((i for i, m in enumerate(dlg.maps) if m.path == path), None)
+            if index is None:
+                dlg.start([path])
+            else:
+                dlg.files.setCurrentIndex(index)
+        dlg.exec()
+
     def _open_windows(self) -> None:
         from spmkit.gui.widgets.auto_windows import AutoWindowDialog
 
@@ -169,4 +187,5 @@ class BatchTablePanel(Panel):
         self._open_btn.setText("Procesando…" if computing else "Abrir carpeta…")
         self._parallel.setEnabled(not computing)
         self._windows_btn.setEnabled(not computing)
+        self._adhesion_btn.setEnabled(not computing)
         self._export_btn.setEnabled(not computing and self._model.rowCount() > 0)

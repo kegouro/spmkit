@@ -64,6 +64,7 @@ class ForceCanvasPanel(Panel):
     title = "Curva de fuerza"
 
     openRequested = pyqtSignal()
+    adhesionRequested = pyqtSignal()
 
     _PINNED_MAX = 6
 
@@ -213,6 +214,10 @@ class ForceCanvasPanel(Panel):
         crow.addWidget(self._counter)
         crow.addWidget(self._fit_view)
         crow.addWidget(self._export_btn)
+        self._adhesion_btn = QPushButton("Adhesión del mapa…")
+        self._adhesion_btn.hide()
+        self._adhesion_btn.clicked.connect(self.adhesionRequested.emit)
+        crow.addWidget(self._adhesion_btn)
 
         self._tools = CurveViewTools(
             self._plot,
@@ -251,6 +256,7 @@ class ForceCanvasPanel(Panel):
         self._source.setText(name)
         self._source.setToolTip(name)
         self._source.setVisible(bool(name))
+        self._adhesion_btn.setVisible(Path(name).suffix.lower() == ".nid")
 
     def set_plot_theme(self, mode: str) -> None:
         """Actualiza el lienzo abierto conservando datos, zoom y ventana de ajuste."""

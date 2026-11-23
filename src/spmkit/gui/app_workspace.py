@@ -118,6 +118,13 @@ def build_workspace(
     ws.add_toolbar_action("Guardar proyecto…", lambda: _save_project(ws, vm, session))
     force_canvas.openRequested.connect(lambda: _open_dialog(ws, vm, image_vm, session))
     if not force_canvas.errored:
+        from spmkit.gui.panels.batch_table import BatchTablePanel
+
+        batch_panel = ws.panel("batch_table")
+        if isinstance(batch_panel, BatchTablePanel):
+            force_canvas.adhesionRequested.connect(
+                lambda: batch_panel.open_adhesion(vm.source_path)
+            )
         if persist:
             force_canvas.use_style_settings(QSettings("spmkit", "spmkit"))
         ws.chartStyleChanged.connect(force_canvas.set_plot_appearance)
