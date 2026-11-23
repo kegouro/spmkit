@@ -99,3 +99,21 @@ def test_pipeline_on_real_jpk_curve() -> None:
     assert ctx["contact_detected"] is True
     assert ctx["r_squared"] > 0.9  # buen ajuste sobre datos reales
     assert 1e3 < ctx["young_modulus"] < 1e8  # módulo en rango físico (kPa–MPa)
+
+
+def test_calibrate_uses_deflection_in_metres_without_invols() -> None:
+    deflection = np.array([3e-9, 8e-9])
+    height = np.array([10e-9, 12e-9])
+    segment = ForceSegment(
+        "extend", "approach", height, np.ones(2), deflection=deflection, state="deflection_m"
+    )
+    recipe = Recipe(steps=(Step("calibrate", {"spring_constant": 0.25}),))
+    result, _ = run(recipe, ForceCurve(segments=(segment,)))
+    np.testing.assert_array_equal(result.segments[0].force, deflection * 0.25)
+    np.testing.assert_array_equal(result.segments[0].separation, height - deflection)
+
+
+def test_calibrate_does_not_claim_to_override_existing_force() -> None:
+    recipe = Recipe(steps=(Step("calibrate", {"spring_constant": 0.25}),))
+    with pytest.raises(ValueError, match="ya contiene fuerza"):
+        run(recipe, _synthetic_hertz_curve())

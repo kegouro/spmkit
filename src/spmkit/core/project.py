@@ -14,6 +14,7 @@ import hashlib
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 from typing import Any
 
 #: Versión del esquema ``.spmproj``. Bump si cambia de forma incompatible.
@@ -59,7 +60,15 @@ class ProjectState:
 def save_project(state: ProjectState, path: str | Path) -> Path:
     """Escribe el proyecto a ``path`` (JSON). Devuelve la ruta."""
     out = Path(path)
-    out.write_text(json.dumps(state.to_dict(), indent=2, ensure_ascii=False), encoding="utf-8")
+    payload = json.dumps(state.to_dict(), indent=2, ensure_ascii=False, allow_nan=False)
+    with NamedTemporaryFile(mode="w", encoding="utf-8", dir=out.parent, delete=False) as staging:
+        temporary = Path(staging.name)
+        try:
+            staging.write(payload)
+            staging.close()
+            temporary.replace(out)
+        finally:
+            temporary.unlink(missing_ok=True)
     return out
 
 

@@ -70,3 +70,29 @@ def test_spmproj_save_and_open(qtbot, tmp_path, monkeypatch) -> None:  # type: i
     _open_project(ws, vm, img_vm, session)
     assert abs(vm.params["tip_radius"] - 2.5e-8) < 1e-12  # params restaurados
     assert vm.n_curves >= 1  # archivo reabierto
+
+
+def test_project_rejects_modified_source_before_changing_session(qtbot, tmp_path, monkeypatch):
+    from spmkit.core.project import OpenFile, ProjectState, save_project
+
+    acquisition = tmp_path / "source.nid"
+    acquisition.write_bytes(b"first acquisition")
+    project = save_project(
+        ProjectState(
+            files=[OpenFile.from_path(acquisition, "force")],
+            params={"tip_radius": 30e-9},
+        ),
+        tmp_path / "project.spmproj",
+    )
+    acquisition.write_bytes(b"replacement acquisition")
+    ws = build_workspace()
+    qtbot.addWidget(ws)
+    vm = ws.panel("force_canvas")._vm
+    img_vm = ws.panel("image_canvas")._vm
+    before = vm.params
+    monkeypatch.setattr(QFileDialog, "getOpenFileName", lambda *args: (str(project), ""))
+
+    _open_project(ws, vm, img_vm, {})
+
+    assert vm.params == before
+    assert "archivo cambió" in ws._status._message.text()

@@ -57,3 +57,20 @@ def test_ignores_malformed_file_entries(tmp_path) -> None:  # type: ignore[no-un
     path.write_text(json.dumps({"files": [{"path": "ok.nid"}, {}, "basura", {"kind": "x"}]}))
     state = load_project(path)
     assert [f.path for f in state.files] == ["ok.nid"]  # solo el válido
+
+
+def test_failed_project_replace_preserves_previous_file(tmp_path, monkeypatch):
+    from pathlib import Path
+
+    import pytest
+
+    project = save_project(ProjectState(perspective="map"), tmp_path / "project.spmproj")
+
+    def fail_replace(self, target):
+        raise OSError("replacement failed")
+
+    monkeypatch.setattr(Path, "replace", fail_replace)
+    with pytest.raises(OSError, match="replacement failed"):
+        save_project(ProjectState(perspective="force"), project)
+    assert load_project(project).perspective == "map"
+    assert list(tmp_path.iterdir()) == [project]

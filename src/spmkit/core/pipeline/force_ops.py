@@ -16,6 +16,7 @@ ti, de modo que están disponibles al usar el motor de pipeline.
 
 from __future__ import annotations
 
+import math
 from dataclasses import replace
 from typing import Any
 
@@ -49,22 +50,36 @@ def calibrate(
     """Convierte los segmentos a fuerza (N): ``V → m (InVOLS) → N (k)``.
 
     ``invols``/``spring_constant`` pueden ser numéricos o ``"from_metadata"`` (leerlos
-    de ``curve.calibration``). Los segmentos que ya tienen ``force`` pasan sin cambio.
+    de ``curve.calibration``). Una deflexión en metros solo requiere k. Para segmentos
+    con fuerza, se conserva la calibración existente.
     """
     cal = curve.calibration
     inv = _resolve(invols, cal.invols if cal else None)
     k = _resolve(spring_constant, cal.spring_constant if cal else None)
-    # Solo se necesita calibración si algún segmento aún no tiene fuerza (V/m crudos).
-    needs_calibration = any(seg.force is None for seg in curve.segments)
-    if needs_calibration and (inv is None or k is None):
-        raise ValueError("calibrate: faltan invols/k (ni en params ni en curve.calibration)")
+    if any(seg.force is not None for seg in curve.segments) and (
+        (invols != "from_metadata" and (cal is None or inv != cal.invols))
+        or (spring_constant != "from_metadata" and (cal is None or k != cal.spring_constant))
+    ):
+        raise ValueError(
+            "calibrate: la curva ya contiene fuerza; no se puede sustituir su calibración"
+        )
 
     new_segments = []
     for seg in curve.segments:
         if seg.force is not None:
             new_segments.append(seg)
             continue
-        deflection = _cal.volts_to_deflection(seg.raw_deflection, inv)
+        if k is None or not math.isfinite(k) or k <= 0:
+            raise ValueError("calibrate: se requiere una constante de resorte positiva y finita")
+        deflection = seg.deflection
+        if deflection is None:
+            if seg.state != "raw_v" or seg.metadata.get("raw_deflection_unit") not in (None, "V"):
+                raise ValueError("calibrate: se requiere un canal de deflexión en m o V")
+            if inv is None or not math.isfinite(inv) or inv == 0:
+                raise ValueError("calibrate: se requiere InVOLS finito y distinto de cero")
+            deflection = _cal.volts_to_deflection(seg.raw_deflection, inv)
+        elif invols != "from_metadata" and (cal is None or inv != cal.invols):
+            raise ValueError("calibrate: la deflexión en m ya tiene aplicada su sensibilidad")
         force = _cal.deflection_to_force(deflection, k)
         new_segments.append(
             replace(

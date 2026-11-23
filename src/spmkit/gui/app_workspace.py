@@ -203,9 +203,14 @@ def _save_project(ws: Workspace, vm: ForceViewModel, session: dict[str, Any]) ->
     )
     if not path:
         return
-    files = [OpenFile.from_path(session["path"], session["kind"])] if session.get("path") else []
-    state = ProjectState(files=files, params=vm.params, perspective=ws.active_perspective)
-    save_project(state, path)
+    try:
+        source = session.get("path")
+        files = [OpenFile.from_path(Path(source).resolve(), session["kind"])] if source else []
+        state = ProjectState(files=files, params=vm.params, perspective=ws.active_perspective)
+        save_project(state, path)
+    except (OSError, ValueError) as exc:
+        ws.show_status(f"No se pudo guardar el proyecto: {exc}")
+        return
     _remember_dir(path)
     ws.show_status(f"proyecto guardado: {Path(path).name}")
 
@@ -214,7 +219,7 @@ def _open_project(
     ws: Workspace, vm: ForceViewModel, image_vm: ImageViewModel, session: dict[str, Any]
 ) -> None:
     """Abre un ``.spmproj``: reabre el archivo, aplica parámetros y perspectiva."""
-    from spmkit.core.project import load_project
+    from spmkit.core.project import OpenFile, load_project
 
     path, _ = QFileDialog.getOpenFileName(
         ws, "Abrir proyecto", _last_dir(), "Proyecto spmkit (*.spmproj)"
@@ -226,13 +231,22 @@ def _open_project(
     except Exception as exc:  # noqa: BLE001 - .spmproj corrupto: se informa
         ws.show_status(f"no se pudo abrir el proyecto: {exc}")
         return
+    try:
+        for entry in state.files:
+            source = Path(entry.path)
+            if not source.is_file():
+                raise ValueError(f"archivo del proyecto no encontrado: {source.name}")
+            if entry.sha256 and OpenFile.from_path(source, entry.kind).sha256 != entry.sha256:
+                raise ValueError(
+                    f"el archivo cambió desde que se guardó el proyecto: {source.name}"
+                )
+    except (OSError, ValueError) as exc:
+        ws.show_status(f"No se pudo abrir el proyecto: {exc}")
+        return
     if state.params:
         vm.set_params(**state.params)
-    for f in state.files:
-        if Path(f.path).exists():
-            _load_into(ws, vm, image_vm, f.path, session, kind_hint=f.kind)  # type: ignore[arg-type]
-        else:
-            ws.show_status(f"archivo del proyecto no encontrado: {Path(f.path).name}")
+    for entry in state.files:
+        _load_into(ws, vm, image_vm, entry.path, session, kind_hint=entry.kind)  # type: ignore[arg-type]
     if state.perspective:
         ws.set_perspective(state.perspective)
 
