@@ -10,6 +10,7 @@ el hub de imagen y ya son paneles reales (perspectivas MVVM, no placeholders).
 from __future__ import annotations
 
 import json
+import math
 import sys
 from pathlib import Path
 from typing import Any
@@ -181,6 +182,7 @@ def _load_into(
         session["path"], session["kind"] = str(path), kind
     if kind == "force":
         vm.set_volume(data)
+        vm.source_path = str(Path(path).resolve())
         canvas = ws.panel("force_canvas")
         if isinstance(canvas, ForceCanvasPanel) and not canvas.errored:
             canvas.set_source_name(name)
@@ -311,7 +313,27 @@ def _export_results(ws: Workspace, vm: ForceViewModel) -> None:
     )
     if not path:
         return
-    Path(path).write_text(json.dumps(_scalar_results(ctx), indent=2, ensure_ascii=False))
+    from spmkit.core.analysis.forcevolume import PROPERTY_UNITS
+    from spmkit.core.export.manifest import file_sha256
+
+    data = {
+        k: None if isinstance(v, float) and not math.isfinite(v) else v
+        for k, v in _scalar_results(ctx).items()
+    }
+    try:
+        data["_analysis"] = {
+            "source": vm.source_path,
+            "curve_index": vm.index,
+            "recipe": vm.recipe.to_dict(),
+            "units": PROPERTY_UNITS,
+            "source_sha256": file_sha256(Path(vm.source_path)) if vm.source_path else None,
+        }
+        Path(path).write_text(
+            json.dumps(data, indent=2, ensure_ascii=False, allow_nan=False), encoding="utf-8"
+        )
+    except (OSError, ValueError) as exc:
+        ws.show_status(f"No se pudo exportar resultados: {exc}")
+        return
     _remember_dir(path)
     ws.show_status(f"resultados exportados a {Path(path).name}")
 
@@ -333,13 +355,16 @@ def _generate_report(ws: Workspace, vm: ForceViewModel) -> None:
     base = str(Path(path).with_suffix(""))
     formats = ("html",) if Path(path).suffix.lower() == ".html" else ("html", "pdf")
     p = vm.params
+    recipe = vm.recipe
+    source_name = Path(vm.source_path).name if vm.source_path else ""
     _remember_dir(path)
 
     def _work() -> dict:
         return build_force_report(
             volume,
             base,
-            source_name=Path(base).name,
+            source_name=source_name,
+            recipe=recipe,
             model=p["model"],
             tip_radius=p["tip_radius"],
             poisson=p["poisson"],
@@ -369,13 +394,16 @@ def _export_all(ws: Workspace, vm: ForceViewModel) -> None:
     from spmkit.gui.runtime.tasks import Task, run_task
 
     p = vm.params
+    recipe = vm.recipe
+    source_name = Path(vm.source_path).name if vm.source_path else ""
     _remember_dir(folder)
 
     def _work() -> dict:
         return export_bundle(
             volume,
             folder,
-            source_name=Path(folder).name,
+            source_name=source_name,
+            recipe=recipe,
             model=p["model"],
             tip_radius=p["tip_radius"],
             poisson=p["poisson"],

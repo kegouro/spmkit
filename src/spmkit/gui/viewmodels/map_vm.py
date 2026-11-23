@@ -46,7 +46,9 @@ class MapViewModel(QObject):
         self._result: VolumeResult | None = None
         self._key = "young_modulus"
         self._task: Task | None = None
+        self._generation = 0
         force_vm.volumeChanged.connect(self._on_volume_changed)
+        force_vm.recipeChanged.connect(lambda _: self._on_volume_changed(0))
 
     # ---- estado ----
     @property
@@ -92,9 +94,14 @@ class MapViewModel(QObject):
             or p.get("fit_min") is not None
             or p.get("invols")
             or p.get("spring_constant")
+            or p.get("mc")
+            or p.get("contact_method") != "joint"
+            or p.get("k_sigma") != 5.0
         )
 
-    def _fast_map(self, engine: str, volume: Any) -> VolumeResult:
+    def _fast_map(
+        self, engine: str, volume: Any, kwargs: dict | None = None, recipe: Any = None
+    ) -> VolumeResult:
         """Ruta rápida vectorizada con **fallback** al pipeline si no aplica.
 
         La ruta rápida requiere curvas del mismo largo; los QI/force-maps con curvas de
@@ -102,9 +109,11 @@ class MapViewModel(QObject):
         """
         backend = "gpu" if engine == "fast_gpu" else "cpu"
         try:
-            return elasticity_map(volume, **self._fast_kwargs(backend))
+            return elasticity_map(
+                volume, **(kwargs if kwargs is not None else self._fast_kwargs(backend))
+            )
         except ValueError:
-            return analyze_volume(volume, self._force_vm.recipe)
+            return analyze_volume(volume, recipe if recipe is not None else self._force_vm.recipe)
 
     def compute_now(self, engine: str = "fast_cpu") -> None:
         """Calcula el mapa de forma sincrónica (tests / volúmenes chicos)."""
@@ -142,8 +151,15 @@ class MapViewModel(QObject):
                 provide_progress=True,
             )
         else:
-            task = Task(self._fast_map, engine, volume)  # con fallback a pipeline
-        task.signals.done.connect(self._on_done)
+            task = Task(
+                self._fast_map,
+                engine,
+                volume,
+                self._fast_kwargs("gpu" if engine == "fast_gpu" else "cpu"),
+                self._force_vm.recipe,
+            )
+        generation = self._generation
+        task.signals.done.connect(lambda result: self._on_done(result, generation))
         task.signals.error.connect(lambda exc: self.statusChanged.emit(f"mapa falló: {exc}"))
         task.signals.finished.connect(self._on_finished)
         self._task = task
@@ -151,7 +167,9 @@ class MapViewModel(QObject):
         self.taskStarted.emit(task)  # el shell lo engancha a la barra de progreso global
         run_task(task)
 
-    def _on_done(self, result: object) -> None:
+    def _on_done(self, result: object, generation: int) -> None:
+        if generation != self._generation:
+            return
         self._result = result if isinstance(result, VolumeResult) else None
         self.mapReady.emit(self._result)
 
@@ -160,6 +178,7 @@ class MapViewModel(QObject):
         self.computingChanged.emit(False)
 
     def _on_volume_changed(self, _n: int) -> None:
+        self._generation += 1
         self._result = None
         self.mapReady.emit(None)
         self.statusChanged.emit("mapa sin calcular")

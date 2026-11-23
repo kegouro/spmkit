@@ -83,3 +83,18 @@ def test_export_curve_cientifico(tmp_path) -> None:
     assert "young_modulus_std" not in text  # NaN → omitido
     assert "separation [m],force [N]" in text  # tabla de datos con unidades
     assert "nan" not in text.lower()
+
+
+def test_curve_export_labels_height_fallback(tmp_path):
+    from spmkit.core.export import export_curve
+    from spmkit.core.models import ForceCurve, ForceSegment
+
+    z = np.arange(10, dtype=float) * 1e-9
+    seg = ForceSegment(
+        "extend", "approach", z, z, force=z, separation=np.zeros(10), state="force_n"
+    )
+    out = tmp_path / "curve.csv"
+    export_curve(ForceCurve(segments=(seg,)), path=out)
+    text = out.read_text()
+    assert "height [m],force [N]" in text
+    assert "separation [m]" not in text

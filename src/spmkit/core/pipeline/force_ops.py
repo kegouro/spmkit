@@ -158,6 +158,8 @@ def fit_elasticity(
     force = seg.require_force()
 
     if model == "jkr":  # modelo adhesivo: ruta propia (experimental), contacto en el snap-in
+        if fit_range is not None or mc:
+            raise ValueError("JKR experimental todavía no admite ventana manual ni Monte Carlo")
         from spmkit.core.analysis import experimental
 
         jkr = experimental.fit_jkr_curve(_axis(seg), force, tip_radius, poisson, k_sigma=k_sigma)

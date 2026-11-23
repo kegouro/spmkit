@@ -63,3 +63,34 @@ def test_report_pdf(tmp_path) -> None:  # type: ignore[no-untyped-def]
     )
     assert "pdf" in produced
     assert produced["pdf"].exists() and produced["pdf"].stat().st_size > 1000
+
+
+def test_report_reuses_recipe_for_representative_curve(tmp_path, monkeypatch):
+    import json
+
+    import spmkit.core.viz
+    from spmkit.core.analysis.forcevolume import analyze_volume
+    from spmkit.core.pipeline import Recipe, Step
+
+    recipe = Recipe(
+        steps=(
+            Step("find_contact_point"),
+            Step(
+                "fit_elasticity",
+                {"model": "sphere", "tip_radius": 40e-9, "fit_range": (1e-7, 2.5e-7)},
+            ),
+        )
+    )
+    expected = analyze_volume(_volume(), recipe)
+    captured = []
+    original = spmkit.core.viz.save_force_curve
+
+    def record(curve, ctx, path):
+        captured.append(ctx["young_modulus"])
+        return original(curve, ctx, path)
+
+    monkeypatch.setattr(spmkit.core.viz, "save_force_curve", record)
+    out = build_force_report(_volume(), tmp_path / "recipe", recipe=recipe, formats=("html",))
+    assert captured[0] == pytest.approx(expected.stats("young_modulus")["median"])
+    meta = json.loads(out["analysis"].read_text())
+    assert meta["recipe"] == json.loads(json.dumps(recipe.to_dict()))

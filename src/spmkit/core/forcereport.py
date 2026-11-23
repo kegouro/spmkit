@@ -22,8 +22,10 @@ from typing import Any
 
 import numpy as np
 
+from spmkit.core.analysis.forcevolume import PROPERTY_UNITS, analyze_volume
 from spmkit.core.analysis.forcevolume_fast import elasticity_map
 from spmkit.core.models import ForceVolume
+from spmkit.core.pipeline import Recipe
 from spmkit.core.viz.maps import _MAP_LABELS, save_property_maps
 
 #: Propiedades a resumir en el informe (clave → (etiqueta, factor a unidad display)).
@@ -79,12 +81,17 @@ def _representative_index(modulus: np.ndarray) -> int:
 
 
 def _fit_context(
-    volume: ForceVolume, index: int, model: str, tip_radius: float, poisson: float
+    volume: ForceVolume,
+    index: int,
+    model: str,
+    tip_radius: float,
+    poisson: float,
+    recipe: Recipe | None = None,
 ) -> tuple[Any, dict[str, Any]]:
     """Corre el pipeline en una curva y devuelve ``(curva_calibrada, ctx)``."""
     from spmkit.core.pipeline import Recipe, Step, run
 
-    recipe = Recipe(
+    recipe = recipe or Recipe(
         steps=(
             Step(op="calibrate"),
             Step(op="find_contact_point"),
@@ -158,6 +165,7 @@ def build_force_report(
     poisson: float = 0.3,
     backend: str = "cpu",
     formats: tuple[str, ...] = ("html", "pdf"),
+    recipe: Recipe | None = None,
 ) -> dict[str, Path]:
     """Genera el informe de un force-volume en los ``formats`` pedidos.
 
@@ -177,9 +185,20 @@ def build_force_report(
     assets = out.parent / f"{out.name}_assets"
     assets.mkdir(parents=True, exist_ok=True)
 
-    result = elasticity_map(
-        volume, tip_radius=tip_radius, poisson=poisson, model=model, backend=backend
+    result = (
+        analyze_volume(volume, recipe, keys=tuple(PROPERTY_UNITS))
+        if recipe is not None
+        else elasticity_map(
+            volume, tip_radius=tip_radius, poisson=poisson, model=model, backend=backend
+        )
     )
+    if recipe is not None:
+        backend = "pipeline"
+        for step in recipe.steps:
+            if step.op == "fit_elasticity":
+                model = step.params.get("model", "sphere")
+                tip_radius = step.params.get("tip_radius", 10e-9)
+                poisson = step.params.get("poisson", 0.3)
     rows, cols = volume.grid_shape
 
     # --- figuras ---
@@ -188,7 +207,7 @@ def build_force_report(
     save_property_maps(result.maps, maps_png, keys=map_keys, title=source_name or "")
 
     idx = _representative_index(result.maps["young_modulus"])
-    curve, ctx = _fit_context(volume, idx, model, tip_radius, poisson)
+    curve, ctx = _fit_context(volume, idx, model, tip_radius, poisson, recipe)
     from spmkit.core.viz import save_force_curve
 
     curve_png = assets / "curva_representativa.png"
@@ -213,9 +232,22 @@ def build_force_report(
     }
 
     produced: dict[str, Path] = {}
+    if recipe is not None:
+        import json
+
+        metadata = out.with_suffix(".analysis.json")
+        metadata.write_text(
+            json.dumps(
+                {"source": source_name, "recipe": recipe.to_dict(), "units": PROPERTY_UNITS},
+                indent=2,
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
+        )
+        produced["analysis"] = metadata
 
     if "html" in formats:
-        env = Environment(autoescape=False)  # noqa: S701 - contenido propio, no entrada externa
+        env = Environment(autoescape=True)
         html = env.from_string(_HTML_TEMPLATE).render(
             maps_b64=_b64(maps_png),
             curve_b64=_b64(curve_png),

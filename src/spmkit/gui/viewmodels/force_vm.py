@@ -93,6 +93,7 @@ class ForceViewModel(QObject):
 
     def __init__(self, parent: QObject | None = None) -> None:
         super().__init__(parent)
+        self.source_path: str | None = None
         self._volume: ForceVolume | None = None
         self._index = 0
         self._params: dict[str, Any] = dict(DEFAULT_PARAMS)
@@ -149,6 +150,7 @@ class ForceViewModel(QObject):
 
     def set_volume(self, volume: ForceVolume) -> None:
         """Carga un force-volume nuevo y activa la primera curva."""
+        self.source_path = None
         self._volume = volume
         self._curve_cache.clear()
         self._curve_order.clear()
@@ -225,6 +227,7 @@ class ForceViewModel(QObject):
         return curve
 
     def _schedule_fit(self) -> None:
+        self.resultsChanged.emit(self.current_results())
         self._fit_timer.start()
 
     def _run_fit(self) -> None:

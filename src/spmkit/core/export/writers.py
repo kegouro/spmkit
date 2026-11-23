@@ -177,8 +177,11 @@ def export_curve(
     seg = curve.extend or (curve.segments[0] if curve.segments else None)
     if seg is None or seg.force is None:
         raise ValueError("la curva no tiene un segmento con fuerza para exportar")
-    axis = seg.separation if seg.separation is not None else seg.raw_height
-    sep = np.asarray(axis, dtype=np.float64)
+    from spmkit.core.analysis.forcecurve import display_axis
+
+    separation = None if seg.separation is None else np.asarray(seg.separation, dtype=np.float64)
+    sep = display_axis(separation, seg.raw_height)
+    axis_name = "separation" if sep is separation else "height"
     force = np.asarray(seg.force, dtype=np.float64)
 
     with path.open("w", newline="", encoding="utf-8") as fh:
@@ -198,7 +201,7 @@ def export_curve(
             writer.writerow([key, PROPERTY_UNITS.get(key, ""), value])
 
         fh.write("#\n# --- datos ---\n")
-        writer.writerow(["separation [m]", "force [N]"])
+        writer.writerow([f"{axis_name} [m]", "force [N]"])
         for s, f in zip(sep, force, strict=True):
             writer.writerow([float(s), float(f)])
     return path

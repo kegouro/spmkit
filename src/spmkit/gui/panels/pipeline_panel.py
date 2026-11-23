@@ -54,6 +54,8 @@ class PipelinePanel(Panel):
         self._building = True
         super().__init__(parent)
         self._building = False
+        vm.recipeChanged.connect(lambda _: self.refresh())
+        self.refresh()
 
     def build(self) -> QWidget:
         tabs = QTabWidget()
@@ -163,6 +165,31 @@ class PipelinePanel(Panel):
         self._update_enabled()
         self._on_mc_toggled(False)
         return tabs
+
+    def refresh(self) -> None:
+        """Sincroniza proyectos restaurados y cambios de parámetros externos."""
+        self._building = True
+        p = self._vm.params
+        for combo, key in ((self._model, "model"), (self._contact, "contact_method")):
+            combo.setCurrentIndex(combo.findData(p[key]))
+        for widget, value in (
+            (self._radius, p["tip_radius"] * 1e9),
+            (self._angle, math.degrees(p["half_angle"] or math.radians(20))),
+            (self._poisson, p["poisson"]),
+            (self._smooth, p["smooth_window"]),
+            (self._ksigma, p["k_sigma"]),
+            (self._invols, (p["invols"] or 0) * 1e9),
+            (self._k, p["spring_constant"] or 0),
+            (self._invols_err, p["invols_rel_err"]),
+            (self._k_err, p["k_rel_err"]),
+        ):
+            widget.setValue(value)
+        self._mc_n.setValue(int(p["mc_samples"]))
+        self._mc_seed.setValue(int(p["mc_seed"]))
+        self._mc.setChecked(p["mc"])
+        self._on_mc_toggled(p["mc"])
+        self._update_enabled()
+        self._building = False
 
     def _spin(
         self,

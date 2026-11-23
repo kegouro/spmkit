@@ -13,19 +13,22 @@ Todo con la ruta vectorizada (CPU/GPU). Requiere el extra ``report`` para el inf
 from __future__ import annotations
 
 import csv
+import json
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 
-from spmkit.core.analysis.forcevolume_fast import FAST_KEYS, elasticity_map
+from spmkit.core.analysis.forcevolume import PROPERTY_UNITS, analyze_volume
+from spmkit.core.analysis.forcevolume_fast import elasticity_map
 from spmkit.core.models import ForceVolume
+from spmkit.core.pipeline import Recipe
 
 
 def _write_curve_table(result: Any, volume: ForceVolume, path: Path) -> None:
     """CSV con una fila por curva: índice, (fila, col), (x, y) y cada propiedad."""
     rows, cols = volume.grid_shape
-    keys = [k for k in FAST_KEYS if k in result.maps]
+    keys = list(result.maps)
     dx = volume.x_range / cols if cols else 0.0
     dy = volume.y_range / rows if rows else 0.0
     with path.open("w", newline="", encoding="utf-8") as fh:
@@ -41,7 +44,7 @@ def _write_curve_table(result: Any, volume: ForceVolume, path: Path) -> None:
 
 def _write_summary(result: Any, path: Path) -> None:
     """CSV con la estadística robusta por propiedad."""
-    keys = [k for k in FAST_KEYS if k in result.maps]
+    keys = list(result.maps)
     with path.open("w", newline="", encoding="utf-8") as fh:
         writer = csv.writer(fh)
         writer.writerow(["property", "median", "std", "min", "max", "n"])
@@ -60,15 +63,31 @@ def export_bundle(
     poisson: float = 0.3,
     backend: str = "cpu",
     report_formats: tuple[str, ...] = ("html", "pdf"),
+    recipe: Recipe | None = None,
 ) -> dict[str, Path]:
     """Exporta **todo** de ``volume`` a ``out_dir``; devuelve el manifiesto de archivos."""
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
-    result = elasticity_map(
-        volume, tip_radius=tip_radius, poisson=poisson, model=model, backend=backend
+    result = (
+        analyze_volume(volume, recipe, keys=tuple(PROPERTY_UNITS))
+        if recipe is not None
+        else elasticity_map(
+            volume, tip_radius=tip_radius, poisson=poisson, model=model, backend=backend
+        )
     )
 
     manifest: dict[str, Path] = {}
+    if recipe is not None:
+        metadata = out / "analisis.json"
+        metadata.write_text(
+            json.dumps(
+                {"source": source_name, "recipe": recipe.to_dict(), "units": PROPERTY_UNITS},
+                indent=2,
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
+        )
+        manifest["analysis"] = metadata
     for key, arr in result.maps.items():
         p = out / f"mapa_{key}.csv"
         np.savetxt(p, arr, delimiter=",")
@@ -95,6 +114,7 @@ def export_bundle(
                 poisson=poisson,
                 backend=backend,
                 formats=report_formats,
+                recipe=recipe,
             )
             manifest.update({f"report_{k}": v for k, v in produced.items()})
         except ImportError:  # pragma: no cover - sin extra report: se omite el informe

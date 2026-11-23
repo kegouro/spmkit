@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+
 import numpy as np
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
@@ -293,12 +295,20 @@ class ForceCanvasPanel(Panel):
             return
         p = self._vm.params
         meta = {
+            "curve_index": self._vm.index,
+            "recipe": json.dumps(self._vm.recipe.to_dict(), ensure_ascii=False),
             "modelo": p.get("model", ""),
             "radio_punta_nm": (p.get("tip_radius") or 0.0) * 1e9,
             "poisson": p.get("poisson", ""),
         }
         try:
-            export_curve(curve, self._vm.current_results(), path, extra_meta=meta)
+            export_curve(
+                curve,
+                self._vm.current_results(),
+                path,
+                source=self._vm.source_path or "",
+                extra_meta=meta,
+            )
             self._counter.setText("curva exportada")
         except Exception as exc:  # noqa: BLE001 - se informa, no tumba
             self._counter.setText(f"export falló: {exc}")
@@ -332,6 +342,8 @@ class ForceCanvasPanel(Panel):
         self._contact = float(cp) if isinstance(cp, int | float) else None
         self._refresh_offset()
         curve = self._vm.result_curve()
+        if curve is None and self._vm.n_curves:
+            curve = self._vm.current_curve()
         if curve is not None:
             self._draw_data(curve)
         fit = ctx.get("fit")
