@@ -12,9 +12,15 @@ que importa para mapas grandes (miles de curvas).
 
 from __future__ import annotations
 
+import math
+import os
+from collections import deque
 from collections.abc import Callable
 from concurrent.futures import ProcessPoolExecutor
 from dataclasses import asdict, dataclass, field
+from itertools import islice
+from multiprocessing import get_context
+from numbers import Real
 from typing import Any
 
 import numpy as np
@@ -58,6 +64,7 @@ class VolumeResult:
     n_ok: int
     n_failed: int
     keys: tuple[str, ...] = field(default_factory=tuple)
+    first_error: str = ""
 
     def stats(self, key: str) -> dict[str, float]:
         """Estadística robusta (ignorando NaN) de un mapa: media, mediana, σ, mín, máx."""
@@ -95,6 +102,7 @@ class VolumeResult:
 
 # --- ejecución paralela: estado por proceso worker (evita picklear todo por tarea) ---
 _WORKER: dict[str, Any] = {}
+_CurveResult = tuple[dict[str, float] | None, str]
 
 
 def _init_worker(loader: Callable[[int], Any], recipe: Recipe, keys: tuple[str, ...]) -> None:
@@ -103,12 +111,26 @@ def _init_worker(loader: Callable[[int], Any], recipe: Recipe, keys: tuple[str, 
     _WORKER["keys"] = keys
 
 
-def _run_index(index: int) -> dict[str, Any] | None:
+def _run_curve(
+    loader: Callable[[int], Any], recipe: Recipe, keys: tuple[str, ...], index: int
+) -> _CurveResult:
     try:
-        _, ctx = run(_WORKER["recipe"], _WORKER["loader"](index))
-        return {k: ctx.get(k) for k in _WORKER["keys"]}
-    except Exception:  # noqa: BLE001 - una curva mala no aborta el mapa
-        return None
+        _, ctx = run(recipe, loader(index))
+        values = {}
+        for key in keys:
+            value = ctx.get(key)
+            if isinstance(value, (Real, np.bool_)) and math.isfinite(value):
+                values[key] = float(value)
+        return values, ""
+    except Exception as exc:  # noqa: BLE001 - una curva mala no aborta el mapa
+        return None, str(exc) or type(exc).__name__
+
+
+def _run_chunk(start: int, stop: int) -> list[_CurveResult]:
+    return [
+        _run_curve(_WORKER["loader"], _WORKER["recipe"], _WORKER["keys"], index)
+        for index in range(start, stop)
+    ]
 
 
 def analyze_volume(
@@ -127,40 +149,65 @@ def analyze_volume(
         progress: Callback ``(fracción, índice)`` tras cada curva.
     """
     n = volume.n_curves
-    results: list[dict[str, Any] | None] = [None] * n
+    flat = {key: np.full(n, np.nan) for key in keys}
+    n_ok = 0
+    first_error = ""
 
-    if parallel:
+    def store(index: int, result: _CurveResult) -> None:
+        nonlocal n_ok, first_error
+        values, error = result
+        if values is None:
+            if not first_error:
+                first_error = f"Curva {index + 1}: {error}"
+        else:
+            n_ok += 1
+            for key, value in values.items():
+                flat[key][index] = value
+        if progress is not None:
+            progress((index + 1) / n, index)
+
+    if parallel and max_workers is not None and max_workers < 1:
+        raise ValueError("max_workers debe ser positivo")
+    if parallel and n > 1 and (max_workers is not None or n >= 32):
+        workers = min(n, max_workers or min(4, os.cpu_count() or 1))
+        chunk_size = max(1, min(32, n // (workers * 2)))
+        starts = iter(range(0, n, chunk_size))
+        # spawn evita heredar el estado de Qt cuando el pool se abre desde un hilo.
+        # Limitar los bloques enviados también acota el trabajo pendiente al cancelar.
         with ProcessPoolExecutor(
-            max_workers=max_workers,
+            max_workers=workers,
+            mp_context=get_context("spawn"),
             initializer=_init_worker,
             initargs=(volume.loader, recipe, keys),
         ) as executor:
-            for i, res in enumerate(executor.map(_run_index, range(n))):
-                results[i] = res
-                if progress is not None:
-                    progress((i + 1) / n, i)
-    else:
-        for i in range(n):
+            pending = deque(
+                executor.submit(_run_chunk, start, min(start + chunk_size, n))
+                for start in islice(starts, workers)
+            )
+            index = 0
             try:
-                _, ctx = run(recipe, volume.curve(i))
-                results[i] = {k: ctx.get(k) for k in keys}
-            except Exception:  # noqa: BLE001 - una curva mala no aborta el mapa
-                results[i] = None
-            if progress is not None:
-                progress((i + 1) / n, i)
+                while pending:
+                    chunk = pending.popleft().result()
+                    start = next(starts, None)
+                    if start is not None:
+                        pending.append(
+                            executor.submit(_run_chunk, start, min(start + chunk_size, n))
+                        )
+                    for result in chunk:
+                        store(index, result)
+                        index += 1
+            finally:
+                for future in pending:
+                    future.cancel()
+    else:
+        for index in range(n):
+            store(index, _run_curve(volume.curve, recipe, keys, index))
 
-    rows, cols = volume.grid_shape
-    maps: dict[str, np.ndarray] = {}
-    for key in keys:
-        flat = np.full(n, np.nan)
-        for i, res in enumerate(results):
-            if res is not None:
-                value = res.get(key)
-                if value is not None and np.isfinite(value):
-                    flat[i] = float(value)
-        maps[key] = flat.reshape(rows, cols)
-
-    n_ok = sum(res is not None for res in results)
     return VolumeResult(
-        maps=maps, grid_shape=volume.grid_shape, n_ok=n_ok, n_failed=n - n_ok, keys=tuple(keys)
+        maps={key: values.reshape(volume.grid_shape) for key, values in flat.items()},
+        grid_shape=volume.grid_shape,
+        n_ok=n_ok,
+        n_failed=n - n_ok,
+        keys=tuple(keys),
+        first_error=first_error,
     )

@@ -134,3 +134,52 @@ def test_unforced_distance_and_voltage_have_physical_units():
     assert (unit, axis) == ("nm", "Separación")
     raw = ForceSegment("extend", "approach", z, d)
     assert _segment_xy(raw)[2:] == ("V", "Altura")
+
+
+def test_edit_style_and_save_current_view(canvas, qtbot, monkeypatch, tmp_path):
+    import xml.etree.ElementTree as ET
+
+    from PyQt6.QtCore import QTimer
+    from PyQt6.QtWidgets import QApplication, QFileDialog
+
+    from spmkit.gui.widgets.curve_style import CurveStyleDialog
+
+    settings = QSettings(str(tmp_path / "style.ini"), QSettings.Format.IniFormat)
+    canvas.use_style_settings(settings)
+    params = dict(canvas._vm.params)
+    values = canvas._extend_item.yData.copy()
+
+    def change():
+        d = QApplication.activeModalWidget()
+        assert isinstance(d, CurveStyleDialog)
+        d.strokes[0][0].setValue(4)
+        d.strokes[0][1].setCurrentText("Puntos")
+        d.names[0].setText("Recorrido de ensayo")
+        d.axes.setValue(3)
+        d.font_size.setValue(18)
+        d.accept()
+
+    QTimer.singleShot(0, change)
+    canvas._tools.editStyle.emit()
+    from spmkit.gui.widgets.curve_style import CurveStyle
+
+    assert CurveStyle.from_preference(settings.value("force_plot_style")) == canvas._curve_style
+    assert CurveStyle.from_preference("broken") == CurveStyle()
+    canvas._tools._choose_unit("x", "µm")
+    canvas.set_plot_appearance(Appearance(theme="light"))
+    assert canvas._extend_item.opts["pen"].widthF() == 4
+    assert canvas._extend_item.opts["pen"].style() == Qt.PenStyle.DotLine
+    assert canvas._plot.getAxis("left").pen().widthF() == 3
+    assert canvas._resid.getAxis("bottom").labelText == "Recorrido de ensayo"
+    assert canvas._resid.getAxis("bottom").labelUnits == "µm"
+    np.testing.assert_array_equal(canvas._extend_item.yData, values)
+    assert canvas._vm.params == params
+    for fmt in ("svg", "png"):
+        path = tmp_path / f"vista.{fmt}"
+        monkeypatch.setattr(QFileDialog, "getSaveFileName", lambda *args, p=path: (str(p), ""))
+        canvas.export_view()
+        assert canvas._counter.text() == "Vista guardada"
+        if fmt == "svg":
+            assert "Recorrido de ensayo" in "".join(ET.parse(path).getroot().itertext())
+        else:
+            assert path.read_bytes().startswith(b"\x89PNG")

@@ -2,11 +2,12 @@
 
 import math
 from functools import partial
+from html import escape
 from typing import Any
 
 import numpy as np
 import pyqtgraph as pg
-from PyQt6.QtCore import QEvent, QObject, QPointF, Qt
+from PyQt6.QtCore import QEvent, QObject, QPointF, Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QComboBox,
     QDialog,
@@ -72,6 +73,9 @@ class AxisLimits(QDialog):
 
 
 class CurveViewTools(QWidget):
+    editStyle = pyqtSignal()
+    exportView = pyqtSignal()
+
     def __init__(
         self, plot: Any, residual: Any, graphics: Any, branches: list[tuple[str, Any]]
     ) -> None:
@@ -87,6 +91,7 @@ class CurveViewTools(QWidget):
         self._x_unit = "nm"
         self._y_unit = "nN"
         self._scales = (1.0, 1.0)
+        self.aliases: dict[str, str] = {}
         self._x_title, self._y_title = "Separación", "Fuerza"
         row = QHBoxLayout(self)
         row.setContentsMargins(12, 0, 12, 0)
@@ -113,6 +118,9 @@ class CurveViewTools(QWidget):
         self._x_units = menu.addMenu("Unidad X")
         self._y_units = menu.addMenu("Unidad Y")
         menu.aboutToShow.connect(self._unit_menus)
+        menu.addSeparator()
+        menu.addAction("Estilo de la curva…", self.editStyle.emit)
+        menu.addAction("Guardar vista del gráfico…", self.exportView.emit)
         axes.setMenu(menu)
         row.addWidget(axes)
         self.readout = QLabel()
@@ -195,11 +203,12 @@ class CurveViewTools(QWidget):
     def _apply_units(self) -> None:
         sx, sy = _UNITS["nm"][self._x_unit], _UNITS[self._base_unit][self._y_unit]
         self._scales = sx, sy
-        self._x_label = f"{self._x_title} ({self._x_unit})"
-        self._y_label = f"{self._y_title} ({self._y_unit})"
+        x_title, y_title = (self.aliases.get(t) or t for t in self.axis_titles())
+        self._x_label = f"{x_title} ({self._x_unit})"
+        self._y_label = f"{y_title} ({self._y_unit})"
         for plot, side, title, unit, scale in (
-            (self._residual, "bottom", self._x_title, self._x_unit, sx),
-            (self._plot, "left", self._y_title, self._y_unit, sy),
+            (self._residual, "bottom", x_title, self._x_unit, sx),
+            (self._plot, "left", y_title, self._y_unit, sy),
             (
                 self._residual,
                 "left",
@@ -208,8 +217,15 @@ class CurveViewTools(QWidget):
                 sy if self._base_unit == "nN" else 1.0,
             ),
         ):
-            plot.setLabel(side, title, units=unit)
+            plot.setLabel(side, escape(title), units=unit)
             plot.getAxis(side).setScale(scale)
+
+    def axis_titles(self) -> tuple[str, str]:
+        return self._x_title, self._y_title
+
+    def set_titles(self, names: tuple[str, str]) -> None:
+        self.aliases.update(zip(self.axis_titles(), names, strict=True))
+        self._apply_units()
 
     def set_ink(self, color: str) -> None:
         self._marker.setPen(pg.mkPen(color, width=2))

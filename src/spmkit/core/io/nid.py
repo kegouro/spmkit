@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import math
 import re
+from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
@@ -221,6 +222,104 @@ def _find_channel(channels: list[SPMChannel], name: str, frame_contains: str) ->
     return matches[0] if matches else None
 
 
+@dataclass(frozen=True)
+class _ForceChannel:
+    data: np.ndarray
+    points: tuple[int, ...]
+    scale: float
+    name: str
+    unit: str
+    frame: str
+
+    @classmethod
+    def from_channel(cls, channel: SPMChannel, unit: str, n_curves: int) -> _ForceChannel:
+        points = channel.spectroscopy_point_counts()
+        try:
+            offset = float(channel.metadata["Dim2Min"])
+            span = float(channel.metadata["Dim2Range"])
+        except (KeyError, ValueError) as exc:
+            raise ValueError(
+                f"{channel.group} / {channel.name}: falta escala física válida"
+            ) from exc
+        if not math.isfinite(offset) or not math.isfinite(span) or span <= 0:
+            raise ValueError(f"{channel.group} / {channel.name}: escala física inválida")
+
+        prefix_scale = {"": 1.0, "m": 1e-3, "u": 1e-6, "n": 1e-9, "p": 1e-12, "f": 1e-15}
+        declared = channel.unit.strip().replace("µ", "u").replace("μ", "u")
+        prefix = declared.removesuffix(unit)
+        if not declared.endswith(unit) or prefix not in prefix_scale:
+            raise ValueError(f"{channel.name}: unidad {channel.unit!r} incompatible con {unit}")
+        if channel.shape[0] != n_curves:
+            raise ValueError(f"{channel.name}: número de curvas incompatible")
+        return cls(
+            channel.data, points, prefix_scale[prefix], channel.name, channel.unit, channel.group
+        )
+
+    def row(self, index: int) -> np.ndarray:
+        values = self.data[index, : self.points[index]]
+        return values if self.scale == 1.0 else values * self.scale
+
+
+@dataclass(frozen=True)
+class _ForceBranch:
+    height: _ForceChannel
+    force: _ForceChannel
+    separation: _ForceChannel | None
+    separation_force: _ForceChannel | None
+
+    def segment(self, index: int, *, retract: bool, k: float | None) -> ForceSegment:
+        height = self.height.row(index)
+        force = self.force.row(index)
+        separation = self.separation.row(index) if self.separation is not None else None
+        separation_status = "absent"
+        if separation is not None:
+            separation_status = "unverified"
+            if separation.shape != height.shape:
+                separation = None
+                separation_status = "length_mismatch"
+            elif self.separation_force is not None:
+                if np.array_equal(force, self.separation_force.row(index)):
+                    separation_status = "matched"
+                else:
+                    separation = None
+                    separation_status = "force_mismatch"
+        return ForceSegment(
+            segment_type="retract" if retract else "extend",
+            direction="retract" if retract else "approach",
+            raw_height=height,
+            raw_deflection=force,
+            deflection=force / k if k is not None else None,
+            force=force,
+            separation=separation,
+            state="force_n",
+            metadata={
+                "num_points": int(height.size),
+                "stored_force_points": self.force.data.shape[1],
+                "height_channel": self.height.name,
+                "height_input_unit": self.height.unit,
+                "raw_deflection_unit": "N",
+                "force_input_unit": self.force.unit,
+                "force_channel": self.force.name,
+                "force_frame": self.force.frame,
+                "separation_status": separation_status,
+                "spring_constant_n_per_m": k,
+            },
+        )
+
+
+@dataclass(frozen=True)
+class _NidForceLoader:
+    extend: _ForceBranch
+    retract: _ForceBranch | None
+    k: float | None
+
+    def __call__(self, index: int) -> ForceCurve:
+        segments = [self.extend.segment(index, retract=False, k=self.k)]
+        if self.retract is not None:
+            segments.append(self.retract.segment(index, retract=True, k=self.k))
+        return ForceCurve(segments=tuple(segments), index=index, metadata={"format": "nid"})
+
+
 def load_nid_force(path: str | Path) -> ForceVolume:
     """Lee la espectroscopía de un ``.nid`` como :class:`ForceVolume`.
 
@@ -231,7 +330,7 @@ def load_nid_force(path: str | Path) -> ForceVolume:
     el instrumento; frames ``Indentation…Fwd/Bwd``). Cada fila es una curva.
 
     Devuelve un :class:`ForceVolume` de ``Lines`` curvas, cada una con segmentos
-    extend/retract calibrados (``state="force_n"``).
+    extend/retract calibrados (``state="force_n"``), construidos bajo demanda.
     """
     data = load_nid(path)
     chs = list(data.channels)
@@ -252,112 +351,41 @@ def load_nid_force(path: str | Path) -> ForceVolume:
         frame = separation.group.replace("IndentationZSensor", "IndentationDefl", 1)
         return next((c for c in chs if c.name == "Deflection" and c.group == frame), None)
 
-    ext_sep_force = paired_force(ext_sep)
-    ret_sep_force = paired_force(ret_sep)
     k = data.metadata.get("spring_constant")
     k = k if k is not None and math.isfinite(k) and k > 0 else None
-
-    row_counts: dict[tuple[str, str], tuple[int, ...]] = {}
-    for channel in (
-        ext_force,
-        ext_z,
-        ret_force,
-        ret_z,
-        ext_sep,
-        ret_sep,
-        ext_sep_force,
-        ret_sep_force,
-    ):
-        if channel is None:
-            continue
-        row_counts[channel.group, channel.name] = channel.spectroscopy_point_counts()
-        try:
-            offset = float(channel.metadata["Dim2Min"])
-            span = float(channel.metadata["Dim2Range"])
-        except (KeyError, ValueError) as exc:
-            raise ValueError(
-                f"{channel.group} / {channel.name}: falta escala física válida"
-            ) from exc
-        if not math.isfinite(offset) or not math.isfinite(span) or span <= 0:
-            raise ValueError(f"{channel.group} / {channel.name}: escala física inválida")
-
-    n_curves = int(ext_force.data.shape[0])
+    n_curves = ext_force.shape[0]
 
     if (ret_force is None) != (ret_z is None):
         raise ValueError("Retracción .nid incompleta: se requieren Deflection y Z-Axis Sensor")
 
-    def in_si_row(channel: SPMChannel, unit: str, i: int) -> np.ndarray:
-        prefix_scale = {"": 1.0, "m": 1e-3, "u": 1e-6, "n": 1e-9, "p": 1e-12, "f": 1e-15}
-        declared = channel.unit.strip().replace("µ", "u").replace("μ", "u")
-        prefix = declared.removesuffix(unit)
-        if not declared.endswith(unit) or prefix not in prefix_scale:
-            raise ValueError(f"{channel.name}: unidad {channel.unit!r} incompatible con {unit}")
-        if channel.data.shape[0] != n_curves:
-            raise ValueError(f"{channel.name}: número de curvas incompatible")
-        points = row_counts[channel.group, channel.name][i]
-        row = np.asarray(channel.data[i, :points], dtype=np.float64)
-        return row if prefix_scale[prefix] == 1.0 else row * prefix_scale[prefix]
-
-    def _segment(
-        kind: str,
-        direction: str,
+    def branch(
         z_ch: SPMChannel,
         f_ch: SPMChannel,
         sep_ch: SPMChannel | None,
-        sep_force_ch: SPMChannel | None,
-        i: int,
-    ) -> ForceSegment:
-        height = in_si_row(z_ch, "m", i)
-        force = in_si_row(f_ch, "N", i)
-        separation = in_si_row(sep_ch, "m", i) if sep_ch is not None else None
-        if height.shape != force.shape:
-            raise ValueError(f"{kind}: longitudes de canal incompatibles")
-        separation_status = "absent"
-        if separation is not None:
-            separation_status = "unverified"
-            if separation.shape != height.shape:
-                separation = None
-                separation_status = "length_mismatch"
-            elif sep_force_ch is not None:
-                paired_force = in_si_row(sep_force_ch, "N", i)
-                if np.array_equal(force, paired_force):
-                    separation_status = "matched"
-                else:
-                    separation = None
-                    separation_status = "force_mismatch"
-        deflection = force / k if k is not None else None
-        return ForceSegment(
-            segment_type=kind,  # type: ignore[arg-type]
-            direction=direction,
-            raw_height=height,
-            raw_deflection=force,
-            deflection=deflection,
+    ) -> _ForceBranch:
+        height = _ForceChannel.from_channel(z_ch, "m", n_curves)
+        force = _ForceChannel.from_channel(f_ch, "N", n_curves)
+        if height.points != force.points:
+            raise ValueError(f"{z_ch.group}: longitudes de canal incompatibles")
+        separation = (
+            _ForceChannel.from_channel(sep_ch, "m", n_curves) if sep_ch is not None else None
+        )
+        sep_force = paired_force(sep_ch)
+        return _ForceBranch(
+            height=height,
             force=force,
             separation=separation,
-            state="force_n",
-            metadata={
-                "num_points": int(height.size),
-                "stored_force_points": f_ch.shape[1],
-                "height_channel": z_ch.name,
-                "height_input_unit": z_ch.unit,
-                "raw_deflection_unit": "N",
-                "force_input_unit": f_ch.unit,
-                "force_channel": f_ch.name,
-                "force_frame": f_ch.group,
-                "separation_status": separation_status,
-                "spring_constant_n_per_m": k,
-            },
+            separation_force=(
+                _ForceChannel.from_channel(sep_force, "N", n_curves)
+                if sep_force is not None
+                else None
+            ),
         )
 
-    def _load_curve(i: int) -> ForceCurve:
-        segments = [_segment("extend", "approach", ext_z, ext_force, ext_sep, ext_sep_force, i)]
-        if ret_force is not None and ret_z is not None:
-            segments.append(
-                _segment("retract", "retract", ret_z, ret_force, ret_sep, ret_sep_force, i)
-            )
-        return ForceCurve(segments=tuple(segments), index=i, metadata={"format": "nid"})
-
-    curves = tuple(_load_curve(i) for i in range(n_curves))
+    extend = branch(ext_z, ext_force, ext_sep)
+    retract = (
+        branch(ret_z, ret_force, ret_sep) if ret_z is not None and ret_force is not None else None
+    )
 
     # Grilla espacial: cuadrada si es un cuadrado perfecto, si no una línea 1×N.
     side = int(math.isqrt(n_curves))
@@ -367,8 +395,9 @@ def load_nid_force(path: str | Path) -> ForceVolume:
     x_range = float(topo.x_range) if topo is not None else 0.0
     y_range = float(topo.y_range) if topo is not None else 0.0
 
-    return ForceVolume.from_curves(
-        curves,
+    return ForceVolume(
+        loader=_NidForceLoader(extend, retract, k),
+        n_curves=n_curves,
         grid_shape=grid_shape,
         x_range=x_range,
         y_range=y_range,

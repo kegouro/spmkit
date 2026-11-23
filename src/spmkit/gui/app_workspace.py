@@ -118,6 +118,8 @@ def build_workspace(
     ws.add_toolbar_action("Guardar proyecto…", lambda: _save_project(ws, vm, session))
     force_canvas.openRequested.connect(lambda: _open_dialog(ws, vm, image_vm, session))
     if not force_canvas.errored:
+        if persist:
+            force_canvas.use_style_settings(QSettings("spmkit", "spmkit"))
         ws.chartStyleChanged.connect(force_canvas.set_plot_appearance)
         force_canvas.set_plot_appearance(ws.appearance)
     try:

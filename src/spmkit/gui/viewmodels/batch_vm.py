@@ -34,14 +34,20 @@ class BatchViewModel(QObject):
     def result(self) -> ForceBatchResult | None:
         return self._result
 
+    @property
+    def computing(self) -> bool:
+        return self._task is not None
+
     def run_now(self, folder: str | Path, parallel: bool = False) -> None:
         """Procesa la carpeta de forma sincrónica (tests / lotes chicos)."""
+        if self.computing:
+            return
         self._result = process_force_folder(folder, self._force_vm.recipe, parallel=parallel)
         self.batchReady.emit(self._result)
 
     def run(self, folder: str | Path, parallel: bool = False) -> None:
         """Procesa la carpeta en un hilo worker; emite ``batchReady`` al terminar."""
-        if self._task is not None:
+        if self.computing:
             return
         task = Task(
             process_force_folder,
@@ -51,16 +57,25 @@ class BatchViewModel(QObject):
             provide_progress=True,
         )
         task.signals.done.connect(self._on_done)
-        task.signals.error.connect(lambda exc: self.statusChanged.emit(f"batch falló: {exc}"))
+        task.signals.error.connect(self._on_error)
+        task.signals.cancelled.connect(self._on_cancelled)
         task.signals.finished.connect(self._on_finished)
         self._task = task
+        self._result = None
         self.computingChanged.emit(True)
+        self.batchReady.emit(None)
         self.taskStarted.emit(task)
         run_task(task)
 
     def _on_done(self, result: object) -> None:
         self._result = result if isinstance(result, ForceBatchResult) else None
         self.batchReady.emit(self._result)
+
+    def _on_error(self, exc: Exception) -> None:
+        self.statusChanged.emit(f"El lote falló: {exc}")
+
+    def _on_cancelled(self) -> None:
+        self.statusChanged.emit("Lote cancelado")
 
     def _on_finished(self) -> None:
         self._task = None

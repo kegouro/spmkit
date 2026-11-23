@@ -3,12 +3,16 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 import numpy as np
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import QIODevice, QRectF, QSaveFile, QSettings, Qt, pyqtSignal
+from PyQt6.QtGui import QFontMetrics, QImage, QPainter
 from PyQt6.QtWidgets import (
     QCheckBox,
     QComboBox,
+    QDialog,
+    QFileDialog,
     QHBoxLayout,
     QLabel,
     QPushButton,
@@ -24,6 +28,7 @@ from spmkit.gui.design import tokens
 from spmkit.gui.design.appearance import Appearance
 from spmkit.gui.panels.base import Panel
 from spmkit.gui.viewmodels import ForceViewModel
+from spmkit.gui.widgets.curve_style import CurveStyle, CurveStyleDialog
 
 _NM = 1e9  # m → nm
 _NN = 1e9  # N → nN
@@ -63,6 +68,9 @@ class ForceCanvasPanel(Panel):
     _PINNED_MAX = 6
 
     def __init__(self, vm: ForceViewModel, parent: QWidget | None = None) -> None:
+        self._style_settings: QSettings | None = None
+        self._curve_style = CurveStyle()
+        self._appearance = Appearance()
         self._vm = vm
         self._offset = 0.0  # shift del eje (m): contacto en modo indentación
         self._contact: float | None = None
@@ -216,6 +224,8 @@ class ForceCanvasPanel(Panel):
                 ("Ajuste", self._fit_item),
             ],
         )
+        self._tools.editStyle.connect(self.edit_style)
+        self._tools.exportView.connect(self.export_view)
         self._tools.mode.currentIndexChanged.connect(
             lambda: self._region.setMovable(self._tools.mode.currentData() == "pan")
         )
@@ -235,6 +245,8 @@ class ForceCanvasPanel(Panel):
         self._resid.enableAutoRange(axis=self._pg.ViewBox.YAxis)
 
     def set_source_name(self, name: str) -> None:
+        self._tools.aliases.clear()
+        self._update_axis_label()
         self._source.setTextFormat(Qt.TextFormat.PlainText)
         self._source.setText(name)
         self._source.setToolTip(name)
@@ -245,6 +257,7 @@ class ForceCanvasPanel(Panel):
         self.set_plot_appearance(Appearance(theme=mode))
 
     def set_plot_appearance(self, style: Appearance) -> None:
+        self._appearance = style
         bg, fg, ink = style.chart_colors()
         self._tools.set_ink(fg)
         self._graphics.setBackground(bg)
@@ -252,25 +265,34 @@ class ForceCanvasPanel(Panel):
         for item in self._pinned:
             item.setPen(self._pg.mkPen(self._pinned_color, width=1))
         # Both ViewBoxes must have the same pixel origin, including after a font change.
-        axis_width = (
-            self.fontMetrics().horizontalAdvance("−0.00e−00") + 2 * self.fontMetrics().height()
-        )
+        font = self.font()
+        font.setPixelSize(self._curve_style.font_px)
+        metrics = QFontMetrics(font)
+        axis_width = metrics.horizontalAdvance("−0.00e−00") + 2 * metrics.height()
         for plot in (self._plot, self._resid):
             plot.getAxis("left").setWidth(axis_width)
         for plot in (self._plot, self._resid):
             for side in ("bottom", "left"):
                 axis = plot.getAxis(side)
-                axis.setPen(fg)
+                axis.setPen(self._pg.mkPen(fg, width=self._curve_style.axis_width))
+                axis.setStyle(tickFont=font)
                 axis.setTextPen(fg)
-                axis.setLabel(text=axis.labelText, units=axis.labelUnits, color=fg)
+                axis.setLabel(
+                    text=axis.labelText,
+                    units=axis.labelUnits,
+                    color=fg,
+                    **{"font-size": f"{self._curve_style.font_px}px"},
+                )
         self._legend.setLabelTextColor(fg)
         for _, label in self._legend.items:
             label.setText(label.text, color=fg)
-        self._extend_item.setPen(self._pg.mkPen(ink["extend"], width=1.6))
-        self._retract_item.setPen(
-            self._pg.mkPen(ink["retract"], width=1.4, style=Qt.PenStyle.DashLine)
-        )
-        self._fit_item.setPen(self._pg.mkPen(ink["fit"], width=2.2))
+        for item, role, pen in zip(
+            (self._extend_item, self._retract_item, self._fit_item),
+            ("extend", "retract", "fit"),
+            self._curve_style.pens(),
+            strict=True,
+        ):
+            item.setPen(self._pg.mkPen(ink[role], **pen))
         self._contact_line.setPen(self._pg.mkPen(ink["contact"], style=Qt.PenStyle.DashLine))
         self._zero_line.setPen(ink["residual"])
         self._resid_item.setSymbolBrush(ink["fit"])
@@ -279,6 +301,69 @@ class ForceCanvasPanel(Panel):
         self._region.setBrush(tint)
         for line in self._region.lines:
             line.setPen(ink["fit"])
+
+    def use_style_settings(self, settings: QSettings) -> None:
+        self._style_settings = settings
+        self._curve_style = CurveStyle.from_preference(str(settings.value("force_plot_style", "")))
+        self.set_plot_appearance(self._appearance)
+
+    def edit_style(self) -> None:
+        titles = self._tools.axis_titles()
+        dialog = CurveStyleDialog(self._curve_style, titles, self)
+        for edit, title in zip(dialog.names, titles, strict=True):
+            edit.setText(self._tools.aliases.get(title, ""))
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            self._curve_style = dialog.style_value()
+            if self._style_settings is not None:
+                self._style_settings.setValue("force_plot_style", self._curve_style.preference())
+            self._tools.set_titles((dialog.names[0].text().strip(), dialog.names[1].text().strip()))
+            self.set_plot_appearance(self._appearance)
+
+    def export_view(self) -> None:
+        path, fmt = QFileDialog.getSaveFileName(
+            self, "Guardar vista del gráfico", "vista", "Vector SVG (*.svg);;Imagen PNG (*.png)"
+        )
+        if not path:
+            return
+        from PyQt6.QtSvg import QSvgGenerator
+
+        target = Path(path)
+        if not target.suffix:
+            target = target.with_suffix(".svg" if "svg" in fmt else ".png")
+        try:
+            size = self._graphics.viewport().size()
+            rect = self._graphics.viewport().rect()
+            file = QSaveFile(str(target))
+            if not file.open(QIODevice.OpenModeFlag.WriteOnly):
+                raise OSError(file.errorString())
+            image = None
+            if target.suffix.lower() == ".svg":
+                svg = QSvgGenerator()
+                svg.setOutputDevice(file)
+                svg.setSize(size)
+                svg.setViewBox(rect)
+                svg.setResolution(self._graphics.logicalDpiX())
+                painter = QPainter(svg)
+            elif target.suffix.lower() == ".png":
+                image = QImage(size * 2, QImage.Format.Format_ARGB32_Premultiplied)
+                image.setDevicePixelRatio(2)
+                image.fill(self._graphics.backgroundBrush().color())
+                painter = QPainter(image)
+            else:
+                raise ValueError("Elige SVG o PNG")
+            if not painter.isActive():
+                raise OSError("No se pudo preparar la figura")
+            try:
+                self._graphics.render(painter, QRectF(rect), rect)
+            finally:
+                painter.end()
+            if image is not None and not image.save(file, "PNG"):
+                raise OSError("No se pudo escribir la imagen")
+            if not file.commit():
+                raise OSError(file.errorString())
+            self._counter.setText("Vista guardada")
+        except Exception as exc:  # noqa: BLE001 - export failures are visible in the viewer
+            self._counter.setText(f"Error al guardar la vista: {exc}")
 
     def _export(self) -> None:
         """Exporta la curva calibrada activa a un CSV científico (ajuste + datos)."""
