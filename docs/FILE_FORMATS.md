@@ -28,6 +28,24 @@ from spmkit.core.io import load_any  # images or force data by capability
 `image` or `force` kind. It also performs content detection for JPK TIFF and
 numbered Nanoscope files.
 
+## NID force spectroscopy
+
+Use `load_any(path, kind="force")` for force curves. Each branch uses the
+measured Z-Axis Sensor and Deflection channels. `LineDim<i>Points` gives the
+acquired length of row *i*. The rectangular channel returned by `load_nid`
+preserves its storage width. On a force segment, `metadata["num_points"]`
+records the acquired count and `metadata["stored_force_points"]` the storage
+width. A separation channel with a different acquired length is omitted and
+marked `length_mismatch`. The measured height and force remain available.
+
+For the public `tests/validation/fixtures/force_foundation/spectroscopy.nid`,
+the force and height arrays for 100 approach/retract pairs were compared
+sample by sample with NSFopen 2.2.4. All 408,530 values agreed exactly.
+The regression `test_public_nid_calibration_and_branch_pairing` checks the
+reference digest offline. This tests decoding and header scaling on this file.
+Experimental force accuracy depends on the calibration of the acquisition.
+[NSFopen 2.2.4](https://pypi.org/project/NSFopen/2.2.4/)
+
 ## Contributing a fixture
 
 Do not attach a restricted instrument file to a public issue. A fixture proposal

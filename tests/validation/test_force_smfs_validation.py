@@ -640,7 +640,7 @@ def test_real_data_failure_handling_witness() -> None:
     """Exact real-NID witness counts (spectroscopy.nid, 100 curves).
 
     All 100 curves fail typed at the FS-F1 preparation boundary
-    (NONMONOTONIC_COORDINATE or INSUFFICIENT_OVERLAP): the FS-F4 SMFS stages
+    (NONMONOTONIC_COORDINATE): the FS-F4 SMFS stages
     are never reached, zero silent failures, zero completed extensions.
     Classification: REAL_DATA_FAILURE_HANDLING_WITNESS (no valid SMFS
     protocol is established on this set; not real-data validation).
@@ -666,7 +666,7 @@ def test_real_data_failure_handling_witness() -> None:
         codes.setdefault("COMPLETED_EXTENSION", 0)
         codes["COMPLETED_EXTENSION"] += 1
     assert codes.get("COMPLETED_EXTENSION", 0) == 0
-    assert codes.get("NONMONOTONIC_COORDINATE", 0) == 99
-    assert codes.get("INSUFFICIENT_OVERLAP", 0) == 1
+    assert codes.get("NONMONOTONIC_COORDINATE", 0) == 100
+    assert codes.get("INSUFFICIENT_OVERLAP", 0) == 0
     assert sum(codes.values()) == vol.n_curves == 100
     assert "silent" not in str(codes)

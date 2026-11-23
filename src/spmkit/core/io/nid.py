@@ -82,7 +82,17 @@ def _channel_order(dataset: dict[str, str]) -> list[str]:
 def _dtype(section: dict[str, str]) -> np.dtype:
     bits = int(section.get("SaveBits", "32"))
     sign = section.get("SaveSign", "Signed").lower()
-    order = "<" if section.get("SaveOrder", "Intel").lower() == "intel" else ">"
+    byte_order = section.get("SaveOrder", "Intel").lower()
+    mode = section.get("SaveMode", "Binary").lower()
+    if mode != "binary":
+        raise ValueError(f".nid: SaveMode no soportado: {mode!r}")
+    if bits not in (8, 16, 32, 64):
+        raise ValueError(f".nid: SaveBits no soportado: {bits}")
+    if sign not in ("signed", "unsigned"):
+        raise ValueError(f".nid: SaveSign no soportado: {sign!r}")
+    if byte_order not in ("intel", "motorola"):
+        raise ValueError(f".nid: SaveOrder no soportado: {byte_order!r}")
+    order = "<" if byte_order == "intel" else ">"
     kind = "i" if sign == "signed" else "u"
     return np.dtype(f"{order}{kind}{bits // 8}")
 
@@ -139,7 +149,7 @@ def load_nid(path: str | Path) -> SPMData:
     for sec_name in order:
         sec = sections.get(sec_name)
         if sec is None:
-            continue
+            raise ValueError(f".nid: falta la sección de canal {sec_name!r}")
         if "Points" not in sec or "Lines" not in sec:
             raise ValueError(
                 f"Archivo .nid corrupto: el canal {sec_name!r} no declara Points/Lines: {path}"
@@ -247,6 +257,7 @@ def load_nid_force(path: str | Path) -> ForceVolume:
     k = data.metadata.get("spring_constant")
     k = k if k is not None and math.isfinite(k) and k > 0 else None
 
+    row_counts: dict[tuple[str, str], tuple[int, ...]] = {}
     for channel in (
         ext_force,
         ext_z,
@@ -259,6 +270,7 @@ def load_nid_force(path: str | Path) -> ForceVolume:
     ):
         if channel is None:
             continue
+        row_counts[channel.group, channel.name] = channel.spectroscopy_point_counts()
         try:
             offset = float(channel.metadata["Dim2Min"])
             span = float(channel.metadata["Dim2Range"])
@@ -282,7 +294,8 @@ def load_nid_force(path: str | Path) -> ForceVolume:
             raise ValueError(f"{channel.name}: unidad {channel.unit!r} incompatible con {unit}")
         if channel.data.shape[0] != n_curves:
             raise ValueError(f"{channel.name}: número de curvas incompatible")
-        row = np.asarray(channel.data[i], dtype=np.float64)
+        points = row_counts[channel.group, channel.name][i]
+        row = np.asarray(channel.data[i, :points], dtype=np.float64)
         return row if prefix_scale[prefix] == 1.0 else row * prefix_scale[prefix]
 
     def _segment(
@@ -297,14 +310,15 @@ def load_nid_force(path: str | Path) -> ForceVolume:
         height = in_si_row(z_ch, "m", i)
         force = in_si_row(f_ch, "N", i)
         separation = in_si_row(sep_ch, "m", i) if sep_ch is not None else None
-        if height.shape != force.shape or (
-            separation is not None and separation.shape != height.shape
-        ):
+        if height.shape != force.shape:
             raise ValueError(f"{kind}: longitudes de canal incompatibles")
         separation_status = "absent"
         if separation is not None:
             separation_status = "unverified"
-            if sep_force_ch is not None:
+            if separation.shape != height.shape:
+                separation = None
+                separation_status = "length_mismatch"
+            elif sep_force_ch is not None:
                 paired_force = in_si_row(sep_force_ch, "N", i)
                 if np.array_equal(force, paired_force):
                     separation_status = "matched"
@@ -323,6 +337,7 @@ def load_nid_force(path: str | Path) -> ForceVolume:
             state="force_n",
             metadata={
                 "num_points": int(height.size),
+                "stored_force_points": f_ch.shape[1],
                 "height_channel": z_ch.name,
                 "height_input_unit": z_ch.unit,
                 "raw_deflection_unit": "N",

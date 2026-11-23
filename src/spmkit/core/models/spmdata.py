@@ -7,6 +7,7 @@ de interfaz.
 
 from __future__ import annotations
 
+import re
 from collections.abc import Iterator
 from dataclasses import dataclass, field
 
@@ -44,6 +45,20 @@ class SPMChannel:
         """Forma ``(lines, points)`` del canal."""
         rows, cols = self.data.shape
         return int(rows), int(cols)
+
+    def spectroscopy_point_counts(self) -> tuple[int, ...]:
+        """Número de muestras adquiridas por fila, excluyendo relleno NID."""
+        rows, width = self.shape
+        keys = {key for key in self.metadata if re.fullmatch(r"LineDim[0-9]+Points", key)}
+        if not keys:
+            return (width,) * rows
+        expected = [f"LineDim{i}Points" for i in range(rows)]
+        if keys != set(expected):
+            raise ValueError(f"{self.group} / {self.name}: tabla LineDim incompleta o inválida")
+        counts = tuple(int(self.metadata[key]) for key in expected)
+        if any(n <= 0 or n > width for n in counts):
+            raise ValueError(f"{self.group} / {self.name}: LineDim fuera del rango 1..{width}")
+        return counts
 
     @property
     def pixel_size_x(self) -> float:

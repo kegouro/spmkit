@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import struct
 from pathlib import Path
 
 import numpy as np
@@ -97,15 +99,25 @@ def test_public_nid_calibration_and_branch_pairing() -> None:
     assert volume.n_curves == 100
     k = volume.metadata["spring_constant"]
     assert k == pytest.approx(2.72436)
+    digest = hashlib.sha256()
     for index in range(volume.n_curves):
         curve = volume.curve(index)
         for seg in curve.segments:
             np.testing.assert_array_equal(seg.deflection, seg.force / k)
             assert seg.metadata["force_input_unit"] == "N"
-            assert seg.metadata["separation_status"] == (
-                "force_mismatch" if index == 0 else "matched"
-            )
-            assert (seg.separation is None) == (index == 0)
+            # NSFopen 2.2.4 nid_read(..., dataframe=False).data["Spec"]:
+            # Forward then Backward, Deflection then Z-Axis Sensor, acquisition order.
+            for values in (seg.force, seg.raw_height):
+                digest.update(struct.pack("<I", values.size))
+                digest.update(np.asarray(values, dtype="<f8").tobytes())
+            status = "matched"
+            if index == 0:
+                status = "force_mismatch"
+            elif seg.force.size < seg.metadata["stored_force_points"]:
+                status = "length_mismatch"
+            assert seg.metadata["separation_status"] == status
+            assert (seg.separation is None) == (status != "matched")
+    assert digest.hexdigest() == "86a5c92fe889beb9cf5ba31a70d8f92f21cedb1954328c5da483fc1aea3323b2"
     _, result = run(Recipe(steps=(Step("calibrate"),)), volume.curve(0))
     assert result["fit_axis"] == "height"
     assert result["force_calibration_source"] == "nid_header_scaling"
@@ -119,3 +131,93 @@ def test_force_nid_requires_explicit_physical_scaling(tmp_path) -> None:
     path.write_bytes(path.read_bytes().replace(b"Dim2Range=65536\n", b"", 1))
     with pytest.raises(ValueError, match="falta escala física"):
         load_nid_force(path)
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("SaveMode", "ASCII"),
+        ("SaveOrder", "unknown"),
+        ("SaveBits", "12"),
+        ("SaveSign", "float"),
+    ],
+)
+def test_unsupported_nid_encoding(nid_file, field, value):
+    import re
+
+    from spmkit.core.verify import trace_nid
+
+    blob = re.sub(
+        rb"(?m)^" + field.encode() + rb"=[^\r\n]+",
+        f"{field}={value}".encode(),
+        nid_file.read_bytes(),
+    )
+    nid_file.write_bytes(blob)
+    with pytest.raises(ValueError, match=field):
+        load(nid_file)
+    assert not trace_nid(nid_file).ok
+
+
+def test_missing_nid_channel_stops_decode(nid_file):
+    from spmkit.core.io.readers import NidReader
+    from spmkit.core.verify import trace_nid
+
+    nid_file.write_bytes(
+        nid_file.read_bytes()
+        .replace(b"Gr0-Ch0=DataSet-0:0", b"Gr0-Ch0=missing\r\nGr0-Ch1=DataSet-0:0")
+        .replace(b"Gr0-Count=1", b"Gr0-Count=2")
+    )
+    for read in (NidReader().inspect, load_nid):
+        with pytest.raises(ValueError, match="missing"):
+            read(nid_file)
+    assert not trace_nid(nid_file).ok
+
+
+def test_variable_length_nid_excludes_padding(tmp_path):
+    from spmkit.core.analysis.mechanics import extract_curves
+    from tests.core.test_annotated_force_steps import write_spectrum
+
+    path = tmp_path / "variable.nid"
+    write_spectrum(path, "nN")
+    fields = b"LineDim0Points=5\nLineDim1Points=12\nLineDim0Min=7\nLineDim0Range=2\n"
+    path.write_bytes(path.read_bytes().replace(b"Points=12\n", fields + b"Points=12\n"))
+    legacy = extract_curves(load_nid(path).channels[0])
+    np.testing.assert_array_equal(legacy[0].z, [7, 7.5, 8, 8.5, 9])
+    np.testing.assert_array_equal(legacy[0].force, [0, 1, 2, 3, 4])
+    volume = load_nid_force(path)
+    np.testing.assert_array_equal(volume.curve(0).extend.force, np.arange(5) * 1e-9)
+    assert volume.curve(1).extend.force.size == 12
+
+    good = path.read_bytes()
+    for replacement, error in (
+        (b"", "incompleta"),
+        (b"LineDim0Points=13\n", "rango"),
+        (b"LineDim0Points=6\n", "incompatibles"),
+    ):
+        path.write_bytes(good.replace(b"LineDim0Points=5\n", replacement, 1))
+        with pytest.raises(ValueError, match=error):
+            load_nid_force(path)
+
+
+def test_nid_mixed_width_and_byte_order(tmp_path):
+    from spmkit.core.verify import trace_nid
+
+    # Sparse slot indices; binary order follows group/channel indices even if
+    # header entries appear in reverse order. Each physical scale is one unit/count.
+    header = (
+        "[DataSet]\nGroupCount=1\nGr0-Count=8\nGr0-Ch7=B\nGr0-Ch2=A\n"
+        "[B]\nPoints=2\nLines=1\nSaveBits=32\nSaveOrder=Intel\n"
+        "Dim2Min=-2147483648\nDim2Range=4294967296\n"
+        "[A]\nPoints=3\nLines=1\nSaveBits=16\nSaveOrder=Motorola\n"
+        "Dim2Min=-32760\nDim2Range=65536\n"
+    )
+    path = tmp_path / "mixed.nid"
+    path.write_bytes(
+        header.encode() + b"#!" + struct.pack(">3h", -10, 0, 513) + struct.pack("<2i", -120000, 7)
+    )
+    first, second = load_nid(path).channels
+    np.testing.assert_array_equal(first.data, [[-2, 8, 521]])
+    np.testing.assert_array_equal(second.data, [[-120000, 7]])
+    trace = trace_nid(path)
+    assert trace.ok
+    assert [c.byte_length for c in trace.channels] == [6, 8]

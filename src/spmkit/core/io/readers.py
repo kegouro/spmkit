@@ -37,7 +37,7 @@ class NidReader:
         for sec_name in order:
             sec = sections.get(sec_name)
             if sec is None:
-                continue
+                raise ValueError(f".nid: falta la sección de canal {sec_name!r}")
             channels.append(sec.get("Dim2Name", sec_name))
             if sec.get("Dim1Name", "") == "SpecPoint":
                 has_force = True

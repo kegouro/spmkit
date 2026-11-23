@@ -89,24 +89,26 @@ def extract_curves(channel: SPMChannel) -> list[ForceCurve]:
     canal; la fuerza son los datos del canal (una curva por fila).
     """
     data = np.atleast_2d(np.asarray(channel.data, dtype=np.float64))
-    n_curves, n_points = data.shape
     meta = channel.metadata
     z_min = float(meta.get("Dim0Min", 0.0))
-    z_range = float(meta.get("Dim0Range", float(n_points)))
-    z = z_min + np.linspace(0.0, z_range, n_points)
+    z_range = float(meta.get("Dim0Range", float(data.shape[1])))
     z_unit = meta.get("Dim0Unit", "m")
-    return [
-        ForceCurve(
-            z=z,
-            force=data[i],
-            index=i,
-            direction=channel.direction,
-            z_unit=z_unit,
-            force_unit=channel.unit or "N",
-            metadata={"source_channel": channel.name},
+    curves = []
+    for i, count in enumerate(channel.spectroscopy_point_counts()):
+        start = float(meta.get(f"LineDim{i}Min", z_min))
+        span = float(meta.get(f"LineDim{i}Range", z_range))
+        curves.append(
+            ForceCurve(
+                z=start + np.linspace(0.0, span, count),
+                force=data[i, :count],
+                index=i,
+                direction=channel.direction,
+                z_unit=z_unit,
+                force_unit=channel.unit or "N",
+                metadata={"source_channel": channel.name},
+            )
         )
-        for i in range(n_curves)
-    ]
+    return curves
 
 
 def baseline_correct(curve: ForceCurve, fraction: float = 0.3) -> ForceCurve:

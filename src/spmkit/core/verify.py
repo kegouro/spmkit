@@ -213,12 +213,17 @@ def trace_nid(path: str | Path) -> NidTrace:
 
     for sec_name in order:
         sec = sections.get(sec_name)
-        if sec is None:
-            continue
-
-        points = int(sec.get("Points", "0"))
-        lines = int(sec.get("Lines", "0"))
-        dt = _dtype(sec)
+        try:
+            if sec is None:
+                raise ValueError(f"falta la sección de canal {sec_name!r}")
+            points = int(sec.get("Points", "0"))
+            lines = int(sec.get("Lines", "0"))
+            if min(points, lines) <= 0:
+                raise ValueError(f"dimensiones inválidas ({points}×{lines})")
+            dt = _dtype(sec)
+        except ValueError as exc:
+            checks.append(Check(name=f"bloque {sec_name}", passed=False, detail=str(exc)))
+            break
         bits = int(sec.get("SaveBits", "32"))
         signed = sec.get("SaveSign", "Signed").lower() == "signed"
         count = points * lines
