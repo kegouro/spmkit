@@ -208,6 +208,13 @@ class ForceViewModel(QObject):
         seg = curve.extend or (curve.segments[0] if curve.segments else None)
         if seg is None:
             return None
+        unit = seg.metadata.get("raw_deflection_unit")
+        if unit != "V" and not (unit is None and seg.state == "raw_v"):
+            self.statusChanged.emit(
+                "InVOLS requiere deflexión original en V. "
+                "Este canal está calibrado o su unidad no está documentada."
+            )
+            return None
         try:
             return calibration.deflection_sensitivity(seg.raw_deflection, seg.raw_height)
         except Exception:  # noqa: BLE001 - datos degenerados: sin estimación

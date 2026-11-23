@@ -279,6 +279,7 @@ def load_nid_force(path: str | Path) -> ForceVolume:
                 "num_points": int(height.size),
                 "height_channel": z_ch.name,
                 "height_input_unit": z_ch.unit,
+                "raw_deflection_unit": "m" if deflection is not None else "N",
             },
         )
 

@@ -142,3 +142,28 @@ def test_cone_fit_runs_end_to_end(qtbot, synthetic_volume) -> None:  # type: ign
     vm.resultsChanged.connect(ctx.update)
     vm.run_fit_now()
     assert ctx.get("young_modulus", 0) > 0  # el ajuste cónico corre sin romper
+
+
+def test_invols_rejects_calibrated_signal_but_accepts_documented_volts():
+    from dataclasses import replace
+
+    original = _invols_volume().curve(0).extend
+    vm = ForceViewModel()
+    messages = []
+    vm.statusChanged.connect(messages.append)
+    for unit in ("m", "N", None):
+        segment = replace(original, state="force_n", metadata={"raw_deflection_unit": unit})
+        vm.set_volume(
+            ForceVolume.from_curves(
+                [ForceCurve(segments=(segment,))], grid_shape=(1, 1), x_range=0, y_range=0
+            )
+        )
+        assert vm.estimate_invols() is None
+        assert "InVOLS requiere" in messages[-1]
+    volts = replace(original, state="force_n", metadata={"raw_deflection_unit": "V"})
+    vm.set_volume(
+        ForceVolume.from_curves(
+            [ForceCurve(segments=(volts,))], grid_shape=(1, 1), x_range=0, y_range=0
+        )
+    )
+    assert np.isclose(vm.estimate_invols(), 30e-9, rtol=0.01, atol=0)

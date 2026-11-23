@@ -91,3 +91,27 @@ def test_jkr_rejects_unsupported_options_instead_of_ignoring_them(synthetic_volu
         recipe = Recipe(steps=(Step("fit_elasticity", {"model": "jkr", **options}),))
         with pytest.raises(ValueError, match="JKR experimental"):
             run(recipe, synthetic_volume(1).curve(0))
+
+
+def test_map_csv_reports_units_and_handles_write_error(
+    qtbot, synthetic_volume, tmp_path, monkeypatch
+):
+    from spmkit.gui.app_workspace import _export_map_csv
+    from spmkit.gui.viewmodels import MapViewModel
+
+    ws = build_workspace()
+    qtbot.addWidget(ws)
+    vm = ws.panel("force_canvas")._vm
+    vm.set_volume(synthetic_volume(2))
+    maps = MapViewModel(vm)
+    maps.compute_now(engine="pipeline")
+    out = tmp_path / "map.csv"
+    monkeypatch.setattr(QFileDialog, "getSaveFileName", lambda *a: (str(out), ""))
+    _export_map_csv(ws, maps)
+    assert out.read_text().startswith("# young_modulus [Pa]")
+    np.testing.assert_allclose(
+        np.loadtxt(out, delimiter=",").ravel(), maps.result.maps["young_modulus"].ravel()
+    )
+    monkeypatch.setattr(QFileDialog, "getSaveFileName", lambda *a: (str(tmp_path), ""))
+    _export_map_csv(ws, maps)
+    assert "No se pudo exportar" in ws._status._message.text()

@@ -452,7 +452,14 @@ def _export_map_csv(ws: Workspace, map_vm: MapViewModel) -> None:
         return
     import numpy as np
 
-    np.savetxt(path, result.maps[map_vm.key], delimiter=",")
+    from spmkit.core.analysis.forcevolume import PROPERTY_UNITS
+
+    try:
+        unit = PROPERTY_UNITS.get(map_vm.key, "")
+        np.savetxt(path, result.maps[map_vm.key], delimiter=",", header=f"{map_vm.key} [{unit}]")
+    except (OSError, ValueError, KeyError) as exc:
+        ws.show_status(f"No se pudo exportar el mapa CSV: {exc}")
+        return
     _remember_dir(path)
     ws.show_status(f"mapa CSV exportado a {Path(path).name}")
 

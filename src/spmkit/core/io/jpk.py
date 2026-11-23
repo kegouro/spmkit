@@ -455,6 +455,7 @@ def _load_jpk_force(path: Path) -> ForceCurve:
             meta: dict = {
                 "num_points": int(raw_h.size),
                 "height_channel": "height",
+                "raw_deflection_unit": v_scaling.enc_unit,
                 "height_conversion_slots": [slot[0] for slot in h_scaling.slots],
             }
             if h_scaling.lcd_info is not None or v_scaling.lcd_info is not None:
