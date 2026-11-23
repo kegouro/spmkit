@@ -74,6 +74,11 @@ class InspectorPanel(Panel):
         young.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
         self._values["young"] = young
         lay.addWidget(young)
+        self._axis_warning = QLabel()
+        self._axis_warning.setProperty("role", "muted")
+        self._axis_warning.setWordWrap(True)
+        self._axis_warning.hide()
+        lay.addWidget(self._axis_warning)
 
         grid = QGridLayout()
         grid.setColumnStretch(0, 1)
@@ -107,6 +112,13 @@ class InspectorPanel(Panel):
         return root
 
     def _on_results(self, ctx: dict) -> None:
+        message = ""
+        if ctx.get("fit_axis") == "height":
+            message = "Ajuste sobre altura del sensor. El módulo es aparente."
+        elif ctx.get("separation_status") == "unverified":
+            message = "Separación del instrumento sin canal de fuerza asociado para contrastar."
+        self._axis_warning.setText(message)
+        self._axis_warning.setVisible(bool(message))
         if not ctx:
             for value in self._values.values():
                 value.setText(_EMPTY)

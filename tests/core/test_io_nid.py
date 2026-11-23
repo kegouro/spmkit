@@ -84,3 +84,38 @@ def test_real_nid_files_load() -> None:
     data = load(files[0])
     assert len(data) > 0
     assert all(np.isfinite(c.data).all() for c in data.channels)
+
+
+def test_public_nid_calibration_and_branch_pairing() -> None:
+    from spmkit.core.pipeline import Recipe, Step, run
+
+    fixture = (
+        Path(__file__).resolve().parents[1]
+        / "validation/fixtures/force_foundation/spectroscopy.nid"
+    )
+    volume = load_nid_force(fixture)
+    assert volume.n_curves == 100
+    k = volume.metadata["spring_constant"]
+    assert k == pytest.approx(2.72436)
+    for index in range(volume.n_curves):
+        curve = volume.curve(index)
+        for seg in curve.segments:
+            np.testing.assert_array_equal(seg.deflection, seg.force / k)
+            assert seg.metadata["force_input_unit"] == "N"
+            assert seg.metadata["separation_status"] == (
+                "force_mismatch" if index == 0 else "matched"
+            )
+            assert (seg.separation is None) == (index == 0)
+    _, result = run(Recipe(steps=(Step("calibrate"),)), volume.curve(0))
+    assert result["fit_axis"] == "height"
+    assert result["force_calibration_source"] == "nid_header_scaling"
+
+
+def test_force_nid_requires_explicit_physical_scaling(tmp_path) -> None:
+    from tests.core.test_annotated_force_steps import write_spectrum
+
+    path = tmp_path / "missing-scale.nid"
+    write_spectrum(path, "nN")
+    path.write_bytes(path.read_bytes().replace(b"Dim2Range=65536\n", b"", 1))
+    with pytest.raises(ValueError, match="falta escala física"):
+        load_nid_force(path)

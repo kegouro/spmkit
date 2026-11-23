@@ -92,6 +92,14 @@ def calibrate(
         )
     ctx["calibrated"] = True
     ctx["invols"] = inv
+    primary = _primary_segment(curve)
+    if primary is not None and curve.metadata.get("format") == "nid":
+        k = primary.metadata.get("spring_constant_n_per_m")
+        ctx["force_calibration_source"] = "nid_header_scaling"
+        ctx["force_input_unit"] = primary.metadata.get("force_input_unit")
+        ctx["separation_status"] = primary.metadata.get("separation_status")
+        axis = _axis(primary)
+        ctx["fit_axis"] = "separation" if axis is primary.separation else "height"
     ctx["spring_constant"] = k
     return replace(curve, segments=tuple(new_segments))
 

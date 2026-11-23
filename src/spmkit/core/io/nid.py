@@ -202,11 +202,13 @@ def load_nid(path: str | Path) -> SPMData:
 
 
 def _find_channel(channels: list[SPMChannel], name: str, frame_contains: str) -> SPMChannel | None:
-    """Primer canal con ``name`` cuyo ``Frame`` contiene ``frame_contains``."""
-    for c in channels:
-        if c.name == name and frame_contains in c.metadata.get("Frame", ""):
-            return c
-    return None
+    """Canal inequívoco por nombre y frame."""
+    matches = [
+        c for c in channels if c.name == name and frame_contains in c.metadata.get("Frame", "")
+    ]
+    if len(matches) > 1:
+        raise ValueError(f".nid: varios canales {name!r} coinciden con {frame_contains!r}")
+    return matches[0] if matches else None
 
 
 def load_nid_force(path: str | Path) -> ForceVolume:
@@ -234,6 +236,39 @@ def load_nid_force(path: str | Path) -> ForceVolume:
     ext_sep = _find_channel(chs, "Tip-Sample Separation", "Fwd")
     ret_sep = _find_channel(chs, "Tip-Sample Separation", "Bwd")
 
+    def paired_force(separation: SPMChannel | None) -> SPMChannel | None:
+        if separation is None or not separation.group.startswith("IndentationZSensor"):
+            return None
+        frame = separation.group.replace("IndentationZSensor", "IndentationDefl", 1)
+        return next((c for c in chs if c.name == "Deflection" and c.group == frame), None)
+
+    ext_sep_force = paired_force(ext_sep)
+    ret_sep_force = paired_force(ret_sep)
+    k = data.metadata.get("spring_constant")
+    k = k if k is not None and math.isfinite(k) and k > 0 else None
+
+    for channel in (
+        ext_force,
+        ext_z,
+        ret_force,
+        ret_z,
+        ext_sep,
+        ret_sep,
+        ext_sep_force,
+        ret_sep_force,
+    ):
+        if channel is None:
+            continue
+        try:
+            offset = float(channel.metadata["Dim2Min"])
+            span = float(channel.metadata["Dim2Range"])
+        except (KeyError, ValueError) as exc:
+            raise ValueError(
+                f"{channel.group} / {channel.name}: falta escala física válida"
+            ) from exc
+        if not math.isfinite(offset) or not math.isfinite(span) or span <= 0:
+            raise ValueError(f"{channel.group} / {channel.name}: escala física inválida")
+
     n_curves = int(ext_force.data.shape[0])
 
     if (ret_force is None) != (ret_z is None):
@@ -256,6 +291,7 @@ def load_nid_force(path: str | Path) -> ForceVolume:
         z_ch: SPMChannel,
         f_ch: SPMChannel,
         sep_ch: SPMChannel | None,
+        sep_force_ch: SPMChannel | None,
         i: int,
     ) -> ForceSegment:
         height = in_si_row(z_ch, "m", i)
@@ -265,12 +301,22 @@ def load_nid_force(path: str | Path) -> ForceVolume:
             separation is not None and separation.shape != height.shape
         ):
             raise ValueError(f"{kind}: longitudes de canal incompatibles")
-        deflection = height - separation if separation is not None else None
+        separation_status = "absent"
+        if separation is not None:
+            separation_status = "unverified"
+            if sep_force_ch is not None:
+                paired_force = in_si_row(sep_force_ch, "N", i)
+                if np.array_equal(force, paired_force):
+                    separation_status = "matched"
+                else:
+                    separation = None
+                    separation_status = "force_mismatch"
+        deflection = force / k if k is not None else None
         return ForceSegment(
             segment_type=kind,  # type: ignore[arg-type]
             direction=direction,
             raw_height=height,
-            raw_deflection=deflection if deflection is not None else force,
+            raw_deflection=force,
             deflection=deflection,
             force=force,
             separation=separation,
@@ -279,14 +325,21 @@ def load_nid_force(path: str | Path) -> ForceVolume:
                 "num_points": int(height.size),
                 "height_channel": z_ch.name,
                 "height_input_unit": z_ch.unit,
-                "raw_deflection_unit": "m" if deflection is not None else "N",
+                "raw_deflection_unit": "N",
+                "force_input_unit": f_ch.unit,
+                "force_channel": f_ch.name,
+                "force_frame": f_ch.group,
+                "separation_status": separation_status,
+                "spring_constant_n_per_m": k,
             },
         )
 
     def _load_curve(i: int) -> ForceCurve:
-        segments = [_segment("extend", "approach", ext_z, ext_force, ext_sep, i)]
+        segments = [_segment("extend", "approach", ext_z, ext_force, ext_sep, ext_sep_force, i)]
         if ret_force is not None and ret_z is not None:
-            segments.append(_segment("retract", "retract", ret_z, ret_force, ret_sep, i))
+            segments.append(
+                _segment("retract", "retract", ret_z, ret_force, ret_sep, ret_sep_force, i)
+            )
         return ForceCurve(segments=tuple(segments), index=i, metadata={"format": "nid"})
 
     curves = tuple(_load_curve(i) for i in range(n_curves))
@@ -307,6 +360,6 @@ def load_nid_force(path: str | Path) -> ForceVolume:
         metadata={
             "format": "nid",
             "source_path": str(path),
-            "spring_constant": data.metadata.get("spring_constant"),
+            "spring_constant": k,
         },
     )
