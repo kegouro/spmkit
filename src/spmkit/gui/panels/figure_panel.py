@@ -26,6 +26,7 @@ from PyQt6.QtWidgets import (
 
 from spmkit.core.viz import colormaps
 from spmkit.core.viz.figure import Annotation, render_annotation, render_channel
+from spmkit.gui.design.typography import FAMILY
 from spmkit.gui.panels.base import Panel
 from spmkit.gui.viewmodels.figure_vm import FigureViewModel
 from spmkit.gui.widgets import AnnotationDialog
@@ -188,7 +189,9 @@ class FigurePanel(Panel):
 
     # ---- anotaciones ----
     def _add_annotation(self) -> None:
-        dialog = AnnotationDialog(Annotation(text="Texto", x=0.5, y=0.5, color="#ffffff"), self)
+        dialog = AnnotationDialog(
+            Annotation(family=FAMILY, text="Texto", x=0.5, y=0.5, color="#ffffff"), self
+        )
         if not dialog.exec():
             return
         ann = dialog.annotation()

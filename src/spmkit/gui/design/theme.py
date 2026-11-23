@@ -14,11 +14,11 @@ from __future__ import annotations
 from string import Template
 from typing import Any
 
-from spmkit.gui.design import tokens
+from spmkit.gui.design import tokens, typography
 
 # QSS con sustitución $token (las llaves { } de QSS quedan literales).
 _QSS = Template("""
-* { font-family: $ui_font; font-size: ${font_px}px; }
+* { font-family: "$ui_font"; font-size: ${font_px}px; }
 QMainWindow, QDialog { background: $bg; }
 QWidget { background: $bg; color: $text; }
 QToolTip { background: $elevated; color: $text; border: 1px solid $border; padding: 4px 8px; }
@@ -32,7 +32,7 @@ QToolBar#workspaceTools { background: $surface; }
 QToolButton#axisTools, QToolButton#viewSelector { background: $surface_2; border: 1px solid $border; padding: 5px 16px 5px 10px; }
 QToolButton#axisTools::menu-indicator, QToolButton#viewSelector::menu-indicator { subcontrol-position: right center; }
 QLabel[role="plotTitle"] { font-size: ${plot_title_px}px; font-weight: 600; }
-QLabel[role="metric"] { color: $text; font-family: $mono; font-size: ${metric_px}px; }
+QLabel[role="metric"] { color: $text; font-size: ${metric_px}px; }
 QLabel[role="groupTitle"] { color: $text; font-weight: 600; padding: 10px 0 4px 0; }
 QWidget#plotHeader, QWidget#curveTools, QWidget#emptyCanvas { background: $surface; }
 QDockWidget::title { font-weight: 600; }
@@ -59,7 +59,7 @@ QComboBox QAbstractItemView { background: $elevated; color: $text; border: 1px s
 QLabel { background: transparent; color: $text; }
 QLabel[role="title"] { font-size: 15px; font-weight: 500; }
 QLabel[role="muted"] { color: $text_muted; }
-QLabel[role="readout"] { font-family: $mono; color: $text; }
+QLabel[role="readout"] { color: $text; }
 
 QTreeView, QListView, QTableView { background: $surface; color: $text; border: 1px solid $border; border-radius: 3px; alternate-background-color: $surface_2; }
 QTreeView::item:selected, QListView::item:selected { background: $accent_soft; color: $accent; }
@@ -80,7 +80,7 @@ QMenu::item { padding: 6px 24px 6px 12px; border-radius: 4px; }
 QMenu::item:selected { background: $accent_soft; color: $accent; }
 
 QStatusBar { background: $surface; color: $text_muted; border-top: 1px solid $border; }
-QStatusBar QLabel { font-family: $mono; font-size: 12px; }
+QStatusBar QLabel { font-size: 12px; }
 
 QProgressBar { background: $surface_2; border: none; border-radius: 4px; height: 6px; text-align: center; color: transparent; }
 QProgressBar::chunk { background: $accent; border-radius: 4px; }
@@ -104,8 +104,7 @@ def build_qss(mode: str = "dark", accent: str | None = None, font_px: int = 13) 
     """
     palette = tokens.colors(mode, accent)
     return _QSS.substitute(
-        ui_font=tokens.FONT_UI,
-        mono=tokens.FONT_MONO,
+        ui_font=typography.FAMILY,
         font_px=int(font_px),
         heading_px=int(font_px) + 4,
         plot_title_px=int(font_px) + 6,
@@ -135,6 +134,7 @@ def apply_matplotlib(mode: str = "dark") -> None:
     except ImportError:  # pragma: no cover - matplotlib es extra opcional
         return
     c = tokens.colors(mode)
+    typography.apply_matplotlib_font()
     mpl.rcParams.update(
         {
             "figure.facecolor": c["bg"],
@@ -155,6 +155,7 @@ def apply(app: Any, mode: str = "dark", accent: str | None = None, font_px: int 
 
     ``accent``/``font_px`` personalizan color de acento y tamaño de fuente base.
     """
+    typography.apply_qt_font(app, font_px)
     app.setStyleSheet(build_qss(mode, accent, font_px))
     apply_pyqtgraph(mode)
     apply_matplotlib(mode)

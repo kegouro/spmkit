@@ -14,6 +14,7 @@ from PyQt6.QtCore import QObject, pyqtSignal
 
 from spmkit.core.models import SPMChannel
 from spmkit.core.viz.figure import Annotation, FigureSpec
+from spmkit.gui.design.typography import FAMILY
 from spmkit.gui.viewmodels.image_vm import ImageViewModel
 
 
@@ -26,7 +27,7 @@ class FigureViewModel(QObject):
     def __init__(self, image_vm: ImageViewModel, parent: QObject | None = None) -> None:
         super().__init__(parent)
         self._image_vm = image_vm
-        self._spec = FigureSpec()
+        self._spec = FigureSpec(font_family=FAMILY)
         self._annotations: list[Annotation] = []
         self._index = 0  # canal activo por posición (distingue nombres duplicados)
         image_vm.dataChanged.connect(self._on_data)

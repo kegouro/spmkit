@@ -50,3 +50,22 @@ def test_apply_matplotlib_syncs_facecolor() -> None:
 
     theme.apply_matplotlib("light")
     assert mpl.rcParams["figure.facecolor"] == tokens.colors("light")["bg"]
+
+
+def test_bundled_typeface_renders_readouts_and_plot_text(qapp):
+    from matplotlib import font_manager
+    from PyQt6.QtGui import QFontInfo, QFontMetricsF
+    from PyQt6.QtWidgets import QLabel
+
+    from spmkit.gui.design.typography import FAMILY
+
+    theme.apply(qapp, font_px=14)
+    label = QLabel("ΔX 1,00 µm")
+    label.setProperty("role", "readout")
+    label.ensurePolished()
+    assert QFontInfo(label.font()).family() == FAMILY
+    metrics = QFontMetricsF(label.font())
+    assert metrics.horizontalAdvance("1111") == metrics.horizontalAdvance("8888")
+    assert all(metrics.inFont(c) for c in "δσµ±²Δáñ")
+    path = font_manager.findfont(font_manager.FontProperties(), fallback_to_default=False)
+    assert font_manager.get_font(path).family_name == FAMILY

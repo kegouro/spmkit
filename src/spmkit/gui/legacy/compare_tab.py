@@ -11,6 +11,7 @@ from spmkit.core.analysis import leveling
 from spmkit.core.models import SPMData
 from spmkit.core.viz import FigureSpec, colormaps
 from spmkit.core.viz.figure import render_grid
+from spmkit.gui.design.typography import FAMILY
 
 _MAX_FILES = 4
 
@@ -146,6 +147,7 @@ class CompareTab(QtWidgets.QWidget):
             chans.append(ch)
             labels.append(Path(d.source_path).stem[:20])
         spec = FigureSpec(
+            font_family=FAMILY,
             colormap=self.cmap_combo.currentText() or "batlow",
             colorbar_label=name,
             title=f"Comparación · {name}",

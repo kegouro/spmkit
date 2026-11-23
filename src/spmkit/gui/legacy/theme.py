@@ -1,14 +1,13 @@
 """Sistema de temas de la GUI: estética "panel de instrumento".
 
-Dirección de diseño: grafito casi negro (o papel cálido en claro) con un único
-acento *teal* confiado, para que los datos y los colormaps sean el foco. Los
-valores científicos se muestran en monoespaciado tabular (carácter de
-instrumento). Tipografía nativa refinada (premium en cada plataforma).
+Paleta clásica de instrumento y tipografía compartida con Fathom.
 """
 
 from __future__ import annotations
 
 from typing import Any
+
+from spmkit.gui.design import typography
 
 # ---- tokens de color ------------------------------------------------------
 _PALETTES = {
@@ -37,12 +36,8 @@ _PALETTES = {
     },
 }
 
-# Stacks de fuente nativos refinados (no "AI slop"): el sistema de cada SO.
-_UI_FONT = '-apple-system, "SF Pro Text", "Segoe UI Variable", "Segoe UI", system-ui, sans-serif'
-_MONO_FONT = '"SF Mono", "JetBrains Mono", "Cascadia Code", "Menlo", "Consolas", monospace'
-
 _QSS = """
-* {{ font-family: {ui_font}; font-size: 13px; }}
+* {{ font-family: "{ui_font}"; font-size: 13px; }}
 QMainWindow, QDialog {{ background: {bg}; }}
 QWidget {{ background: {bg}; color: {text}; }}
 
@@ -116,7 +111,7 @@ QTextEdit {{
     background: {panel}; color: {text};
     border: 1px solid {border}; border-radius: 10px; padding: 8px;
 }}
-QTextEdit[role="readout"] {{ font-family: {mono_font}; font-size: 12px; }}
+QTextEdit[role="readout"] {{ font-size: 12px; }}
 
 /* ---- etiquetas ---- */
 QLabel {{ color: {text}; background: transparent; }}
@@ -163,11 +158,13 @@ def palette(name: str) -> dict[str, str]:
 
 def stylesheet(name: str = "dark") -> str:
     """Genera el QSS del tema indicado."""
-    return _QSS.format(ui_font=_UI_FONT, mono_font=_MONO_FONT, **palette(name))
+    return _QSS.format(ui_font=typography.FAMILY, **palette(name))
 
 
 def apply_theme(app: Any, name: str = "dark") -> None:
     """Aplica el tema a la QApplication."""
+    typography.apply_qt_font(app, 13)
+    typography.apply_matplotlib_font()
     app.setStyleSheet(stylesheet(name))
 
 

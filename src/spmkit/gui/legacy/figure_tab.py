@@ -15,6 +15,7 @@ from PyQt6 import QtWidgets
 from spmkit.core.models import SPMData
 from spmkit.core.viz import colormaps
 from spmkit.core.viz.figure import Annotation, FigureSpec, render_annotation, render_channel
+from spmkit.gui.design.typography import FAMILY
 
 # Diálogo de anotaciones: fuente única en gui/widgets (compartida con Fathom).
 # Re-exportado aquí por compatibilidad con importadores/tests históricos.
@@ -29,7 +30,7 @@ class FigureTab(QtWidgets.QWidget):
     def __init__(self) -> None:
         super().__init__()
         self._data: SPMData | None = None
-        self._spec = FigureSpec()
+        self._spec = FigureSpec(font_family=FAMILY)
         self._artists: dict = {}  # text artist -> Annotation (persisten)
         self._draggables: list = []  # todos los textos arrastrables
         self._drag_artist = None  # artista en arrastre
@@ -183,7 +184,9 @@ class FigureTab(QtWidgets.QWidget):
 
     # ------------------------------------------------------- anotaciones
     def _add_annotation(self) -> None:
-        dialog = AnnotationDialog(Annotation(text="Texto", x=0.5, y=0.5, color="#ffffff"), self)
+        dialog = AnnotationDialog(
+            Annotation(family=FAMILY, text="Texto", x=0.5, y=0.5, color="#ffffff"), self
+        )
         if not dialog.exec():
             return
         ann = dialog.annotation()

@@ -12,6 +12,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor
 
 from spmkit.core.viz.figure import Annotation
+from spmkit.gui.design.typography import FAMILY
 
 
 class ColorButton(QtWidgets.QPushButton):
@@ -79,7 +80,9 @@ class AnnotationDialog(QtWidgets.QDialog):
         form.addRow("Estilo:", self._wrap(style_row))
 
         self.family = QtWidgets.QComboBox()
-        self.family.addItems(["sans-serif", "serif", "monospace", "DejaVu Sans", "DejaVu Serif"])
+        self.family.addItems(
+            [FAMILY, "sans-serif", "serif", "monospace", "DejaVu Sans", "DejaVu Serif"]
+        )
         self.family.setCurrentText(ann.family)
         form.addRow("Fuente:", self.family)
 

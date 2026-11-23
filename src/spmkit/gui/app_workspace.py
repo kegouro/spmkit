@@ -19,8 +19,8 @@ from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication, QFileDialog, QMessageBox
 
 from spmkit.core.plugins.contracts import DatasetInfo, Kind
-from spmkit.gui.design import brand, theme
-from spmkit.gui.design.appearance import load_appearance
+from spmkit.gui.design import brand, theme, typography
+from spmkit.gui.design.appearance import Appearance, load_appearance
 from spmkit.gui.extensions import ModuleContext, assemble, iter_modules
 from spmkit.gui.panels.force_canvas import ForceCanvasPanel
 from spmkit.gui.shell.command_palette import Command
@@ -51,8 +51,13 @@ def build_workspace(
     # La app se ensambla desde los módulos (fábrica + descubiertos por entry-point): añadir
     # un módulo aporta sus paneles y perspectivas sin tocar la shell (ver gui/extensions.py).
     # pyqtgraph widgets snapshot their default canvas colors when constructed.
-    start_mode = load_appearance(QSettings("spmkit", "spmkit"), mode).theme if persist else mode
-    theme.apply_pyqtgraph(start_mode)
+    initial = (
+        load_appearance(QSettings("spmkit", "spmkit"), mode) if persist else Appearance(theme=mode)
+    )
+    app = QApplication.instance()
+    if isinstance(app, QApplication):
+        typography.apply_qt_font(app, initial.font_px)
+    theme.apply_pyqtgraph(initial.theme)
     modules = iter_modules()
     layout = assemble(modules, ctx)
     ws = Workspace(

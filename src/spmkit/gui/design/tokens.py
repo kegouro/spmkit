@@ -205,10 +205,6 @@ LIGHT_TRACES = {
 
 CATEGORICAL: tuple[str, ...] = ("#506BBC", "#AB634A", "#638475", "#896BA0")
 
-#: Stacks de fuente nativos refinados.
-FONT_UI = '-apple-system, "SF Pro Text", "Segoe UI Variable", "Inter Tight", system-ui, sans-serif'
-FONT_MONO = '"SF Mono", "JetBrains Mono", "Cascadia Code", "Menlo", "Consolas", monospace'
-
 #: Escala tipográfica (px).
 TYPE_SCALE: dict[str, int] = {
     "xs": 11,
