@@ -1,5 +1,7 @@
 # Fathom quick start
 
+Para procesar mapas NanoSurf, consulte la [guía P0 de NID y batch (PDF)](guia-p0-nid.pdf) o la [guía de medición de escalones](escalones-nid-fathom.md).
+
 **SPM-Kit computes. Fathom lets the researcher inspect, configure and operate
 those computations interactively.** Fathom is installed with SPM-Kit; it is not
 a separate numerical package.
