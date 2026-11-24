@@ -70,3 +70,27 @@ def test_active_mixed_nid_and_batch_use_same_review(qtbot, tmp_path, monkeypatch
     )
     batch._adhesion_btn.click()
     assert batch._adhesion_dialog is dlg and not dlg.maps[0].curves[7].included
+
+
+def test_export_reviewed_adhesion_png(qtbot, tmp_path, monkeypatch):
+    p = tmp_path / "mapa_adhesion.nid"
+    write_adhesion_map(p, 3)
+    parent = QWidget()
+    qtbot.addWidget(parent)
+    dlg = AdhesionDialog(parent)
+    dlg.show()
+    dlg.start([p])
+    qtbot.waitUntil(lambda: dlg.task is None)
+    dlg.model.setData(
+        dlg.model.index(1, 0), Qt.CheckState.Unchecked, Qt.ItemDataRole.CheckStateRole
+    )
+    out = tmp_path / "figuras"
+    out.mkdir()
+    monkeypatch.setattr(QFileDialog, "getExistingDirectory", lambda *a: str(out))
+    dlg.figures.menu().actions()[0].trigger()
+    assert not dlg.table.isEnabled() and not dlg.figures.isEnabled()
+    qtbot.waitUntil(lambda: dlg.task is None, timeout=15000)
+    assert sorted(f.name for f in out.rglob("*.png")) == ["curva_00000.png", "curva_00002.png"]
+    index = read_csv(next(out.rglob("indice.csv")))
+    assert all(r["rama"] == "retract" and r["ventanas"] == "1" for r in index)
+    assert "Figuras guardadas" in dlg.message.text()

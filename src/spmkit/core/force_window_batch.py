@@ -5,6 +5,7 @@ from __future__ import annotations
 import csv
 import os
 from collections.abc import Callable, Sequence
+from contextlib import suppress
 from dataclasses import asdict, dataclass, fields
 from pathlib import Path
 from tempfile import NamedTemporaryFile
@@ -12,9 +13,9 @@ from tempfile import NamedTemporaryFile
 import numpy as np
 
 from spmkit import __version__
+from spmkit.core.adhesion_review import read_for_review
 from spmkit.core.analysis.force_windows import AutoWindow, WindowOptions, select_windows
 from spmkit.core.export.manifest import file_sha256, get_git_commit
-from spmkit.core.io.nid import load_nid_force
 from spmkit.core.models import ForceSegment
 
 
@@ -27,6 +28,7 @@ class WindowRow:
     reason: str = ""
     window: AutoWindow | None = None
     preview: tuple[np.ndarray, np.ndarray] | None = None
+    source_index: int = 0
 
 
 @dataclass
@@ -34,6 +36,7 @@ class WindowBatch:
     options: WindowOptions
     rows: list[WindowRow]
     revision: str | None
+    source_paths: tuple[Path, ...] = ()
 
     def to_csv(self, path: Path) -> None:
         if path.suffix.lower() != ".csv":
@@ -65,6 +68,7 @@ class WindowBatch:
                 writer = csv.DictWriter(
                     stream,
                     fieldnames=[
+                        "source_index",
                         "source",
                         "sha256",
                         "curve",
@@ -77,6 +81,7 @@ class WindowBatch:
                 writer.writeheader()
                 for row in self.rows:
                     info = {
+                        "source_index": row.source_index,
                         "source": row.source,
                         "sha256": row.sha256,
                         "curve": row.curve,
@@ -118,6 +123,8 @@ def analyze_window_files(
     paths: Sequence[Path],
     options: WindowOptions,
     progress: Callable[[float, str], None] | None = None,
+    *,
+    selection: dict[Path, tuple[str, frozenset[int]]] | None = None,
 ) -> WindowBatch:
     rows: list[WindowRow] = []
     for j, path in enumerate(paths):
@@ -125,16 +132,20 @@ def analyze_window_files(
             progress(j / len(paths), path.name)
         digest = ""
         try:
-            digest = file_sha256(path)
-            volume = load_nid_force(path)
+            expected, included = selection[path] if selection is not None else ("", None)
+            digest, volume = read_for_review(path, expected)
         except (OSError, ValueError) as exc:
-            rows.append(WindowRow(path.name, digest, None, "error", str(exc)))
+            with suppress(OSError):
+                digest = file_sha256(path)
+            rows.append(WindowRow(path.name, digest, None, "error", str(exc), source_index=j))
             continue
         for i in range(volume.n_curves):
             if progress and i % 8 == 0:
                 progress(
                     (j + i / volume.n_curves) / len(paths), f"{path.name} · {i+1}/{volume.n_curves}"
                 )
+            if included is not None and i not in included:
+                continue
             segment = None
             try:
                 curve = volume.curve(i)
@@ -143,7 +154,13 @@ def analyze_window_files(
             except (ValueError, ArithmeticError, RuntimeError) as exc:
                 rows.append(
                     WindowRow(
-                        path.name, digest, i, "revisar", str(exc), preview=_preview(segment, None)
+                        path.name,
+                        digest,
+                        i,
+                        "revisar",
+                        str(exc),
+                        preview=_preview(segment, None),
+                        source_index=j,
                     )
                 )
                 continue
@@ -156,15 +173,22 @@ def analyze_window_files(
                         "sin candidato",
                         "Sin salto aislado que supere los criterios",
                         preview=_preview(segment, None),
+                        source_index=j,
                     )
                 )
             for w in windows:
                 rows.append(
                     WindowRow(
-                        path.name, digest, i, "candidato", window=w, preview=_preview(segment, w)
+                        path.name,
+                        digest,
+                        i,
+                        "candidato",
+                        window=w,
+                        preview=_preview(segment, w),
+                        source_index=j,
                     )
                 )
         del volume
     if progress:
         progress(1.0, "Completado")
-    return WindowBatch(options, rows, get_git_commit())
+    return WindowBatch(options, rows, get_git_commit(), tuple(p.absolute() for p in paths))

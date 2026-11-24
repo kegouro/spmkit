@@ -15,6 +15,7 @@ from PyQt6.QtWidgets import (
     QFileDialog,
     QHBoxLayout,
     QLabel,
+    QMenu,
     QMessageBox,
     QProgressBar,
     QPushButton,
@@ -171,6 +172,12 @@ class AdhesionDialog(QDialog):
         self.samples.clicked.connect(self.save_traces)
         for button in (self.next_warning, self.export_rows, self.export_summary, self.samples):
             actions.addWidget(button)
+        self.figures = QPushButton("Figuras…")
+        menu = QMenu(self.figures)
+        menu.addAction("Adhesión de las curvas incluidas…", self.export_figures)
+        menu.addAction("Ventanas automáticas de las curvas incluidas…", self.selected_windows)
+        self.figures.setMenu(menu)
+        actions.addWidget(self.figures)
         layout.addLayout(actions)
         self.busy(False)
 
@@ -219,6 +226,7 @@ class AdhesionDialog(QDialog):
         self.progress.setVisible(on)
         for b in (self.export_rows, self.export_summary, self.samples):
             b.setEnabled(bool(self.maps) and not on)
+        self.figures.setEnabled(not on and any(r.included for m in self.maps for r in m.curves))
         self.next_warning.setEnabled(
             not on
             and self.model is not None
@@ -290,6 +298,9 @@ class AdhesionDialog(QDialog):
         if self.model is None:
             return
         m = self.model.data_map
+        self.figures.setEnabled(
+            self.task is None and any(r.included for m in self.maps for r in m.curves)
+        )
         vals = m.selected_values()
         flags = sum(bool(r.warning) for r in m.curves)
         median = f"{np.median(vals)*1e9:.4g} nN" if vals else "—"
@@ -424,4 +435,21 @@ class AdhesionDialog(QDialog):
                     provide_progress=True,
                 ),
                 lambda _: self.message.setText("Trazas completas guardadas"),
+            )
+
+    def selected_windows(self) -> None:
+        from spmkit.gui.widgets.auto_windows import AutoWindowDialog
+
+        dialog = AutoWindowDialog(self, reviewed=self.maps)
+        dialog.exec()
+        dialog.deleteLater()
+
+    def export_figures(self) -> None:
+        from spmkit.core.viz.window_figures import export_batch_figures
+
+        folder = QFileDialog.getExistingDirectory(self, "Crear carpeta de figuras de adhesión en…")
+        if folder:
+            self.launch(
+                Task(export_batch_figures, self.maps, Path(folder), provide_progress=True),
+                lambda path: self.message.setText(f"Figuras guardadas en {path}"),
             )

@@ -24,6 +24,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from spmkit.core.adhesion_review import AdhesionMap
 from spmkit.core.analysis.force_windows import WindowOptions
 from spmkit.core.force_window_batch import WindowBatch, analyze_window_files
 from spmkit.gui.runtime.tasks import Task, run_task
@@ -91,10 +92,19 @@ class WindowTable(QAbstractTableModel):
 
 
 class AutoWindowDialog(QDialog):
-    def __init__(self, parent: QWidget) -> None:
+    def __init__(self, parent: QWidget, reviewed: list[AdhesionMap] | None = None) -> None:
         super().__init__(parent)
         self.setWindowTitle("Ventanas automáticas · mapas NID")
         self.resize(870, 550)
+        self.selection = (
+            None
+            if reviewed is None
+            else {
+                m.path: (m.digest, frozenset(r.index for r in m.curves if r.included))
+                for m in reviewed
+                if any(r.included for r in m.curves)
+            }
+        )
         self.task: Task | None = None
         self.batch_result: WindowBatch | None = None
         self.model: WindowTable | None = None
@@ -122,14 +132,18 @@ class AutoWindowDialog(QDialog):
         self.form.addRow("Indentación máxima (nm)", self.depth_input)
         self.form.addRow("Coeficiente de Poisson", self.poisson)
         row = QHBoxLayout()
-        self.run_btn = QPushButton("Elegir mapas NID y analizar…")
+        self.run_btn = QPushButton(
+            "Elegir mapas NID y analizar…" if reviewed is None else "Analizar curvas incluidas"
+        )
         self.run_btn.clicked.connect(self.choose)
         self.cancel = QPushButton("Cancelar cálculo")
         self.cancel.clicked.connect(self.cancel_task)
         self.save = QPushButton("Exportar ventanas (CSV)…")
         self.save.clicked.connect(self.export)
         self.save.setEnabled(False)
-        for b in (self.run_btn, self.cancel, self.save):
+        self.figures = QPushButton("Exportar figuras por curva…")
+        self.figures.clicked.connect(self.export_figures)
+        for b in (self.run_btn, self.cancel, self.save, self.figures):
             row.addWidget(b)
         layout.addLayout(row)
         self.status = QLabel()
@@ -167,6 +181,7 @@ class AutoWindowDialog(QDialog):
 
     def invalidate(self) -> None:
         self.batch_result = None
+        self.figures.setEnabled(False)
         self.preview.hide()
         self.table.setModel(None)
         if self.model is not None:
@@ -200,6 +215,12 @@ class AutoWindowDialog(QDialog):
                 "Indica el radio de punta y la profundidad máxima para tu adquisición."
             )
             return
+        if self.selection is not None:
+            if self.selection:
+                self.start(list(self.selection))
+            else:
+                self.status.setText("No hay curvas incluidas")
+            return
         paths, _ = QFileDialog.getOpenFileNames(
             self, "Mapas de fuerza para este lote", "", "Mapas Nanosurf (*.nid *.NID)"
         )
@@ -217,13 +238,22 @@ class AutoWindowDialog(QDialog):
             self.depth_input.value() or 5,
         )
         self.invalidate()
+        self.launch(
+            Task(analyze_window_files, paths, o, provide_progress=True, selection=self.selection),
+            self.done_batch,
+        )
+
+    def launch(self, task: Task, on_done: Any) -> None:
+        self.save.setEnabled(False)
+        self.figures.setEnabled(False)
+        self.progress.setValue(0)
         self.run_btn.setEnabled(False)
         for i in range(self.form.rowCount()):
             self.form.itemAt(i, QFormLayout.ItemRole.FieldRole).widget().setEnabled(False)
         self.cancel.setEnabled(True)
-        self.task = Task(analyze_window_files, paths, o, provide_progress=True)
+        self.task = task
         self.task.signals.progress.connect(self.on_progress)
-        self.task.signals.done.connect(self.done_batch)
+        self.task.signals.done.connect(on_done)
         self.task.signals.error.connect(self.on_error)
         self.task.signals.cancelled.connect(self.on_cancelled)
         self.task.signals.finished.connect(self.finish)
@@ -275,6 +305,10 @@ class AutoWindowDialog(QDialog):
         self.branch.setEnabled(self.mode.currentData() == "steps")
         self.run_btn.setEnabled(True)
         self.cancel.setEnabled(False)
+        self.save.setEnabled(bool(self.batch_result and self.batch_result.rows))
+        self.figures.setEnabled(
+            bool(self.batch_result and any(r.curve is not None for r in self.batch_result.rows))
+        )
 
     def cancel_task(self) -> None:
         if self.task is not None:
@@ -297,3 +331,15 @@ class AutoWindowDialog(QDialog):
                 self.status.setText("CSV de ventanas guardado")
             except (OSError, ValueError) as exc:
                 self.on_error(exc)
+
+    def export_figures(self) -> None:
+        if self.batch_result is None or self.task is not None:
+            return
+        from spmkit.core.viz.window_figures import export_batch_figures
+
+        folder = QFileDialog.getExistingDirectory(self, "Crear carpeta de figuras en…")
+        if folder:
+            self.launch(
+                Task(export_batch_figures, self.batch_result, Path(folder), provide_progress=True),
+                lambda path: self.status.setText(f"Figuras guardadas en {path}"),
+            )
